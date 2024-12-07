@@ -1,13 +1,14 @@
 import Link from "next/link";
-import { QuestionsResponse } from "@/app/_types/QuestionsResponse";
+import { LessonsResponse } from "@/app/api/courses/[courseId]/lessons/_types/LessonsResponse";
 
 interface Props {
-  questions: QuestionsResponse;
+  lessons: LessonsResponse;
 }
-export const QuetionList: React.FC<Props> = ({ questions }) => {
+export const LessonList: React.FC<Props> = ({ lessons }) => {
+  console.log(lessons);
   return (
     <div className="flex flex-col gap-10 p-10">
-      {questions.map((question, index) => (
+      {lessons.questions.map((question, index) => (
         <Link
           href={`/questions/js/${question.id}`}
           key={question.id}
