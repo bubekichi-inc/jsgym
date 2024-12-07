@@ -9,6 +9,5 @@ export default function Page() {
   if (isLoading) return <div>読込み中</div>;
   if (error) return <div>JS問題の取得中にエラーが発生しました</div>;
   if (!data) return <div>JSの問題がありません</div>;
-  console.log(data);
   return <QuetionList questions={data} />;
 }
