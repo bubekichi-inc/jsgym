@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { buildPrisma } from "@/app/_utils/prisma";
 
-export const GET = async (
-  req: NextRequest,
-  { params }: { params: { courseId: string; lessonId: string } }
-) => {
+interface Props {
+  params: Promise<{
+    courseId: string;
+    lessonId: string;
+  }>;
+}
+export const GET = async (req: NextRequest, { params }: Props) => {
   const prisma = await buildPrisma();
   const { courseId, lessonId } = await params;
   try {
