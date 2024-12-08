@@ -1,12 +1,12 @@
 "use client";
 import { useParams } from "next/navigation";
-import { LessonList } from "./_components/LessonList";
+import { LessonList } from "./_components/QuestionList";
 import { useFetch } from "@/app/_hooks/useFetch";
-import { LessonsResponse } from "@/app/api/courses/[courseId]/lessons/_types/LessonsResponse";
+import { QuestionsResponse } from "@/app/api/courses/[courseId]/lessons/_types/QuestionsResponse";
 
 export default function Question() {
   const { courseId, lessonId } = useParams();
-  const { data, error, isLoading } = useFetch<LessonsResponse>(
+  const { data, error, isLoading } = useFetch<QuestionsResponse>(
     `/api/courses/${courseId}/lessons/${lessonId}`
   );
   if (isLoading) return <div>読込み中</div>;

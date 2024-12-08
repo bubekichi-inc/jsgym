@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { LessonsResponse } from "@/app/api/courses/[courseId]/lessons/_types/LessonsResponse";
+import { QuestionsResponse } from "@/app/api/courses/[courseId]/lessons/_types/QuestionsResponse";
 
 interface Props {
-  lessons: LessonsResponse;
+  lessons: QuestionsResponse;
 }
 export const LessonList: React.FC<Props> = ({ lessons }) => {
   console.log(lessons);
