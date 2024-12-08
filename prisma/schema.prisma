@@ -11,7 +11,34 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+enum CourseType {
+  JAVA_SCRIPT
+  TYPE_SCRIPT
+}
+
+model Course {
+  id      Int      @id @default(autoincrement())
+  name    CourseType
+  lessons Lesson[]
+
+  @@map("courses")
+}
+
+model Lesson {
+  id       Int       @id @default(autoincrement())
+  name     String
+  course   Course    @relation(fields: [course_id], references: [id])
+  course_id Int      @map("course_id")
+  questions Question[]
+  
+  @@map("lessons")
+}
+
 model Question {
-  id             Int            @id @default(autoincrement())
-  question       String
+  id       Int     @id @default(autoincrement())
+  content  String
+  lesson   Lesson  @relation(fields: [lesson_id], references: [id])
+  lesson_id Int    @map("lesson_id")
+
+  @@map("questions")
 }
