@@ -1,5 +1,5 @@
 export type Lesson = {
   id: number;
-  question: string;
+  content: string;
 };
 export type LessonsResponse = { questions: Lesson[] };

@@ -15,7 +15,7 @@ export const LessonList: React.FC<Props> = ({ lessons }) => {
           className=" shadow-md"
         >
           <div className="pl-2">{`問題${index + 1}`}</div>
-          <div className="p-5">{question.question}</div>
+          <div className="p-5">{question.content}</div>
         </Link>
       ))}
     </div>
