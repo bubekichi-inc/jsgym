@@ -1,16 +1,17 @@
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { QuestionsResponse } from "@/app/api/courses/[courseId]/lessons/_types/QuestionsResponse";
 
 interface Props {
-  lessons: QuestionsResponse;
+  questions: QuestionsResponse;
 }
-export const LessonList: React.FC<Props> = ({ lessons }) => {
-  console.log(lessons);
+export const QuestionList: React.FC<Props> = ({ questions }) => {
+  const { courseId, lessonId } = useParams();
   return (
     <div className="flex flex-col gap-10 p-10">
-      {lessons.questions.map((question, index) => (
+      {questions.questions.map((question, index) => (
         <Link
-          href={`/questions/js/${question.id}`}
+          href={`/courses/${courseId}/lessons/${lessonId}/questions/${question.id}`}
           key={question.id}
           className=" shadow-md"
         >

@@ -1,7 +1,6 @@
 "use client";
-import Editor from "@monaco-editor/react";
-
-type Language = "javascript" | "typescript" | "html" | "css";
+import { Editor } from "@monaco-editor/react";
+import { Language } from "@/app/_types/Language";
 
 interface Props {
   value: string;
@@ -12,7 +11,7 @@ interface Props {
 export const CodeEditor: React.FC<Props> = ({ value, onChange, language }) => {
   return (
     <Editor
-      height="100%"
+      height="50vh"
       defaultLanguage={language}
       value={value}
       onChange={value => value && onChange(value)}
