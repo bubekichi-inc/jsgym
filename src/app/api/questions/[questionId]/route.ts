@@ -8,6 +8,8 @@ interface Props {
 }
 export const GET = async (req: NextRequest, { params }: Props) => {
   const prisma = await buildPrisma();
+  //プロトタイプ用のtestアカウントID
+  const userId = "aa47a833-3bd9-4ad3-92f5-dcea9f9fab7e";
   const { questionId } = await params;
   try {
     const question = await prisma.question.findUnique({
@@ -22,10 +24,16 @@ export const GET = async (req: NextRequest, { params }: Props) => {
     });
     const questions = await prisma.lesson.findUnique({
       where: {
-        id: question?.lesson_id,
+        id: question?.lessonId,
       },
       include: {
         questions: true,
+      },
+    });
+
+    const answer = await prisma.answer.findMany({
+      where: {
+        AND: [{ userId, questionId: parseInt(questionId, 10) }],
       },
     });
 
@@ -35,6 +43,8 @@ export const GET = async (req: NextRequest, { params }: Props) => {
         lesson: { id: question?.lesson.id, name: question?.lesson.name },
         question: { id: question?.id, content: question?.content },
         questions: questions?.questions,
+        answer: answer.length === 0 ? null : answer[0].answer,
+        status: answer.length === 0 ? null : answer[0].status,
       },
       { status: 200 }
     );

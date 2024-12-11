@@ -3,17 +3,15 @@ import { buildPrisma } from "@/app/_utils/prisma";
 
 interface Props {
   params: Promise<{
-    courseId: string;
     lessonId: string;
   }>;
 }
 export const GET = async (req: NextRequest, { params }: Props) => {
   const prisma = await buildPrisma();
-  const { courseId, lessonId } = await params;
+  const { lessonId } = await params;
   try {
     const lesson = await prisma.lesson.findUnique({
       where: {
-        course_id: parseInt(courseId, 10),
         id: parseInt(lessonId, 10),
       },
       include: { questions: true },

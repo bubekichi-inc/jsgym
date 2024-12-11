@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { QuestionsResponse } from "@/app/api/courses/[courseId]/lessons/_types/QuestionsResponse";
+import { QuestionsResponse } from "@/app/api/lessons/[lessonId]/_types/QuestionsResponse";
 
 interface Props {
   questions: QuestionsResponse;

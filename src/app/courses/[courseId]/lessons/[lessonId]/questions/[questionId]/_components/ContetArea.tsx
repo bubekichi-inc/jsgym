@@ -6,7 +6,8 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DOMPurify from "dompurify";
 import { useParams } from "next/navigation";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { ButtonArea } from "./ButtonArea";
 import { CodeEditor } from "./CodeEditor";
 import { ConsoleType } from "./ConsoleType";
 import { useFetch } from "@/app/_hooks/useFetch";
@@ -17,13 +18,17 @@ type LogType = "log" | "warn" | "error";
 type Log = { type: LogType; message: string };
 export const ContentArea: React.FC = () => {
   const { questionId } = useParams();
-  const [value, setValue] = useState<string>("");
   const [executionResult, setExecutionResult] = useState<Log[]>([]);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { data, error, isLoading } = useFetch<QuestionResponse>(
     `/api/questions/${questionId}`
   );
+  const [value, setValue] = useState<string>("");
 
+  useEffect(() => {
+    if (!data?.answer) return;
+    setValue(data.answer);
+  }, [data]);
   const addLog = (type: LogType, message: string) => {
     setExecutionResult(prevLogs => [...prevLogs, { type, message }]);
   };
@@ -78,11 +83,6 @@ export const ContentArea: React.FC = () => {
     const handleMessage = (event: MessageEvent) => {
       //sandbox="allow-scripts allow-modals"指定しているためオリジンチェックは省略
       // if (event.origin !== window.location.origin) return;
-
-      // if (event.data.type === "log") {
-      //   setExecutionResult(event.data.messages);
-      //   return;
-      // }
       const { type, messages } = event.data;
       if (type === "log" || type === "warn" || type === "error") {
         addLog(type, messages.join(" "));
@@ -103,73 +103,76 @@ export const ContentArea: React.FC = () => {
   if (!data) return <div>JSの問題がありません</div>;
 
   return (
-    <div className="flex w-full p-10">
-      <div className="w-2/5 flex flex-col gap-5">
-        <div className="font-bold text-2xl">{`問題${
-          data.questions.findIndex(
-            question => question.id === data.question.id
-          ) + 1
-        }`}</div>
-        <div className="font-bold">{data.question.content}</div>
-      </div>
-      <div className="w-3/5">
-        <div className="relative">
-          <CodeEditor
-            language={language(data.course.name)}
-            value={value}
-            onChange={setValue}
-          />
-          <button
-            type="button"
-            className="bg-blue-400 text-white rounded-md absolute bottom-4 right-6 px-6 py-2"
-            onClick={reset}
-          >
-            実行
-          </button>
+    <>
+      <div className="flex w-full p-10 h-full">
+        <div className="flex gap-5 flex-col w-2/5">
+          <div className="text-2xl font-bold ">{`問題${
+            data.questions.findIndex(
+              question => question.id === data.question.id
+            ) + 1
+          }`}</div>
+          <div className="font-bold">{data.question.content}</div>
         </div>
-        <iframe
-          ref={iframeRef}
-          sandbox="allow-scripts allow-modals"
-          style={{ display: "none" }}
-        />
-        <div className="bg-[#333333] h-3/5 mt-6">
-          <div className="flex gap-2">
-            <ConsoleType text="ログ" />
+        <div className="w-3/5">
+          <div className="relative">
+            <CodeEditor
+              language={language(data.course.name)}
+              value={value}
+              onChange={setValue}
+            />
+            <button
+              type="button"
+              className="bg-blue-400 text-white rounded-md absolute bottom-4 right-6 px-6 py-2"
+              onClick={reset}
+            >
+              実行
+            </button>
           </div>
-          <div className="text-white p-4">
-            {executionResult.map((item, index) => (
-              <div
-                key={index}
-                className={`
+          <iframe
+            ref={iframeRef}
+            sandbox="allow-scripts allow-modals"
+            style={{ display: "none" }}
+          />
+          <div className="bg-[#333333] h-3/5 mt-6">
+            <div className="flex gap-2">
+              <ConsoleType text="ログ" />
+            </div>
+            <div className="text-white p-4">
+              {executionResult.map((item, index) => (
+                <div
+                  key={index}
+                  className={`
                 ${item.type === "warn" ? "text-yellow-400" : ""}
                 ${item.type === "error" ? "text-red-500" : ""}
               `}
-              >
-                <span>
-                  {item.type === "warn" ? (
-                    <FontAwesomeIcon
-                      icon={faTriangleExclamation}
-                      className="text-yellow"
-                    />
-                  ) : (
-                    ""
-                  )}
+                >
+                  <span>
+                    {item.type === "warn" ? (
+                      <FontAwesomeIcon
+                        icon={faTriangleExclamation}
+                        className="text-yellow"
+                      />
+                    ) : (
+                      ""
+                    )}
 
-                  {item.type === "error" ? (
-                    <FontAwesomeIcon
-                      icon={faCircleExclamation}
-                      className="text-red"
-                    />
-                  ) : (
-                    ""
-                  )}
-                </span>
-                {item.message}
-              </div>
-            ))}
+                    {item.type === "error" ? (
+                      <FontAwesomeIcon
+                        icon={faCircleExclamation}
+                        className="text-red"
+                      />
+                    ) : (
+                      ""
+                    )}
+                  </span>
+                  {item.message}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      <ButtonArea answer={value} />
+    </>
   );
 };

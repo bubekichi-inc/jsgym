@@ -1,5 +1,7 @@
 import { CourseType } from "@prisma/client";
+import { StatusType } from "@prisma/client";
 import { Question } from "@/app/api/_types/Question";
+
 export type QuestionResponse = {
   course: {
     id: number;
@@ -11,4 +13,6 @@ export type QuestionResponse = {
   };
   question: Question;
   questions: Question[];
+  answer: string | null;
+  status: StatusType | null;
 };
