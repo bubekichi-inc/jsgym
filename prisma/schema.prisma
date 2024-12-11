@@ -11,6 +11,16 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+model User {
+  id String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  supabaseUserId String @unique
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @updatedAt @map("updated_at")
+  answers Answer[]
+  answerHistories AnswerHistory[]
+  @@map("users")
+}
+
 enum CourseType {
   JAVA_SCRIPT
   TYPE_SCRIPT
@@ -20,25 +30,78 @@ model Course {
   id      Int      @id @default(autoincrement())
   name    CourseType
   lessons Lesson[]
-
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @updatedAt @map("updated_at")
   @@map("courses")
 }
 
 model Lesson {
   id       Int       @id @default(autoincrement())
   name     String
-  course   Course    @relation(fields: [course_id], references: [id])
-  course_id Int      @map("course_id")
+  course   Course    @relation(fields: [courseId], references: [id],onDelete: Cascade)
+  courseId Int      @map("course_id")
   questions Question[]
-  
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @updatedAt @map("updated_at")
   @@map("lessons")
 }
 
 model Question {
   id       Int     @id @default(autoincrement())
+  title    String
+  example  String?
   content  String
-  lesson   Lesson  @relation(fields: [lesson_id], references: [id])
-  lesson_id Int    @map("lesson_id")
-
+  lesson   Lesson  @relation(fields: [lessonId], references: [id],onDelete: Cascade)
+  lessonId Int    @map("lesson_id")
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @updatedAt @map("updated_at")
+  answers Answer[]
+  answerHistories AnswerHistory[]
   @@map("questions")
+}
+
+enum StatusType {
+  DRAFT
+  PASSED
+  REVISION_REQUIRED
+}
+
+model Answer { 
+  id String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId String @map("user_id") @db.Uuid
+  user User @relation(fields: [userId], references: [id],onDelete: Cascade)
+  questionId Int @map("question_id")
+  question Question @relation(fields: [questionId], references: [id],onDelete: Cascade)
+  answer String
+  status StatusType
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @updatedAt @map("updated_at")
+  messages Message[]
+  @@map("answers")
+}
+
+model AnswerHistory {
+  id String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId String @map("user_id") @db.Uuid
+  user User @relation(fields: [userId], references: [id],onDelete: Cascade)
+  questionId Int @map("question_id")
+  question Question @relation(fields: [questionId], references: [id],onDelete: Cascade)
+  answer String
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @updatedAt @map("updated_at")
+  @@map("answer_histories")
+}
+enum Sender {
+  USER
+  SYSTEM
+}
+model Message { 
+  id String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  answerId String @map("answer_id") @db.Uuid
+  answer Answer @relation(fields: [answerId], references: [id],onDelete: Cascade)
+  message String
+  sender Sender
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @updatedAt @map("updated_at")
+  @@map("messages")
 }
