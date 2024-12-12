@@ -41,10 +41,20 @@ export const GET = async (req: NextRequest, { params }: Props) => {
       {
         course: question?.lesson.course,
         lesson: { id: question?.lesson.id, name: question?.lesson.name },
-        question: { id: question?.id, content: question?.content },
+        question: {
+          id: question?.id,
+          title: question?.title,
+          content: question?.content,
+        },
         questions: questions?.questions,
-        answer: answer.length === 0 ? null : answer[0].answer,
-        status: answer.length === 0 ? null : answer[0].status,
+        answer:
+          answer.length === 0
+            ? null
+            : {
+                id: answer[0].id,
+                code: answer[0].answer,
+                status: answer[0].status,
+              },
       },
       { status: 200 }
     );

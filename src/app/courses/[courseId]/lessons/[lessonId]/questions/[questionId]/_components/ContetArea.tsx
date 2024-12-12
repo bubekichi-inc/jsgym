@@ -12,6 +12,7 @@ import { CodeEditor } from "./CodeEditor";
 import { ConsoleType } from "./ConsoleType";
 import { useFetch } from "@/app/_hooks/useFetch";
 import { language } from "@/app/_utils/language";
+import { status } from "@/app/_utils/status";
 import { QuestionResponse } from "@/app/api/questions/_types/QuestionResponse";
 
 type LogType = "log" | "warn" | "error";
@@ -20,15 +21,16 @@ export const ContentArea: React.FC = () => {
   const { questionId } = useParams();
   const [executionResult, setExecutionResult] = useState<Log[]>([]);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const { data, error, isLoading } = useFetch<QuestionResponse>(
+  const { data, error, isLoading, mutate } = useFetch<QuestionResponse>(
     `/api/questions/${questionId}`
   );
   const [value, setValue] = useState<string>("");
 
   useEffect(() => {
     if (!data?.answer) return;
-    setValue(data.answer);
+    setValue(data.answer.code);
   }, [data]);
+
   const addLog = (type: LogType, message: string) => {
     setExecutionResult(prevLogs => [...prevLogs, { type, message }]);
   };
@@ -105,12 +107,18 @@ export const ContentArea: React.FC = () => {
   return (
     <>
       <div className="flex w-full p-10 h-full">
-        <div className="flex gap-5 flex-col w-2/5">
-          <div className="text-2xl font-bold ">{`問題${
-            data.questions.findIndex(
-              question => question.id === data.question.id
-            ) + 1
-          }`}</div>
+        <div className="flex gap-5 flex-col w-2/5 pr-10">
+          <div className="flex justify-between items-center">
+            <div className="text-2xl font-bold ">{`問題${
+              data.questions.findIndex(
+                question => question.id === data.question.id
+              ) + 1
+            }`}</div>
+            <div className="text-lg text-[#4B4B4B]">
+              {status(data.answer && data.answer.status)}
+            </div>
+          </div>
+          <h2 className="text-4xl">{data.question.title}</h2>
           <div className="font-bold">{data.question.content}</div>
         </div>
         <div className="w-3/5">
@@ -172,7 +180,14 @@ export const ContentArea: React.FC = () => {
           </div>
         </div>
       </div>
-      <ButtonArea answer={value} />
+      <ButtonArea
+        question={data.question.content}
+        answer={value}
+        answerId={data.answer && data.answer.id}
+        mutate={mutate}
+        setValue={setValue}
+        status={data.answer?.status}
+      />
     </>
   );
 };

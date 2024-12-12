@@ -16,6 +16,7 @@
     "@monaco-editor/react": "^4.6.0",
     "@prisma/client": "^6.0.1",
     "@supabase/supabase-js": "^2.47.2",
+    "@types/react-modal": "^3.16.3",
     "dompurify": "^3.2.2",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-tailwindcss": "^3.17.5",
@@ -25,6 +26,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.4.1",
+    "react-modal": "^3.16.1",
     "swr": "^2.2.5"
   },
   "devDependencies": {

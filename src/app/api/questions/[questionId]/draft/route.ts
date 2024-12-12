@@ -41,6 +41,15 @@ export const POST = async (req: NextRequest, { params }: Props) => {
       });
     }
 
+    //下書きも履歴登録
+    await prisma.answerHistory.create({
+      data: {
+        userId: userId,
+        questionId: parseInt(questionId, 10),
+        answer: body.answer,
+      },
+    });
+
     return NextResponse.json({ message: "success!" }, { status: 200 });
   } catch (e) {
     if (e instanceof Error) {

@@ -13,6 +13,9 @@ export type QuestionResponse = {
   };
   question: Question;
   questions: Question[];
-  answer: string | null;
-  status: StatusType | null;
+  answer: {
+    id: string;
+    code: string;
+    status: StatusType;
+  } | null;
 };
