@@ -14,6 +14,7 @@ import { useFetch } from "@/app/_hooks/useFetch";
 import { language } from "@/app/_utils/language";
 import { status } from "@/app/_utils/status";
 import { QuestionResponse } from "@/app/api/questions/_types/QuestionResponse";
+import { PaginationControls } from "./PaginationControls";
 
 type LogType = "log" | "warn" | "error";
 type Log = { type: LogType; message: string };
@@ -110,6 +111,7 @@ export const ContentArea: React.FC = () => {
     <>
       <div className="flex w-full p-10 h-full">
         <div className="flex gap-5 flex-col w-2/5 pr-10">
+          <PaginationControls questions={data.questions} />
           <div className="flex justify-between items-center">
             <div className="text-2xl font-bold ">{`問題${
               data.questions.findIndex(
