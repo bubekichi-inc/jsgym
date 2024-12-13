@@ -1,6 +1,5 @@
-import { Message, Sender } from "@prisma/client";
-import { useState, useEffect } from "react";
-import { KeyedMutator } from "swr";
+import { ChatMessage as ChatMessageType } from "../_types/ChatMessage";
+import { useState, useEffect, useRef } from "react";
 import { ChatMessage } from "./ChatMessage";
 import { useApi } from "@/app/_hooks/useApi";
 import {
@@ -10,8 +9,8 @@ import {
 import { useFetch } from "@/app/_hooks/useFetch";
 import { status } from "@/app/_utils/status";
 interface Props {
-  chatMessages: Message[];
-  setChatMessages: (chatMessages: Message[]) => void;
+  chatMessages: ChatMessageType[];
+  setChatMessages: (chatMessages: ChatMessageType[]) => void;
   answerId: string;
 }
 export const ChatArea: React.FC<Props> = ({
@@ -22,6 +21,12 @@ export const ChatArea: React.FC<Props> = ({
   const { data, error, isLoading } = useFetch<MessagesReasponse>(
     `/api/messages/${answerId}`
   );
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // chatMessagesが更新されるたびにスクロール
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatMessages]);
 
   useEffect(() => {
     if (!data) return;
@@ -39,21 +44,19 @@ export const ChatArea: React.FC<Props> = ({
   const isCorrect = status(data.status);
   const sendMessage = async () => {
     setMessage("");
-    const newMessage: Message = {
+    const newMessage: ChatMessageType = {
       answerId,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      id: "",
       message,
       sender: "USER",
     };
 
-    setChatMessages([...chatMessages, newMessage]);
+    const updatedMessages = [...chatMessages, newMessage];
+    setChatMessages(updatedMessages);
     const { systemMessage } = await post<
       MessageRequest,
-      { systemMessage: Message }
+      { systemMessage: ChatMessageType }
     >(`/api/messages/${answerId}`, { message });
-    setChatMessages([...chatMessages, newMessage, systemMessage]);
+    setChatMessages([...updatedMessages, systemMessage]);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -63,10 +66,13 @@ export const ChatArea: React.FC<Props> = ({
       sendMessage();
     }
   };
-  console.log(chatMessages, answerId);
+  const result = isCorrect === "合格済み" ? "合格です！！" : "不合格です！";
   return (
-    <div className="bg-white w-4/5 h-5/6 p-10 relative">
-      <h2 className="text-4xl font-bold pb-11 text-center">{`${isCorrect}です！！`}</h2>
+    <div
+      className="bg-white w-4/5 h-5/6 p-10 relative"
+      onClick={e => e.stopPropagation()}
+    >
+      <h2 className="text-4xl font-bold pb-11 text-center">{result}</h2>
       <h3 className="pb-9 font-bold">コードレビュー</h3>
       <div className="h-[70%]">
         <div className="h-full">
@@ -78,6 +84,7 @@ export const ChatArea: React.FC<Props> = ({
                 key={index}
               />
             ))}
+            <div ref={messagesEndRef} />
           </div>
         </div>
 

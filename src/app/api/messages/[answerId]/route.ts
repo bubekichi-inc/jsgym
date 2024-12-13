@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 import { MessageRequest } from "../_types/Messages";
 import { buildPrisma } from "@/app/_utils/prisma";
+import { Sender } from "@prisma/client";
 
 interface Props {
   params: Promise<{
@@ -25,6 +26,7 @@ export const GET = async (req: NextRequest, { params }: Props) => {
       {
         status: messages?.status,
         answer: messages?.answer,
+        //最初の質問が含まれるので最初の要素は除く
         messages: messages?.messages.slice(1),
       },
       { status: 200 }
@@ -80,20 +82,20 @@ export const POST = async (req: NextRequest, { params }: Props) => {
       presence_penalty: 0,
     });
     const messageContent = response.choices[0].message.content || "";
-    await prisma.message.create({
-      data: {
-        message,
-        sender: "USER",
-        answerId,
-      },
-    });
-
-    const systemMessage = await prisma.message.create({
-      data: {
-        message: messageContent,
-        sender: "SYSTEM",
-        answerId,
-      },
+    const systemMessage = {
+      message: messageContent,
+      sender: "SYSTEM" as const,
+      answerId,
+    };
+    await prisma.message.createMany({
+      data: [
+        {
+          message,
+          sender: "USER",
+          answerId,
+        },
+        systemMessage,
+      ],
     });
 
     return NextResponse.json(
