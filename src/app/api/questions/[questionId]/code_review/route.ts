@@ -42,6 +42,7 @@ export const POST = async (req: NextRequest, { params }: Props) => {
     const string = response.choices[0].message.content || "{}";
     const { isCorrect, reviewComment }: CodeReviewResponse = JSON.parse(string);
     const status = isCorrect ? "PASSED" : "REVISION_REQUIRED";
+
     //ステータスを更新する
     const answerResponse = await prisma.answer.findMany({
       where: {
@@ -72,6 +73,9 @@ export const POST = async (req: NextRequest, { params }: Props) => {
         },
       });
     }
+
+    //既に回答済のメッセージデータがあったら削除する
+    await prisma.message.deleteMany({ where: { answerId } });
 
     //メッセージにも登録(履歴送るときに備えて、回答なども含める)
     const messageResp = await prisma.message.createMany({

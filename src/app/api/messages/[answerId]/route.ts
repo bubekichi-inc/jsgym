@@ -78,27 +78,27 @@ export const POST = async (req: NextRequest, { params }: Props) => {
       top_p: 1,
       frequency_penalty: 0,
       presence_penalty: 0,
-      // response_format: { type: "json_object" },
     });
     const messageContent = response.choices[0].message.content || "";
-    await prisma.message.createMany({
-      data: [
-        {
-          message,
-          sender: "USER",
-          answerId,
-        },
-        {
-          message: messageContent,
-          sender: "SYSTEM",
-          answerId,
-        },
-      ],
+    await prisma.message.create({
+      data: {
+        message,
+        sender: "USER",
+        answerId,
+      },
+    });
+
+    const systemMessage = await prisma.message.create({
+      data: {
+        message: messageContent,
+        sender: "SYSTEM",
+        answerId,
+      },
     });
 
     return NextResponse.json(
       {
-        messageContent,
+        systemMessage,
       },
       { status: 200 }
     );

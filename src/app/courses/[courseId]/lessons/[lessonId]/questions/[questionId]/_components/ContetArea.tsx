@@ -19,6 +19,7 @@ type LogType = "log" | "warn" | "error";
 type Log = { type: LogType; message: string };
 export const ContentArea: React.FC = () => {
   const { questionId } = useParams();
+  const [answerId, setAnswrId] = useState<string | null>(null);
   const [executionResult, setExecutionResult] = useState<Log[]>([]);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { data, error, isLoading, mutate } = useFetch<QuestionResponse>(
@@ -29,6 +30,7 @@ export const ContentArea: React.FC = () => {
   useEffect(() => {
     if (!data?.answer) return;
     setValue(data.answer.code);
+    setAnswrId(data.answer.id);
   }, [data]);
 
   const addLog = (type: LogType, message: string) => {
@@ -183,7 +185,7 @@ export const ContentArea: React.FC = () => {
       <ButtonArea
         question={data.question.content}
         answer={value}
-        answerId={data.answer && data.answer.id}
+        answerId={answerId}
         mutate={mutate}
         setValue={setValue}
         status={data.answer?.status}

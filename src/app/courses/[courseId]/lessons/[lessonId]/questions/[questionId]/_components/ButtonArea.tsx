@@ -77,6 +77,8 @@ export const ButtonArea: React.FC<Props> = ({
       await del(`/api/answer/${answerId}`);
       mutate();
       setValue("");
+      setIsCorrect(false);
+      setChatMessages([]);
       toast.success("削除しました");
     } catch (e) {
       console.error(e);
@@ -121,17 +123,15 @@ export const ButtonArea: React.FC<Props> = ({
           この内容で提出
         </button>
       </div>
-      {answerId && (
-        <ReviewModal
-          isCorrect={isCorrect}
-          isOpen={isOpen}
-          onClose={() => setIsOpen(false)}
-          isSubmitting={isSubmitting}
-          answerId={answerId}
-          chatMessages={chatMessages}
-          setChatMessages={setChatMessages}
-        />
-      )}
+      <ReviewModal
+        isCorrect={isCorrect}
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        isSubmitting={isSubmitting}
+        answerId={answerId}
+        chatMessages={chatMessages}
+        setChatMessages={setChatMessages}
+      />
     </>
   );
 };
