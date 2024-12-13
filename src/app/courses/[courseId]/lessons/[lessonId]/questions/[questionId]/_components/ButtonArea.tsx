@@ -1,4 +1,4 @@
-import { StatusType } from "@prisma/client";
+import { Message, StatusType } from "@prisma/client";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
@@ -29,7 +29,7 @@ export const ButtonArea: React.FC<Props> = ({
   status,
 }) => {
   const [isCorrect, setIsCorrect] = useState(false);
-  const [reviewComment, setReviewComment] = useState("");
+  const [chatMessages, setChatMessages] = useState<Message[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { post, del } = useApi();
@@ -61,7 +61,7 @@ export const ButtonArea: React.FC<Props> = ({
         }
       );
       setIsCorrect(reviewContent.isCorrect);
-      setReviewComment(reviewContent.reviewComment);
+      setChatMessages(reviewContent.messages);
       setIsSubmitting(false);
       mutate();
     } catch (e) {
@@ -121,13 +121,17 @@ export const ButtonArea: React.FC<Props> = ({
           この内容で提出
         </button>
       </div>
-      <ReviewModal
-        isCorrect={isCorrect}
-        reviewComment={reviewComment}
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        isSubmitting={isSubmitting}
-      />
+      {answerId && (
+        <ReviewModal
+          isCorrect={isCorrect}
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+          isSubmitting={isSubmitting}
+          answerId={answerId}
+          chatMessages={chatMessages}
+          setChatMessages={setChatMessages}
+        />
+      )}
     </>
   );
 };

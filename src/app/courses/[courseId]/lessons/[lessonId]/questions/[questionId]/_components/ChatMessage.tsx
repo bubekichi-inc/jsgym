@@ -1,6 +1,6 @@
 import { Sender } from "@prisma/client";
 interface Props {
-  sender?: Sender;
+  sender: Sender;
   message: string;
 }
 export const ChatMessage: React.FC<Props> = ({

@@ -73,13 +73,16 @@ export const POST = async (req: NextRequest, { params }: Props) => {
       });
     }
 
-    //メッセージにも登録
-    await prisma.message.create({
-      data: {
-        message: reviewComment,
-        sender: "SYSTEM",
-        answerId,
-      },
+    //メッセージにも登録(履歴送るときに備えて、回答なども含める)
+    const messageResp = await prisma.message.createMany({
+      data: [
+        { message, sender: "USER", answerId },
+        {
+          message: reviewComment,
+          sender: "SYSTEM",
+          answerId,
+        },
+      ],
     });
 
     //回答履歴登録
@@ -90,7 +93,10 @@ export const POST = async (req: NextRequest, { params }: Props) => {
         answer,
       },
     });
-    return NextResponse.json({ isCorrect, reviewComment }, { status: 200 });
+    return NextResponse.json(
+      { isCorrect, reviewComment, messages: [messageResp] },
+      { status: 200 }
+    );
   } catch (e) {
     if (e instanceof Error) {
       return NextResponse.json({ error: e.message }, { status: 400 });
