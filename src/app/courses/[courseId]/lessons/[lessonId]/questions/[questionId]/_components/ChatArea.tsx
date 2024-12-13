@@ -37,9 +37,18 @@ export const ChatArea: React.FC<Props> = ({
   const [message, setMessage] = useState("");
   const { post } = useApi();
 
-  if (isLoading) return <div>読込み中... </div>;
-  if (error) return <div>チャットデータの読み込みに失敗しました</div>;
-  if (!data) return <div>データがありません</div>;
+  if (isLoading)
+    return <div className="text-center text-white text-8xl">読込み中... </div>;
+  if (error)
+    return (
+      <div className="text-center text-white text-8xl">
+        チャットデータの読み込みに失敗しました
+      </div>
+    );
+  if (!data)
+    return (
+      <div className="text-center text-white text-8xl">データがありません</div>
+    );
 
   const isCorrect = status(data.status);
   const sendMessage = async () => {
@@ -93,7 +102,7 @@ export const ChatArea: React.FC<Props> = ({
             value={message}
             onChange={e => setMessage(e.target.value)}
             onClick={e => e.stopPropagation()}
-            className="absolute bottom-6 border pt-2 pl-6 w-4/5 rounded-md min-h-10"
+            className="absolute bottom-6 border pt-2 pl-6 w-[90%] rounded-md h-auto"
             placeholder="メッセージを送る"
             onKeyDown={handleKeyDown}
           />
