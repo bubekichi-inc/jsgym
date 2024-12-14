@@ -16,8 +16,13 @@ export const GET = async (req: NextRequest, { params }: Props) => {
       },
       include: { lessons: true },
     });
-
-    return NextResponse.json({ lessons: course?.lessons }, { status: 200 });
+    return NextResponse.json(
+      {
+        lessons: course?.lessons,
+        course: { id: course?.id, name: course?.name },
+      },
+      { status: 200 }
+    );
   } catch (e) {
     if (e instanceof Error) {
       return NextResponse.json({ error: e.message }, { status: 400 });

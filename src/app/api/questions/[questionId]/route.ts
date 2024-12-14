@@ -37,6 +37,20 @@ export const GET = async (req: NextRequest, { params }: Props) => {
       },
     });
 
+    //出力用の問題番号をレスポンスに含める
+    const currentQuestionNumber = questions?.questions.findIndex(
+      q => q.id === question?.id
+    );
+
+    const newQuestions = questions?.questions.map(question => ({
+      id: question.id,
+      title: question.title,
+      content: question.content,
+      questionNumber: questions.questions.findIndex(
+        question => question.id === questions.id
+      ),
+    }));
+
     return NextResponse.json(
       {
         course: question?.lesson.course,
@@ -45,8 +59,9 @@ export const GET = async (req: NextRequest, { params }: Props) => {
           id: question?.id,
           title: question?.title,
           content: question?.content,
+          questionNumber: currentQuestionNumber && currentQuestionNumber + 1,
         },
-        questions: questions?.questions,
+        questions: newQuestions,
         answer:
           answer.length === 0
             ? null

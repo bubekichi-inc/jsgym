@@ -5,4 +5,10 @@ export type Lesson = {
   updatedAt: Date;
 };
 
-export type LessonsResponse = { lessons: Lesson[] };
+export type LessonsResponse = {
+  lessons: Lesson[];
+  course: {
+    id: number;
+    name: string;
+  };
+};

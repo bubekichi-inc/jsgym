@@ -5,28 +5,24 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DOMPurify from "dompurify";
-import { useParams } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
+import { BreadCrumbs } from "./Breadcrumbs";
 import { ButtonArea } from "./ButtonArea";
 import { CodeEditor } from "./CodeEditor";
 import { ConsoleType } from "./ConsoleType";
-import { useFetch } from "@/app/_hooks/useFetch";
+import { PaginationControls } from "./PaginationControls";
+import { useQuestions } from "@/app/_hooks/useQuestions";
 import { language } from "@/app/_utils/language";
 import { status } from "@/app/_utils/status";
-import { QuestionResponse } from "@/app/api/questions/_types/QuestionResponse";
-import { PaginationControls } from "./PaginationControls";
 
 type LogType = "log" | "warn" | "error";
 type Log = { type: LogType; message: string };
 export const ContentArea: React.FC = () => {
-  const { questionId } = useParams();
   const [answerId, setAnswrId] = useState<string | null>(null);
   const [executionResult, setExecutionResult] = useState<Log[]>([]);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const { data, error, isLoading, mutate } = useFetch<QuestionResponse>(
-    `/api/questions/${questionId}`
-  );
-  const [value, setValue] = useState<string>("");
+  const { data, error, isLoading, mutate } = useQuestions();
+  const [value, setValue] = useState("");
 
   useEffect(() => {
     if (!data?.answer) return;
@@ -106,24 +102,24 @@ export const ContentArea: React.FC = () => {
   if (isLoading) return <div>読込み中</div>;
   if (error) return <div>JS問題の取得中にエラーが発生しました</div>;
   if (!data) return <div>JSの問題がありません</div>;
-
+  const { content, questionNumber, title } = data.question;
   return (
     <>
       <div className="flex w-full p-10 h-full">
         <div className="flex gap-5 flex-col w-2/5 pr-10">
-          <PaginationControls questions={data.questions} />
+          <div className="flex justify-between">
+            <BreadCrumbs />
+            <PaginationControls questions={data.questions} />
+          </div>
+
           <div className="flex justify-between items-center">
-            <div className="text-2xl font-bold ">{`問題${
-              data.questions.findIndex(
-                question => question.id === data.question.id
-              ) + 1
-            }`}</div>
+            <div className="text-2xl font-bold ">{`問題${questionNumber}`}</div>
             <div className="text-lg text-[#4B4B4B]">
               {status(data.answer && data.answer.status)}
             </div>
           </div>
-          <h2 className="text-4xl">{data.question.title}</h2>
-          <div className="font-bold">{data.question.content}</div>
+          <h2 className="text-4xl">{title}</h2>
+          <div className="font-bold">{content}</div>
         </div>
         <div className="w-3/5">
           <div className="relative">

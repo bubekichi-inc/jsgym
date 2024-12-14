@@ -21,18 +21,15 @@ export const PaginationControls: React.FC<Props> = ({ questions }) => {
     ? null
     : questions[currentIndex + 1]?.id;
 
+  const baseUrl = `/courses/${courseId}/lessons/${lessonId}/questions`;
   const prev = () => {
     if (prevQuestionId === null) return;
-    router.replace(
-      `/courses/${courseId}/lessons/${lessonId}/questions/${prevQuestionId}`
-    );
+    router.replace(`${baseUrl}/${prevQuestionId}`);
   };
 
   const next = () => {
     if (nextQuestionId === null) return;
-    router.replace(
-      `/courses/${courseId}/lessons/${lessonId}/questions/${nextQuestionId}`
-    );
+    router.replace(`${baseUrl}/${nextQuestionId}`);
   };
   return (
     <div className="flex gap-7">
