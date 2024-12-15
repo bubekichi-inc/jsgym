@@ -27,7 +27,11 @@ export const GET = async (req: NextRequest, { params }: Props) => {
         id: question?.lessonId,
       },
       include: {
-        questions: true,
+        questions: {
+          orderBy: {
+            id: "asc",
+          },
+        },
       },
     });
 
@@ -39,18 +43,17 @@ export const GET = async (req: NextRequest, { params }: Props) => {
 
     //出力用の問題番号をレスポンスに含める
     const currentQuestionNumber = questions?.questions.findIndex(
-      q => q.id === question?.id
+      q => q.id === parseInt(questionId, 10)
     );
 
-    const newQuestions = questions?.questions.map(question => ({
+    const newQuestions = questions?.questions.map((question, index) => ({
       id: question.id,
       title: question.title,
       content: question.content,
-      questionNumber: questions.questions.findIndex(
-        question => question.id === questions.id
-      ),
+      questionNumber: index + 1,
     }));
 
+    console.log(currentQuestionNumber && currentQuestionNumber + 1);
     return NextResponse.json(
       {
         course: question?.lesson.course,
@@ -59,7 +62,8 @@ export const GET = async (req: NextRequest, { params }: Props) => {
           id: question?.id,
           title: question?.title,
           content: question?.content,
-          questionNumber: currentQuestionNumber && currentQuestionNumber + 1,
+          questionNumber:
+            currentQuestionNumber !== undefined && currentQuestionNumber + 1,
         },
         questions: newQuestions,
         answer:

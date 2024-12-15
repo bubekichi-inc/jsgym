@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 import { MessageRequest } from "../_types/Messages";
 import { buildPrisma } from "@/app/_utils/prisma";
-import { Sender } from "@prisma/client";
 
 interface Props {
   params: Promise<{

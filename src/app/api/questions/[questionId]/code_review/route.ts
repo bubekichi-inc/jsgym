@@ -77,16 +77,14 @@ export const POST = async (req: NextRequest, { params }: Props) => {
     //既に回答済のメッセージデータがあったら削除する
     await prisma.message.deleteMany({ where: { answerId } });
 
+    const systemMessage = {
+      message: reviewComment,
+      sender: "SYSTEM" as const,
+      answerId,
+    };
     //メッセージにも登録(履歴送るときに備えて、回答なども含める)
-    const messageResp = await prisma.message.createMany({
-      data: [
-        { message, sender: "USER", answerId },
-        {
-          message: reviewComment,
-          sender: "SYSTEM",
-          answerId,
-        },
-      ],
+    await prisma.message.createMany({
+      data: [{ message, sender: "USER", answerId }, systemMessage],
     });
 
     //回答履歴登録
@@ -98,7 +96,7 @@ export const POST = async (req: NextRequest, { params }: Props) => {
       },
     });
     return NextResponse.json(
-      { isCorrect, reviewComment, messages: [messageResp] },
+      { isCorrect, reviewComment, messages: [systemMessage] },
       { status: 200 }
     );
   } catch (e) {

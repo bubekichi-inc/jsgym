@@ -1,193 +1,153 @@
 "use client";
-import {
-  faCircleExclamation,
-  faTriangleExclamation,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DOMPurify from "dompurify";
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { BreadCrumbs } from "./Breadcrumbs";
-import { ButtonArea } from "./ButtonArea";
 import { CodeEditor } from "./CodeEditor";
 import { ConsoleType } from "./ConsoleType";
 import { PaginationControls } from "./PaginationControls";
-import { useQuestions } from "@/app/_hooks/useQuestions";
 import { language } from "@/app/_utils/language";
 import { status } from "@/app/_utils/status";
+import { QuestionResponse } from "@/app/api/questions/_types/QuestionResponse";
 
-type LogType = "log" | "warn" | "error";
-type Log = { type: LogType; message: string };
-export const ContentArea: React.FC = () => {
-  const [answerId, setAnswrId] = useState<string | null>(null);
-  const [executionResult, setExecutionResult] = useState<Log[]>([]);
+type ContentAreaProps = {
+  data: QuestionResponse;
+  value: string;
+  setValue: (value: string) => void;
+  addLog: (type: string, message: string) => void;
+  resetLogs: () => void;
+  executionResult: { type: string; message: string }[];
+};
+
+export const ContentArea: React.FC<ContentAreaProps> = ({
+  data,
+  value,
+  setValue,
+  addLog,
+  resetLogs,
+  executionResult,
+}) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const { data, error, isLoading, mutate } = useQuestions();
-  const [value, setValue] = useState("");
 
   useEffect(() => {
     if (!data?.answer) return;
     setValue(data.answer.code);
-    setAnswrId(data.answer.id);
-  }, [data]);
-
-  const addLog = (type: LogType, message: string) => {
-    setExecutionResult(prevLogs => [...prevLogs, { type, message }]);
-  };
-
-  const reset = () => {
-    // ログをリセットしてから実行
-    setExecutionResult([]);
-    executeCode();
-  };
+  }, [data, setValue]);
 
   const executeCode = () => {
     if (!iframeRef.current) return;
     const iframe = iframeRef.current;
 
-    // サニタイズしておく(xxs対策)
     const sanitizedCode = DOMPurify.sanitize(value);
     iframe.srcdoc = `
         <!DOCTYPE html>
         <html>
           <body>
-             <script>
-            (function() {
-              const originalLog = console.log;
+            <script>
+              (function() {
+                const originalLog = console.log;
 
-              console.log = function(...args) {
-                originalLog.apply(console, args);
-                window.parent.postMessage({ type: 'log', messages: args }, '*');
-              };
-              console.error = function(...args) {
-                originalLog.apply(console, args);
-                window.parent.postMessage({ type: 'error', messages: args }, '*');
-              };
-              console.warn = function(...args) {
-                originalLog.apply(console, args);
-                window.parent.postMessage({ type: 'warn', messages: args }, '*');
-              };
+                console.log = function(...args) {
+                  originalLog.apply(console, args);
+                  window.parent.postMessage({ type: 'log', messages: args }, '*');
+                };
+                console.error = function(...args) {
+                  originalLog.apply(console, args);
+                  window.parent.postMessage({ type: 'error', messages: args }, '*');
+                };
+                console.warn = function(...args) {
+                  originalLog.apply(console, args);
+                  window.parent.postMessage({ type: 'warn', messages: args }, '*');
+                };
 
-              try {
-                (function() {
-      ${sanitizedCode}
-    })();
-                
-              } catch (error) {
-                console.log('Error:', error.toString());
-                window.parent.postMessage({ type: 'error', error: error.toString() }, '*');
-              }
-            })();
-          </script>
+                try {
+                  (function() {
+                    ${sanitizedCode}
+                  })();
+                } catch (error) {
+                  console.log('Error:', error.toString());
+                  window.parent.postMessage({ type: 'error', error: error.toString() }, '*');
+                }
+              })();
+            </script>
           </body>
         </html>
       `;
+
     const handleMessage = (event: MessageEvent) => {
-      //sandbox="allow-scripts allow-modals"指定しているためオリジンチェックは省略
-      // if (event.origin !== window.location.origin) return;
       const { type, messages } = event.data;
       if (type === "log" || type === "warn" || type === "error") {
         addLog(type, messages.join(" "));
       }
     };
 
-    // イベントリスナーを追加
     window.addEventListener("message", handleMessage);
 
-    // クリーンアップ関数でリスナーを削除
     return () => {
       window.removeEventListener("message", handleMessage);
     };
   };
 
-  if (isLoading) return <div>読込み中</div>;
-  if (error) return <div>JS問題の取得中にエラーが発生しました</div>;
-  if (!data) return <div>JSの問題がありません</div>;
-  const { content, questionNumber, title } = data.question;
   return (
-    <>
-      <div className="flex w-full p-10 h-full">
-        <div className="flex gap-5 flex-col w-2/5 pr-10">
-          <div className="flex justify-between">
-            <BreadCrumbs />
-            <PaginationControls questions={data.questions} />
-          </div>
-
-          <div className="flex justify-between items-center">
-            <div className="text-2xl font-bold ">{`問題${questionNumber}`}</div>
-            <div className="text-lg text-[#4B4B4B]">
-              {status(data.answer && data.answer.status)}
-            </div>
-          </div>
-          <h2 className="text-4xl">{title}</h2>
-          <div className="font-bold">{content}</div>
+    <div className="flex w-full px-6 py-5 h-full">
+      <div className="flex gap-5 flex-col w-2/5 pr-10">
+        <div className="flex justify-between">
+          <BreadCrumbs />
+          <PaginationControls questions={data.questions} />
         </div>
-        <div className="w-3/5">
-          <div className="relative">
-            <CodeEditor
-              language={language(data.course.name)}
-              value={value}
-              onChange={setValue}
-            />
-            <button
-              type="button"
-              className="bg-blue-400 text-white rounded-md absolute bottom-4 right-6 px-6 py-2"
-              onClick={reset}
-            >
-              実行
-            </button>
+        <div className="flex justify-between items-center">
+          <div className="text-2xl font-bold ">{`問題${data.question.questionNumber}`}</div>
+          <div className="text-lg text-[#4B4B4B]">
+            {data.answer ? status(data.answer?.status) : "未提出"}
           </div>
-          <iframe
-            ref={iframeRef}
-            sandbox="allow-scripts allow-modals"
-            style={{ display: "none" }}
+        </div>
+        <h2 className="text-4xl">{data.question.title}</h2>
+        <div className="font-bold">{data.question.content}</div>
+      </div>
+      <div className="w-3/5">
+        <div className="relative">
+          <CodeEditor
+            language={language(data.course.name)}
+            value={value}
+            onChange={setValue}
           />
-          <div className="bg-[#333333] h-3/5 mt-6">
-            <div className="flex gap-2">
-              <ConsoleType text="ログ" />
-            </div>
-            <div className="text-white p-4">
-              {executionResult.map((item, index) => (
-                <div
-                  key={index}
-                  className={`
-                ${item.type === "warn" ? "text-yellow-400" : ""}
-                ${item.type === "error" ? "text-red-500" : ""}
-              `}
-                >
-                  <span>
-                    {item.type === "warn" ? (
-                      <FontAwesomeIcon
-                        icon={faTriangleExclamation}
-                        className="text-yellow"
-                      />
-                    ) : (
-                      ""
-                    )}
-
-                    {item.type === "error" ? (
-                      <FontAwesomeIcon
-                        icon={faCircleExclamation}
-                        className="text-red"
-                      />
-                    ) : (
-                      ""
-                    )}
-                  </span>
-                  {item.message}
-                </div>
-              ))}
-            </div>
+          <button
+            type="button"
+            className="bg-blue-400 text-white rounded-md absolute bottom-4 right-6 px-6 py-2"
+            onClick={() => {
+              resetLogs();
+              executeCode();
+            }}
+          >
+            実行
+          </button>
+        </div>
+        <iframe
+          ref={iframeRef}
+          sandbox="allow-scripts allow-modals"
+          style={{ display: "none" }}
+        />
+        <div className="bg-[#333333] max-h-3/5 mt-6">
+          <div className="flex gap-2">
+            <ConsoleType text="ログ" />
+          </div>
+          <div className="text-white p-4">
+            {executionResult.map((item, index) => (
+              <div
+                key={index}
+                className={`${
+                  item.type === "warn"
+                    ? "text-yellow-400"
+                    : item.type === "error"
+                    ? "text-red-500"
+                    : ""
+                }`}
+              >
+                {item.message}
+              </div>
+            ))}
           </div>
         </div>
       </div>
-      <ButtonArea
-        question={data.question.content}
-        answer={value}
-        answerId={answerId}
-        mutate={mutate}
-        setValue={setValue}
-        status={data.answer?.status}
-      />
-    </>
+    </div>
   );
 };

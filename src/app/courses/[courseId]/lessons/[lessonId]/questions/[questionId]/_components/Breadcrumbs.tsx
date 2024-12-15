@@ -7,7 +7,6 @@ export const BreadCrumbs: React.FC = () => {
   const pathname = usePathname();
   const pathArray = pathname.split("/").filter(path => path);
   const { data, error, isLoading } = useQuestions();
-  console.log(pathArray);
   if (isLoading) return <div>読込み中...</div>;
   if (error) return <div>問題情報取得中にエラー発生</div>;
   if (!data) return <div>データがありません</div>;
@@ -59,7 +58,7 @@ export const BreadCrumbs: React.FC = () => {
       switch (path) {
         case "courses":
           courseFlug = true;
-          pathList.push({ id: path, text: "courses", href: "/courses" });
+          pathList.push({ id: path, text: "コース一覧", href: "/courses" });
           break;
         case "lessons":
           lessonflug = true;
@@ -77,7 +76,6 @@ export const BreadCrumbs: React.FC = () => {
     <nav>
       <ol>
         {pathList.map((path, index) => {
-          if (!path) return;
           return (
             <li key={index} className="inline">
               {index < pathList.length - 1 ? (

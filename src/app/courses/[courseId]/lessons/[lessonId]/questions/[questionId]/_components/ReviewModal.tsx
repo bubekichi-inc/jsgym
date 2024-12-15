@@ -1,12 +1,13 @@
 import { ChatMessage } from "../_types/ChatMessage";
-import { Modal } from "@/app/_components/Model";
 import { ChatArea } from "./ChatArea";
+import { Modal } from "@/app/_components/Model";
+
 interface Props {
   isOpen: boolean;
   onClose: (e: React.MouseEvent<HTMLElement>) => void;
   isCorrect: boolean;
   isSubmitting: boolean;
-  answerId: string | null;
+  answerId: string;
   chatMessages: ChatMessage[];
   setChatMessages: (chatMessages: ChatMessage[]) => void;
 }
@@ -20,7 +21,6 @@ export const ReviewModal: React.FC<Props> = ({
 }) => {
   //コードレビューの場合→!answerId、レビュー開く場合→isSubmitting
   const isLoading = !answerId || isSubmitting;
-
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       {isLoading ? (

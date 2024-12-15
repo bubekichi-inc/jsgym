@@ -1,10 +1,10 @@
-import { Sender } from "@prisma/client";
-import { faC, faCopy } from "@fortawesome/free-solid-svg-icons";
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 interface Props {
   sender: Sender;
   message: string;
 }
+import { Sender } from "@prisma/client";
 export const ChatMessage: React.FC<Props> = ({
   sender = "SYSTEM",
   message,
@@ -14,7 +14,6 @@ export const ChatMessage: React.FC<Props> = ({
   const senderLabel = isSystem ? "レビュワー" : "あなた";
 
   const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
-
   const matches = Array.from(message.matchAll(codeBlockRegex));
   const formattedMessage = [];
   let lastIndex = 0;
@@ -23,6 +22,7 @@ export const ChatMessage: React.FC<Props> = ({
       navigator.clipboard.writeText(code);
       alert("コードがコピーされました！");
     } catch (e) {
+      console.error(e);
       alert("コピーに失敗しました。");
     }
   };

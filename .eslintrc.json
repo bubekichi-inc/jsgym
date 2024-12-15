@@ -15,7 +15,8 @@
         "alphabetize": {
           "order": "asc"
         }
-      }
+      },
+      { "tailwindcss/classnames-order": "warn" }
     ],
     "unused-imports/no-unused-imports": "error",
     "unused-imports/no-unused-vars": "off" // 不使用の変数を許可

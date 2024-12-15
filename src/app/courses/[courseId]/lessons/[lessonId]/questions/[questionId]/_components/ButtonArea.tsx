@@ -1,8 +1,9 @@
-import { Message, StatusType } from "@prisma/client";
-import { useParams } from "next/navigation";
+import { StatusType } from "@prisma/client";
+import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import { KeyedMutator } from "swr";
+import type { KeyedMutator } from "swr";
+import { ChatMessage } from "../_types/ChatMessage";
 import { ReviewModal } from "./ReviewModal";
 import { useApi } from "@/app/_hooks/useApi";
 import {
@@ -15,7 +16,8 @@ import { QuestionResponse } from "@/app/api/questions/_types/QuestionResponse";
 interface Props {
   question: string;
   answer: string;
-  answerId: string | null;
+  answerId: string;
+  setAnswerId: (answerId: string) => void;
   mutate: KeyedMutator<QuestionResponse>;
   setValue: (value: string) => void;
   status: StatusType | undefined;
@@ -24,16 +26,18 @@ export const ButtonArea: React.FC<Props> = ({
   question,
   answer,
   answerId,
+  setAnswerId,
   mutate,
   setValue,
   status,
 }) => {
   const [isCorrect, setIsCorrect] = useState(false);
-  const [chatMessages, setChatMessages] = useState<Message[]>([]);
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { post, del } = useApi();
-  const { questionId } = useParams();
+  const { courseId, lessonId, questionId } = useParams();
+  const router = useRouter();
   const saveDraft = async () => {
     try {
       await post<Draft, { message: string }>(
@@ -79,10 +83,15 @@ export const ButtonArea: React.FC<Props> = ({
       setValue("");
       setIsCorrect(false);
       setChatMessages([]);
+      setAnswerId("");
       toast.success("削除しました");
     } catch (e) {
       console.error(e);
     }
+  };
+
+  const prev = () => {
+    router.replace(`/courses/${courseId}/lessons/${lessonId}`);
   };
 
   //合格済OR未提出の場合はやり直すボタン出さない
@@ -92,36 +101,47 @@ export const ButtonArea: React.FC<Props> = ({
   const reviewModalOpen = status === "PASSED" || status === "REVISION_REQUIRED";
   return (
     <>
-      <div className="pl-20 flex gap-7">
-        <Toaster position="top-right" />
-        {startOverButton && (
-          <button type="button" className=" text-red-500" onClick={startOver}>
-            やり直す
-          </button>
-        )}
-        {reviewModalOpen && (
+      <Toaster position="top-right" />
+      <div className="bg-white px-6 flex gap-7 fixed bottom-0 h-[91px] justify-between items-center w-full">
+        <button type="button" onClick={prev}>{`< 問題一覧に戻る`}</button>
+        <div className="flex gap-7">
+          {startOverButton && (
+            <button
+              type="button"
+              className=" text-red-500 w-[162px] h-[46px]"
+              onClick={startOver}
+              disabled={isSubmitting}
+            >
+              やり直す
+            </button>
+          )}
+          {reviewModalOpen && (
+            <button
+              type="button"
+              className=" text-blue-500 w-[162px] h-[46px]"
+              onClick={() => setIsOpen(true)}
+              disabled={isSubmitting}
+            >
+              レビューを見る
+            </button>
+          )}
           <button
             type="button"
-            className=" text-blue-500"
-            onClick={() => setIsOpen(true)}
+            className="bg-[#777777] w-[162px] h-[46px] rounded-md text-white"
+            disabled={isSubmitting}
+            onClick={saveDraft}
           >
-            レビューを見る
+            下書き保存
           </button>
-        )}
-        <button
-          type="button"
-          className="bg-[#777777] w-[162px] h-[46px] rounded-md text-white"
-          onClick={saveDraft}
-        >
-          下書き保存
-        </button>
-        <button
-          type="button"
-          className="bg-[#4E89FF] w-[162px] h-[46px] rounded-md text-white"
-          onClick={review}
-        >
-          この内容で提出
-        </button>
+          <button
+            type="button"
+            className="bg-[#4E89FF] w-[162px] h-[46px] rounded-md text-white"
+            disabled={isSubmitting}
+            onClick={review}
+          >
+            この内容で提出
+          </button>
+        </div>
       </div>
       <ReviewModal
         isCorrect={isCorrect}
