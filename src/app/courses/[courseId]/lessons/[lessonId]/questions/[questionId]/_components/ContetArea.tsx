@@ -1,6 +1,10 @@
 "use client";
-import DOMPurify from "dompurify";
-import { useEffect, useRef } from "react";
+import {
+  faTriangleExclamation,
+  faCircleExclamation,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useEffect } from "react";
 import { BreadCrumbs } from "./Breadcrumbs";
 import { CodeEditor } from "./CodeEditor";
 import { ConsoleType } from "./ConsoleType";
@@ -8,7 +12,7 @@ import { PaginationControls } from "./PaginationControls";
 import { language } from "@/app/_utils/language";
 import { status } from "@/app/_utils/status";
 import { QuestionResponse } from "@/app/api/questions/_types/QuestionResponse";
-
+import { useCodeExecutor } from "@/app/_hooks/useCodeExecutor";
 type ContentAreaProps = {
   data: QuestionResponse;
   value: string;
@@ -26,7 +30,7 @@ export const ContentArea: React.FC<ContentAreaProps> = ({
   resetLogs,
   executionResult,
 }) => {
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const { iframeRef, executeCode } = useCodeExecutor();
 
   useEffect(() => {
     if (!data?.answer) return;
@@ -45,46 +49,6 @@ export const ContentArea: React.FC<ContentAreaProps> = ({
     };
   }, [addLog]);
 
-  const executeCode = () => {
-    if (!iframeRef.current) return;
-    const iframe = iframeRef.current;
-    // サニタイズしておく(xxs対策)
-    const sanitizedCode = DOMPurify.sanitize(value);
-    iframe.srcdoc = `
-        <!DOCTYPE html>
-        <html>
-          <body>
-            <script>
-            const setupConsole = () => {
-              const originalLog = console.log;
-              console.log = (...args) => {
-                window.parent.postMessage({ type: 'log', messages: args }, '*');
-              };
-              console.error = (...args) => {
-                window.parent.postMessage({ type: 'error', messages: args }, '*');
-              };
-              console.warn = (...args) => {
-                window.parent.postMessage({ type: 'warn', messages: args }, '*');
-              };
-
-              try {
-                // 実行されるコード
-                (() => {
-                  ${sanitizedCode}
-                })();
-              } catch (error) {
-                console.error('Error:', error.toString());
-                window.parent.postMessage({ type: 'error', error: error.toString() }, '*');
-              }
-            };
-
-            // setupConsole 関数を呼び出す
-            setupConsole();
-          </script>
-          </body>
-        </html>
-      `;
-  };
   return (
     <div className="flex w-full px-6 py-5 h-full">
       <div className="flex gap-5 flex-col w-2/5 pr-10">
@@ -113,7 +77,7 @@ export const ContentArea: React.FC<ContentAreaProps> = ({
             className="bg-blue-400 text-white rounded-md absolute bottom-4 right-6 px-6 py-2"
             onClick={() => {
               resetLogs();
-              executeCode();
+              executeCode(value);
             }}
           >
             実行
@@ -126,7 +90,7 @@ export const ContentArea: React.FC<ContentAreaProps> = ({
         />
         <div className="bg-[#333333] h-[20vh] mt-6 overflow-y-scroll">
           <ConsoleType text="ログ" />
-          <div className="text-white p-4">
+          <div className="text-white px-4">
             {executionResult.map((item, index) => (
               <div
                 key={index}
@@ -138,6 +102,18 @@ export const ContentArea: React.FC<ContentAreaProps> = ({
                     : ""
                 }`}
               >
+                {item.type === "warn" && (
+                  <FontAwesomeIcon
+                    className="text-yellow-400 mr-2"
+                    icon={faTriangleExclamation}
+                  />
+                )}
+                {item.type === "error" && (
+                  <FontAwesomeIcon
+                    className="text-red-500 mr-2"
+                    icon={faCircleExclamation}
+                  />
+                )}
                 {item.message}
               </div>
             ))}

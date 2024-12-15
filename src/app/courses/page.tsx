@@ -5,9 +5,12 @@ import { language } from "../_utils/language";
 export default function Courses() {
   const { courses, coursesError, coursesIsLoading } = useCourses();
 
-  if (coursesIsLoading) return <div>読込み中</div>;
-  if (coursesError) return <div>JS問題の取得中にエラーが発生しました</div>;
-  if (!courses) return <div>JSの問題がありません</div>;
+  if (coursesIsLoading) return <div className="text-center">読込み中</div>;
+  if (coursesError)
+    return (
+      <div className="text-center">JS問題の取得中にエラーが発生しました</div>
+    );
+  if (!courses) return <div className="text-center">JSの問題がありません</div>;
 
   return (
     <div className="">

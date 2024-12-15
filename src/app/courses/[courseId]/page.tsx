@@ -5,9 +5,12 @@ import { useLessons } from "@/app/_hooks/useLessons";
 export default function Course() {
   const { courseId } = useParams();
   const { lessons, lessonError, lessonIsLoading } = useLessons();
-  if (lessonIsLoading) return <div>読込み中</div>;
-  if (lessonError) return <div>JS問題の取得中にエラーが発生しました</div>;
-  if (!lessons) return <div>JSの問題がありません</div>;
+  if (lessonIsLoading) return <div className="text-center">読込み中</div>;
+  if (lessonError)
+    return (
+      <div className="text-center">JS問題の取得中にエラーが発生しました</div>
+    );
+  if (!lessons) return <div className="text-center">JSの問題がありません</div>;
   return (
     <>
       <h2 className="p-10 text-5xl">Lesson一覧</h2>

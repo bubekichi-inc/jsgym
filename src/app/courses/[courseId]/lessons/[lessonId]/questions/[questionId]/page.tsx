@@ -25,9 +25,12 @@ export default function Question() {
     setExecutionResult([]);
   };
 
-  if (isLoading) return <div>読込み中</div>;
-  if (error) return <div>JS問題の取得中にエラーが発生しました</div>;
-  if (!data) return <div>JSの問題がありません</div>;
+  if (isLoading) return <div className="text-center">読込み中</div>;
+  if (error)
+    return (
+      <div className="text-center">JS問題の取得中にエラーが発生しました</div>
+    );
+  if (!data) return <div className="text-center">JSの問題がありません</div>;
 
   return (
     <div className="h-full">
