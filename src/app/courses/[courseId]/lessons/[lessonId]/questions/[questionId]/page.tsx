@@ -28,9 +28,9 @@ export default function Question() {
   if (isLoading) return <div className="text-center">読込み中</div>;
   if (error)
     return (
-      <div className="text-center">JS問題の取得中にエラーが発生しました</div>
+      <div className="text-center">問題の取得中にエラーが発生しました</div>
     );
-  if (!data) return <div className="text-center">JSの問題がありません</div>;
+  if (!data) return <div className="text-center">問題がありません</div>;
 
   return (
     <div className="h-full">

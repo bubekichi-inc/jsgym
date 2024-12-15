@@ -8,9 +8,9 @@ export default function Courses() {
   if (coursesIsLoading) return <div className="text-center">読込み中</div>;
   if (coursesError)
     return (
-      <div className="text-center">JS問題の取得中にエラーが発生しました</div>
+      <div className="text-center">問題の取得中にエラーが発生しました</div>
     );
-  if (!courses) return <div className="text-center">JSの問題がありません</div>;
+  if (!courses) return <div className="text-center">問題がありません</div>;
 
   return (
     <div className="">
