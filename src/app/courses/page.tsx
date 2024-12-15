@@ -10,7 +10,7 @@ export default function Courses() {
   if (!courses) return <div>JSの問題がありません</div>;
 
   return (
-    <>
+    <div className="">
       <h2 className="p-10 text-5xl">Course一覧</h2>
       <div className="flex flex-col gap-10 p-10">
         {courses.map(course => (
@@ -23,6 +23,6 @@ export default function Courses() {
           </Link>
         ))}
       </div>
-    </>
+    </div>
   );
 }

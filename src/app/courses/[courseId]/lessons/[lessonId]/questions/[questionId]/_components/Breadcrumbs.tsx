@@ -27,7 +27,6 @@ export const BreadCrumbs: React.FC = () => {
     const question = data?.questions?.find(question => question.id === id);
     return question?.title || "";
   };
-
   const pathList: { id: string; text: string; href: string }[] = [];
   let currentHref = "";
 
@@ -61,7 +60,6 @@ export const BreadCrumbs: React.FC = () => {
       questionFlug = false;
       return;
     }
-
     switch (path) {
       case "courses":
         courseFlug = true;

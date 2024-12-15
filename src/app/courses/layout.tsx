@@ -7,7 +7,7 @@ export default function CoursesLayout({
   return (
     <>
       <Header />
-      {children}
+      <div className="pt-[72px]">{children}</div>
     </>
   );
 }

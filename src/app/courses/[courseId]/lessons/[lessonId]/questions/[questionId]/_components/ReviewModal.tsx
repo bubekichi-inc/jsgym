@@ -1,5 +1,5 @@
 import { ChatMessage } from "../_types/ChatMessage";
-import { ChatArea } from "./ChatArea";
+import { ModalContents } from "./ModalContents";
 import { Modal } from "@/app/_components/Model";
 
 interface Props {
@@ -28,7 +28,7 @@ export const ReviewModal: React.FC<Props> = ({
           <p className="text-white font-bold text-4xl">レビュー中・・・</p>
         </div>
       ) : (
-        <ChatArea
+        <ModalContents
           answerId={answerId}
           chatMessages={chatMessages}
           setChatMessages={setChatMessages}

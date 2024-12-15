@@ -34,8 +34,6 @@ export const ContentArea: React.FC<ContentAreaProps> = ({
   }, [data, setValue]);
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
-      //sandbox="allow-scripts allow-modals"指定しているためオリジンチェックは省略
-      // if (event.origin !== window.location.origin) return;
       const { type, messages } = event.data;
       if (type === "log" || type === "warn" || type === "error") {
         addLog(type, messages);
@@ -57,26 +55,31 @@ export const ContentArea: React.FC<ContentAreaProps> = ({
         <html>
           <body>
             <script>
-            (function() {
+            const setupConsole = () => {
               const originalLog = console.log;
-              console.log = function(...args) {
+              console.log = (...args) => {
                 window.parent.postMessage({ type: 'log', messages: args }, '*');
               };
-              console.error = function(...args) {
+              console.error = (...args) => {
                 window.parent.postMessage({ type: 'error', messages: args }, '*');
               };
-              console.warn = function(...args) {
+              console.warn = (...args) => {
                 window.parent.postMessage({ type: 'warn', messages: args }, '*');
               };
+
               try {
-                (function() {
+                // 実行されるコード
+                (() => {
                   ${sanitizedCode}
-                })(); 
+                })();
               } catch (error) {
                 console.error('Error:', error.toString());
                 window.parent.postMessage({ type: 'error', error: error.toString() }, '*');
               }
-            })();
+            };
+
+            // setupConsole 関数を呼び出す
+            setupConsole();
           </script>
           </body>
         </html>
@@ -98,7 +101,7 @@ export const ContentArea: React.FC<ContentAreaProps> = ({
         <h2 className="text-4xl">{data.question.title}</h2>
         <div className="font-bold">{data.question.content}</div>
       </div>
-      <div className="w-3/5">
+      <div className="w-3/5 h-full">
         <div className="relative">
           <CodeEditor
             language={language(data.course.name)}
@@ -119,11 +122,10 @@ export const ContentArea: React.FC<ContentAreaProps> = ({
         <iframe
           ref={iframeRef}
           sandbox="allow-scripts allow-modals"
-          style={{ display: "none" }}
+          className="hidden"
         />
-        <div className="bg-[#333333] h-3/5 mt-6">
+        <div className="bg-[#333333] h-[20vh] mt-6 overflow-y-scroll">
           <ConsoleType text="ログ" />
-
           <div className="text-white p-4">
             {executionResult.map((item, index) => (
               <div

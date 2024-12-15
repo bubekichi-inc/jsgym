@@ -3,6 +3,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import type { KeyedMutator } from "swr";
+import { Button } from "@/app/_components/Button";
 import { ChatMessage } from "../_types/ChatMessage";
 import { ReviewModal } from "./ReviewModal";
 import { useApi } from "@/app/_hooks/useApi";
@@ -109,41 +110,41 @@ export const ButtonArea: React.FC<Props> = ({
         <button type="button" onClick={prev}>{`< 問題一覧に戻る`}</button>
         <div className="flex gap-7">
           {startOverButton && (
-            <button
+            <Button
               type="button"
-              className=" text-red-500 w-[162px] h-[46px]"
+              variant="text-red"
               onClick={startOver}
               disabled={isSubmitting}
             >
               やり直す
-            </button>
+            </Button>
           )}
           {reviewModalOpen && (
-            <button
+            <Button
               type="button"
-              className=" text-blue-500 w-[162px] h-[46px]"
+              variant="text-blue"
               onClick={() => setIsOpen(true)}
               disabled={isSubmitting}
             >
               レビューを見る
-            </button>
+            </Button>
           )}
-          <button
+          <Button
             type="button"
-            className="bg-[#777777] w-[162px] h-[46px] rounded-md text-white"
+            variant="bg-gray"
             disabled={isSubmitting}
             onClick={saveDraft}
           >
             下書き保存
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
-            className="bg-[#4E89FF] w-[162px] h-[46px] rounded-md text-white"
+            variant="bg-blue"
             disabled={isSubmitting}
             onClick={review}
           >
             この内容で提出
-          </button>
+          </Button>
         </div>
       </div>
       <ReviewModal
