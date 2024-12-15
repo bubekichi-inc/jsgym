@@ -31,7 +31,6 @@ export const ChatArea: React.FC<Props> = ({
   useEffect(() => {
     if (isLoading) return;
     if (!data) return;
-    console.log(data.messages);
     setChatMessages(data.messages);
   }, [data, setChatMessages, isLoading]);
 
@@ -77,7 +76,6 @@ export const ChatArea: React.FC<Props> = ({
     }
   };
   const result = isCorrect === "合格済み" ? "合格です！！" : "不合格です！";
-  console.log(chatMessages[0]);
   return (
     <div
       className="bg-white w-4/5 h-5/6 p-10 relative"

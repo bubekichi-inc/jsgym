@@ -21,6 +21,7 @@ interface Props {
   mutate: KeyedMutator<QuestionResponse>;
   setValue: (value: string) => void;
   status: StatusType | undefined;
+  resetLogs: () => void;
 }
 export const ButtonArea: React.FC<Props> = ({
   question,
@@ -30,6 +31,7 @@ export const ButtonArea: React.FC<Props> = ({
   mutate,
   setValue,
   status,
+  resetLogs,
 }) => {
   const [isCorrect, setIsCorrect] = useState(false);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
@@ -84,6 +86,7 @@ export const ButtonArea: React.FC<Props> = ({
       setIsCorrect(false);
       setChatMessages([]);
       setAnswerId("");
+      resetLogs();
       toast.success("削除しました");
     } catch (e) {
       console.error(e);

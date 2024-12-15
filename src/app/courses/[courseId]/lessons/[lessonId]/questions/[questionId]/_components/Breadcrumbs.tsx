@@ -10,6 +10,7 @@ export const BreadCrumbs: React.FC = () => {
   if (isLoading) return <div>読込み中...</div>;
   if (error) return <div>問題情報取得中にエラー発生</div>;
   if (!data) return <div>データがありません</div>;
+
   let courseFlug = false;
   let lessonflug = false;
   let questionFlug = false;
@@ -30,9 +31,9 @@ export const BreadCrumbs: React.FC = () => {
   const pathList: { id: string; text: string; href: string }[] = [];
   let currentHref = "";
 
+  //undefinedを返したくない→mapではなくforEach
   pathArray.forEach(path => {
     currentHref += `/${path}`;
-
     if (courseFlug) {
       pathList.push({
         id: path,
@@ -40,35 +41,40 @@ export const BreadCrumbs: React.FC = () => {
         href: `/courses/${path}`,
       });
       courseFlug = false;
-    } else if (lessonflug) {
+      return;
+    }
+    if (lessonflug) {
       pathList.push({
         id: path,
         text: getLessonName(),
         href: `/courses/${pathArray[1]}/lessons/${path}`,
       });
       lessonflug = false;
-    } else if (questionFlug) {
+      return;
+    }
+    if (questionFlug) {
       pathList.push({
         id: path,
         text: getQuestionName(parseInt(path, 10)),
         href: currentHref,
       });
       questionFlug = false;
-    } else {
-      switch (path) {
-        case "courses":
-          courseFlug = true;
-          pathList.push({ id: path, text: "コース一覧", href: "/courses" });
-          break;
-        case "lessons":
-          lessonflug = true;
-          break;
-        case "questions":
-          questionFlug = true;
-          break;
-        default:
-          pathList.push({ id: path, text: path, href: currentHref });
-      }
+      return;
+    }
+
+    switch (path) {
+      case "courses":
+        courseFlug = true;
+        pathList.push({ id: path, text: "コース一覧", href: "/courses" });
+        break;
+      case "lessons":
+        lessonflug = true;
+        break;
+      case "questions":
+        questionFlug = true;
+        break;
+      default:
+        pathList.push({ id: path, text: path, href: currentHref });
     }
   });
 

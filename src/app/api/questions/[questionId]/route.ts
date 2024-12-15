@@ -53,7 +53,6 @@ export const GET = async (req: NextRequest, { params }: Props) => {
       questionNumber: index + 1,
     }));
 
-    console.log(currentQuestionNumber && currentQuestionNumber + 1);
     return NextResponse.json(
       {
         course: question?.lesson.course,

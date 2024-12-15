@@ -32,61 +32,56 @@ export const ContentArea: React.FC<ContentAreaProps> = ({
     if (!data?.answer) return;
     setValue(data.answer.code);
   }, [data, setValue]);
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      //sandbox="allow-scripts allow-modals"指定しているためオリジンチェックは省略
+      // if (event.origin !== window.location.origin) return;
+      const { type, messages } = event.data;
+      if (type === "log" || type === "warn" || type === "error") {
+        addLog(type, messages);
+      }
+    };
+    window.addEventListener("message", handleMessage);
+    return () => {
+      window.removeEventListener("message", handleMessage);
+    };
+  }, [addLog]);
 
   const executeCode = () => {
     if (!iframeRef.current) return;
     const iframe = iframeRef.current;
-
+    // サニタイズしておく(xxs対策)
     const sanitizedCode = DOMPurify.sanitize(value);
     iframe.srcdoc = `
         <!DOCTYPE html>
         <html>
           <body>
             <script>
-              (function() {
-                const originalLog = console.log;
-
-                console.log = function(...args) {
-                  originalLog.apply(console, args);
-                  window.parent.postMessage({ type: 'log', messages: args }, '*');
-                };
-                console.error = function(...args) {
-                  originalLog.apply(console, args);
-                  window.parent.postMessage({ type: 'error', messages: args }, '*');
-                };
-                console.warn = function(...args) {
-                  originalLog.apply(console, args);
-                  window.parent.postMessage({ type: 'warn', messages: args }, '*');
-                };
-
-                try {
-                  (function() {
-                    ${sanitizedCode}
-                  })();
-                } catch (error) {
-                  console.log('Error:', error.toString());
-                  window.parent.postMessage({ type: 'error', error: error.toString() }, '*');
-                }
-              })();
-            </script>
+            (function() {
+              const originalLog = console.log;
+              console.log = function(...args) {
+                window.parent.postMessage({ type: 'log', messages: args }, '*');
+              };
+              console.error = function(...args) {
+                window.parent.postMessage({ type: 'error', messages: args }, '*');
+              };
+              console.warn = function(...args) {
+                window.parent.postMessage({ type: 'warn', messages: args }, '*');
+              };
+              try {
+                (function() {
+                  ${sanitizedCode}
+                })(); 
+              } catch (error) {
+                console.error('Error:', error.toString());
+                window.parent.postMessage({ type: 'error', error: error.toString() }, '*');
+              }
+            })();
+          </script>
           </body>
         </html>
       `;
-
-    const handleMessage = (event: MessageEvent) => {
-      const { type, messages } = event.data;
-      if (type === "log" || type === "warn" || type === "error") {
-        addLog(type, messages.join(" "));
-      }
-    };
-
-    window.addEventListener("message", handleMessage);
-
-    return () => {
-      window.removeEventListener("message", handleMessage);
-    };
   };
-
   return (
     <div className="flex w-full px-6 py-5 h-full">
       <div className="flex gap-5 flex-col w-2/5 pr-10">
@@ -126,10 +121,9 @@ export const ContentArea: React.FC<ContentAreaProps> = ({
           sandbox="allow-scripts allow-modals"
           style={{ display: "none" }}
         />
-        <div className="bg-[#333333] max-h-3/5 mt-6">
-          <div className="flex gap-2">
-            <ConsoleType text="ログ" />
-          </div>
+        <div className="bg-[#333333] h-3/5 mt-6">
+          <ConsoleType text="ログ" />
+
           <div className="text-white p-4">
             {executionResult.map((item, index) => (
               <div

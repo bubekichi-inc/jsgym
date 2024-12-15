@@ -66,7 +66,6 @@ export const POST = async (req: NextRequest, { params }: Props) => {
       role: "user",
       content: message,
     });
-    console.log(openAIMessages);
 
     const openai = new OpenAI({
       apiKey: process.env.OPENAI_SECRET_KEY,

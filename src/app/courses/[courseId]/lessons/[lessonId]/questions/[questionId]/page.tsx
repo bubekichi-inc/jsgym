@@ -4,11 +4,10 @@ import { ButtonArea } from "./_components/ButtonArea";
 import { ContentArea } from "./_components/ContetArea";
 import { useQuestions } from "@/app/_hooks/useQuestions";
 
+type LogObj = { type: string; message: string };
 export default function Question() {
   const [answerId, setAnswerId] = useState("");
-  const [executionResult, setExecutionResult] = useState<
-    { type: string; message: string }[]
-  >([]);
+  const [executionResult, setExecutionResult] = useState<LogObj[]>([]);
   const [value, setValue] = useState("");
   const { data, error, isLoading, mutate } = useQuestions();
 
@@ -17,12 +16,13 @@ export default function Question() {
     setValue(data.answer.code);
     setAnswerId(data.answer.id);
   }, [data]);
-  const resetLogs = () => {
-    setExecutionResult([]);
-  };
 
   const addLog = (type: string, message: string) => {
     setExecutionResult(prevLogs => [...prevLogs, { type, message }]);
+  };
+
+  const resetLogs = () => {
+    setExecutionResult([]);
   };
 
   if (isLoading) return <div>読込み中</div>;
@@ -47,6 +47,7 @@ export default function Question() {
         mutate={mutate}
         setValue={setValue}
         status={data.answer?.status}
+        resetLogs={resetLogs}
       />
     </div>
   );
