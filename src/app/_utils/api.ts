@@ -1,29 +1,5 @@
-import { useCallback } from "react";
-
-export const useApi = () => {
-  const get = useCallback(async <ResponseType>(endpoint: string) => {
-    try {
-      const response = await fetch(endpoint, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.status !== 200) {
-        throw new Error("データの取得に失敗しました。");
-      }
-
-      const data: ResponseType = await response.json();
-
-      return data;
-    } catch (error) {
-      if (error instanceof Error) {
-        throw error;
-      }
-    }
-  }, []);
-
-  const post = async <RequestType, ResponseType>(
+export const api = {
+  post: async <RequestType, ResponseType>(
     endpoint: string,
     payload: RequestType
   ) => {
@@ -49,9 +25,9 @@ export const useApi = () => {
       console.error(error);
       throw error;
     }
-  };
+  },
 
-  const put = async <RequestType, ResponseType>(
+  put: async <RequestType, ResponseType>(
     endpoint: string,
     payload: RequestType
   ) => {
@@ -72,9 +48,9 @@ export const useApi = () => {
     } catch (error) {
       throw error;
     }
-  };
+  },
 
-  const del = async <ResponseType>(endpoint: string) => {
+  del: async <ResponseType>(endpoint: string) => {
     try {
       const response = await fetch(endpoint, {
         method: "DELETE",
@@ -91,7 +67,5 @@ export const useApi = () => {
     } catch (error) {
       throw error;
     }
-  };
-
-  return { get, post, put, del };
+  },
 };

@@ -1,27 +1,27 @@
 import { Question } from "@/app/api/_types/Question";
 import { useRouter, useParams } from "next/navigation";
-interface Props {
-  questions: Question[];
-}
-export const PaginationControls: React.FC<Props> = ({ questions }) => {
+import { useQuestions } from "@/app/_hooks/useQuestions";
+
+export const PaginationControls: React.FC = () => {
   const router = useRouter();
   const { courseId, lessonId, questionId } = useParams();
-
-  const currentIndex = questions.findIndex(
+  const { data } = useQuestions(lessonId as string);
+  if (!data) return <div>問題の取得に失敗しました</div>;
+  const currentIndex = data.questions.findIndex(
     question => question.id === parseInt(questionId as string, 10)
   );
   // 現在が最初または最後かを判定
   const isFirstQuestion = currentIndex === 0;
-  const isLastQuestion = currentIndex === questions.length - 1;
+  const isLastQuestion = currentIndex === data.questions.length - 1;
 
   const prevQuestionId = isFirstQuestion
     ? null
-    : questions[currentIndex - 1]?.id;
+    : data.questions[currentIndex - 1]?.id;
   const nextQuestionId = isLastQuestion
     ? null
-    : questions[currentIndex + 1]?.id;
+    : data.questions[currentIndex + 1]?.id;
 
-  const baseUrl = `/courses/${courseId}/lessons/${lessonId}/questions`;
+  const baseUrl = `/courses/${courseId}/${lessonId}`;
   const prev = () => {
     if (prevQuestionId === null) return;
     router.replace(`${baseUrl}/${prevQuestionId}`);

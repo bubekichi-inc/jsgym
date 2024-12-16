@@ -1,13 +1,13 @@
 import { ChatMessage } from "../_types/ChatMessage";
 import { ModalContents } from "./ModalContents";
-import { Modal } from "@/app/_components/Model";
+import { Modal } from "@/app/_components/Modal";
 
 interface Props {
   isOpen: boolean;
   onClose: (e: React.MouseEvent<HTMLElement>) => void;
   isCorrect: boolean;
   isSubmitting: boolean;
-  answerId: string;
+  answerId: string | null;
   chatMessages: ChatMessage[];
   setChatMessages: (chatMessages: ChatMessage[]) => void;
 }

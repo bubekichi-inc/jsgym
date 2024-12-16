@@ -6,12 +6,18 @@ interface Props {
   value: string;
   onChange: (value: string) => void;
   language: Language;
+  editerHeight: string;
 }
 
-export const CodeEditor: React.FC<Props> = ({ value, onChange, language }) => {
+export const CodeEditor: React.FC<Props> = ({
+  value,
+  onChange,
+  language,
+  editerHeight,
+}) => {
   return (
     <Editor
-      height="50vh"
+      height={editerHeight}
       defaultLanguage={language}
       value={value}
       onChange={value => value && onChange(value)}

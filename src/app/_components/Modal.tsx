@@ -7,13 +7,19 @@ interface Props {
   isOpen: boolean;
   onClose: (e: React.MouseEvent<HTMLElement>) => void;
   children: ReactNode;
+  onRequestClose?: () => void;
 }
 
-export const Modal: FC<Props> = ({ isOpen, onClose, children }) => {
+export const Modal: FC<Props> = ({
+  isOpen,
+  onClose,
+  children,
+  onRequestClose = onClose,
+}) => {
   return (
     <ReactModal
       isOpen={isOpen}
-      onRequestClose={onClose}
+      onRequestClose={onRequestClose}
       contentLabel="Modal"
       closeTimeoutMS={300}
       ariaHideApp={false}
@@ -25,6 +31,7 @@ export const Modal: FC<Props> = ({ isOpen, onClose, children }) => {
         onClick={onClose}
       >
         <button
+          type="button"
           className={`absolute right-0 top-0 z-[999] p-3`}
           onClick={onClose}
         >

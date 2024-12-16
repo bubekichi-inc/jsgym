@@ -1,14 +1,14 @@
 import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 interface Props {
-  sender: Sender;
-  message: string;
+  chatMessage: {
+    sender: Sender;
+    message: string;
+  };
 }
 import { Sender } from "@prisma/client";
-export const ChatMessage: React.FC<Props> = ({
-  sender = "SYSTEM",
-  message,
-}) => {
+export const ChatMessage: React.FC<Props> = ({ chatMessage }) => {
+  const { sender, message } = chatMessage;
   const isSystem = sender === "SYSTEM";
   const circleColor = isSystem ? "bg-[#40B18F]" : "bg-[#B4B4B4]";
   const senderLabel = isSystem ? "レビュワー" : "あなた";
@@ -61,9 +61,9 @@ export const ChatMessage: React.FC<Props> = ({
     formattedMessage.push(
       <pre
         key={match.index + 1}
-        className="bg-black text-white p-2 rounded-b-md"
+        className="bg-black text-white p-2 rounded-b-md w-full"
       >
-        <code>{code}</code>
+        <code className="block">{code}</code>
       </pre>
     );
 
@@ -83,10 +83,10 @@ export const ChatMessage: React.FC<Props> = ({
         <div className="">
           <div className={`${circleColor} w-6 h-6 rounded-full`}></div>
         </div>
-        <div>
+        <div className="w-full">
           <div>{senderLabel}</div>
 
-          <div>{formattedMessage}</div>
+          <div className="whitespace-pre-wrap">{formattedMessage}</div>
         </div>
       </div>
     </>

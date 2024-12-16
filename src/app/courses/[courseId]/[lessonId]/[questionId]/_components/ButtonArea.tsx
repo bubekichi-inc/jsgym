@@ -6,44 +6,43 @@ import type { KeyedMutator } from "swr";
 import { Button } from "@/app/_components/Button";
 import { ChatMessage } from "../_types/ChatMessage";
 import { ReviewModal } from "./ReviewModal";
-import { useApi } from "@/app/_hooks/useApi";
+import { api } from "@/app/_utils/api";
 import {
   CodeReviewResponse,
   CodeReviewRequest,
 } from "@/app/api/questions/[questionId]/code_review/_types/CodeReview";
 import { Draft } from "@/app/api/questions/_types/Draft";
 import { QuestionResponse } from "@/app/api/questions/_types/QuestionResponse";
-
 interface Props {
   question: string;
   answer: string;
-  answerId: string;
-  setAnswerId: (answerId: string) => void;
+  answerId: string | null;
+  setAnswerId: (answerId: string | null) => void;
+  setAnswerCode: (value: string) => void;
   mutate: KeyedMutator<QuestionResponse>;
-  setValue: (value: string) => void;
   status: StatusType | undefined;
-  resetLogs: () => void;
+  onResetSuccess: () => void;
 }
 export const ButtonArea: React.FC<Props> = ({
   question,
   answer,
   answerId,
   setAnswerId,
-  mutate,
-  setValue,
+  setAnswerCode,
   status,
-  resetLogs,
+  onResetSuccess,
+  mutate,
 }) => {
   const [isCorrect, setIsCorrect] = useState(false);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { post, del } = useApi();
+
   const { courseId, lessonId, questionId } = useParams();
   const router = useRouter();
   const saveDraft = async () => {
     try {
-      await post<Draft, { message: string }>(
+      await api.post<Draft, { message: string }>(
         `/api/questions/${questionId}/draft`,
         {
           answer,
@@ -60,15 +59,16 @@ export const ButtonArea: React.FC<Props> = ({
     try {
       setIsSubmitting(true);
       setIsOpen(true);
-      const reviewContent = await post<CodeReviewRequest, CodeReviewResponse>(
-        `/api/questions/${questionId}/code_review`,
-        {
-          question,
-          answer,
-        }
-      );
+      const reviewContent = await api.post<
+        CodeReviewRequest,
+        CodeReviewResponse
+      >(`/api/questions/${questionId}/code_review`, {
+        question,
+        answer,
+      });
       setIsCorrect(reviewContent.isCorrect);
       setChatMessages(reviewContent.messages);
+      setAnswerId(reviewContent.answerId);
       setIsSubmitting(false);
       mutate();
     } catch (e) {
@@ -81,13 +81,13 @@ export const ButtonArea: React.FC<Props> = ({
     const dele = window.confirm("回答を削除して良いですか");
     if (!dele) return;
     try {
-      await del(`/api/answer/${answerId}`);
+      await api.del(`/api/answers/${answerId}`);
       mutate();
-      setValue("");
+      setAnswerCode("");
       setIsCorrect(false);
       setChatMessages([]);
       setAnswerId("");
-      resetLogs();
+      onResetSuccess();
       toast.success("削除しました");
     } catch (e) {
       console.error(e);
@@ -95,7 +95,7 @@ export const ButtonArea: React.FC<Props> = ({
   };
 
   const prev = () => {
-    router.replace(`/courses/${courseId}/lessons/${lessonId}`);
+    router.replace(`/courses/${courseId}/${lessonId}`);
   };
 
   //合格済OR未提出の場合はやり直すボタン出さない
@@ -147,6 +147,7 @@ export const ButtonArea: React.FC<Props> = ({
           </Button>
         </div>
       </div>
+
       <ReviewModal
         isCorrect={isCorrect}
         isOpen={isOpen}

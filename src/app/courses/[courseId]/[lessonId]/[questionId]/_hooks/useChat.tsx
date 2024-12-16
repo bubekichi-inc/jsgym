@@ -1,19 +1,19 @@
 import { useState, useEffect, useRef } from "react";
 import { ChatMessage as ChatMessageType } from "../_types/ChatMessage";
-import { useApi } from "@/app/_hooks/useApi";
+import { api } from "@/app/_utils/api";
 import { useFetch } from "@/app/_hooks/useFetch";
 import {
   MessageRequest,
   MessagesReasponse,
-} from "@/app/api/messages/_types/Messages";
+} from "@/app/api/answers/_types/Messages";
 
-export const useModalContents = (
+export const useChat = (
   chatMessages: ChatMessageType[],
   setChatMessages: (chatMessages: ChatMessageType[]) => void,
   answerId: string
 ) => {
   const { data, error, isLoading } = useFetch<MessagesReasponse>(
-    `/api/messages/${answerId}`
+    `/api/answers/${answerId}/messages`
   );
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -29,9 +29,11 @@ export const useModalContents = (
   }, [data, setChatMessages, isLoading]);
 
   const [message, setMessage] = useState("");
-  const { post } = useApi();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const sendMessage = async () => {
+    if (!message) return;
+    setIsSubmitting(true);
     setMessage("");
     const newMessage: ChatMessageType = {
       answerId,
@@ -41,11 +43,12 @@ export const useModalContents = (
 
     const updatedMessages = [...chatMessages, newMessage];
     setChatMessages(updatedMessages);
-    const { systemMessage } = await post<
+    const { systemMessage } = await api.post<
       MessageRequest,
       { systemMessage: ChatMessageType }
-    >(`/api/messages/${answerId}`, { message });
+    >(`/api/answers/${answerId}`, { message });
     setChatMessages([...updatedMessages, systemMessage]);
+    setIsSubmitting(false);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -65,5 +68,6 @@ export const useModalContents = (
     isLoading,
     error,
     data,
+    isSubmitting,
   };
 };

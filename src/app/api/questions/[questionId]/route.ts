@@ -22,9 +22,15 @@ export const GET = async (req: NextRequest, { params }: Props) => {
         },
       },
     });
-    const questions = await prisma.lesson.findUnique({
+    if (!question)
+      return NextResponse.json(
+        { error: "問題が見つかりません。" },
+        { status: 404 }
+      );
+
+    const lesson = await prisma.lesson.findUnique({
       where: {
-        id: question?.lessonId,
+        id: question.lessonId,
       },
       include: {
         questions: {
@@ -34,45 +40,32 @@ export const GET = async (req: NextRequest, { params }: Props) => {
         },
       },
     });
+    if (!lesson)
+      return NextResponse.json(
+        { error: "問題が見つかりません。" },
+        { status: 404 }
+      );
 
-    const answer = await prisma.answer.findMany({
+    const answer = await prisma.answer.findUnique({
       where: {
-        AND: [{ userId, questionId: parseInt(questionId, 10) }],
+        userId_questionId: {
+          userId: userId,
+          questionId: parseInt(questionId, 10),
+        },
       },
     });
 
-    //出力用の問題番号をレスポンスに含める
-    const currentQuestionNumber = questions?.questions.findIndex(
-      q => q.id === parseInt(questionId, 10)
-    );
-
-    const newQuestions = questions?.questions.map((question, index) => ({
-      id: question.id,
-      title: question.title,
-      content: question.content,
-      questionNumber: index + 1,
-    }));
-
     return NextResponse.json(
       {
-        course: question?.lesson.course,
-        lesson: { id: question?.lesson.id, name: question?.lesson.name },
+        course: question.lesson.course,
+        lesson: { id: question.lesson.id, name: question.lesson.name },
         question: {
-          id: question?.id,
-          title: question?.title,
-          content: question?.content,
-          questionNumber:
-            currentQuestionNumber !== undefined && currentQuestionNumber + 1,
+          id: question.id,
+          title: question.title,
+          content: question.content,
+          example: question.example,
         },
-        questions: newQuestions,
-        answer:
-          answer.length === 0
-            ? null
-            : {
-                id: answer[0].id,
-                code: answer[0].answer,
-                status: answer[0].status,
-              },
+        answer,
       },
       { status: 200 }
     );

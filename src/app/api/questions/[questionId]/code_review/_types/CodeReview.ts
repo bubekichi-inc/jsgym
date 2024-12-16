@@ -3,6 +3,7 @@ export type CodeReviewResponse = {
   isCorrect: boolean;
   reviewComment: string;
   messages: Message[];
+  answerId: string;
 };
 
 export type CodeReviewRequest = {

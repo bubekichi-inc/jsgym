@@ -1,9 +1,23 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import DOMPurify from "dompurify";
+import { LogType } from "../courses/[courseId]/[lessonId]/[questionId]/_types/LogType";
 
-export const useCodeExecutor = () => {
+export const useCodeExecutor = (
+  addLog: (type: LogType, message: string) => void
+) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
-
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      const { type, messages } = event.data;
+      if (type === "log" || type === "warn" || type === "error") {
+        addLog(type, messages);
+      }
+    };
+    window.addEventListener("message", handleMessage);
+    return () => {
+      window.removeEventListener("message", handleMessage);
+    };
+  }, [addLog]);
   const executeCode = (code: string) => {
     if (!iframeRef.current) return;
     const iframe = iframeRef.current;

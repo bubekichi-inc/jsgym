@@ -1,6 +1,6 @@
 import { ChatMessage as ChatMessageType } from "../_types/ChatMessage";
 import { ChatMessage } from "./ChatMessage";
-import { useModalContents } from "../_hooks/useModalContents";
+import { useChat } from "../_hooks/useChat";
 import { status } from "@/app/_utils/status";
 interface Props {
   chatMessages: ChatMessageType[];
@@ -21,7 +21,8 @@ export const ModalContents: React.FC<Props> = ({
     isLoading,
     error,
     data,
-  } = useModalContents(chatMessages, setChatMessages, answerId);
+    isSubmitting,
+  } = useChat(chatMessages, setChatMessages, answerId);
 
   if (isLoading)
     return <div className="text-center text-white text-4xl">読込み中... </div>;
@@ -48,11 +49,7 @@ export const ModalContents: React.FC<Props> = ({
       <div className="h-[70%]">
         <div className="h-full overflow-y-scroll">
           {chatMessages.map((message, index) => (
-            <ChatMessage
-              message={message.message}
-              sender={message.sender}
-              key={index}
-            />
+            <ChatMessage chatMessage={message} key={index} />
           ))}
           <div ref={messagesEndRef} />
         </div>
@@ -65,6 +62,7 @@ export const ModalContents: React.FC<Props> = ({
             className="absolute bottom-6 border pt-2 pl-6 w-[90%] rounded-md h-auto"
             placeholder="メッセージを送る"
             onKeyDown={handleKeyDown}
+            disabled={isSubmitting}
           />
         </form>
       </div>

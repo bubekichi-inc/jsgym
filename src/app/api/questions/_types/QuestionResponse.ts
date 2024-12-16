@@ -12,10 +12,9 @@ export type QuestionResponse = {
     name: string;
   };
   question: Question;
-  questions: Question[];
   answer: {
     id: string;
-    code: string;
+    answer: string;
     status: StatusType;
   } | null;
 };

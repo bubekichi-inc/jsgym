@@ -2,22 +2,25 @@
 import { useEffect, useState } from "react";
 import { ButtonArea } from "./_components/ButtonArea";
 import { ContentArea } from "./_components/ContetArea";
-import { useQuestions } from "@/app/_hooks/useQuestions";
-
-type LogObj = { type: string; message: string };
+import { useQuestion } from "@/app/_hooks/useQuestion";
+import { useParams } from "next/navigation";
+import { LogType } from "./_types/LogType";
+type LogObj = { type: LogType; message: string };
 export default function Question() {
-  const [answerId, setAnswerId] = useState("");
+  const { questionId } = useParams();
+  const [answerId, setAnswerId] = useState<string | null>(null);
   const [executionResult, setExecutionResult] = useState<LogObj[]>([]);
-  const [value, setValue] = useState("");
-  const { data, error, isLoading, mutate } = useQuestions();
+  const [answerCode, setAnswerCode] = useState("");
+  const { data, error, mutate } = useQuestion(questionId as string);
 
   useEffect(() => {
-    if (!data?.answer) return;
-    setValue(data.answer.code);
+    if (!data) return;
+    if (!data.answer) return;
+    setAnswerCode(data.answer.answer);
     setAnswerId(data.answer.id);
   }, [data]);
 
-  const addLog = (type: string, message: string) => {
+  const addLog = (type: LogType, message: string) => {
     setExecutionResult(prevLogs => [...prevLogs, { type, message }]);
   };
 
@@ -25,32 +28,34 @@ export default function Question() {
     setExecutionResult([]);
   };
 
-  if (isLoading) return <div className="text-center">読込み中</div>;
-  if (error)
+  if (!data) {
+    return <div className="text-center">読込み中</div>;
+  }
+
+  if (error) {
     return (
       <div className="text-center">問題の取得中にエラーが発生しました</div>
     );
-  if (!data) return <div className="text-center">問題がありません</div>;
+  }
 
   return (
     <div className="h-full">
       <ContentArea
-        data={data}
-        value={value}
-        setValue={setValue}
+        answerCode={answerCode}
+        setAnswerCode={setAnswerCode}
         addLog={addLog}
         resetLogs={resetLogs}
         executionResult={executionResult}
       />
       <ButtonArea
         question={data.question.content}
-        answer={value}
+        answer={answerCode}
         answerId={answerId}
         setAnswerId={setAnswerId}
-        mutate={mutate}
-        setValue={setValue}
+        setAnswerCode={setAnswerCode}
         status={data.answer?.status}
-        resetLogs={resetLogs}
+        onResetSuccess={resetLogs}
+        mutate={mutate}
       />
     </div>
   );
