@@ -51,7 +51,7 @@ export const ButtonArea: React.FC<Props> = ({
       toast.success("下書き保存しました");
     } catch (e) {
       console.error(e);
-      toast.success("下書き保存に失敗しました");
+      toast.error("下書き保存に失敗しました");
     }
   };
 
@@ -91,6 +91,7 @@ export const ButtonArea: React.FC<Props> = ({
       toast.success("削除しました");
     } catch (e) {
       console.error(e);
+      toast.error("削除に失敗しました");
     }
   };
 
@@ -99,10 +100,11 @@ export const ButtonArea: React.FC<Props> = ({
   };
 
   //合格済OR未提出の場合はやり直すボタン出さない
-  const startOverButton = status !== "DRAFT" && status !== undefined;
+  const startOverButton = status !== StatusType.DRAFT && status !== undefined;
 
   //提出済みの場合のみレビューを見るボタン表示
-  const reviewModalOpen = status === "PASSED" || status === "REVISION_REQUIRED";
+  const reviewModalOpen =
+    status === StatusType.PASSED || status === StatusType.REVISION_REQUIRED;
   return (
     <>
       <Toaster position="top-right" />
