@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { buildPrisma } from "@/app/_utils/prisma";
 import { MessagesReasponse } from "../../_types/Messages";
-import OpenAI from "openai";
 import { MessageRequest } from "../../_types/Messages";
+import { AIReviewService } from "@/app/_serevices/AIReviewService";
+import { Message } from "@/app/_types/Message";
 interface Props {
   params: Promise<{
     answerId: string;
@@ -58,7 +59,6 @@ export const POST = async (req: NextRequest, { params }: Props) => {
       take: 10,
     });
 
-    type Message = { role: "user" | "assistant" | "system"; content: string };
     const openAIMessages: Message[] = messageHistory.map(message => ({
       role: message.sender === "USER" ? "user" : "assistant",
       content: message.message,
@@ -71,21 +71,11 @@ export const POST = async (req: NextRequest, { params }: Props) => {
       content: message,
     });
 
-    const openai = new OpenAI({
-      apiKey: process.env.OPENAI_SECRET_KEY,
+    const systemMessageContent = await AIReviewService.getChatResponse({
+      openAIMessages,
     });
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini-2024-07-18",
-      messages: openAIMessages,
-      temperature: 1,
-      max_tokens: 16384,
-      top_p: 1,
-      frequency_penalty: 0,
-      presence_penalty: 0,
-    });
-    const messageContent = response.choices[0].message.content || "";
     const systemMessage = {
-      message: messageContent,
+      message: systemMessageContent,
       sender: "SYSTEM" as const,
       answerId,
     };
