@@ -1,5 +1,6 @@
 export type Question = {
   id: number;
+  title: string;
   content: string;
+  example?: string | null;
 };
-export type QuestionsResponse = { questions: Question[] };
