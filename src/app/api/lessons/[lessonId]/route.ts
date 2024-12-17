@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { buildPrisma } from "@/app/_utils/prisma";
+import { QuestionsResponse } from "./_types/QuestionsResponse";
 
 interface Props {
   params: Promise<{
@@ -27,13 +28,10 @@ export const GET = async (req: NextRequest, { params }: Props) => {
         { status: 404 }
       );
 
-    if (!lesson.questions)
-      return NextResponse.json(
-        { error: "lessonに紐づく問題がありません" },
-        { status: 404 }
-      );
-
-    return NextResponse.json({ questions: lesson.questions }, { status: 200 });
+    return NextResponse.json<QuestionsResponse>(
+      { questions: lesson.questions },
+      { status: 200 }
+    );
   } catch (e) {
     if (e instanceof Error) {
       return NextResponse.json({ error: e.message }, { status: 400 });

@@ -95,7 +95,7 @@ export const POST = async (req: NextRequest, { params }: Props) => {
       }),
     ]);
 
-    return NextResponse.json(
+    return NextResponse.json<CodeReviewResponse>(
       {
         isCorrect,
         reviewComment,

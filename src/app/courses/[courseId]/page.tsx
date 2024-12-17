@@ -4,16 +4,16 @@ import { useParams } from "next/navigation";
 import { useLessons } from "@/app/_hooks/useLessons";
 export default function Course() {
   const { courseId } = useParams();
-  const { data, error, isLoading } = useLessons(courseId as string);
-  if (isLoading) return <div className="text-center">読込み中</div>;
+  const { data, error, isLoading } = useLessons({
+    courseId: courseId as string,
+  });
+  if (!data) return <div className="text-center">読込み中...</div>;
   if (error)
     return (
-      <div className="text-center">問題の取得中にエラーが発生しました</div>
+      <div className="text-center">レッスンの取得中にエラーが発生しました</div>
     );
-  if (!data?.lessons)
-    return <div className="text-center">問題がありません</div>;
-  if (data?.lessons.length === 0)
-    return <div className="text-center">問題がありません</div>;
+  if (data.lessons.length === 0)
+    return <div className="text-center">レッスンがありません</div>;
 
   return (
     <>

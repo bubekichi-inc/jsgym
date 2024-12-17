@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { buildPrisma } from "@/app/_utils/prisma";
+import { LessonsResponse } from "../_types/RessonsResponse";
 
 interface Props {
   params: Promise<{
@@ -16,10 +17,16 @@ export const GET = async (req: NextRequest, { params }: Props) => {
       },
       include: { lessons: true },
     });
-    return NextResponse.json(
+
+    if (!course)
+      return NextResponse.json(
+        { error: "コースデータの取得に失敗しました" },
+        { status: 400 }
+      );
+    return NextResponse.json<LessonsResponse>(
       {
         lessons: course?.lessons,
-        course: { id: course?.id, name: course?.name },
+        course: { id: course.id, name: course.name },
       },
       { status: 200 }
     );

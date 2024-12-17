@@ -7,10 +7,6 @@ export type QuestionResponse = {
     id: number;
     name: CourseType;
   };
-  lesson: {
-    id: number;
-    name: string;
-  };
   question: Question;
   answer: {
     id: string;

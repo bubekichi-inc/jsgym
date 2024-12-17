@@ -3,14 +3,15 @@ import Link from "next/link";
 import { useCourses } from "../_hooks/useCourses";
 import { language } from "../_utils/language";
 export default function Courses() {
-  const { data, error, isLoading } = useCourses();
+  const { data, error } = useCourses();
 
-  if (isLoading) return <div className="text-center">読込み中</div>;
+  if (!data) return <div className="text-center">読込み中...</div>;
   if (error)
     return (
-      <div className="text-center">問題の取得中にエラーが発生しました</div>
+      <div className="text-center">コースの取得中にエラーが発生しました</div>
     );
-  if (!data) return <div className="text-center">問題がありません</div>;
+  if (data.courses.length === 0)
+    return <div className="text-center">コースがありません</div>;
 
   return (
     <div className="">

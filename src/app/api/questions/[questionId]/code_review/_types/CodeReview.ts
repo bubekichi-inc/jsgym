@@ -1,4 +1,10 @@
-import { Message } from "@prisma/client";
+import { Sender } from "@prisma/client";
+
+type Message = {
+  message: string;
+  sender: Sender;
+  answerId: string;
+};
 export type CodeReviewResponse = {
   isCorrect: boolean;
   reviewComment: string;

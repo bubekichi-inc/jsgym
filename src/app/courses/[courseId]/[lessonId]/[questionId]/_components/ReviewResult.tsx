@@ -7,7 +7,7 @@ interface Props {
   setChatMessages: (chatMessages: ChatMessageType[]) => void;
   answerId: string;
 }
-export const ModalContents: React.FC<Props> = ({
+export const ReviewResult: React.FC<Props> = ({
   chatMessages,
   setChatMessages,
   answerId,
@@ -41,7 +41,7 @@ export const ModalContents: React.FC<Props> = ({
   const result = isCorrect === "合格済み" ? "合格です！！" : "不合格です！";
   return (
     <div
-      className="bg-white w-4/5 h-[90%] p-10 relative"
+      className="bg-white w-4/5 h-[90%] p-10 relative text-black"
       onClick={e => e.stopPropagation()}
     >
       <h2 className="text-4xl font-bold pb-5 text-center">{result}</h2>

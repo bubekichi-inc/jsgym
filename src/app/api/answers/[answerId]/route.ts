@@ -7,34 +7,6 @@ interface Props {
     answerId: string;
   }>;
 }
-export const GET = async (req: NextRequest, { params }: Props) => {
-  const prisma = await buildPrisma();
-  const { answerId } = await params;
-  try {
-    const messages = await prisma.answer.findUnique({
-      where: {
-        id: answerId,
-      },
-      include: {
-        messages: true,
-      },
-    });
-
-    return NextResponse.json(
-      {
-        status: messages?.status,
-        answer: messages?.answer,
-        //最初の質問が含まれるので最初の要素は除く
-        messages: messages?.messages.slice(1),
-      },
-      { status: 200 }
-    );
-  } catch (e) {
-    if (e instanceof Error) {
-      return NextResponse.json({ error: e.message }, { status: 400 });
-    }
-  }
-};
 
 export const POST = async (req: NextRequest, { params }: Props) => {
   const prisma = await buildPrisma();

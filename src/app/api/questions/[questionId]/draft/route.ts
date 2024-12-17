@@ -50,7 +50,7 @@ export const POST = async (req: NextRequest, { params }: Props) => {
       },
     });
 
-    return NextResponse.json({ message: "success!" }, { status: 200 });
+    return NextResponse.json<Draft>({ answer: "success!" }, { status: 200 });
   } catch (e) {
     if (e instanceof Error) {
       return NextResponse.json({ error: e.message }, { status: 400 });

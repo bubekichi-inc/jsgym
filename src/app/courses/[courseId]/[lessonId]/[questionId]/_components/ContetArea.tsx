@@ -32,17 +32,23 @@ export const ContentArea: React.FC<ContentAreaProps> = ({
 }) => {
   const { iframeRef, executeCode } = useCodeExecutor(addLog);
   const { lessonId, questionId } = useParams();
-  const { data } = useQuestion(questionId as string);
-  const { data: questions } = useQuestions(lessonId as string);
+  const { data, error } = useQuestion({ questionId: questionId as string });
+  const { data: questions, error: questionsError } = useQuestions({
+    lessonId: lessonId as string,
+  });
 
   useEffect(() => {
     if (!data?.answer) return;
     setAnswerCode(data.answer.answer);
   }, [data, setAnswerCode]);
 
-  if (!questions) return <div>問題の取得に失敗しました</div>;
-  if (!data) return <div>問題の取得に失敗しました</div>;
-
+  if (!questions) return <div>読込み中...</div>;
+  if (!data) return <div>読込み中...</div>;
+  if (error) return <div>問題情報取得中にエラーが発生しました</div>;
+  if (questionsError)
+    return <div>問題一覧情報取得中にエラーが発生しました</div>;
+  if (questions.questions.length === 0)
+    return <div className="text-center">問題がありません</div>;
   const currentQuestionNumber = questions.questions.findIndex(
     q => q.id === parseInt(questionId as string, 10)
   );

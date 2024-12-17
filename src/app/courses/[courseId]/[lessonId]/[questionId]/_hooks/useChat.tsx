@@ -34,7 +34,7 @@ export const useChat = (
   const sendMessage = async () => {
     if (!message) return;
     setIsSubmitting(true);
-    setMessage("");
+    setMessage("送信中...");
     const newMessage: ChatMessageType = {
       answerId,
       message,
@@ -48,10 +48,12 @@ export const useChat = (
       { systemMessage: ChatMessageType }
     >(`/api/answers/${answerId}`, { message });
     setChatMessages([...updatedMessages, systemMessage]);
+    setMessage("");
     setIsSubmitting(false);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.nativeEvent.isComposing) return;
     if (event.key === "Enter" && !event.shiftKey) {
       // Enterキーのみで送信
       event.preventDefault();

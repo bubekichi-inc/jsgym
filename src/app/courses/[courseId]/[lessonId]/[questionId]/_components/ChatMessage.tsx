@@ -1,12 +1,15 @@
 import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Sender } from "@prisma/client";
+import { JSX } from "react";
+
 interface Props {
   chatMessage: {
     sender: Sender;
     message: string;
   };
 }
-import { Sender } from "@prisma/client";
+
 export const ChatMessage: React.FC<Props> = ({ chatMessage }) => {
   const { sender, message } = chatMessage;
   const isSystem = sender === "SYSTEM";
@@ -15,11 +18,10 @@ export const ChatMessage: React.FC<Props> = ({ chatMessage }) => {
 
   const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
   const matches = Array.from(message.matchAll(codeBlockRegex));
-  const formattedMessage = [];
-  let lastIndex = 0;
+
   const handleCopy = async (code: string) => {
     try {
-      navigator.clipboard.writeText(code);
+      await navigator.clipboard.writeText(code);
       alert("コードがコピーされました！");
     } catch (e) {
       console.error(e);
@@ -27,11 +29,40 @@ export const ChatMessage: React.FC<Props> = ({ chatMessage }) => {
     }
   };
 
+  const formattedMessage = formatMessageWithCodeBlocks(
+    message,
+    matches,
+    handleCopy
+  );
+
+  return (
+    <div className="pb-2 font-bold flex gap-2">
+      <div className="">
+        <div className={`${circleColor} w-6 h-6 rounded-full`}></div>
+      </div>
+      <div className="w-full">
+        <div>{senderLabel}</div>
+        <div className="whitespace-pre-wrap">{formattedMessage}</div>
+      </div>
+    </div>
+  );
+};
+
+const formatMessageWithCodeBlocks = (
+  message: string,
+  matches: RegExpMatchArray[],
+  handleCopy: (code: string) => void
+) => {
+  let lastIndex = 0;
+  const formattedMessage: JSX.Element[] = [];
+
   matches.forEach(match => {
-    // 通常のテキスト
-    if (match.index > lastIndex) {
+    const matchIndex = match.index ?? 0;
+
+    // 通常のテキスト部分
+    if (matchIndex > lastIndex) {
       formattedMessage.push(
-        <span key={lastIndex}>{message.slice(lastIndex, match.index)}</span>
+        <span key={lastIndex}>{message.slice(lastIndex, matchIndex)}</span>
       );
     }
 
@@ -42,7 +73,7 @@ export const ChatMessage: React.FC<Props> = ({ chatMessage }) => {
     if (language) {
       formattedMessage.push(
         <div
-          key={match.index}
+          key={`header-${matchIndex}`}
           className="bg-gray-300 p-1 rounded-t-md flex justify-between items-center"
         >
           <div className="text-sm pl-2">{language}</div>
@@ -60,14 +91,14 @@ export const ChatMessage: React.FC<Props> = ({ chatMessage }) => {
 
     formattedMessage.push(
       <pre
-        key={match.index + 1}
+        key={`code-${matchIndex}`}
         className="bg-black text-white p-2 rounded-b-md w-full"
       >
         <code className="block">{code}</code>
       </pre>
     );
 
-    lastIndex = match.index + match[0].length;
+    lastIndex = matchIndex + match[0].length;
   });
 
   // 通常テキスト
@@ -77,18 +108,5 @@ export const ChatMessage: React.FC<Props> = ({ chatMessage }) => {
     );
   }
 
-  return (
-    <>
-      <div className="pb-2 font-bold flex gap-2">
-        <div className="">
-          <div className={`${circleColor} w-6 h-6 rounded-full`}></div>
-        </div>
-        <div className="w-full">
-          <div>{senderLabel}</div>
-
-          <div className="whitespace-pre-wrap">{formattedMessage}</div>
-        </div>
-      </div>
-    </>
-  );
+  return formattedMessage;
 };

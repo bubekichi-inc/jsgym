@@ -4,13 +4,14 @@ import { useQuestions } from "@/app/_hooks/useQuestions";
 import Link from "next/link";
 export default function Lesson() {
   const { courseId, lessonId } = useParams();
-  const { data, error, isLoading } = useQuestions(lessonId as string);
-  if (isLoading) return <div className="text-center">読込み中</div>;
+  const { data, error } = useQuestions({ lessonId: lessonId as string });
+  if (!data) return <div className="text-center">読込み中...</div>;
   if (error)
     return (
       <div className="text-center">問題の取得中にエラーが発生しました</div>
     );
-  if (!data) return <div className="text-center">問題がありません</div>;
+  if (data.questions.length === 0)
+    return <div className="text-center">問題がありません</div>;
   return (
     <div className="flex flex-col gap-10 p-10">
       {data.questions.map((question, index) => (

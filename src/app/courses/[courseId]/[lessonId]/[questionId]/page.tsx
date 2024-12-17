@@ -11,7 +11,9 @@ export default function Question() {
   const [answerId, setAnswerId] = useState<string | null>(null);
   const [executionResult, setExecutionResult] = useState<LogObj[]>([]);
   const [answerCode, setAnswerCode] = useState("");
-  const { data, error, mutate } = useQuestion(questionId as string);
+  const { data, error, mutate } = useQuestion({
+    questionId: questionId as string,
+  });
 
   useEffect(() => {
     if (!data) return;

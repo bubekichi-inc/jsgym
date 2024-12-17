@@ -5,8 +5,10 @@ import { useQuestions } from "@/app/_hooks/useQuestions";
 export const PaginationControls: React.FC = () => {
   const router = useRouter();
   const { courseId, lessonId, questionId } = useParams();
-  const { data } = useQuestions(lessonId as string);
+  const { data } = useQuestions({ lessonId: lessonId as string });
   if (!data) return <div>問題の取得に失敗しました</div>;
+  if (data.questions.length === 0)
+    return <div className="text-center">問題がありません</div>;
   const currentIndex = data.questions.findIndex(
     question => question.id === parseInt(questionId as string, 10)
   );

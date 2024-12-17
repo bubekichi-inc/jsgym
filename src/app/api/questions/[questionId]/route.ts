@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { buildPrisma } from "@/app/_utils/prisma";
+import { QuestionResponse } from "../_types/QuestionResponse";
 
 interface Props {
   params: Promise<{
@@ -28,24 +29,6 @@ export const GET = async (req: NextRequest, { params }: Props) => {
         { status: 404 }
       );
 
-    const lesson = await prisma.lesson.findUnique({
-      where: {
-        id: question.lessonId,
-      },
-      include: {
-        questions: {
-          orderBy: {
-            id: "asc",
-          },
-        },
-      },
-    });
-    if (!lesson)
-      return NextResponse.json(
-        { error: "問題が見つかりません。" },
-        { status: 404 }
-      );
-
     const answer = await prisma.answer.findUnique({
       where: {
         userId_questionId: {
@@ -55,10 +38,9 @@ export const GET = async (req: NextRequest, { params }: Props) => {
       },
     });
 
-    return NextResponse.json(
+    return NextResponse.json<QuestionResponse>(
       {
         course: question.lesson.course,
-        lesson: { id: question.lesson.id, name: question.lesson.name },
         question: {
           id: question.id,
           title: question.title,

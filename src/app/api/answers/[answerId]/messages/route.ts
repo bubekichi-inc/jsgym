@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { buildPrisma } from "@/app/_utils/prisma";
+import { MessagesReasponse } from "../../_types/Messages";
 interface Props {
   params: Promise<{
     answerId: string;
@@ -9,26 +10,25 @@ export const GET = async (req: NextRequest, { params }: Props) => {
   const prisma = await buildPrisma();
   const { answerId } = await params;
   try {
-    const messages = await prisma.answer.findUnique({
+    const messages = await prisma.message.findMany({
       where: {
-        id: answerId,
+        answerId: answerId,
       },
       include: {
-        messages: true,
+        answer: true,
       },
+      orderBy: {
+        createdAt: "asc",
+      },
+      skip: 1,
     });
-    if (!messages)
-      return NextResponse.json(
-        { error: "メッセージデータの取得に失敗しました" },
-        { status: 404 }
-      );
 
-    return NextResponse.json(
+    return NextResponse.json<MessagesReasponse>(
       {
-        status: messages.status,
-        answer: messages.answer,
+        status: messages[0].answer.status,
+        answer: messages[0].answer.answer,
         //最初の質問が含まれるので最初の要素は除く
-        messages: messages.messages.slice(1),
+        messages: messages,
       },
       { status: 200 }
     );

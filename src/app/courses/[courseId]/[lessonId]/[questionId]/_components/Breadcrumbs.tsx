@@ -6,7 +6,9 @@ import { useParams } from "next/navigation";
 
 export const BreadCrumbs: React.FC = () => {
   const { questionId } = useParams();
-  const { data, error, isLoading } = useQuestion(questionId as string);
+  const { data, error, isLoading } = useQuestion({
+    questionId: questionId as string,
+  });
 
   if (isLoading) return <div>読込み中...</div>;
   if (error) return <div>問題情報取得中にエラー発生</div>;
