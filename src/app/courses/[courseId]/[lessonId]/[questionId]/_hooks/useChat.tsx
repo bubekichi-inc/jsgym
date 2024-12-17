@@ -46,7 +46,7 @@ export const useChat = (
     const { systemMessage } = await api.post<
       MessageRequest,
       { systemMessage: ChatMessageType }
-    >(`/api/answers/${answerId}`, { message });
+    >(`/api/answers/${answerId}/messages`, { message });
     setChatMessages([...updatedMessages, systemMessage]);
     setMessage("");
     setIsSubmitting(false);
