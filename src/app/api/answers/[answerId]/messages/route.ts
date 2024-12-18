@@ -4,6 +4,7 @@ import { MessagesReasponse } from "../../_types/Messages";
 import { MessageRequest } from "../../_types/Messages";
 import { AIReviewService } from "@/app/_serevices/AIReviewService";
 import { Message } from "@/app/_types/Message";
+import { getUser } from "@/app/api/_utils/getUser";
 interface Props {
   params: Promise<{
     answerId: string;
@@ -11,8 +12,10 @@ interface Props {
 }
 export const GET = async (req: NextRequest, { params }: Props) => {
   const prisma = await buildPrisma();
+  const token = req.headers.get("Authorization") ?? "";
   const { answerId } = await params;
   try {
+    await getUser({ token });
     const messages = await prisma.message.findMany({
       where: {
         answerId: answerId,
@@ -30,13 +33,15 @@ export const GET = async (req: NextRequest, { params }: Props) => {
       {
         status: messages[0].answer.status,
         answer: messages[0].answer.answer,
-        //最初の質問が含まれるので最初の要素は除く
         messages: messages,
       },
       { status: 200 }
     );
   } catch (e) {
     if (e instanceof Error) {
+      if (e.message === "Unauthorized") {
+        return NextResponse.json({ error: e.message }, { status: 401 });
+      }
       return NextResponse.json({ error: e.message }, { status: 400 });
     }
   }
@@ -46,7 +51,9 @@ export const POST = async (req: NextRequest, { params }: Props) => {
   const prisma = await buildPrisma();
   const { answerId } = await params;
   const { message }: MessageRequest = await req.json();
+  const token = req.headers.get("Authorization") ?? "";
   try {
+    await getUser({ token });
     const answer = await prisma.answer.findUnique({
       where: { id: answerId },
     });
@@ -98,6 +105,9 @@ export const POST = async (req: NextRequest, { params }: Props) => {
     );
   } catch (e) {
     if (e instanceof Error) {
+      if (e.message === "Unauthorized") {
+        return NextResponse.json({ error: e.message }, { status: 401 });
+      }
       return NextResponse.json({ error: e.message }, { status: 400 });
     }
   }

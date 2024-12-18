@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { buildPrisma } from "@/app/_utils/prisma";
 import { QuestionResponse } from "../_types/QuestionResponse";
+import { getUser } from "../../_utils/getUser";
 
 interface Props {
   params: Promise<{
@@ -9,10 +10,10 @@ interface Props {
 }
 export const GET = async (req: NextRequest, { params }: Props) => {
   const prisma = await buildPrisma();
-  //プロトタイプ用のtestアカウントID
-  const userId = "aa47a833-3bd9-4ad3-92f5-dcea9f9fab7e";
+  const token = req.headers.get("Authorization") ?? "";
   const { questionId } = await params;
   try {
+    const { id: userId } = await getUser({ token });
     const question = await prisma.question.findUnique({
       where: {
         id: parseInt(questionId, 10),
@@ -32,7 +33,7 @@ export const GET = async (req: NextRequest, { params }: Props) => {
     const answer = await prisma.answer.findUnique({
       where: {
         userId_questionId: {
-          userId: userId,
+          userId,
           questionId: parseInt(questionId, 10),
         },
       },
@@ -53,6 +54,9 @@ export const GET = async (req: NextRequest, { params }: Props) => {
     );
   } catch (e) {
     if (e instanceof Error) {
+      if (e.message === "Unauthorized") {
+        return NextResponse.json({ error: e.message }, { status: 401 });
+      }
       return NextResponse.json({ error: e.message }, { status: 400 });
     }
   }

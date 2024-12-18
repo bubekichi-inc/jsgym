@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Draft } from "../../_types/Draft";
 import { buildPrisma } from "@/app/_utils/prisma";
+import { getUser } from "@/app/api/_utils/getUser";
 
 interface Props {
   params: Promise<{
@@ -9,11 +10,12 @@ interface Props {
 }
 export const POST = async (req: NextRequest, { params }: Props) => {
   const prisma = await buildPrisma();
-  //プロトタイプ用のtestアカウントID
-  const userId = "aa47a833-3bd9-4ad3-92f5-dcea9f9fab7e";
+  const token = req.headers.get("Authorization") ?? "";
   const { questionId } = await params;
   const body: Draft = await req.json();
   try {
+    const { id: userId } = await getUser({ token });
+
     const answer = await prisma.answer.findMany({
       where: {
         AND: [{ userId, questionId: parseInt(questionId, 10) }],
@@ -53,6 +55,9 @@ export const POST = async (req: NextRequest, { params }: Props) => {
     return NextResponse.json<Draft>({ answer: "success!" }, { status: 200 });
   } catch (e) {
     if (e instanceof Error) {
+      if (e.message === "Unauthorized") {
+        return NextResponse.json({ error: e.message }, { status: 401 });
+      }
       return NextResponse.json({ error: e.message }, { status: 400 });
     }
   }

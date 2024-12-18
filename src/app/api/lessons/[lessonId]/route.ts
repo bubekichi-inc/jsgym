@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { buildPrisma } from "@/app/_utils/prisma";
 import { QuestionsResponse } from "./_types/QuestionsResponse";
+import { getUser } from "../../_utils/getUser";
 
 interface Props {
   params: Promise<{
@@ -10,7 +11,9 @@ interface Props {
 export const GET = async (req: NextRequest, { params }: Props) => {
   const prisma = await buildPrisma();
   const { lessonId } = await params;
+  const token = req.headers.get("Authorization") ?? "";
   try {
+    await getUser({ token });
     const lesson = await prisma.lesson.findUnique({
       where: {
         id: parseInt(lessonId, 10),
@@ -34,6 +37,9 @@ export const GET = async (req: NextRequest, { params }: Props) => {
     );
   } catch (e) {
     if (e instanceof Error) {
+      if (e.message === "Unauthorized") {
+        return NextResponse.json({ error: e.message }, { status: 401 });
+      }
       return NextResponse.json({ error: e.message }, { status: 400 });
     }
   }
