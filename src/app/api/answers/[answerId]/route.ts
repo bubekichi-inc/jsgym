@@ -1,30 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 import { buildPrisma } from "@/app/_utils/prisma";
-import { getUser } from "../../_utils/getUser";
+import { getCurrentUser } from "../../_utils/getCurrentUser";
+import { buildError } from "../../_utils/buildError";
 interface Props {
   params: Promise<{
     answerId: string;
   }>;
 }
 
-export const DELETE = async (req: NextRequest, { params }: Props) => {
+export const DELETE = async (request: NextRequest, { params }: Props) => {
   const prisma = await buildPrisma();
-  const token = req.headers.get("Authorization") ?? "";
+
   const { answerId } = await params;
   try {
-    await getUser({ token });
+    const { id: currentUserId } = await getCurrentUser({ request });
     await prisma.answer.delete({
       where: {
         id: answerId,
+        userId: currentUserId,
       },
     });
     return NextResponse.json({ message: "deleted!" }, { status: 200 });
   } catch (e) {
-    if (e instanceof Error) {
-      if (e.message === "Unauthorized") {
-        return NextResponse.json({ error: e.message }, { status: 401 });
-      }
-      return NextResponse.json({ error: e.message }, { status: 400 });
-    }
+    return buildError(e);
   }
 };

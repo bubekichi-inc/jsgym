@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import DOMPurify from "dompurify";
-import { LogType } from "../courses/[courseId]/[lessonId]/[questionId]/_types/LogType";
+import { LogType } from "../(member)/courses/[courseId]/[lessonId]/[questionId]/_types/LogType";
 
 export const useCodeExecutor = (
   addLog: (type: LogType, message: string) => void

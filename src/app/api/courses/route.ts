@@ -1,21 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { buildPrisma } from "@/app/_utils/prisma";
 import { CoursesResponse } from "./_types/CoursesResponse";
-import { getUser } from "../_utils/getUser";
+import { getCurrentUser } from "../_utils/getCurrentUser";
+import { buildError } from "../_utils/buildError";
 
-export const GET = async (req: NextRequest) => {
+export const GET = async (request: NextRequest) => {
   const prisma = await buildPrisma();
-  const token = req.headers.get("Authorization") ?? "";
   try {
-    await getUser({ token });
+    await getCurrentUser({ request });
     const courses = await prisma.course.findMany({});
     return NextResponse.json<CoursesResponse>({ courses }, { status: 200 });
   } catch (e) {
-    if (e instanceof Error) {
-      if (e.message === "Unauthorized") {
-        return NextResponse.json({ error: e.message }, { status: 401 });
-      }
-      return NextResponse.json({ error: e.message }, { status: 400 });
-    }
+    return buildError(e);
   }
 };

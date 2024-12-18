@@ -1,6 +1,6 @@
 import { supabase } from "./supabase";
 
-const getSession = async () => {
+const getAccessToken = async () => {
   const { data, error } = await supabase.auth.getSession();
   if (error) throw new Error("セッション情報がありません");
   if (!data.session) throw new Error("セッション情報がありません");
@@ -16,7 +16,7 @@ export const api = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: await getSession(),
+          Authorization: await getAccessToken(),
         },
         body: JSON.stringify(payload),
       });
@@ -45,7 +45,7 @@ export const api = {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: await getSession(),
+          Authorization: await getAccessToken(),
         },
         body: JSON.stringify(payload),
       });
@@ -66,7 +66,7 @@ export const api = {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          Authorization: await getSession(),
+          Authorization: await getAccessToken(),
         },
       });
 

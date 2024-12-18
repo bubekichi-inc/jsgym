@@ -1,21 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Draft } from "../../_types/Draft";
 import { buildPrisma } from "@/app/_utils/prisma";
-import { getUser } from "@/app/api/_utils/getUser";
+import { getCurrentUser } from "@/app/api/_utils/getCurrentUser";
+import { buildError } from "@/app/api/_utils/buildError";
 
 interface Props {
   params: Promise<{
     questionId: string;
   }>;
 }
-export const POST = async (req: NextRequest, { params }: Props) => {
+export const POST = async (request: NextRequest, { params }: Props) => {
   const prisma = await buildPrisma();
-  const token = req.headers.get("Authorization") ?? "";
   const { questionId } = await params;
-  const body: Draft = await req.json();
   try {
-    const { id: userId } = await getUser({ token });
-
+    const { id: userId } = await getCurrentUser({ request });
+    const body: Draft = await request.json();
     const answer = await prisma.answer.findMany({
       where: {
         AND: [{ userId, questionId: parseInt(questionId, 10) }],
@@ -54,11 +53,6 @@ export const POST = async (req: NextRequest, { params }: Props) => {
 
     return NextResponse.json<Draft>({ answer: "success!" }, { status: 200 });
   } catch (e) {
-    if (e instanceof Error) {
-      if (e.message === "Unauthorized") {
-        return NextResponse.json({ error: e.message }, { status: 401 });
-      }
-      return NextResponse.json({ error: e.message }, { status: 400 });
-    }
+    return buildError(e);
   }
 };

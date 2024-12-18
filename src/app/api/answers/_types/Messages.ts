@@ -1,5 +1,5 @@
 import { StatusType } from "@prisma/client";
-import { ChatMessage } from "@/app/courses/[courseId]/[lessonId]/[questionId]/_types/ChatMessage";
+import { ChatMessage } from "@/app/(member)/courses/[courseId]/[lessonId]/[questionId]/_types/ChatMessage";
 
 export type MessagesReasponse = {
   status: StatusType;

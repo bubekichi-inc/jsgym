@@ -1,19 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { buildPrisma } from "@/app/_utils/prisma";
 import { QuestionsResponse } from "./_types/QuestionsResponse";
-import { getUser } from "../../_utils/getUser";
+import { getCurrentUser } from "../../_utils/getCurrentUser";
+import { buildError } from "../../_utils/buildError";
 
 interface Props {
   params: Promise<{
     lessonId: string;
   }>;
 }
-export const GET = async (req: NextRequest, { params }: Props) => {
+export const GET = async (request: NextRequest, { params }: Props) => {
   const prisma = await buildPrisma();
   const { lessonId } = await params;
-  const token = req.headers.get("Authorization") ?? "";
   try {
-    await getUser({ token });
+    await getCurrentUser({ request });
     const lesson = await prisma.lesson.findUnique({
       where: {
         id: parseInt(lessonId, 10),
@@ -36,11 +36,6 @@ export const GET = async (req: NextRequest, { params }: Props) => {
       { status: 200 }
     );
   } catch (e) {
-    if (e instanceof Error) {
-      if (e.message === "Unauthorized") {
-        return NextResponse.json({ error: e.message }, { status: 401 });
-      }
-      return NextResponse.json({ error: e.message }, { status: 400 });
-    }
+    return buildError(e);
   }
 };

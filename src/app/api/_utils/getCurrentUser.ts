@@ -1,6 +1,8 @@
 import { supabase } from "@/app/_utils/supabase";
 import { buildPrisma } from "@/app/_utils/prisma";
-export const getUser = async ({ token }: { token: string }) => {
+import { NextRequest } from "next/server";
+export const getCurrentUser = async ({ request }: { request: NextRequest }) => {
+  const token = request.headers.get("Authorization") ?? "";
   if (!token) {
     throw new Error("Unauthorized");
   }
@@ -19,7 +21,5 @@ export const getUser = async ({ token }: { token: string }) => {
   if (!user) {
     throw new Error("Unauthorized");
   }
-  return {
-    id: user.id,
-  };
+  return user;
 };

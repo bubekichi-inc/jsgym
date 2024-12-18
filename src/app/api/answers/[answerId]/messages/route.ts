@@ -4,21 +4,25 @@ import { MessagesReasponse } from "../../_types/Messages";
 import { MessageRequest } from "../../_types/Messages";
 import { AIReviewService } from "@/app/_serevices/AIReviewService";
 import { Message } from "@/app/_types/Message";
-import { getUser } from "@/app/api/_utils/getUser";
+import { getCurrentUser } from "@/app/api/_utils/getCurrentUser";
+import { buildError } from "@/app/api/_utils/buildError";
 interface Props {
   params: Promise<{
     answerId: string;
   }>;
 }
-export const GET = async (req: NextRequest, { params }: Props) => {
+export const GET = async (request: NextRequest, { params }: Props) => {
   const prisma = await buildPrisma();
-  const token = req.headers.get("Authorization") ?? "";
   const { answerId } = await params;
   try {
-    await getUser({ token });
+    const { id: currentUserId } = await getCurrentUser({ request });
+
     const messages = await prisma.message.findMany({
       where: {
         answerId: answerId,
+        answer: {
+          userId: currentUserId,
+        },
       },
       include: {
         answer: true,
@@ -38,24 +42,21 @@ export const GET = async (req: NextRequest, { params }: Props) => {
       { status: 200 }
     );
   } catch (e) {
-    if (e instanceof Error) {
-      if (e.message === "Unauthorized") {
-        return NextResponse.json({ error: e.message }, { status: 401 });
-      }
-      return NextResponse.json({ error: e.message }, { status: 400 });
-    }
+    return buildError(e);
   }
 };
 
-export const POST = async (req: NextRequest, { params }: Props) => {
+export const POST = async (request: NextRequest, { params }: Props) => {
   const prisma = await buildPrisma();
   const { answerId } = await params;
-  const { message }: MessageRequest = await req.json();
-  const token = req.headers.get("Authorization") ?? "";
   try {
-    await getUser({ token });
+    const { id: currentUserId } = await getCurrentUser({ request });
+    const { message }: MessageRequest = await request.json();
     const answer = await prisma.answer.findUnique({
-      where: { id: answerId },
+      where: {
+        id: answerId,
+        userId: currentUserId,
+      },
     });
     const messageHistory = await prisma.message.findMany({
       where: {
@@ -104,11 +105,6 @@ export const POST = async (req: NextRequest, { params }: Props) => {
       { status: 200 }
     );
   } catch (e) {
-    if (e instanceof Error) {
-      if (e.message === "Unauthorized") {
-        return NextResponse.json({ error: e.message }, { status: 401 });
-      }
-      return NextResponse.json({ error: e.message }, { status: 400 });
-    }
+    return buildError(e);
   }
 };

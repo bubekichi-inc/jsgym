@@ -20,7 +20,7 @@ export default function Home() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${process.env.NEXT_PUBLIC_APP_BASE_URL}/courses`,
+          redirectTo: `${process.env.NEXT_PUBLIC_APP_BASE_URL}/api/oauth/callback/google`,
         },
       });
       if (error) throw new Error(error.message);
