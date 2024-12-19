@@ -1,7 +1,7 @@
 import { ChatMessage as ChatMessageType } from "../_types/ChatMessage";
 import { ChatMessage } from "./ChatMessage";
 import { useChat } from "../_hooks/useChat";
-import { status } from "@/app/_utils/status";
+import { answerStatus } from "@/app/_utils/answerStatus";
 interface Props {
   chatMessages: ChatMessageType[];
   setChatMessages: (chatMessages: ChatMessageType[]) => void;
@@ -37,7 +37,7 @@ export const ReviewResult: React.FC<Props> = ({
       <div className="text-center text-white text-8xl">データがありません</div>
     );
 
-  const isCorrect = status(data.status);
+  const isCorrect = answerStatus(data.status);
   const result = isCorrect === "合格済み" ? "合格です！！" : "不合格です！";
   return (
     <div

@@ -35,13 +35,13 @@ export const GET = async (request: NextRequest, { params }: Props) => {
         { error: "lesson情報の取得に失敗しました" },
         { status: 404 }
       );
-    const questionsWithStatus = lesson.questions.map(question => ({
+    const answerStatus = lesson.questions.map(question => ({
       ...question,
       status: question.answers[0]?.status || null,
     }));
 
     return NextResponse.json<QuestionsResponse>(
-      { questions: questionsWithStatus },
+      { questions: answerStatus },
       { status: 200 }
     );
   } catch (e) {

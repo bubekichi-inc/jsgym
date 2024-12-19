@@ -10,12 +10,14 @@ import { CodeEditor } from "./CodeEditor";
 import { ConsoleType } from "./ConsoleType";
 import { PaginationControls } from "./PaginationControls";
 import { language } from "@/app/_utils/language";
-import { status } from "@/app/_utils/status";
+import { answerStatus } from "@/app/_utils/answerStatus";
 import { LogType } from "../_types/LogType";
 import { useCodeExecutor } from "@/app/_hooks/useCodeExecutor";
 import { useParams } from "next/navigation";
 import { useQuestions } from "@/app/_hooks/useQuestions";
 import { useQuestion } from "@/app/_hooks/useQuestion";
+import { Status } from "@/app/_types/Status";
+import { StatusBadge } from "@/app/_components/StatusBadge";
 type ContentAreaProps = {
   answerCode: string;
   setAnswerCode: (value: string) => void;
@@ -52,14 +54,9 @@ export const ContentArea: React.FC<ContentAreaProps> = ({
   const currentQuestionNumber = questions.questions.findIndex(
     q => q.id === parseInt(questionId as string, 10)
   );
-  const statusMap = {
-    合格済み: "text-blue-500",
-    再提出: "text-red-500",
-    未提出: "text-black",
-  };
-
-  const answerStatus = data.answer ? status(data.answer?.status) : "未提出";
-  const statusColor = statusMap[answerStatus] || "text-black";
+  const currentStatus: Status = data.answer
+    ? answerStatus(data.answer.status)
+    : "未提出";
   const example = data.question.example ? `例）${data.question.example}` : "";
   return (
     <div className="flex w-full px-6 py-5 h-full">
@@ -72,9 +69,7 @@ export const ContentArea: React.FC<ContentAreaProps> = ({
           <div className="text-2xl font-bold ">{`問題${
             currentQuestionNumber + 1
           }`}</div>
-          <div className={`text-lg text-[#4B4B4B] ${statusColor}`}>
-            {answerStatus}
-          </div>
+          <StatusBadge status={currentStatus} />
         </div>
         <h2 className="text-4xl">{data.question.title}</h2>
         <div className="font-bold">{data.question.content}</div>
