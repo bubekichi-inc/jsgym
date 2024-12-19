@@ -1,4 +1,5 @@
-import { Header } from "../_components/Header";
+"use client";
+import { Header } from "@/app/_components/Header";
 export default function CoursesLayout({
   children,
 }: Readonly<{

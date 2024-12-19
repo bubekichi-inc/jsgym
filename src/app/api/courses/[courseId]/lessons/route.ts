@@ -1,16 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { buildPrisma } from "@/app/_utils/prisma";
 import { LessonsResponse } from "../_types/RessonsResponse";
+import { getCurrentUser } from "@/app/api/_utils/getCurrentUser";
+import { buildError } from "@/app/api/_utils/buildError";
 
 interface Props {
   params: Promise<{
     courseId: string;
   }>;
 }
-export const GET = async (req: NextRequest, { params }: Props) => {
+export const GET = async (request: NextRequest, { params }: Props) => {
   const prisma = await buildPrisma();
   const { courseId } = await params;
   try {
+    await getCurrentUser({ request });
     const course = await prisma.course.findUnique({
       where: {
         id: parseInt(courseId, 10),
@@ -31,8 +34,6 @@ export const GET = async (req: NextRequest, { params }: Props) => {
       { status: 200 }
     );
   } catch (e) {
-    if (e instanceof Error) {
-      return NextResponse.json({ error: e.message }, { status: 400 });
-    }
+    return buildError(e);
   }
 };

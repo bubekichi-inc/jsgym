@@ -1,3 +1,11 @@
+import { supabase } from "./supabase";
+
+const getAccessToken = async () => {
+  const { data, error } = await supabase.auth.getSession();
+  if (error) throw new Error("セッション情報がありません");
+  if (!data.session) throw new Error("セッション情報がありません");
+  return data.session.access_token;
+};
 export const api = {
   post: async <RequestType, ResponseType>(
     endpoint: string,
@@ -8,6 +16,7 @@ export const api = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: await getAccessToken(),
         },
         body: JSON.stringify(payload),
       });
@@ -36,6 +45,7 @@ export const api = {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: await getAccessToken(),
         },
         body: JSON.stringify(payload),
       });
@@ -56,6 +66,7 @@ export const api = {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
+          Authorization: await getAccessToken(),
         },
       });
 
