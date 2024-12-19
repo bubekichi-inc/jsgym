@@ -23,7 +23,7 @@ export const POST = async (request: NextRequest) => {
     await prisma.user.create({
       data: {
         supabaseUserId: data.user.id,
-        name: data.user.user_metadata.id,
+        name: data.user.user_metadata.full_name,
         email: data.user.user_metadata.email,
       },
     });
