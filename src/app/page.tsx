@@ -8,7 +8,6 @@ import { useEffect } from 'react'
 export default function Home() {
   const router = useRouter()
   const { session, isLoading } = useSupabaseSession()
-
   useEffect(() => {
     if (isLoading) return
     if (session) {
