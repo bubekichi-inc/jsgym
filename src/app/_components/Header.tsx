@@ -3,6 +3,8 @@ import { supabase } from "../_utils/supabase";
 import { useRouter } from "next/navigation";
 import { Button } from "./Button";
 import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExternalLink } from "@fortawesome/free-solid-svg-icons";
 export const Header: React.FC = () => {
   const { replace } = useRouter();
   const logout = async () => {
@@ -20,6 +22,14 @@ export const Header: React.FC = () => {
       <Link className="font-bold" href={"/"}>
         ShiftB code
       </Link>
+      <a
+        href="https://docs.google.com/spreadsheets/d/1tNUMeAZxxfQEe4PFOD8v-jlzeWHNCOke_-jM2GnLEPI/edit?usp=sharing"
+        target="_blank"
+        className="bg-blue-500 text-white py-2 px-4 rounded-lg font-bold text-lg"
+      >
+        フィードバックはこちら
+        <FontAwesomeIcon icon={faExternalLink} className="ml-2" />
+      </a>
       <Button type="button" onClick={logout} variant="bg-blue">
         ログアウト
       </Button>
