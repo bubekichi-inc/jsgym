@@ -11,10 +11,10 @@ datasource db {
 model User {
   id              String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   supabaseUserId  String          @unique
-  name            String?
-  email           String?
   createdAt       DateTime        @default(now()) @map("created_at")
   updatedAt       DateTime        @updatedAt @map("updated_at")
+  email           String?
+  name            String?
   answerHistories AnswerHistory[]
   answers         Answer[]
 
@@ -70,8 +70,8 @@ model Answer {
   user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   messages   Message[]
 
-  @@map("answers")
   @@unique([userId, questionId])
+  @@map("answers")
 }
 
 model AnswerHistory {
