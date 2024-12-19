@@ -19,7 +19,7 @@ interface Props {
   answerId: string | null;
   setAnswerId: (answerId: string | null) => void;
   setAnswerCode: (value: string) => void;
-  mutate: KeyedMutator<QuestionResponse>;
+  mutate: KeyedMutator<QuestionResponse | undefined>;
   status: StatusType | undefined;
   onResetSuccess: () => void;
 }
