@@ -17,15 +17,16 @@ export const BreadCrumbs: React.FC = () => {
   return (
     <nav>
       <ol className="flex items-center gap-2">
-        <li className="flex items-center gap-2">
+        {/* <li className="flex items-center gap-2">
           <Link href={`/courses`} className="underline">
             コース一覧
           </Link>
           <span>&gt;</span>
-        </li>
+        </li> */}
         <li className="flex items-center gap-2">
-          <Link href={`/courses/${data.course.id}`} className="underline">
-            {language(data.course.name)}
+          <Link href={`/courses/6/2`} className="underline">
+            {/* {language(data.course.name)} */}
+            問題一覧
           </Link>
           <span>&gt;</span>
         </li>

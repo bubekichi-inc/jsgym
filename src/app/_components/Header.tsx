@@ -19,7 +19,7 @@ export const Header: React.FC = () => {
   };
   return (
     <header className="w-full flex justify-between items-center h-[72px] p-6 shadow-sm fixed top-0 bg-white bg-opacity-50 z-10">
-      <Link className="font-bold" href={"/"}>
+      <Link className="font-bold" href={"/courses/6/2"}>
         ShiftB code
       </Link>
       <a
