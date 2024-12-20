@@ -1,4 +1,3 @@
-import { Question } from "@/app/api/_types/Question";
 import { useRouter, useParams } from "next/navigation";
 import { useQuestions } from "@/app/_hooks/useQuestions";
 

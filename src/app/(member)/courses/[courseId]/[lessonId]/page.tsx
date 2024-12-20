@@ -1,6 +1,8 @@
 "use client";
 import { useParams } from "next/navigation";
 import { useQuestions } from "@/app/_hooks/useQuestions";
+import { answerStatus } from "@/app/_utils/answerStatus";
+import { StatusBadge } from "@/app/_components/StatusBadge";
 import Link from "next/link";
 export default function Lesson() {
   const { courseId, lessonId } = useParams();
@@ -20,7 +22,10 @@ export default function Lesson() {
           key={question.id}
           className=" shadow-md"
         >
-          <div className="pl-2">{`問題${index + 1}`}</div>
+          <div className="pl-2 px-3 flex justify-between">
+            <div>問題{index + 1}</div>
+            <StatusBadge status={answerStatus(question.status)} />
+          </div>
           <div className="p-5">{question.content}</div>
         </Link>
       ))}

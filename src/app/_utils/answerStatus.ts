@@ -1,7 +1,7 @@
 import { StatusType } from "@prisma/client";
 import { Status } from "../_types/Status";
 
-export const status = (status: StatusType | null): Status => {
+export const answerStatus = (status: StatusType | null): Status => {
   switch (status) {
     case StatusType.DRAFT:
       return "未提出";

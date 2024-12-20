@@ -13,7 +13,7 @@ export const GET = async (request: NextRequest, { params }: Props) => {
   const prisma = await buildPrisma();
   const { lessonId } = await params;
   try {
-    await getCurrentUser({ request });
+    const user = await getCurrentUser({ request });
     const lesson = await prisma.lesson.findUnique({
       where: {
         id: parseInt(lessonId, 10),
@@ -21,6 +21,11 @@ export const GET = async (request: NextRequest, { params }: Props) => {
       include: {
         questions: {
           orderBy: { id: "asc" },
+          include: {
+            answers: {
+              where: { userId: user.id },
+            },
+          },
         },
       },
     });
@@ -30,9 +35,13 @@ export const GET = async (request: NextRequest, { params }: Props) => {
         { error: "lesson情報の取得に失敗しました" },
         { status: 404 }
       );
+    const answerStatus = lesson.questions.map(question => ({
+      ...question,
+      status: question.answers[0]?.status || null,
+    }));
 
     return NextResponse.json<QuestionsResponse>(
-      { questions: lesson.questions },
+      { questions: answerStatus },
       { status: 200 }
     );
   } catch (e) {
