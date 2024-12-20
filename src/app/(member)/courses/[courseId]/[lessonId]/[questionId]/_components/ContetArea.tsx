@@ -52,28 +52,32 @@ export const ContentArea: React.FC<ContentAreaProps> = ({
   if (questions.questions.length === 0)
     return <div className="text-center">問題がありません</div>;
   const currentQuestionNumber = questions.questions.findIndex(
-    q => q.id === parseInt(questionId as string, 10)
+    (q) => q.id === parseInt(questionId as string, 10)
   );
   const currentStatus: Status = data.answer
     ? answerStatus(data.answer.status)
     : "未提出";
   const example = data.question.example ? `例）${data.question.example}` : "";
   return (
-    <div className="flex w-full px-6 py-5 h-full">
-      <div className="flex gap-5 flex-col w-2/5 pr-10">
-        <div className="flex justify-between">
-          <BreadCrumbs />
-          <PaginationControls />
+    <div className="flex gap-6 w-full px-6 py-5 h-full">
+      <div className="w-2/5">
+        <div className="flex gap-14 flex-col">
+          <div className="flex justify-between items-center">
+            <BreadCrumbs />
+            <PaginationControls />
+          </div>
+          <div className="flex flex-col gap-6">
+            <div className="flex gap-4 items-center">
+              <div className="text-2xl font-bold ">{`問題${
+                currentQuestionNumber + 1
+              }`}</div>
+              <StatusBadge status={currentStatus} />
+            </div>
+            <h2 className="text-4xl">{data.question.title}</h2>
+            <div className="font-bold">{data.question.content}</div>
+            <div className="font-bold">{example}</div>
+          </div>
         </div>
-        <div className="flex justify-between items-center">
-          <div className="text-2xl font-bold ">{`問題${
-            currentQuestionNumber + 1
-          }`}</div>
-          <StatusBadge status={currentStatus} />
-        </div>
-        <h2 className="text-4xl">{data.question.title}</h2>
-        <div className="font-bold">{data.question.content}</div>
-        <div className="font-bold">{example}</div>
       </div>
       <div className="w-3/5 h-full">
         <div className="relative">

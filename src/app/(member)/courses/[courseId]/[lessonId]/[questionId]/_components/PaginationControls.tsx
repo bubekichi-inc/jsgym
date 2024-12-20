@@ -9,7 +9,7 @@ export const PaginationControls: React.FC = () => {
   if (data.questions.length === 0)
     return <div className="text-center">問題がありません</div>;
   const currentIndex = data.questions.findIndex(
-    question => question.id === parseInt(questionId as string, 10)
+    (question) => question.id === parseInt(questionId as string, 10)
   );
   // 現在が最初または最後かを判定
   const isFirstQuestion = currentIndex === 0;
