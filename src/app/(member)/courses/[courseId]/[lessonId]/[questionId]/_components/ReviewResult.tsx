@@ -41,7 +41,7 @@ export const ReviewResult: React.FC<Props> = ({
   const result = isCorrect === "合格済み" ? "合格です！！" : "不合格です！";
   return (
     <div
-      className="relative h-[90%] w-4/5 bg-white p-10 text-black"
+      className="relative h-[90%] max-w-[800px] bg-white p-10 text-black"
       onClick={(e) => e.stopPropagation()}
     >
       <h2 className="pb-5 text-center text-4xl font-bold">{result}</h2>
