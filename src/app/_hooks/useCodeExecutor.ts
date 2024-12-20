@@ -31,13 +31,22 @@ export const useCodeExecutor = (
             const setupConsole = () => {
               const originalLog = console.log;
               console.log = (...args) => {
-                window.parent.postMessage({ type: 'log', messages: args }, '*');
+              const formattedArgs = args.map(arg =>
+                  typeof arg === 'object' ? JSON.stringify(arg, null, 2) : arg
+                );
+                window.parent.postMessage({ type: 'log', messages: formattedArgs.join(' ') }, '*');
               };
               console.error = (...args) => {
-                window.parent.postMessage({ type: 'error', messages: args }, '*');
+                const formattedArgs = args.map(arg =>
+                  typeof arg === 'object' ? JSON.stringify(arg, null, 2) : arg
+                );
+                window.parent.postMessage({ type: 'error', messages: formattedArgs.join(' ') }, '*');
               };
               console.warn = (...args) => {
-                window.parent.postMessage({ type: 'warn', messages: args }, '*');
+                const formattedArgs = args.map(arg =>
+                  typeof arg === 'object' ? JSON.stringify(arg, null, 2) : arg
+                );
+                window.parent.postMessage({ type: 'warn', messages: formattedArgs.join(' ') }, '*');
               };
 
               try {
