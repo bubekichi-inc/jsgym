@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { LessonsResponse } from "../_types/RessonsResponse";
 import { buildPrisma } from "@/app/_utils/prisma";
-import { buildError } from "@/app/api/_utils/buildError";
+import { LessonsResponse } from "../_types/RessonsResponse";
 import { getCurrentUser } from "@/app/api/_utils/getCurrentUser";
+import { buildError } from "@/app/api/_utils/buildError";
 
 interface Props {
   params: Promise<{
@@ -28,7 +28,7 @@ export const GET = async (request: NextRequest, { params }: Props) => {
       );
     return NextResponse.json<LessonsResponse>(
       {
-        lessons: course?.lessons,
+        lessons: course.lessons,
         course: { id: course.id, name: course.name },
       },
       { status: 200 }

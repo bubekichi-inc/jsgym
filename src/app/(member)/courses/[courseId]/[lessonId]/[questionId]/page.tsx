@@ -25,7 +25,7 @@ export default function Question() {
   }, [data]);
 
   const addLog = (type: LogType, message: string) => {
-    setExecutionResult((prevLogs) => [...prevLogs, { type, message }]);
+    setExecutionResult(prevLogs => [...prevLogs, { type, message }]);
   };
 
   const resetLogs = () => {

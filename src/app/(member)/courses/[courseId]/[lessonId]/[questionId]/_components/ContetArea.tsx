@@ -5,7 +5,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { LogType } from "../_types/LogType";
 import { BreadCrumbs } from "./Breadcrumbs";
 import { CodeEditor } from "./CodeEditor";
@@ -18,6 +18,7 @@ import { useQuestions } from "@/app/_hooks/useQuestions";
 import { Status } from "@/app/_types/Status";
 import { answerStatus } from "@/app/_utils/answerStatus";
 import { language } from "@/app/_utils/language";
+import * as monaco from "monaco-editor";
 
 type ContentAreaProps = {
   answerCode: string;
@@ -40,6 +41,8 @@ export const ContentArea: React.FC<ContentAreaProps> = ({
     lessonId: lessonId as string,
   });
 
+  const [validation, setValidation] = useState(false);
+
   useEffect(() => {
     if (!data?.answer) return;
     setAnswerCode(data.answer.answer);
@@ -53,12 +56,13 @@ export const ContentArea: React.FC<ContentAreaProps> = ({
   if (questions.questions.length === 0)
     return <div className="text-center">問題がありません</div>;
   const currentQuestionNumber = questions.questions.findIndex(
-    (q) => q.id === parseInt(questionId as string, 10)
+    q => q.id === parseInt(questionId as string, 10)
   );
   const currentStatus: Status = data.answer
     ? answerStatus(data.answer.status)
     : "未提出";
   const example = data.question.example ? `例）${data.question.example}` : "";
+
   return (
     <div className="flex size-full gap-6 px-6 py-5">
       <div className="w-2/5">
@@ -87,14 +91,18 @@ export const ContentArea: React.FC<ContentAreaProps> = ({
             value={answerCode}
             onChange={setAnswerCode}
             editerHeight="50vh"
+            setValidation={setValidation}
           />
           <button
             type="button"
-            className="absolute bottom-4 right-6 rounded-md bg-blue-400 px-6 py-2 text-white"
+            className={`absolute bottom-4 right-6 rounded-md px-6 py-2 text-white ${
+              validation ? "bg-blue-400" : "bg-gray-500"
+            }`}
             onClick={() => {
               resetLogs();
               executeCode(answerCode);
             }}
+            disabled={validation}
           >
             実行
           </button>
