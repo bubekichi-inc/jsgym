@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { ChatMessage as ChatMessageType } from "../_types/ChatMessage";
-import { api } from "@/app/_utils/api";
 import { useFetch } from "@/app/_hooks/useFetch";
+import { api } from "@/app/_utils/api";
 import {
   MessageRequest,
   MessagesReasponse,

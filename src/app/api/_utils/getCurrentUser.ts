@@ -1,6 +1,6 @@
-import { supabase } from "@/app/_utils/supabase";
-import { buildPrisma } from "@/app/_utils/prisma";
 import { NextRequest } from "next/server";
+import { buildPrisma } from "@/app/_utils/prisma";
+import { supabase } from "@/app/_utils/supabase";
 export const getCurrentUser = async ({ request }: { request: NextRequest }) => {
   const token = request.headers.get("Authorization") ?? "";
   if (!token) {

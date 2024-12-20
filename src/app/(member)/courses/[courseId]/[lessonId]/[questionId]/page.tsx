@@ -1,11 +1,13 @@
 "use client";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ButtonArea } from "./_components/ButtonArea";
 import { ContentArea } from "./_components/ContetArea";
-import { useQuestion } from "@/app/_hooks/useQuestion";
-import { useParams } from "next/navigation";
 import { LogType } from "./_types/LogType";
+import { useQuestion } from "@/app/_hooks/useQuestion";
+
 type LogObj = { type: LogType; message: string };
+
 export default function Question() {
   const { questionId } = useParams();
   const [answerId, setAnswerId] = useState<string | null>(null);
@@ -23,7 +25,7 @@ export default function Question() {
   }, [data]);
 
   const addLog = (type: LogType, message: string) => {
-    setExecutionResult(prevLogs => [...prevLogs, { type, message }]);
+    setExecutionResult((prevLogs) => [...prevLogs, { type, message }]);
   };
 
   const resetLogs = () => {

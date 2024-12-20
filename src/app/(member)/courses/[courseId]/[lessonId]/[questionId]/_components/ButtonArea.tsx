@@ -3,9 +3,9 @@ import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import type { KeyedMutator } from "swr";
-import { Button } from "@/app/_components/Button";
 import { ChatMessage } from "../_types/ChatMessage";
 import { ReviewModal } from "./ReviewModal";
+import { Button } from "@/app/_components/Button";
 import { api } from "@/app/_utils/api";
 import {
   CodeReviewResponse,
@@ -108,7 +108,7 @@ export const ButtonArea: React.FC<Props> = ({
   return (
     <>
       <Toaster position="top-right" />
-      <div className="bg-white px-6 flex gap-7 fixed bottom-0 h-[91px] justify-between items-center w-full">
+      <div className="fixed bottom-0 flex h-[91px] w-full items-center justify-between gap-7 bg-white px-6">
         <button type="button" onClick={prev}>{`< 問題一覧に戻る`}</button>
         <div className="flex gap-7">
           {startOverButton && (

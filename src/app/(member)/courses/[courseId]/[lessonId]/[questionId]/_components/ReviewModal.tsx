@@ -24,8 +24,8 @@ export const ReviewModal: React.FC<Props> = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       {isLoading ? (
-        <div className="flex justify-center items-center w-full h-full">
-          <p className="text-white font-bold text-4xl">レビュー中・・・</p>
+        <div className="flex size-full items-center justify-center">
+          <p className="text-4xl font-bold text-white">レビュー中・・・</p>
         </div>
       ) : (
         <ReviewResult

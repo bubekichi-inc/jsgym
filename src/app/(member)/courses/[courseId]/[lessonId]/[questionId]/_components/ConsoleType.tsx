@@ -3,7 +3,7 @@ interface Props {
 }
 export const ConsoleType: React.FC<Props> = ({ text }) => {
   return (
-    <div className="bg-[#CBCBCB] text-black w-[86px] h-[34px] flex justify-center items-center">
+    <div className="flex h-[34px] w-[86px] items-center justify-center bg-[#CBCBCB] text-black">
       <div>{text}</div>
     </div>
   );

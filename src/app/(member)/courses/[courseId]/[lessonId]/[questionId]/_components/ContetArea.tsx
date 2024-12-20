@@ -4,20 +4,21 @@ import {
   faCircleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useParams } from "next/navigation";
 import { useEffect } from "react";
+import { LogType } from "../_types/LogType";
 import { BreadCrumbs } from "./Breadcrumbs";
 import { CodeEditor } from "./CodeEditor";
 import { ConsoleType } from "./ConsoleType";
 import { PaginationControls } from "./PaginationControls";
-import { language } from "@/app/_utils/language";
-import { answerStatus } from "@/app/_utils/answerStatus";
-import { LogType } from "../_types/LogType";
-import { useCodeExecutor } from "@/app/_hooks/useCodeExecutor";
-import { useParams } from "next/navigation";
-import { useQuestions } from "@/app/_hooks/useQuestions";
-import { useQuestion } from "@/app/_hooks/useQuestion";
-import { Status } from "@/app/_types/Status";
 import { StatusBadge } from "@/app/_components/StatusBadge";
+import { useCodeExecutor } from "@/app/_hooks/useCodeExecutor";
+import { useQuestion } from "@/app/_hooks/useQuestion";
+import { useQuestions } from "@/app/_hooks/useQuestions";
+import { Status } from "@/app/_types/Status";
+import { answerStatus } from "@/app/_utils/answerStatus";
+import { language } from "@/app/_utils/language";
+
 type ContentAreaProps = {
   answerCode: string;
   setAnswerCode: (value: string) => void;
@@ -59,15 +60,15 @@ export const ContentArea: React.FC<ContentAreaProps> = ({
     : "未提出";
   const example = data.question.example ? `例）${data.question.example}` : "";
   return (
-    <div className="flex gap-6 w-full px-6 py-5 h-full">
+    <div className="flex size-full gap-6 px-6 py-5">
       <div className="w-2/5">
-        <div className="flex gap-14 flex-col">
-          <div className="flex justify-between items-center">
+        <div className="flex flex-col gap-14">
+          <div className="flex items-center justify-between">
             <BreadCrumbs />
             <PaginationControls />
           </div>
           <div className="flex flex-col gap-6">
-            <div className="flex gap-4 items-center">
+            <div className="flex items-center gap-4">
               <div className="text-2xl font-bold ">{`問題${
                 currentQuestionNumber + 1
               }`}</div>
@@ -79,7 +80,7 @@ export const ContentArea: React.FC<ContentAreaProps> = ({
           </div>
         </div>
       </div>
-      <div className="w-3/5 h-full">
+      <div className="h-full w-3/5">
         <div className="relative">
           <CodeEditor
             language={language(data.course.name)}
@@ -89,7 +90,7 @@ export const ContentArea: React.FC<ContentAreaProps> = ({
           />
           <button
             type="button"
-            className="bg-blue-400 text-white rounded-md absolute bottom-4 right-6 px-6 py-2"
+            className="absolute bottom-4 right-6 rounded-md bg-blue-400 px-6 py-2 text-white"
             onClick={() => {
               resetLogs();
               executeCode(answerCode);
@@ -103,9 +104,9 @@ export const ContentArea: React.FC<ContentAreaProps> = ({
           sandbox="allow-scripts allow-modals"
           className="hidden"
         />
-        <div className="bg-[#333333] h-[20vh] mt-6 overflow-y-scroll">
+        <div className="mt-6 h-[20vh] overflow-y-scroll bg-[#333333]">
           <ConsoleType text="ログ" />
-          <div className="text-white px-4">
+          <div className="px-4 text-white">
             {executionResult.map((item, index) => (
               <div
                 key={index}
@@ -119,13 +120,13 @@ export const ContentArea: React.FC<ContentAreaProps> = ({
               >
                 {item.type === "warn" && (
                   <FontAwesomeIcon
-                    className="text-yellow-400 mr-2"
+                    className="mr-2 text-yellow-400"
                     icon={faTriangleExclamation}
                   />
                 )}
                 {item.type === "error" && (
                   <FontAwesomeIcon
-                    className="text-red-500 mr-2"
+                    className="mr-2 text-red-500"
                     icon={faCircleExclamation}
                   />
                 )}

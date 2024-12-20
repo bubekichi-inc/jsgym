@@ -1,6 +1,6 @@
+import { useChat } from "../_hooks/useChat";
 import { ChatMessage as ChatMessageType } from "../_types/ChatMessage";
 import { ChatMessage } from "./ChatMessage";
-import { useChat } from "../_hooks/useChat";
 import { answerStatus } from "@/app/_utils/answerStatus";
 interface Props {
   chatMessages: ChatMessageType[];
@@ -25,26 +25,26 @@ export const ReviewResult: React.FC<Props> = ({
   } = useChat(chatMessages, setChatMessages, answerId);
 
   if (isLoading)
-    return <div className="text-center text-white text-4xl">読込み中... </div>;
+    return <div className="text-center text-4xl text-white">読込み中... </div>;
   if (error)
     return (
-      <div className="text-center text-white text-8xl">
+      <div className="text-center text-8xl text-white">
         チャットデータの読み込みに失敗しました
       </div>
     );
   if (!data)
     return (
-      <div className="text-center text-white text-8xl">データがありません</div>
+      <div className="text-center text-8xl text-white">データがありません</div>
     );
 
   const isCorrect = answerStatus(data.status);
   const result = isCorrect === "合格済み" ? "合格です！！" : "不合格です！";
   return (
     <div
-      className="bg-white w-4/5 h-[90%] p-10 relative text-black"
-      onClick={e => e.stopPropagation()}
+      className="relative h-[90%] w-4/5 bg-white p-10 text-black"
+      onClick={(e) => e.stopPropagation()}
     >
-      <h2 className="text-4xl font-bold pb-5 text-center">{result}</h2>
+      <h2 className="pb-5 text-center text-4xl font-bold">{result}</h2>
       <h3 className="pb-5 font-bold">コードレビュー</h3>
       <div className="h-[70%]">
         <div className="h-full overflow-y-scroll">
@@ -57,9 +57,9 @@ export const ReviewResult: React.FC<Props> = ({
         <form onSubmit={sendMessage}>
           <textarea
             value={message}
-            onChange={e => setMessage(e.target.value)}
-            onClick={e => e.stopPropagation()}
-            className="absolute bottom-6 border p-4 w-[90%] rounded-md h-auto"
+            onChange={(e) => setMessage(e.target.value)}
+            onClick={(e) => e.stopPropagation()}
+            className="absolute bottom-6 h-auto w-[90%] rounded-md border p-4"
             placeholder="メッセージを送る"
             onKeyDown={handleKeyDown}
             disabled={isSubmitting}

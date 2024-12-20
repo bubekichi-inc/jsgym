@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { buildPrisma } from "@/app/_utils/prisma";
 import { LessonsResponse } from "../_types/RessonsResponse";
-import { getCurrentUser } from "@/app/api/_utils/getCurrentUser";
+import { buildPrisma } from "@/app/_utils/prisma";
 import { buildError } from "@/app/api/_utils/buildError";
+import { getCurrentUser } from "@/app/api/_utils/getCurrentUser";
 
 interface Props {
   params: Promise<{

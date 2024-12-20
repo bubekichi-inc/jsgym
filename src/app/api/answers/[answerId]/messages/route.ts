@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { buildPrisma } from "@/app/_utils/prisma";
-import { MessagesReasponse } from "../../_types/Messages";
-import { MessageRequest } from "../../_types/Messages";
+import { MessagesReasponse, MessageRequest } from "../../_types/Messages";
 import { AIReviewService } from "@/app/_serevices/AIReviewService";
 import { Message } from "@/app/_types/Message";
-import { getCurrentUser } from "@/app/api/_utils/getCurrentUser";
+import { buildPrisma } from "@/app/_utils/prisma";
 import { buildError } from "@/app/api/_utils/buildError";
+import { getCurrentUser } from "@/app/api/_utils/getCurrentUser";
 interface Props {
   params: Promise<{
     answerId: string;
@@ -67,7 +66,7 @@ export const POST = async (request: NextRequest, { params }: Props) => {
       take: 10,
     });
 
-    const openAIMessages: Message[] = messageHistory.map(message => ({
+    const openAIMessages: Message[] = messageHistory.map((message) => ({
       role: message.sender === "USER" ? "user" : "assistant",
       content: message.message,
     }));

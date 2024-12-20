@@ -1,9 +1,10 @@
 "use client";
+import Link from "next/link";
 import { useParams } from "next/navigation";
+import { StatusBadge } from "@/app/_components/StatusBadge";
 import { useQuestions } from "@/app/_hooks/useQuestions";
 import { answerStatus } from "@/app/_utils/answerStatus";
-import { StatusBadge } from "@/app/_components/StatusBadge";
-import Link from "next/link";
+
 export default function Lesson() {
   const { courseId, lessonId } = useParams();
   const { data, error } = useQuestions({ lessonId: lessonId as string });
@@ -20,7 +21,7 @@ export default function Lesson() {
         <Link
           href={`/courses/${courseId}/${lessonId}/${question.id}`}
           key={question.id}
-          className="border border-gray-500 p-4 shadow-md flex flex-col gap-2"
+          className="flex flex-col gap-2 border border-gray-500 p-4 shadow-md"
         >
           <div className="flex items-center gap-4">
             <div className="font-bold">問題{index + 1}</div>

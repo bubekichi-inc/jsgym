@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { buildPrisma } from "@/app/_utils/prisma";
-import { getCurrentUser } from "../../_utils/getCurrentUser";
 import { buildError } from "../../_utils/buildError";
+import { getCurrentUser } from "../../_utils/getCurrentUser";
+import { buildPrisma } from "@/app/_utils/prisma";
 interface Props {
   params: Promise<{
     answerId: string;

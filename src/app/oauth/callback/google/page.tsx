@@ -1,8 +1,8 @@
 "use client";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { api } from "@/app/_utils/api";
 import { GoogleRequest } from "@/app/api/oauth/google/_types/GoogleRequest";
-import { useEffect, useState } from "react";
 export default function OAuthCallback() {
   const router = useRouter();
   const [accessToken, setAccessToken] = useState<string | null>(null);
@@ -30,7 +30,7 @@ export default function OAuthCallback() {
       }
     };
     postUser();
-  }, [accessToken]);
+  }, [accessToken, router]);
 
   return <div className="text-center">読込み中...</div>;
 }

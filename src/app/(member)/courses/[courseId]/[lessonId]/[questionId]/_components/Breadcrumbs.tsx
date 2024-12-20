@@ -1,8 +1,8 @@
 "use client";
+
 import Link from "next/link";
-import { useQuestion } from "@/app/_hooks/useQuestion";
-import { language } from "@/app/_utils/language";
 import { useParams } from "next/navigation";
+import { useQuestion } from "@/app/_hooks/useQuestion";
 
 export const BreadCrumbs: React.FC = () => {
   const { questionId } = useParams();

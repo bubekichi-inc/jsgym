@@ -36,9 +36,9 @@ export const ChatMessage: React.FC<Props> = ({ chatMessage }) => {
   );
 
   return (
-    <div className="pb-2 font-bold flex gap-2">
+    <div className="flex gap-2 pb-2 font-bold">
       <div className="">
-        <div className={`${circleColor} w-6 h-6 rounded-full`}></div>
+        <div className={`${circleColor} size-6 rounded-full`}></div>
       </div>
       <div className="w-full">
         <div>{senderLabel}</div>
@@ -56,7 +56,7 @@ const formatMessageWithCodeBlocks = (
   let lastIndex = 0;
   const formattedMessage: JSX.Element[] = [];
 
-  matches.forEach(match => {
+  matches.forEach((match) => {
     const matchIndex = match.index ?? 0;
 
     // 通常のテキスト部分
@@ -74,15 +74,15 @@ const formatMessageWithCodeBlocks = (
       formattedMessage.push(
         <div
           key={`header-${matchIndex}`}
-          className="bg-gray-300 p-1 rounded-t-md flex justify-between items-center"
+          className="flex items-center justify-between rounded-t-md bg-gray-300 p-1"
         >
-          <div className="text-sm pl-2">{language}</div>
+          <div className="pl-2 text-sm">{language}</div>
           <button
             type="button"
             onClick={() => handleCopy(code)}
-            className="text-sm px-2 py-1 rounded font-light"
+            className="rounded px-2 py-1 text-sm font-light"
           >
-            <FontAwesomeIcon className="text-sm pr-1" icon={faCopy} />
+            <FontAwesomeIcon className="pr-1 text-sm" icon={faCopy} />
             Code copy
           </button>
         </div>
@@ -92,7 +92,7 @@ const formatMessageWithCodeBlocks = (
     formattedMessage.push(
       <pre
         key={`code-${matchIndex}`}
-        className="bg-black text-white p-2 rounded-b-md w-full"
+        className="w-full rounded-b-md bg-black p-2 text-white"
       >
         <code className="block">{code}</code>
       </pre>

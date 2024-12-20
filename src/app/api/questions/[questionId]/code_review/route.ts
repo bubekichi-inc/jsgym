@@ -1,10 +1,10 @@
+import { Sender, StatusType } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { CodeReviewRequest, CodeReviewResponse } from "./_types/CodeReview";
-import { buildPrisma } from "@/app/_utils/prisma";
-import { Sender, StatusType } from "@prisma/client";
 import { AIReviewService } from "@/app/_serevices/AIReviewService";
-import { getCurrentUser } from "@/app/api/_utils/getCurrentUser";
+import { buildPrisma } from "@/app/_utils/prisma";
 import { buildError } from "@/app/api/_utils/buildError";
+import { getCurrentUser } from "@/app/api/_utils/getCurrentUser";
 
 interface Props {
   params: Promise<{

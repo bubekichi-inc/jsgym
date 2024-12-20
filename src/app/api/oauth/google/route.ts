@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { GoogleRequest } from "./_types/GoogleRequest";
 import { buildPrisma } from "@/app/_utils/prisma";
 import { supabase } from "@/app/_utils/supabase";
 import { buildError } from "@/app/api/_utils/buildError";
-import { GoogleRequest } from "./_types/GoogleRequest";
+
 export const POST = async (request: NextRequest) => {
   const prisma = await buildPrisma();
   const { accessToken }: GoogleRequest = await request.json();

@@ -1,10 +1,11 @@
 "use client";
-import { supabase } from "../_utils/supabase";
-import { useRouter } from "next/navigation";
-import { Button } from "./Button";
-import Link from "next/link";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExternalLink } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { supabase } from "../_utils/supabase";
+import { Button } from "./Button";
+
 export const Header: React.FC = () => {
   const { replace } = useRouter();
   const logout = async () => {
@@ -18,14 +19,14 @@ export const Header: React.FC = () => {
     }
   };
   return (
-    <header className="w-full flex justify-between items-center h-[72px] p-6 shadow-sm fixed top-0 bg-white bg-opacity-50 z-10">
+    <header className="fixed top-0 z-10 flex h-[72px] w-full items-center justify-between bg-white/50 p-6 shadow-sm">
       <Link className="font-bold" href={"/courses/6/2"}>
         ShiftB code
       </Link>
       <a
         href="https://docs.google.com/spreadsheets/d/1tNUMeAZxxfQEe4PFOD8v-jlzeWHNCOke_-jM2GnLEPI/edit?usp=sharing"
         target="_blank"
-        className="bg-blue-500 text-white py-2 px-4 rounded-lg font-bold text-lg flex items-center"
+        className="flex items-center rounded-lg bg-blue-500 px-4 py-2 text-lg font-bold text-white"
       >
         フィードバックはこちら
         <FontAwesomeIcon icon={faExternalLink} className="ml-2 size-5" />

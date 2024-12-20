@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { buildPrisma } from "@/app/_utils/prisma";
-import { CoursesResponse } from "./_types/CoursesResponse";
-import { getCurrentUser } from "../_utils/getCurrentUser";
 import { buildError } from "../_utils/buildError";
+import { getCurrentUser } from "../_utils/getCurrentUser";
+import { CoursesResponse } from "./_types/CoursesResponse";
+import { buildPrisma } from "@/app/_utils/prisma";
 
 export const GET = async (request: NextRequest) => {
   const prisma = await buildPrisma();

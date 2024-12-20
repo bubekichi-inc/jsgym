@@ -37,7 +37,7 @@ export const PaginationControls: React.FC = () => {
       <button
         type="button"
         className={`font-bold ${
-          isFirstQuestion && "opacity-50 cursor-not-allowed"
+          isFirstQuestion && "cursor-not-allowed opacity-50"
         }`}
         onClick={prev}
         disabled={isFirstQuestion}
@@ -47,7 +47,7 @@ export const PaginationControls: React.FC = () => {
       <button
         type="button"
         className={`font-bold ${
-          isLastQuestion && "opacity-50 cursor-not-allowed"
+          isLastQuestion && "cursor-not-allowed opacity-50"
         }`}
         onClick={next}
         disabled={isLastQuestion}
