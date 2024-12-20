@@ -10,6 +10,7 @@ export type QuestionResponse = {
     title: string;
     content: string;
     example?: string | null;
+    template: string;
   };
   answer: {
     id: string;

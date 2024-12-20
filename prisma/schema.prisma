@@ -49,6 +49,7 @@ model Question {
   example         String?
   content         String
   lessonId        Int             @map("lesson_id")
+  template        String
   createdAt       DateTime        @default(now()) @map("created_at")
   updatedAt       DateTime        @updatedAt @map("updated_at")
   answerHistories AnswerHistory[]
