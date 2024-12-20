@@ -13,5 +13,5 @@ const statusMap: Record<Status, string> = {
 export const StatusBadge: React.FC<Props> = ({ status }) => {
   const statusColor = statusMap[status] || "text-black";
 
-  return <div className={`text-lg ${statusColor}`}>{status}</div>;
+  return <div className={`font-bold ${statusColor}`}>{status}</div>;
 };

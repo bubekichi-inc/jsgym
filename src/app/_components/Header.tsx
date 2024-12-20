@@ -25,12 +25,12 @@ export const Header: React.FC = () => {
       <a
         href="https://docs.google.com/spreadsheets/d/1tNUMeAZxxfQEe4PFOD8v-jlzeWHNCOke_-jM2GnLEPI/edit?usp=sharing"
         target="_blank"
-        className="bg-blue-500 text-white py-2 px-4 rounded-lg font-bold text-lg"
+        className="bg-blue-500 text-white py-2 px-4 rounded-lg font-bold text-lg flex items-center"
       >
         フィードバックはこちら
-        <FontAwesomeIcon icon={faExternalLink} className="ml-2" />
+        <FontAwesomeIcon icon={faExternalLink} className="ml-2 size-5" />
       </a>
-      <Button type="button" onClick={logout} variant="bg-blue">
+      <Button type="button" onClick={logout} variant="text-white">
         ログアウト
       </Button>
     </header>

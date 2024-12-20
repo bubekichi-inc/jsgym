@@ -23,9 +23,9 @@ export default function Course() {
           <Link
             href={`/courses/${courseId}/${lesson.id}`}
             key={lesson.id}
-            className=" shadow-md"
+            className="border border-gray-500 p-4 shadow-md"
           >
-            <div className="p-5">{lesson.name}</div>
+            <div className="">{lesson.name}</div>
           </Link>
         ))}
       </div>

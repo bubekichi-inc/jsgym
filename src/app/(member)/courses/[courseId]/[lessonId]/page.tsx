@@ -15,18 +15,18 @@ export default function Lesson() {
   if (data.questions.length === 0)
     return <div className="text-center">問題がありません</div>;
   return (
-    <div className="flex flex-col gap-10 p-10">
+    <div className="flex flex-col gap-4 p-10">
       {data.questions.map((question, index) => (
         <Link
           href={`/courses/${courseId}/${lessonId}/${question.id}`}
           key={question.id}
-          className=" shadow-md"
+          className="border border-gray-500 p-4 shadow-md flex flex-col gap-2"
         >
-          <div className="pl-2 px-3 flex justify-between">
-            <div>問題{index + 1}</div>
+          <div className="flex items-center gap-4">
+            <div className="font-bold">問題{index + 1}</div>
             <StatusBadge status={answerStatus(question.status)} />
           </div>
-          <div className="p-5">{question.content}</div>
+          <div className="">{question.title}</div>
         </Link>
       ))}
     </div>

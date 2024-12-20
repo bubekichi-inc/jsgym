@@ -14,13 +14,13 @@ export const CoursesList: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-10 p-10">
-      {data.courses.map(course => (
+      {data.courses.map((course) => (
         <Link
           href={`/courses/${course.id}`}
           key={course.id}
-          className=" shadow-md"
+          className="border border-gray-500 p-4 shadow-md"
         >
-          <div className="p-5">{language(course.name)}</div>
+          <div className="">{language(course.name)}</div>
         </Link>
       ))}
     </div>

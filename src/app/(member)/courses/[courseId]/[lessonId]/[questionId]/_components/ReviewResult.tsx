@@ -59,7 +59,7 @@ export const ReviewResult: React.FC<Props> = ({
             value={message}
             onChange={e => setMessage(e.target.value)}
             onClick={e => e.stopPropagation()}
-            className="absolute bottom-6 border pt-2 pl-6 w-[90%] rounded-md h-auto"
+            className="absolute bottom-6 border p-4 w-[90%] rounded-md h-auto"
             placeholder="メッセージを送る"
             onKeyDown={handleKeyDown}
             disabled={isSubmitting}

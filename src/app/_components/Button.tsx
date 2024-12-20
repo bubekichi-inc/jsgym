@@ -1,6 +1,12 @@
 import { ReactNode, ComponentPropsWithRef, forwardRef } from "react";
 
-type Variant = "text-blue" | "text-red" | "bg-gray" | "bg-blue";
+type Variant =
+  | "text-blue"
+  | "text-red"
+  | "text-black"
+  | "text-white"
+  | "bg-gray"
+  | "bg-blue";
 
 interface Props extends Omit<ComponentPropsWithRef<"button">, "className"> {
   variant: Variant;
@@ -15,6 +21,10 @@ export const Button = forwardRef<HTMLButtonElement, Props>(
           return "text-blue-500";
         case "text-red":
           return "text-red-500";
+        case "text-black":
+          return "text-black";
+        case "text-white":
+          return "text-white";
         case "bg-gray":
           return "bg-[#777777] text-white";
         case "bg-blue":
@@ -24,11 +34,7 @@ export const Button = forwardRef<HTMLButtonElement, Props>(
       }
     };
     return (
-      <button
-        ref={ref}
-        {...props}
-        className={`w-[162px] h-[46px] rounded-md ${className()}`}
-      >
+      <button ref={ref} {...props} className={`px-4 py-2 rounded-md ${className()}`}>
         {children}
       </button>
     );
