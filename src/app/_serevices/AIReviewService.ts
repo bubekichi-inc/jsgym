@@ -18,6 +18,8 @@ export class AIReviewService {
 1行目はレビュー方針に沿って回答出来ていて、かつ処理が正しいかをboolean型(isCorrect)で,
 2行目はレビュー内容のstring型(reviewComment)で一問一答形式ではなく文章として問題点があれば問題点を答えてください。
 
+問題は${question}で、回答は${answer}です。
+
 レビューの方針は以下です。
 ①正しく動作すること
 ②処理の順番として
@@ -38,8 +40,7 @@ export class AIReviewService {
   3. その他コメント（あれば）
   4. 改善後のコード
 ・レビュー方針というワードは使ってほしくないです。
-・すべて日本語でお願いします。
-・問題は${question},回答は${answer}`;
+・すべて日本語でお願いします。`;
   }
 
   public static async getCodeReview({
