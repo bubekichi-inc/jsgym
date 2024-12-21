@@ -45,9 +45,8 @@ export const ReviewResult: React.FC<Props> = ({
       onClick={(e) => e.stopPropagation()}
     >
       <h2 className="pb-5 text-center text-4xl font-bold">{result}</h2>
-      <h3 className="pb-5 font-bold">コードレビュー</h3>
       <div className="h-[70%]">
-        <div className="h-full overflow-y-scroll">
+        <div className="flex h-full flex-col gap-8 overflow-y-scroll">
           {chatMessages.map((message, index) => (
             <ChatMessage chatMessage={message} key={index} />
           ))}
