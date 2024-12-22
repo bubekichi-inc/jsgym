@@ -19,10 +19,14 @@ export const ReviewModal: React.FC<Props> = ({
   chatMessages,
   setChatMessages,
 }) => {
+  const handleClose = (event: React.MouseEvent<HTMLElement>) => {
+    if (isSubmitting) return;
+    onClose(event);
+  };
   //コードレビューの場合→!answerId、レビュー開く場合→isSubmitting
   const isLoading = !answerId || isSubmitting;
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={handleClose}>
       {isLoading ? (
         <div className="flex size-full items-center justify-center">
           <p className="text-4xl font-bold text-white">レビュー中・・・</p>

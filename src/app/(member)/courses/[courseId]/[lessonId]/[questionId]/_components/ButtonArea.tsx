@@ -99,11 +99,6 @@ export const ButtonArea: React.FC<Props> = ({
     router.replace(`/courses/${courseId}/${lessonId}`);
   };
 
-  const onClose = () => {
-    if (isSubmitting) return;
-    setIsOpen(false);
-  };
-
   //合格済OR未提出の場合はやり直すボタン出さない
   const startOverButton = status !== StatusType.DRAFT && status !== undefined;
 
@@ -158,7 +153,7 @@ export const ButtonArea: React.FC<Props> = ({
       <ReviewModal
         isCorrect={isCorrect}
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={() => setIsOpen(false)}
         isSubmitting={isSubmitting}
         answerId={answerId}
         chatMessages={chatMessages}
