@@ -5,12 +5,19 @@ type Message = {
   sender: Sender;
   answerId: string;
 };
-export type CodeReviewResponse = {
+
+export type AIReviewJsonResponse = {
   isCorrect: boolean;
-  reviewComment: string;
+  overview: string;
+  goodPoints: string;
+  badPoints: string;
+  improvedCode: string;
+};
+
+export type CodeReviewResponse = {
   messages: Message[];
   answerId: string;
-};
+} & AIReviewJsonResponse;
 
 export type CodeReviewRequest = {
   question: string;

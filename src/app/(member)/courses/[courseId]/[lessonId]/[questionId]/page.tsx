@@ -19,13 +19,16 @@ export default function Question() {
 
   useEffect(() => {
     if (!data) return;
-    if (!data.answer) return;
-    setAnswerCode(data.answer.answer);
-    setAnswerId(data.answer.id);
+    if (data.answer) {
+      setAnswerCode(data.answer.answer);
+      setAnswerId(data.answer.id);
+    } else {
+      setAnswerCode(data.question.template);
+    }
   }, [data]);
 
   const addLog = (type: LogType, message: string) => {
-    setExecutionResult((prevLogs) => [...prevLogs, { type, message }]);
+    setExecutionResult(prevLogs => [...prevLogs, { type, message }]);
   };
 
   const resetLogs = () => {

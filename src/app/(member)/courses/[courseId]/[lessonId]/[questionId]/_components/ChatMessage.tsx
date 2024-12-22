@@ -36,14 +36,12 @@ export const ChatMessage: React.FC<Props> = ({ chatMessage }) => {
   );
 
   return (
-    <div className="flex gap-2 pb-2 font-bold">
-      <div className="">
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center gap-2 font-bold">
         <div className={`${circleColor} size-6 rounded-full`}></div>
-      </div>
-      <div className="w-full">
         <div>{senderLabel}</div>
-        <div className="whitespace-pre-wrap">{formattedMessage}</div>
       </div>
+      <div className="whitespace-pre-wrap pl-8">{formattedMessage}</div>
     </div>
   );
 };

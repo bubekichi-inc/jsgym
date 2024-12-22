@@ -47,6 +47,7 @@ export const GET = async (request: NextRequest, { params }: Props) => {
           title: question.title,
           content: question.content,
           example: question.example,
+          template: question.template,
         },
         answer,
       },

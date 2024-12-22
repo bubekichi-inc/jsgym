@@ -1,12 +1,12 @@
 import OpenAI from "openai";
 import { Message } from "../_types/Message";
-import { CodeReviewResponse } from "../api/questions/[questionId]/code_review/_types/CodeReview";
+import { AIReviewJsonResponse } from "../api/questions/[questionId]/code_review/_types/CodeReview";
 export class AIReviewService {
   private static openai = new OpenAI({
     apiKey: process.env.OPENAI_SECRET_KEY,
   });
 
-  private static buildPrompt({
+  public static buildPrompt({
     question,
     answer,
   }: {
@@ -16,8 +16,12 @@ export class AIReviewService {
     return `
 # 概要
 コードレビューしてJSON形式で出力してください。
-1行目はレビュー方針に沿って回答出来ていて、かつ処理が正しいかをboolean型(isCorrect)で,
-2行目はレビュー内容のstring型(reviewComment)で一問一答形式ではなく文章として問題点があれば問題点を答えてください。
+key名は以下の通りです。
+isCorrect: レビュー方針に沿って回答出来ていて、かつ処理が正しいかをbooleanで返してください。
+overview: isCollectの理由と、全体の総括をstringで返してください。
+goodPoints: 処理の中で具体的に良かった点をstringで返してください。
+badPoints: 処理の中で具体的に悪かった点をstringで返してください。回答が完璧な場合は「特にありません。」と記載してください。
+improvedCode: 改善後のコードをstringで返してください。回答が完璧な場合は「特にありません。」と記載してください。
 
 # 問題と回答
 問題は${question}で、回答は${answer}です。
@@ -35,12 +39,7 @@ export class AIReviewService {
 ・変数名や関数名が適切であること(適切でなければ適切な命名例を書いてください。)
 
 # 補足
-・reviewCommentの中には、適切に改行コードも含めてください。
-・reviewCommentの記載順は以下の通りとしてください。
-  1. 合格or不合格の判断理由と全体コメント
-  2. 問題点の列挙と詳細説明。
-  3. その他コメント（あれば）
-  4. 改善後のコード
+・stringで返すものは、適切に改行コードも含めてください。
 ・レビュー方針というワードは使ってほしくないです。
 ・すべて日本語でお願いします。`;
   }
@@ -51,7 +50,7 @@ export class AIReviewService {
   }: {
     question: string;
     answer: string;
-  }): Promise<CodeReviewResponse> {
+  }): Promise<AIReviewJsonResponse> {
     const response = await this.openai.chat.completions.create({
       model: "gpt-4o-mini-2024-07-18",
       messages: [
@@ -67,6 +66,7 @@ export class AIReviewService {
 
     const content = response.choices[0]?.message?.content || "{}";
 
+    console.log(content);
     return JSON.parse(content);
   }
 
@@ -86,5 +86,25 @@ export class AIReviewService {
     });
 
     return response.choices[0]?.message?.content || "";
+  }
+
+  public static buildSystemMessage({
+    overview,
+    goodPoints,
+    badPoints,
+    improvedCode,
+  }: Omit<AIReviewJsonResponse, "isCorrect">): string {
+    const message = `⚪︎全体
+${overview}
+
+⚪︎良かった点
+${goodPoints}
+
+⚪︎悪かった点
+${badPoints}
+
+⚪︎改善後のコード
+${improvedCode}`;
+    return message;
   }
 }
