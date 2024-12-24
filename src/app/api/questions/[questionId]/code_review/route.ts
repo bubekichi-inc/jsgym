@@ -19,11 +19,15 @@ export const POST = async (request: NextRequest, { params }: Props) => {
     const body = await request.json();
     const { question, answer }: CodeReviewRequest = body;
 
-    const { isCorrect, overview, goodPoints, badPoints, improvedCode } =
-      await AIReviewService.getCodeReview({
-        question,
-        answer,
-      });
+    const res = await AIReviewService.getCodeReview({
+      question,
+      answer,
+    });
+
+    if (!res) throw new Error("AIレビューに失敗しました");
+
+    const { isCorrect, overview, goodPoints, badPoints, improvedCode } = res;
+
     const status = isCorrect ? StatusType.PASSED : StatusType.REVISION_REQUIRED;
 
     //ステータスを更新する

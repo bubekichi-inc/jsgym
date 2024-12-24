@@ -27,7 +27,8 @@
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.4.1",
     "react-modal": "^3.16.1",
-    "swr": "^2.2.5"
+    "swr": "^2.2.5",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@types/node": "^20",

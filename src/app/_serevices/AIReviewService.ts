@@ -1,9 +1,20 @@
 import OpenAI from "openai";
+import { zodResponseFormat } from "openai/helpers/zod";
+import { z } from "zod";
 import { Message } from "../_types/Message";
 import { AIReviewJsonResponse } from "../api/questions/[questionId]/code_review/_types/CodeReview";
+
 export class AIReviewService {
   private static openai = new OpenAI({
     apiKey: process.env.OPENAI_SECRET_KEY,
+  });
+
+  private static CodeReview = z.object({
+    isCorrect: z.boolean(),
+    overview: z.string(),
+    goodPoints: z.string(),
+    badPoints: z.string(),
+    improvedCode: z.string(),
   });
 
   public static buildPrompt({
@@ -50,8 +61,8 @@ improvedCode: 改善後のコードをstringで返してください。回答が
   }: {
     question: string;
     answer: string;
-  }): Promise<AIReviewJsonResponse> {
-    const response = await this.openai.chat.completions.create({
+  }): Promise<AIReviewJsonResponse | null> {
+    const response = await this.openai.beta.chat.completions.parse({
       model: "gpt-4o-mini-2024-07-18",
       messages: [
         { role: "user", content: this.buildPrompt({ question, answer }) },
@@ -61,13 +72,12 @@ improvedCode: 改善後のコードをstringで返してください。回答が
       top_p: 1,
       frequency_penalty: 0,
       presence_penalty: 0,
-      response_format: { type: "json_object" },
+      response_format: zodResponseFormat(this.CodeReview, "event"),
     });
 
-    const content = response.choices[0]?.message?.content || "{}";
+    const content = response.choices[0].message.parsed;
 
-    console.log(content);
-    return JSON.parse(content);
+    return content;
   }
 
   public static async getChatResponse({
@@ -75,9 +85,16 @@ improvedCode: 改善後のコードをstringで返してください。回答が
   }: {
     openAIMessages: Message[];
   }) {
+    const messages: Message[] = [
+      {
+        role: "system",
+        content: "JSON形式で返さないでください。",
+      },
+      ...openAIMessages,
+    ];
     const response = await this.openai.chat.completions.create({
       model: "gpt-4o-mini-2024-07-18",
-      messages: openAIMessages,
+      messages,
       temperature: 1,
       max_tokens: 16384,
       top_p: 1,
@@ -85,6 +102,7 @@ improvedCode: 改善後のコードをstringで返してください。回答が
       presence_penalty: 0,
     });
 
+    console.log(response.choices[0]?.message?.content);
     return response.choices[0]?.message?.content || "";
   }
 
