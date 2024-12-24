@@ -17,10 +17,11 @@ export const CodeEditor: React.FC<Props> = ({
 }) => {
   return (
     <Editor
+      className="bg-[#1e1e1e] py-6"
       height={editerHeight}
       defaultLanguage={language}
       value={value}
-      onChange={value => value && onChange(value)}
+      onChange={(value) => value && onChange(value)}
       theme="vs-dark"
       options={{
         fontSize: 20,

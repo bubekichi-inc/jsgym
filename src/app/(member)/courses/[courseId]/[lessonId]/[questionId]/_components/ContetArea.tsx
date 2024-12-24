@@ -9,7 +9,6 @@ import { useEffect } from "react";
 import { LogType } from "../_types/LogType";
 import { BreadCrumbs } from "./Breadcrumbs";
 import { CodeEditor } from "./CodeEditor";
-import { ConsoleType } from "./ConsoleType";
 import { PaginationControls } from "./PaginationControls";
 import { StatusBadge } from "@/app/_components/StatusBadge";
 import { useCodeExecutor } from "@/app/_hooks/useCodeExecutor";
@@ -80,8 +79,11 @@ export const ContentArea: React.FC<ContentAreaProps> = ({
           </div>
         </div>
       </div>
-      <div className="h-full w-3/5">
+      <div className="flex h-full w-3/5 flex-col gap-6">
         <div className="relative">
+          <div className="bg-gray-200 p-2 text-xs font-bold">
+            コードエディタ
+          </div>
           <CodeEditor
             language={language(data.course.name)}
             value={answerCode}
@@ -99,40 +101,42 @@ export const ContentArea: React.FC<ContentAreaProps> = ({
             実行
           </button>
         </div>
-        <iframe
-          ref={iframeRef}
-          sandbox="allow-scripts allow-modals"
-          className="hidden"
-        />
-        <div className="mt-6 h-[20vh] overflow-y-scroll bg-[#333333]">
-          <ConsoleType text="コンソール" />
-          <div className="px-4 text-white">
-            {executionResult.map((item, index) => (
-              <div
-                key={index}
-                className={`${
-                  item.type === "warn"
-                    ? "text-yellow-400"
-                    : item.type === "error"
-                    ? "text-red-500"
-                    : ""
-                }`}
-              >
-                {item.type === "warn" && (
-                  <FontAwesomeIcon
-                    className="mr-2 text-yellow-400"
-                    icon={faTriangleExclamation}
-                  />
-                )}
-                {item.type === "error" && (
-                  <FontAwesomeIcon
-                    className="mr-2 text-red-500"
-                    icon={faCircleExclamation}
-                  />
-                )}
-                {item.message}
-              </div>
-            ))}
+        <div className="">
+          <div className="bg-gray-200 p-2 text-xs font-bold">コンソール</div>
+          <div className="h-[20vh] overflow-y-scroll bg-[#333333]">
+            <div className="px-4 text-white">
+              {executionResult.map((item, index) => (
+                <div
+                  key={index}
+                  className={`${
+                    item.type === "warn"
+                      ? "text-yellow-400"
+                      : item.type === "error"
+                      ? "text-red-500"
+                      : ""
+                  }`}
+                >
+                  {item.type === "warn" && (
+                    <FontAwesomeIcon
+                      className="mr-2 text-yellow-400"
+                      icon={faTriangleExclamation}
+                    />
+                  )}
+                  {item.type === "error" && (
+                    <FontAwesomeIcon
+                      className="mr-2 text-red-500"
+                      icon={faCircleExclamation}
+                    />
+                  )}
+                  {item.message}
+                </div>
+              ))}
+            </div>
+            <iframe
+              ref={iframeRef}
+              sandbox="allow-scripts allow-modals"
+              className="hidden"
+            />
           </div>
         </div>
       </div>
