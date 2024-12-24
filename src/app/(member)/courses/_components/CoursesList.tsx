@@ -18,9 +18,9 @@ export const CoursesList: React.FC = () => {
         <Link
           href={`/courses/${course.id}`}
           key={course.id}
-          className="border border-gray-500 p-4 shadow-md"
+          className="bg-white p-6 font-bold shadow-card"
         >
-          <div className="">{language(course.name)}</div>
+          <div className="">{language(course.name)}コース</div>
         </Link>
       ))}
     </div>

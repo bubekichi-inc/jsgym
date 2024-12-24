@@ -21,7 +21,7 @@ export default function Lesson() {
         <Link
           href={`/courses/${courseId}/${lessonId}/${question.id}`}
           key={question.id}
-          className="flex flex-col gap-2 border border-gray-500 p-4 shadow-md"
+          className="flex flex-col gap-2 bg-white p-6 font-bold shadow-card"
         >
           <div className="flex items-center gap-4">
             <div className="font-bold">問題{index + 1}</div>

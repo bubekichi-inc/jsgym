@@ -31,7 +31,7 @@ export const Header: React.FC = () => {
         フィードバックはこちら
         <FontAwesomeIcon icon={faExternalLink} className="ml-2 size-5" />
       </a>
-      <Button type="button" onClick={logout} variant="text-white">
+      <Button type="button" onClick={logout} variant="text-black">
         ログアウト
       </Button>
     </header>
