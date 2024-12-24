@@ -105,7 +105,7 @@ export const ContentArea: React.FC<ContentAreaProps> = ({
           className="hidden"
         />
         <div className="mt-6 h-[20vh] overflow-y-scroll bg-[#333333]">
-          <ConsoleType text="ログ" />
+          <ConsoleType text="コンソール" />
           <div className="px-4 text-white">
             {executionResult.map((item, index) => (
               <div
