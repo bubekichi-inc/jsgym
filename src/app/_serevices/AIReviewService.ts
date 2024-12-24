@@ -100,7 +100,7 @@ ${overview}
 ⚪︎良かった点
 ${goodPoints}
 
-⚪︎悪かった点
+⚪︎改善できる点
 ${badPoints}
 
 ⚪︎改善後のコード
