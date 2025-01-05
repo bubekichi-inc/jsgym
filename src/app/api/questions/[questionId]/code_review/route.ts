@@ -57,7 +57,14 @@ export const POST = async (request: NextRequest, { params }: Props) => {
         userId,
       },
     });
-
+    const userMessage = AIReviewService.buildPrompt({ question, answer });
+    await prisma.message.create({
+      data: {
+        message: userMessage,
+        sender: Sender.USER,
+        answerId: answerData.id,
+      },
+    });
     const systemMessage = AIReviewService.buildSystemMessage({
       overview,
       goodPoints,
@@ -65,24 +72,15 @@ export const POST = async (request: NextRequest, { params }: Props) => {
       improvedCode,
     });
 
-    const userMessage = AIReviewService.buildPrompt({ question, answer });
-
     //メッセージにも登録(履歴送るときに備えて、回答なども含める)
     //同時に回答履歴登録
     await Promise.all([
-      prisma.message.createMany({
-        data: [
-          {
-            message: userMessage,
-            sender: Sender.USER,
-            answerId: answerData.id,
-          },
-          {
-            message: systemMessage,
-            sender: Sender.SYSTEM,
-            answerId: answerData.id,
-          },
-        ],
+      prisma.message.create({
+        data: {
+          message: systemMessage,
+          sender: Sender.SYSTEM,
+          answerId: answerData.id,
+        },
       }),
       prisma.answerHistory.create({
         data: {
