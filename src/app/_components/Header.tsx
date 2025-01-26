@@ -31,9 +31,16 @@ export const Header: React.FC = () => {
         フィードバックはこちら
         <FontAwesomeIcon icon={faExternalLink} className="ml-2 size-5" />
       </a>
-      <Button type="button" onClick={logout} variant="text-black">
-        ログアウト
-      </Button>
+      <div>
+        <Link href="/settings/profile">
+          <Button type="button" variant="text-black">
+            設定
+          </Button>
+        </Link>
+        <Button type="button" onClick={logout} variant="text-black">
+          ログアウト
+        </Button>
+      </div>
     </header>
   );
 };
