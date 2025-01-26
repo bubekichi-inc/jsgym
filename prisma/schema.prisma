@@ -15,6 +15,12 @@ model User {
   updatedAt       DateTime        @updatedAt @map("updated_at")
   email           String?
   name            String?
+
+  stripeCustomerId  String   @unique @map("stripe_customer_id")
+  points            Int      @default(0)
+  
+  pointTransactions  PointTransaction[]
+
   answerHistories AnswerHistory[]
   answers         Answer[]
 
@@ -97,7 +103,35 @@ model Message {
   updatedAt DateTime @updatedAt @map("updated_at")
   answer    Answer   @relation(fields: [answerId], references: [id], onDelete: Cascade)
 
+
+  pointTransaction   PointTransaction? 
+
   @@map("messages")
+}
+
+model PointTransaction {
+  id               Int       @id @default(autoincrement())
+  userId           String    @map("user_id") @db.Uuid
+  kind             PointTransactionKind
+  points           Int
+  messageId        String?   @map("message_id") @unique
+  stripePaymentId  String?   @map("stripe_payment_id")
+  detail           String?
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+  
+  user             User      @relation(fields: [userId], references: [id])
+  message          Message?  @relation(fields: [messageId], references: [id])
+
+  @@map("point_transactions")
+}
+
+enum PointTransactionKind {
+  USE
+  PURCHASE
+  PURCHASE_CANCELLED
+  BONUS
+  COMPENSATION
 }
 
 enum CourseType {
