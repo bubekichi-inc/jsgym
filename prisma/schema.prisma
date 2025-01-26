@@ -20,6 +20,8 @@ model User {
   points            Int      @default(0)
   
   pointTransactions  PointTransaction[]
+  iconUrl         String? 
+  receiptName     String?          
 
   answerHistories AnswerHistory[]
   answers         Answer[]
