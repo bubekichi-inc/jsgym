@@ -1,24 +1,32 @@
+import { CourseType } from "@prisma/client";
 import { buildPrisma } from "@/app/_utils/prisma";
 
 const createData = async () => {
   const prisma = await buildPrisma();
   try {
-    const course = await prisma.course.create({
-      data: {
-        name: "JAVA_SCRIPT",
-      },
+    const courseData = { id: 1, name: CourseType.JAVA_SCRIPT };
+
+    await prisma.course.upsert({
+      where: { id: 1 },
+      create: courseData,
+      update: courseData,
     });
 
-    const lesson = await prisma.lesson.create({
-      data: {
-        name: "初級",
-        courseId: course.id,
-      },
+    const lessonData = {
+      id: 1,
+      name: "初級",
+      courseId: 1,
+    };
+    await prisma.lesson.upsert({
+      where: { id: 1 },
+      create: lessonData,
+      update: lessonData,
     });
 
     const questions = [
       {
-        lessonId: lesson.id,
+        id: 1,
+        lessonId: 1,
         content:
           "引数として受け取った数値を2倍にして返す関数を作成して実行してください。console.logで実行結果を表示してください。",
         template:
@@ -27,7 +35,8 @@ const createData = async () => {
         example: "引数: 2, 返り値: 4",
       },
       {
-        lessonId: lesson.id,
+        id: 2,
+        lessonId: 1,
         content:
           "最大値を返す関数を作成して実行してください。console.logで実行結果を表示してください",
         template:
@@ -36,7 +45,8 @@ const createData = async () => {
         example: "引数: 1, 3, 2, 5, 4, 返り値: 5",
       },
       {
-        lessonId: lesson.id,
+        id: 3,
+        lessonId: 1,
         content:
           "配列を引数として受け取り、偶数のみを返す関数を作成して実行してください。console.logで実行結果を表示してください",
         template:
@@ -45,7 +55,8 @@ const createData = async () => {
         example: "引数: [1, 2, 3, 4, 5, 6], 返り値: [2, 4, 6]",
       },
       {
-        lessonId: lesson.id,
+        id: 4,
+        lessonId: 1,
         content:
           "配列内の重複を除去する関数を作成してください。console.logで実行結果を表示してください。",
         template:
@@ -55,7 +66,8 @@ const createData = async () => {
           "引数: [1, 2, 3, 2, 4, 5, 6, 5, 6], 返り値: [1, 2, 3, 4, 5, 6]",
       },
       {
-        lessonId: lesson.id,
+        id: 5,
+        lessonId: 1,
         content:
           "テンプレートリテラルを使用して、引数で受け取った名前を元に「こんにちは、○○さん」と出力する関数を作成してください。console.logで実行結果を表示してください。",
         template:
@@ -64,7 +76,7 @@ const createData = async () => {
         example: "引数: '太郎', 出力: こんにちは、太郎さん",
       },
       {
-        lessonId: lesson.id,
+        lessonId: 1,
         content:
           "配列を引数として受け取り、各要素を2倍にした新しい配列を返す関数を作成してください。console.logで実行結果を表示してください。",
         template:
@@ -73,7 +85,7 @@ const createData = async () => {
         example: "引数: [1, 2, 3], 返り値: [2, 4, 6]",
       },
       {
-        lessonId: lesson.id,
+        lessonId: 1,
         content:
           "文字列の配列を受け取り、index番号を付けたオブジェクトを返す関数を作成してください。console.logで実行結果を表示してください。",
         template:
@@ -83,7 +95,7 @@ const createData = async () => {
           "引数: ['a', 'b', 'c'], 返り値: [{ index: 0, value: 'a' }, { index: 1, value: 'b' }, { index: 2, value: 'c' }]",
       },
       {
-        lessonId: lesson.id,
+        lessonId: 1,
         content:
           "名前と年齢オブジェクトの配列を受け取り、ageが第二引数で受け取った数字と一致するオブジェクトを返す関数を作成してください。console.logで実行結果を表示してください。",
         template:
@@ -93,7 +105,7 @@ const createData = async () => {
           "第一引数: [{ name: '太郎', age: 20 }, { name: '次郎', age: 30 }, { name: '三郎', age: 40 }], 第二引数: 30, 返り値: { name: '次郎', age: 30 }",
       },
       {
-        lessonId: lesson.id,
+        lessonId: 1,
         content:
           "配列を引数として受け取り、偶数のみをフィルタリングし、その後各要素を2倍にした新しい配列を返す関数を作成してください。console.logで実行結果を表示してください。",
         template:
@@ -102,7 +114,7 @@ const createData = async () => {
         example: "引数: [1, 2, 3, 4, 5, 6], 返り値: [4, 8, 12]",
       },
       {
-        lessonId: lesson.id,
+        lessonId: 1,
         content:
           "配列を引数として受け取り、各要素を2倍にし、その後偶数のみをフィルタリングし、最後に要素を昇順にソートした新しい配列を返す関数を作成してください。console.logで実行結果を表示してください。",
         template:
@@ -112,9 +124,15 @@ const createData = async () => {
       },
     ];
 
-    await prisma.question.createMany({
-      data: questions,
-    });
+    await Promise.all(
+      questions.map(question =>
+        prisma.question.upsert({
+          where: { id: question.id },
+          create: question,
+          update: question,
+        })
+      )
+    );
   } catch (error) {
     console.error(error);
   } finally {
