@@ -9,22 +9,19 @@ datasource db {
 }
 
 model User {
-  id              String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  supabaseUserId  String          @unique
-  createdAt       DateTime        @default(now()) @map("created_at")
-  updatedAt       DateTime        @updatedAt @map("updated_at")
-  email           String?
-  name            String?
-
-  stripeCustomerId  String?  @map("stripe_customer_id")
-  points            Int      @default(0)
-  
-  pointTransactions  PointTransaction[]
-  iconUrl         String? 
-  receiptName     String?          
-
-  answerHistories AnswerHistory[]
-  answers         Answer[]
+  id                String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  supabaseUserId    String             @unique
+  createdAt         DateTime           @default(now()) @map("created_at")
+  updatedAt         DateTime           @updatedAt @map("updated_at")
+  email             String?
+  name              String?
+  iconUrl           String?
+  receiptName       String?
+  points            Int                @default(0)
+  stripeCustomerId  String?            @map("stripe_customer_id")
+  answerHistories   AnswerHistory[]
+  answers           Answer[]
+  pointTransactions PointTransaction[]
 
   @@map("users")
 }
@@ -97,33 +94,30 @@ model AnswerHistory {
 }
 
 model Message {
-  id        String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  answerId  String   @map("answer_id") @db.Uuid
-  message   String
-  sender    Sender
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  answer    Answer   @relation(fields: [answerId], references: [id], onDelete: Cascade)
-
-
-  pointTransaction   PointTransaction? 
+  id               String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  answerId         String            @map("answer_id") @db.Uuid
+  message          String
+  sender           Sender
+  createdAt        DateTime          @default(now()) @map("created_at")
+  updatedAt        DateTime          @updatedAt @map("updated_at")
+  answer           Answer            @relation(fields: [answerId], references: [id], onDelete: Cascade)
+  pointTransaction PointTransaction?
 
   @@map("messages")
 }
 
 model PointTransaction {
-  id               Int       @id @default(autoincrement())
-  userId           String    @map("user_id") @db.Uuid
-  kind             PointTransactionKind
-  points           Int
-  messageId        String?   @map("message_id") @unique @db.Uuid
-  stripePaymentId  String    @map("stripe_payment_id") @unique
-  detail           String?
-  createdAt        DateTime  @default(now()) @map("created_at")
-  updatedAt        DateTime @updatedAt @map("updated_at")
-  
-  user             User      @relation(fields: [userId], references: [id])
-  message          Message?  @relation(fields: [messageId], references: [id])
+  id              Int                  @id @default(autoincrement())
+  userId          String               @map("user_id") @db.Uuid
+  kind            PointTransactionKind
+  points          Int
+  stripePaymentId String               @unique @map("stripe_payment_id")
+  detail          String?
+  createdAt       DateTime             @default(now()) @map("created_at")
+  updatedAt       DateTime             @updatedAt @map("updated_at")
+  messageId       String?              @unique @map("message_id") @db.Uuid
+  message         Message?             @relation(fields: [messageId], references: [id])
+  user            User                 @relation(fields: [userId], references: [id])
 
   @@map("point_transactions")
 }
