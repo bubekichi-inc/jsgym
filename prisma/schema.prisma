@@ -116,7 +116,7 @@ model PointTransaction {
   userId           String    @map("user_id") @db.Uuid
   kind             PointTransactionKind
   points           Int
-  messageId        String?   @map("message_id") @unique
+  messageId        String?   @map("message_id") @unique @db.Uuid
   stripePaymentId  String?   @map("stripe_payment_id")
   detail           String?
   createdAt        DateTime  @default(now()) @map("created_at")
