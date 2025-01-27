@@ -10,15 +10,17 @@ datasource db {
 
 model User {
   id                String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+//  supabaseUserId    String             @map("supabase_user_id") @unique
   supabaseUserId    String             @unique
-  createdAt         DateTime           @default(now()) @map("created_at")
-  updatedAt         DateTime           @updatedAt @map("updated_at")
+  stripeCustomerId  String             @map("stripe_customer_id") @unique
   email             String?
   name              String?
   iconUrl           String?
-  receiptName       String?
+  receiptName       String?            @map("receipt_name")
   points            Int                @default(0)
-  stripeCustomerId  String             @map("stripe_customer_id") @unique
+  createdAt         DateTime           @default(now()) @map("created_at")
+  updatedAt         DateTime           @updatedAt @map("updated_at")
+
   answerHistories   AnswerHistory[]
   answers           Answer[]
   pointTransactions PointTransaction[]
@@ -31,6 +33,7 @@ model Course {
   name      CourseType
   createdAt DateTime   @default(now()) @map("created_at")
   updatedAt DateTime   @updatedAt @map("updated_at")
+
   lessons   Lesson[]
 
   @@map("courses")
@@ -42,6 +45,7 @@ model Lesson {
   courseId  Int        @map("course_id")
   createdAt DateTime   @default(now()) @map("created_at")
   updatedAt DateTime   @updatedAt @map("updated_at")
+
   course    Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
   questions Question[]
 
@@ -54,9 +58,10 @@ model Question {
   example         String?
   content         String
   lessonId        Int             @map("lesson_id")
+  template        String
   createdAt       DateTime        @default(now()) @map("created_at")
   updatedAt       DateTime        @updatedAt @map("updated_at")
-  template        String
+
   answerHistories AnswerHistory[]
   answers         Answer[]
   lesson          Lesson          @relation(fields: [lessonId], references: [id], onDelete: Cascade)
@@ -100,6 +105,7 @@ model Message {
   sender           Sender
   createdAt        DateTime          @default(now()) @map("created_at")
   updatedAt        DateTime          @updatedAt @map("updated_at")
+
   answer           Answer            @relation(fields: [answerId], references: [id], onDelete: Cascade)
   pointTransaction PointTransaction?
 
@@ -112,10 +118,11 @@ model PointTransaction {
   kind            PointTransactionKind
   points          Int
   stripePaymentId String?              @map("stripe_payment_id")
+  messageId       String?              @unique @map("message_id") @db.Uuid
   detail          String?
   createdAt       DateTime             @default(now()) @map("created_at")
   updatedAt       DateTime             @updatedAt @map("updated_at")
-  messageId       String?              @unique @map("message_id") @db.Uuid
+
   message         Message?             @relation(fields: [messageId], references: [id])
   user            User                 @relation(fields: [userId], references: [id])
 
