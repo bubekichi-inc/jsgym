@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-
 import {
   UserProfileResponse,
   UserProfileUpdateRequest,
@@ -27,9 +26,8 @@ export const GET = async (request: NextRequest) => {
     });
 
     if (!userProfile) {
-      throw new Error("User not found");
+      throw new Error("ユーザーが見つかりません。");
     }
-
     return NextResponse.json(userProfile, { status: 200 });
   } catch (e) {
     return buildError(e);
@@ -39,29 +37,14 @@ export const GET = async (request: NextRequest) => {
 export const PUT = async (request: NextRequest) => {
   try {
     const currentUser = await getCurrentUser({ request });
-
-    const userProfileUpdate: UserProfileUpdateRequest = await request.json();
+    const data: UserProfileUpdateRequest = await request.json();
     // ユーザー情報を更新
-    const updatedUser = api.put<UserProfileUpdateRequest, UserProfileResponse>(
-      `/api/users/${currentUser.id}`, // エンドポイントのURLを適切に設定
-      userProfileUpdate
-    );
+    const updatedUser = await api.put<
+      UserProfileUpdateRequest,
+      UserProfileResponse
+    >(`/api/oauth/google/${currentUser.id}`, data);
 
-    return NextResponse.json(updatedUser, { status: 200 });
-  } catch (e) {
-    return buildError(e);
-  }
-};
-
-export const DELETE = async (request: NextRequest) => {
-  try {
-    const currentUser = await getCurrentUser({ request });
-
-    // iconUrl を削除 (null に設定)
-    const updatedUser = await api.del<UserProfileResponse>(
-      `/api/users/${currentUser.id}/icon`
-    );
-    return NextResponse.json(updatedUser, { status: 200 });
+    return NextResponse.json<UserProfileResponse>(updatedUser, { status: 200 });
   } catch (e) {
     return buildError(e);
   }

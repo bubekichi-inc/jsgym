@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import NextLink from "next/link";
 import React, { useRef, useState } from "react";
 import { useFetch } from "@/app/_hooks/useFetch";
 
@@ -15,7 +16,7 @@ const ProfilePage = () => {
     email: string;
     receiptName: string;
     iconUrl: string;
-  }>("/api/settings/profile");
+  }>("/api/me");
 
   const [formData, setFormData] = useState({
     name: "",
@@ -81,7 +82,7 @@ const ProfilePage = () => {
     if (!validateForm()) return;
 
     try {
-      const response = await fetch("/api/settings/profile", {
+      const response = await fetch("/api/me", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -95,7 +96,7 @@ const ProfilePage = () => {
       console.error("Error updating profile:", err);
     }
   };
-  // アイコン更新
+  // アイコン画像更新
   const handleUpdateIcon = async () => {
     const file = fileInputRef.current?.files?.[0];
     if (!file) {
@@ -107,7 +108,7 @@ const ProfilePage = () => {
     formData.append("icon", file);
 
     try {
-      const response = await fetch("/api/settings/profile/icon", {
+      const response = await fetch("/api/me", {
         method: "POST",
         body: formData,
       });
@@ -120,10 +121,10 @@ const ProfilePage = () => {
       console.error("Error updating icon:", err);
     }
   };
-  // アイコン削除
+  // アイコン画像削除
   const handleDeleteIcon = async () => {
     try {
-      const response = await fetch("/api/settings/profile", {
+      const response = await fetch("/api/me", {
         method: "DELETE",
       });
       if (!response.ok) {
@@ -149,11 +150,27 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="mx-auto flex max-w-3xl flex-col gap-y-6 p-6">
+    <div className="flex flex-col gap-y-6">
       <h2 className="text-3xl font-bold">プロフィール設定</h2>
 
+      <div className="flex gap-x-12">
+        <div className="border-b-2 border-black  pb-1">
+          <h3 className="px-6 text-xl font-bold"> プロフィール</h3>
+        </div>
+        <NextLink
+          href="/settings/points"
+          className="px-6 pb-1 text-xl font-bold text-gray-500"
+        >
+          ポイント購入
+        </NextLink>
+        <NextLink
+          href="#"
+          className="px-6 pb-1 text-xl font-bold text-gray-500"
+        >
+          通知設定
+        </NextLink>
+      </div>
       <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-y-6">
-        {/* ユーザーアイコン */}
         <div>
           <h3 className="mb-4 text-xl font-bold">ユーザーアイコン</h3>
           <div className="flex items-center gap-x-4">

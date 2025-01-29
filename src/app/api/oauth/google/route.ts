@@ -6,6 +6,7 @@ import { supabase } from "@/app/_utils/supabase";
 import { buildError } from "@/app/api/_utils/buildError";
 
 const saveAvatarToBucket = async (avatarUrl: string) => {
+  if (!avatarUrl) return; // avatarUrl が null / undefined の場合は何もしない
   try {
     // 1. Googleからアバター画像をダウンロード
     const response = await fetch(avatarUrl);
@@ -42,13 +43,14 @@ export const POST = async (request: NextRequest) => {
       console.error("Supabase error:", error.message);
       throw new Error("Unauthorized");
     }
+    const avatarUrl = data.user.user_metadata.avatar_url;
     const user = await prisma.user.findUnique({
       where: {
         supabaseUserId: data.user.id,
       },
     });
-    const avatarUrl = data.user.user_metadata.avatar_url;
-    if (user) {
+
+    if (!user) {
       // return NextResponse.json({ message: "既存ユーザー" }, { status: 200 });{
       // 既存ユーザーの場合、アバター情報を更新
       await prisma.user.update({
@@ -71,6 +73,7 @@ export const POST = async (request: NextRequest) => {
     await prisma.user.create({
       data: {
         supabaseUserId: data.user.id,
+        stripeCustomerId: `cus_ReqDummy_${randomBytes(10).toString("hex")}`,
         name: data.user.user_metadata.full_name,
         email: data.user.user_metadata.email,
         iconUrl: avatarUrl,
