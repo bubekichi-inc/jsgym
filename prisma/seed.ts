@@ -1,5 +1,7 @@
 import { CourseType } from "@prisma/client";
-import { buildPrisma } from "@/app/_utils/prisma";
+//相対パスにしないと認識されない
+import { buildPrisma } from "../src/app/_utils/prisma";
+
 type Course = {
   id: number;
   name: CourseType;
@@ -30,6 +32,7 @@ type TableType =
       name: "question";
       data: Question[];
     };
+
 const createData = async () => {
   const prisma = await buildPrisma();
 
@@ -184,11 +187,11 @@ const createData = async () => {
   ];
 
   try {
-    upsertRecords({ updateTable: { name: "course", data: courses } });
-    upsertRecords({ updateTable: { name: "lesson", data: lessons } });
-    upsertRecords({ updateTable: { name: "question", data: questions } });
+    await upsertRecords({ updateTable: { name: "course", data: courses } });
+    await upsertRecords({ updateTable: { name: "lesson", data: lessons } });
+    await upsertRecords({ updateTable: { name: "question", data: questions } });
   } catch (error) {
-    console.error(error);
+    console.error(`エラー発生${error}`);
   } finally {
     await prisma.$disconnect();
   }
