@@ -23,7 +23,7 @@ export default function OAuthCallback() {
           { accessToken }
         );
         //プロトタイプはJS問題一覧へ遷移
-        router.replace("/courses/6/2");
+        router.replace("/courses/1/1");
         return;
       } catch (e) {
         console.error("ユーザー情報の登録に失敗:", e);

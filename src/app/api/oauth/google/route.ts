@@ -1,3 +1,4 @@
+import { randomBytes } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleRequest } from "./_types/GoogleRequest";
 import { buildPrisma } from "@/app/_utils/prisma";
@@ -26,6 +27,7 @@ export const POST = async (request: NextRequest) => {
         supabaseUserId: data.user.id,
         name: data.user.user_metadata.full_name,
         email: data.user.user_metadata.email,
+        stripeCustomerId: `cus_ReqDummy_${randomBytes(10).toString("hex")}`,
       },
     });
 

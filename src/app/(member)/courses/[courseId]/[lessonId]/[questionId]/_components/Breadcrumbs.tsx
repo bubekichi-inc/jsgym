@@ -24,7 +24,7 @@ export const BreadCrumbs: React.FC = () => {
           <span>&gt;</span>
         </li> */}
         <li className="flex items-center gap-2">
-          <Link href={`/courses/6/2`} className="underline">
+          <Link href={`/courses/1/1`} className="underline">
             {/* {language(data.course.name)} */}
             問題一覧
           </Link>
