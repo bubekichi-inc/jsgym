@@ -2,9 +2,18 @@
 import NextLink from "next/link";
 import React from "react";
 import { PointPurchaseButton } from "./_components/PointPurchaseButton";
+import { usePoints } from "@/app/_hooks/usePoints";
 
 const Page: React.FC = () => {
   const [points, setPoints] = React.useState(1000);
+
+  const { data, error } = usePoints();
+  if (error)
+    return (
+      <div className="text-center">
+        ポイント残高の取得中にエラーが発生しました
+      </div>
+    );
 
   const purchasePoints = (amount: number) => {
     console.log(`ポイント購入: ${amount}pt`);
@@ -36,7 +45,11 @@ const Page: React.FC = () => {
         <div className="flex items-center justify-between">
           <h4>保有ポイント</h4>
           <div className="flex items-end gap-x-2">
-            <div className="text-3xl font-bold">{points}</div>
+            {data ? (
+              <div className="text-3xl font-bold">{data.points}</div>
+            ) : (
+              <div className="text-3xl text-gray-500">...取得中...</div>
+            )}
             <div className="font-bold">pt</div>
           </div>
         </div>
@@ -63,6 +76,13 @@ const Page: React.FC = () => {
         <div className="flex flex-col gap-y-1">
           <h4>ポイントについて</h4>
           <div>1回のコードレビュー or 追加の質問で 1pt を消費します。</div>
+        </div>
+
+        <div>
+          <h4>デバッグ</h4>
+          <button className="rounded-md bg-blue-500 px-3 py-1 text-white">
+            処理1
+          </button>
         </div>
       </div>
     </div>
