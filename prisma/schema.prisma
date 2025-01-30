@@ -9,16 +9,20 @@ datasource db {
 }
 
 model User {
-  id              String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  supabaseUserId  String          @unique
-  createdAt       DateTime        @default(now()) @map("created_at")
-  updatedAt       DateTime        @updatedAt @map("updated_at")
-  email           String?
-  name            String?
-  iconUrl         String? 
-  receiptName     String?          
-  answerHistories AnswerHistory[]
-  answers         Answer[]
+  id                String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  supabaseUserId    String             @map("supabase_user_id") @unique
+  stripeCustomerId  String             @map("stripe_customer_id") @unique
+  email             String?
+  name              String?
+  iconUrl           String?            @map("icon_url")
+  receiptName       String?            @map("receipt_name")
+  points            Int                @default(0)
+  createdAt         DateTime           @default(now()) @map("created_at")
+  updatedAt         DateTime           @updatedAt @map("updated_at")
+
+  answerHistories   AnswerHistory[]
+  answers           Answer[]
+  pointTransactions PointTransaction[]
 
   @@map("users")
 }
@@ -28,6 +32,7 @@ model Course {
   name      CourseType
   createdAt DateTime   @default(now()) @map("created_at")
   updatedAt DateTime   @updatedAt @map("updated_at")
+
   lessons   Lesson[]
 
   @@map("courses")
@@ -39,6 +44,7 @@ model Lesson {
   courseId  Int        @map("course_id")
   createdAt DateTime   @default(now()) @map("created_at")
   updatedAt DateTime   @updatedAt @map("updated_at")
+
   course    Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
   questions Question[]
 
@@ -51,9 +57,10 @@ model Question {
   example         String?
   content         String
   lessonId        Int             @map("lesson_id")
+  template        String
   createdAt       DateTime        @default(now()) @map("created_at")
   updatedAt       DateTime        @updatedAt @map("updated_at")
-  template        String
+
   answerHistories AnswerHistory[]
   answers         Answer[]
   lesson          Lesson          @relation(fields: [lessonId], references: [id], onDelete: Cascade)
@@ -91,15 +98,42 @@ model AnswerHistory {
 }
 
 model Message {
-  id        String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  answerId  String   @map("answer_id") @db.Uuid
-  message   String
-  sender    Sender
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  answer    Answer   @relation(fields: [answerId], references: [id], onDelete: Cascade)
+  id               String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  answerId         String            @map("answer_id") @db.Uuid
+  message          String
+  sender           Sender
+  createdAt        DateTime          @default(now()) @map("created_at")
+  updatedAt        DateTime          @updatedAt @map("updated_at")
+
+  answer           Answer            @relation(fields: [answerId], references: [id], onDelete: Cascade)
+  pointTransaction PointTransaction?
 
   @@map("messages")
+}
+
+model PointTransaction {
+  id              Int                  @id @default(autoincrement())
+  userId          String               @map("user_id") @db.Uuid
+  kind            PointTransactionKind
+  points          Int
+  stripePaymentId String?              @map("stripe_payment_id")
+  messageId       String?              @unique @map("message_id") @db.Uuid
+  detail          String?
+  createdAt       DateTime             @default(now()) @map("created_at")
+  updatedAt       DateTime             @updatedAt @map("updated_at")
+
+  message         Message?             @relation(fields: [messageId], references: [id])
+  user            User                 @relation(fields: [userId], references: [id])
+
+  @@map("point_transactions")
+}
+
+enum PointTransactionKind {
+  USE
+  PURCHASE
+  PURCHASE_CANCELLED
+  BONUS
+  COMPENSATION
 }
 
 enum CourseType {
