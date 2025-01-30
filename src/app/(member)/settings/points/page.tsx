@@ -3,10 +3,14 @@ import NextLink from "next/link";
 import React from "react";
 import { PointPurchaseButton } from "./_components/PointPurchaseButton";
 import { usePoints } from "@/app/_hooks/usePoints";
+import { api } from "@/app/_utils/api";
+import {
+  CheckoutSessionRequest,
+  CheckoutSessionResponse,
+  PointPack,
+} from "@/app/api/checkout_session/_types/CheckoutSession";
 
 const Page: React.FC = () => {
-  const [points, setPoints] = React.useState(1000);
-
   const { data, error } = usePoints();
   if (error)
     return (
@@ -15,9 +19,17 @@ const Page: React.FC = () => {
       </div>
     );
 
-  const purchasePoints = (amount: number) => {
-    console.log(`ポイント購入: ${amount}pt`);
-    setPoints(points + amount);
+  const purchasePoints = async (product: PointPack) => {
+    try {
+      const { checkoutSessionUrl } = await api.post<
+        CheckoutSessionRequest,
+        CheckoutSessionResponse
+      >("/api/checkout_session", { pointPack: product });
+      window.location.href = checkoutSessionUrl;
+    } catch (error) {
+      console.error(error);
+      alert("ポイント購入に失敗しました");
+    }
   };
 
   return (
@@ -57,17 +69,17 @@ const Page: React.FC = () => {
           <h4>ポイント購入</h4>
           <div className="flex gap-x-3">
             <PointPurchaseButton
-              amount={10}
+              product={PointPack.PACK_10}
               price={550}
               onClick={purchasePoints}
             />
             <PointPurchaseButton
-              amount={30}
+              product={PointPack.PACK_30}
               price={1100}
               onClick={purchasePoints}
             />
             <PointPurchaseButton
-              amount={100}
+              product={PointPack.PACK_100}
               price={3300}
               onClick={purchasePoints}
             />
