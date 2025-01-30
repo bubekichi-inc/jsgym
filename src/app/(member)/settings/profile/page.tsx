@@ -12,6 +12,7 @@ const ProfilePage = () => {
     isLoading,
     mutate,
   } = useFetch<{
+    id: string;
     name: string;
     email: string;
     receiptName: string;

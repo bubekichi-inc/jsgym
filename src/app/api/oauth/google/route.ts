@@ -1,3 +1,4 @@
+import { randomBytes } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import fetch from "node-fetch"; // Node.jsでHTTPリクエストを行うためのモジュール
 import { GoogleRequest } from "./_types/GoogleRequest";
@@ -6,7 +7,7 @@ import { supabase } from "@/app/_utils/supabase";
 import { buildError } from "@/app/api/_utils/buildError";
 
 const saveAvatarToBucket = async (avatarUrl: string) => {
-  if (!avatarUrl) return; // avatarUrl が null / undefined の場合は何もしない
+  if (!avatarUrl) return; // avatarUrl が null の場合は何もしない
   try {
     // 1. Googleからアバター画像をダウンロード
     const response = await fetch(avatarUrl);
@@ -28,17 +29,20 @@ const saveAvatarToBucket = async (avatarUrl: string) => {
         `Failed to upload avatar to bucket: ${uploadError.message}`
       );
     }
-
-    console.log("Avatar uploaded successfully");
+    // console.log("Avatar uploaded successfully");
   } catch (error) {
     console.error("Error saving avatar to bucket:", error);
   }
+  // console.log("Access Token:");
 };
+
 export const POST = async (request: NextRequest) => {
   const prisma = await buildPrisma();
   const { accessToken }: GoogleRequest = await request.json();
+  console.log(accessToken);
   try {
     const { data, error } = await supabase.auth.getUser(accessToken);
+
     if (error) {
       console.error("Supabase error:", error.message);
       throw new Error("Unauthorized");
@@ -50,7 +54,7 @@ export const POST = async (request: NextRequest) => {
       },
     });
 
-    if (!user) {
+    if (user) {
       // return NextResponse.json({ message: "既存ユーザー" }, { status: 200 });{
       // 既存ユーザーの場合、アバター情報を更新
       await prisma.user.update({
@@ -58,6 +62,9 @@ export const POST = async (request: NextRequest) => {
           supabaseUserId: data.user.id,
         },
         data: {
+          stripeCustomerId: `cus_ReqDummy_${randomBytes(10).toString("hex")}`,
+          points: 0,
+          receiptName: "",
           iconUrl: avatarUrl,
         },
       });
@@ -73,9 +80,11 @@ export const POST = async (request: NextRequest) => {
     await prisma.user.create({
       data: {
         supabaseUserId: data.user.id,
+        points: 0,
         stripeCustomerId: `cus_ReqDummy_${randomBytes(10).toString("hex")}`,
         name: data.user.user_metadata.full_name,
         email: data.user.user_metadata.email,
+        receiptName: "",
         iconUrl: avatarUrl,
       },
     });
