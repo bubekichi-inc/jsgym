@@ -132,6 +132,7 @@ enum PointTransactionKind {
   USE
   PURCHASE
   PURCHASE_CANCELLED
+  FAILED
   BONUS
   COMPENSATION
 }

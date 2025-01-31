@@ -1,4 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
+import { PointService } from "@/app/_serevices/PointService";
 import { buildPrisma } from "@/app/_utils/prisma";
 import { stripe } from "@/app/_utils/stripe";
 import { buildError } from "@/app/api/_utils/buildError";
@@ -53,10 +54,10 @@ export const POST = async (request: NextRequest) => {
         );
       }
       const userId = metadata.app_user_id;
-      const chargedPoint = Number(metadata.point);
+      const chargePoint = Number(metadata.point);
 
       // 3-2. ポイント値のバリデーション
-      if (isNaN(chargedPoint) || chargedPoint <= 0) {
+      if (isNaN(chargePoint) || chargePoint <= 0) {
         console.error("ポイント値がおかしい", {
           eventId: event.id,
           JSON: JSON.stringify(metadata, null, 2),
@@ -69,18 +70,16 @@ export const POST = async (request: NextRequest) => {
 
       // 3-3. データベース更新
       const prisma = await buildPrisma();
-      const user = await prisma.user.update({
-        where: { id: userId },
-        data: {
-          points: {
-            increment: chargedPoint,
-          },
-        },
-      });
+      const pointService = new PointService(prisma);
+      const user = await pointService.chargePointByPurchase(
+        userId,
+        chargePoint,
+        event.data.object.id
+      );
 
       // 成功ログ
       console.info(
-        `■ Payment Succeeded. User "${user.name}" charged ${chargedPoint} pt. New balance: ${user.points} pt.`
+        `■ Payment Succeeded. User "${user.name}" charged ${chargePoint} pt. New balance: ${user.points} pt.`
       );
     }
     return NextResponse.json({ received: true }, { status: 200 });
