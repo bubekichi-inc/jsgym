@@ -2,12 +2,12 @@
 import NextLink from "next/link";
 import React from "react";
 import { PointPurchaseButton } from "./_components/PointPurchaseButton";
+import { PointPackage } from "@/app/_constants/productMaster";
 import { usePoints } from "@/app/_hooks/usePoints";
 import { api } from "@/app/_utils/api";
 import {
   CheckoutSessionRequest,
   CheckoutSessionResponse,
-  PointPack,
 } from "@/app/api/checkout_session/_types/CheckoutSession";
 
 const Page: React.FC = () => {
@@ -19,12 +19,12 @@ const Page: React.FC = () => {
       </div>
     );
 
-  const purchasePoints = async (product: PointPack) => {
+  const purchasePoints = async (pointPackage: PointPackage) => {
     try {
       const { checkoutSessionUrl } = await api.post<
         CheckoutSessionRequest,
         CheckoutSessionResponse
-      >("/api/checkout_session", { pointPack: product });
+      >("/api/checkout_session", { pointPackage });
       window.location.href = checkoutSessionUrl;
     } catch (error) {
       console.error(error);
@@ -68,33 +68,18 @@ const Page: React.FC = () => {
         <div className="flex flex-col gap-y-3">
           <h4>ポイント購入</h4>
           <div className="flex gap-x-3">
-            <PointPurchaseButton
-              product={PointPack.PACK_10}
-              price={550}
-              onClick={purchasePoints}
-            />
-            <PointPurchaseButton
-              product={PointPack.PACK_30}
-              price={1100}
-              onClick={purchasePoints}
-            />
-            <PointPurchaseButton
-              product={PointPack.PACK_100}
-              price={3300}
-              onClick={purchasePoints}
-            />
+            {Object.values(PointPackage).map((pointPackage) => (
+              <PointPurchaseButton
+                key={pointPackage}
+                pointPackage={pointPackage}
+                onClick={purchasePoints}
+              />
+            ))}
           </div>
         </div>
         <div className="flex flex-col gap-y-1">
           <h4>ポイントについて</h4>
           <div>1回のコードレビュー or 追加の質問で 1pt を消費します。</div>
-        </div>
-
-        <div>
-          <h4>デバッグ</h4>
-          <button className="rounded-md bg-blue-500 px-3 py-1 text-white">
-            処理1
-          </button>
         </div>
       </div>
     </div>

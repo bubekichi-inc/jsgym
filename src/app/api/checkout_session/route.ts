@@ -2,18 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   CheckoutSessionResponse,
   CheckoutSessionRequest,
-  PointPack,
 } from "./_types/CheckoutSession";
 import { buildPrisma } from "@/app/_utils/prisma";
-import { stripe } from "@/app/_utils/stripe";
+import { getStripePointProduct, stripe } from "@/app/_utils/stripe";
 import { buildError } from "@/app/api/_utils/buildError";
 import { getCurrentUser } from "@/app/api/_utils/getCurrentUser";
-
-const POINT_PACK_TO_PRICE_ID: Record<PointPack, string> = {
-  [PointPack.PACK_10]: process.env.STRIPE_PRODUCT_A_PRICE_ID!,
-  [PointPack.PACK_30]: process.env.STRIPE_PRODUCT_B_PRICE_ID!,
-  [PointPack.PACK_100]: process.env.STRIPE_PRODUCT_C_PRICE_ID!,
-};
 
 export const POST = async (request: NextRequest) => {
   const prisma = await buildPrisma();
@@ -26,19 +19,20 @@ export const POST = async (request: NextRequest) => {
         { error: "user情報の取得に失敗しました" },
         { status: 404 }
       );
+    // console.log("■ user", JSON.stringify(user, null, 2));
 
     // リクエストボディからポイントパックを取得
     const body = await request.json();
-    const { pointPack }: CheckoutSessionRequest = body;
-    const priceId = POINT_PACK_TO_PRICE_ID[pointPack];
+    const { pointPackage }: CheckoutSessionRequest = body;
+    const pointProduct = getStripePointProduct(pointPackage);
 
     const session = await stripe.checkout.sessions.create({
-      customer: "cus_ReLsqA43NeYaXh",
-      // customer: user.stripeCustomerId,
+      // customer: "cus_ReLsqA43NeYaXh",
+      customer: user.stripeCustomerId,
       success_url: process.env.NEXT_PUBLIC_APP_BASE_URL + "/settings/points",
       line_items: [
         {
-          price: priceId,
+          price: pointProduct.stripePriceId,
           quantity: 1,
         },
       ],
@@ -47,7 +41,8 @@ export const POST = async (request: NextRequest) => {
         description: "Product ほげ", // 取引の説明
         metadata: {
           app_user_id: user.id,
-          // プロダクトの情報
+          point: pointProduct.point,
+          price: pointProduct.price,
         },
       },
     });
