@@ -27,7 +27,8 @@ export const POST = async (request: NextRequest) => {
     // (注意) /settings/profile で receiptName が設定されたときは name を更新
     const stripeCustomer = await stripe.customers.create({
       email: data.user.user_metadata.email,
-      name: data.user.user_metadata.email, // 注意
+      name: data.user.user_metadata.email, // 注意,
+      preferred_locales: ["ja-JP"],
     });
 
     const newUser = await prisma.user.create({
