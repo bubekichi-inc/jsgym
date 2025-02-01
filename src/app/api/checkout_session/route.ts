@@ -27,7 +27,6 @@ export const POST = async (request: NextRequest) => {
     const pointProduct = getStripePointProduct(pointPackage);
 
     const session = await stripe.checkout.sessions.create({
-      // customer: "cus_ReLsqA43NeYaXh",
       customer: user.stripeCustomerId,
       success_url: process.env.NEXT_PUBLIC_APP_BASE_URL + "/settings/points",
       line_items: [
@@ -38,7 +37,7 @@ export const POST = async (request: NextRequest) => {
       ],
       mode: "payment",
       payment_intent_data: {
-        description: "Product ほげ", // 取引の説明
+        description: `Product "${pointProduct.name}" の購入`, // 取引の説明
         metadata: {
           app_user_id: user.id,
           point: pointProduct.point,
