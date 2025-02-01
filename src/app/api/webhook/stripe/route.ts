@@ -23,7 +23,8 @@ export const POST = async (request: NextRequest) => {
       );
     }
 
-    if (!process.env.STRIPE_WEBHOOK_SECRET) {
+    const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    if (!stripeWebhookSecret) {
       console.error("環境変数 STRIPE_WEBHOOK_SECRET が設定されていない。");
       return NextResponse.json(
         { error: "Stripe Webhook secret is not defined" },
@@ -35,8 +36,8 @@ export const POST = async (request: NextRequest) => {
     const body = await request.text();
     const event = stripe.webhooks.constructEvent(
       body,
-      sig!,
-      process.env.STRIPE_WEBHOOK_SECRET!
+      sig,
+      stripeWebhookSecret
     );
 
     // 3. 支払い成功イベントの処理 (ポイントをチャージ)

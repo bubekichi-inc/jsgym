@@ -23,8 +23,9 @@ export const POST = async (request: NextRequest) => {
       return NextResponse.json({ message: "既存ユーザー" }, { status: 200 });
 
     // Stripeに「顧客」を作成
-    // (注意) name の初期値には、意図的に email を設定
-    // (注意) /settings/profile で receiptName が設定されたときは name を更新
+    // Note: name には full_name ではなく、あえて email を使用
+    //  (full_name には Stripeでの管理上、識別子に使いずらい値が設定されていることがあるため)
+    // Note: /settings/profile で receiptName が設定されたときは name をそれに更新
     const stripeCustomer = await stripe.customers.create({
       email: data.user.user_metadata.email,
       name: data.user.user_metadata.email, // 注意,
@@ -41,6 +42,7 @@ export const POST = async (request: NextRequest) => {
     });
 
     // Stripeの顧客情報のメタデータに各種IDを追加 (stripeはスネークケースが基本)
+    // 支払いトラブルがあったときに備えて、Stripe側の顧客情報にも各種IDを紐付けておく
     await stripe.customers.update(stripeCustomer.id, {
       metadata: {
         app_user_id: newUser.id,

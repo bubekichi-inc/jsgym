@@ -5,7 +5,7 @@ import { buildPrisma } from "@/app/_utils/prisma";
 import { buildError } from "@/app/api/_utils/buildError";
 import { getCurrentUser } from "@/app/api/_utils/getCurrentUser";
 
-export const revalidate = 0; // キャッシュを無効化
+export const dynamic = "force-dynamic"; // キャッシュを無効化
 
 // ポイント残高を取得するAPI
 export const GET = async (request: NextRequest) => {
