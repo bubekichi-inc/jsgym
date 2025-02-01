@@ -5,13 +5,21 @@ import {
 } from "@/app/_constants/productMaster";
 import { StripePointProduct } from "@/app/_types/Point";
 
-// stripe クライアントの初期化
-//  第2引数も指定可能。詳細は...
-//  https://github.com/stripe/stripe-node?tab=readme-ov-file#configuration
+/**
+ * StripeClientの生成と初期化
+ *
+ * @see {@link https://github.com/stripe/stripe-node?tab=readme-ov-file#configuration} 設定オプション詳細
+ */
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
-// ポイントパッケージ -> Stripe の PriceID とプロダクト基本情報を取得
-// STRIPE_PRODUCT_XXX_PRICE_ID は環境変数 (.env) で設定
+/**
+ * PointPackage列挙子 から StripePriceId を含むプロダクト情報を取得
+ *
+ * @param type - ポイントパッケージの種類（PACK_10, PACK_30, PACK_100 etc.）
+ * @returns Stripe商品情報（価格ID、名称、ポイント数など）を含むオブジェクト
+ *
+ * @remarks バックエンドのみで使用可能。フロントエンドから呼び出すと環境変数が未定義でエラーとなる。
+ */
 export function getStripePointProduct(type: PointPackage): StripePointProduct {
   const priceIdMap: Record<PointPackage, string> = {
     [PointPackage.PACK_10]: process.env.STRIPE_PRODUCT_A_PRICE_ID!,

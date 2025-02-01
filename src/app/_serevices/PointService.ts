@@ -1,13 +1,33 @@
 import { PrismaClient, User, PointTransactionKind } from "@prisma/client";
 
+/**
+ * ユーザーのポイント管理を行うサービスクラス
+ * ポイントの購入処理やポイント残高の照会など、ポイントに関する操作を提供
+ *
+ * @remarks
+ * すべてのポイント操作はトランザクションで保護され、
+ * 失敗時は PointTransactionKind.FAILED として記録される
+ */
 export class PointService {
   private prisma: PrismaClient;
 
+  /**
+   * コンストラクタ
+   * @param prisma - buildPrisma() で生成した PrismaClient
+   */
   public constructor(prisma: PrismaClient) {
     this.prisma = prisma;
   }
 
-  // 購入によるポイントのチャージ
+  /**
+   * Stripeによる支払い完了後のポイントチャージ処理
+   *
+   * @param userId - ポイントをチャージするユーザーのID
+   * @param points - チャージするポイント数（呼出し側で正の整数を保証）
+   * @param stripePaymentId - Stripeの支払いID（Webhookから取得）
+   * @returns ポイントチャージ後のユーザー情報
+   * @throws DBに対するポイントチャージ処理に失敗した場合
+   */
   public async chargePointByPurchase(
     userId: string,
     points: number,
@@ -31,7 +51,7 @@ export class PointService {
         });
       })
       .catch(async (e) => {
-        // 失敗の記録
+        // ポイントチャージに失敗した場合の記録
         await this.prisma.pointTransaction.create({
           data: {
             userId,
@@ -52,7 +72,13 @@ export class PointService {
     return user;
   }
 
-  // ポイント残高の取得
+  /**
+   * idで指定したユーザーの現在のポイント残高を取得
+   *
+   * @param id - ポイント残高を確認したいユーザーのID
+   * @returns 現在のポイント残高（0以上の整数）
+   * @throws idで指定されたユーザーが存在しない場合
+   */
   public async getPoints(id: string): Promise<number> {
     const user = await this.prisma.user.findUnique({ where: { id } });
     if (!user) throw new Error(`userの取得に失敗しました ${id}`);

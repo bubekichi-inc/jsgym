@@ -19,14 +19,14 @@ export const POST = async (request: NextRequest) => {
       );
       return NextResponse.json(
         { error: "No stripe-signature" },
-        { status: 401 }
+        { status: 400 }
       );
     }
 
     if (!process.env.STRIPE_WEBHOOK_SECRET) {
       console.error("環境変数 STRIPE_WEBHOOK_SECRET が設定されていない。");
       return NextResponse.json(
-        { error: "Webhook secret is not defined" },
+        { error: "Stripe Webhook secret is not defined" },
         { status: 500 }
       );
     }
