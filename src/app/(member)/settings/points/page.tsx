@@ -54,7 +54,7 @@ const Page: React.FC = () => {
       </div>
 
       <div className="mt-10 flex flex-col gap-y-12">
-        <div className="flex items-center justify-start gap-x-4">
+        <div className="flex items-center justify-between">
           <h4>保有ポイント</h4>
           <div className="flex items-end gap-x-2">
             {data ? (

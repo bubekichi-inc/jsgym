@@ -19,12 +19,13 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
  * @returns Stripe商品情報（価格ID、名称、ポイント数など）を含むオブジェクト
  *
  * @remarks バックエンドのみで使用可能。フロントエンドから呼び出すと環境変数が未定義でエラーとなる。
+ * @see /src/app/_constants/productMaster.ts
  */
 export function getStripePointProduct(type: PointPackage): StripePointProduct {
   const priceIdMap: Record<PointPackage, string> = {
-    [PointPackage.PACK_10]: process.env.STRIPE_PRODUCT_A_PRICE_ID!,
-    [PointPackage.PACK_30]: process.env.STRIPE_PRODUCT_B_PRICE_ID!,
-    [PointPackage.PACK_100]: process.env.STRIPE_PRODUCT_C_PRICE_ID!,
+    [PointPackage.PACK_10]: process.env.STRIPE_PRODUCT_P10_PRICE_ID!,
+    [PointPackage.PACK_30]: process.env.STRIPE_PRODUCT_P30_PRICE_ID!,
+    [PointPackage.PACK_100]: process.env.STRIPE_PRODUCT_P100_PRICE_ID!,
   };
   return {
     ...POINT_PRODUCTS_MASTER[type],
