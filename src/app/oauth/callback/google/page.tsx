@@ -36,8 +36,10 @@ export default function OAuthCallback() {
             return;
           }
 
-          const userId = supabaseUser.user.id;
-          const avatarUrl = supabaseUser.user.user_metadata.avatar_url;
+          const {
+            id: userId,
+            user_metadata: { avatar_url: avatarUrl },
+          } = supabaseUser.user;
 
           if (!avatarUrl) {
             console.error("Google アイコンURLが取得できませんでした");
@@ -64,22 +66,6 @@ export default function OAuthCallback() {
               );
               return;
             }
-
-            // アップロード成功したURLをDBに保存
-            // const { data: publicUrlData } = supabase.storage
-            //   .from("profile_icons")
-            //   .getPublicUrl(`private/${userId}`);
-            // const publicUrl = publicUrlData?.publicUrl;
-
-            // const { error: dbError } = await supabase
-            //   .from("users")
-            //   .update({ icon_url: publicUrl }) // 正しいカラム名を使用
-            //   .eq("supabaseUserId", userId);
-            // if (dbError) {
-            //   console.error("アイコンURLの保存に失敗:", dbError.message);
-            // } else {
-            //   console.log("アイコンURLを保存しました:", publicUrl);
-            // }
           } catch (error) {
             console.error("Google アイコンの取得に失敗:", error);
           }

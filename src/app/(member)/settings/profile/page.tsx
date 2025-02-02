@@ -6,6 +6,7 @@ import React, { useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useFetch } from "@/app/_hooks/useFetch";
 import { api } from "@/app/_utils/api";
+import { supabase } from "@/app/_utils/supabase";
 import { UserProfileUpdateRequest } from "@/app/api/me/_types/UserProfile";
 
 const ProfilePage: React.FC = () => {
@@ -23,7 +24,6 @@ const ProfilePage: React.FC = () => {
   }>("/api/me");
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-
   const {
     register,
     handleSubmit,
@@ -32,21 +32,29 @@ const ProfilePage: React.FC = () => {
   } = useForm<UserProfileUpdateRequest>();
 
   // 初期データをフォームにセット
+  // useEffect(() => {
+  //   if (userProfile) {
+  //     setValue("name", userProfile.name);
+  //     setValue("email", userProfile.email);
+  //     setValue("receiptName", userProfile.receiptName || null);
+  //     setValue("iconUrl", userProfile.iconUrl || null);
+  //   }
+  // }, [userProfile, setValue]);
   useEffect(() => {
     if (userProfile) {
-      setValue("name", userProfile.name || "");
-      setValue("email", userProfile.email || "");
-      setValue("receiptName", userProfile.receiptName || "");
+      const { name, email, receiptName, iconUrl } = userProfile;
+      setValue("name", name);
+      setValue("email", email);
+      setValue("receiptName", receiptName || null);
+      setValue("iconUrl", iconUrl || null);
     }
   }, [userProfile, setValue]);
 
   // **フォーム送信**
-  const onSubmit: (data: UserProfileUpdateRequest) => Promise<void> = async (
-    data
-  ) => {
+  const onSubmit = async (data: UserProfileUpdateRequest) => {
     try {
       await api.put<UserProfileUpdateRequest, void>("/api/me", data);
-      await mutate(); // SWR キャッシュを更新
+      await mutate(undefined, { revalidate: true });
       alert("プロフィールが更新されました！");
     } catch (err) {
       console.error("プロフィールの更新に失敗:", err);
@@ -54,20 +62,85 @@ const ProfilePage: React.FC = () => {
     }
   };
 
+  // **キャッシュ回避用のタイムスタンプを生成**
+  const getTimestampedUrl = (url: string) => `${url}?t=${new Date().getTime()}`;
+
   // **アイコン画像アップロード**
   const handleUpdateIcon = async () => {
+    if (!userProfile) return alert("ユーザーデータが取得できていません");
+
     const file = fileInputRef.current?.files?.[0];
     if (!file) {
       alert("画像を選択してください。");
       return;
     }
 
-    const formData = new globalThis.FormData();
-    formData.append("icon", file);
+    const filePath = `private/${userProfile.id}`;
+    //// **キャッシュ回避用のタイムスタンプ**
+    // const timestamp = new Date().getTime();
+
+    // **現在のファイルが存在するか確認**
+    const { data: fileList, error: listError } = await supabase.storage
+      .from("profile_icons")
+      .list("private", { search: userProfile.id });
+
+    if (listError) {
+      console.error("ファイル一覧の取得に失敗:", listError.message);
+      return;
+    }
+
+    const fileExists = fileList?.some((file) => file.name === userProfile.id);
+    const uploadMethod = fileExists ? "update" : "upload";
+    const { error: uploadError } = await supabase.storage
+      .from("profile_icons")
+      [uploadMethod](filePath, file, { cacheControl: "3600", upsert: true });
+    if (uploadError) {
+      console.error("アイコンのアップロードに失敗:", uploadError.message);
+      return;
+    }
+    // let uploadError;
+    // if (fileExists) {
+    //   // **ファイルがある場合は `update()`**
+    //   const { error } = await supabase.storage
+    //     .from("profile_icons")
+    //     .update(filePath, file, {
+    //       cacheControl: "3600",
+    //       upsert: true, // 念のため指定
+    //     });
+
+    //   uploadError = error;
+    // } else {
+    //   // **ファイルがない場合は `upload()`**
+    //   const { error } = await supabase.storage
+    //     .from("profile_icons")
+    //     .upload(filePath, file, { upsert: true });
+
+    //   uploadError = error;
+    // }
+
+    // if (uploadError) {
+    //   console.error("アイコンのアップロードに失敗:", uploadError.message);
+    //   return;
+    // }
+
+    // **アップロード成功後、URL 取得**
+    const { data } = await supabase.storage
+      .from("profile_icons")
+      .getPublicUrl(filePath);
+    const newIconUrl = getTimestampedUrl(data.publicUrl);
 
     try {
-      await api.post<FormData, void>("/api/me", formData);
-      await mutate();
+      // **API を介してデータベースを更新**
+      await api.put<{ iconUrl: string }, void>("/api/me", {
+        iconUrl: newIconUrl,
+      });
+
+      // **ブラウザの表示を即時更新**
+      setValue("iconUrl", newIconUrl);
+      await mutate((prev) => (prev ? { ...prev, iconUrl: newIconUrl } : prev), {
+        revalidate: false,
+      });
+
       alert("アイコンが更新されました！");
     } catch (err) {
       console.error("アイコン更新失敗:", err);
@@ -79,7 +152,8 @@ const ProfilePage: React.FC = () => {
   const handleDeleteIcon = async () => {
     try {
       await api.put<{ iconUrl: null }, void>("/api/me", { iconUrl: null });
-      await mutate();
+      setValue("iconUrl", null);
+      await mutate(undefined, { revalidate: true });
       alert("アイコンが削除されました！");
     } catch (err) {
       console.error("アイコン削除失敗:", err);
@@ -134,6 +208,7 @@ const ProfilePage: React.FC = () => {
                     No Icon
                   </div>
                 )}
+
                 <button
                   type="button"
                   className="rounded border bg-gray-100 px-4 py-2"
