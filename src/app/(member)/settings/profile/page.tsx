@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import NextLink from "next/link";
 import React, { useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
+// import TextInput from "./_components/TextInput";
 import { useFetch } from "@/app/_hooks/useFetch";
 import { api } from "@/app/_utils/api";
 import { supabase } from "@/app/_utils/supabase";
@@ -31,15 +31,6 @@ const ProfilePage: React.FC = () => {
     formState: { errors },
   } = useForm<UserProfileUpdateRequest>();
 
-  // 初期データをフォームにセット
-  // useEffect(() => {
-  //   if (userProfile) {
-  //     setValue("name", userProfile.name);
-  //     setValue("email", userProfile.email);
-  //     setValue("receiptName", userProfile.receiptName || null);
-  //     setValue("iconUrl", userProfile.iconUrl || null);
-  //   }
-  // }, [userProfile, setValue]);
   useEffect(() => {
     if (userProfile) {
       const { name, email, receiptName, iconUrl } = userProfile;
@@ -62,10 +53,10 @@ const ProfilePage: React.FC = () => {
     }
   };
 
-  // **キャッシュ回避用のタイムスタンプを生成**
+  // キャッシュ回避用のタイムスタンプを生成
   const getTimestampedUrl = (url: string) => `${url}?t=${new Date().getTime()}`;
 
-  // **アイコン画像アップロード**
+  // アイコン画像アップロード
   const handleUpdateIcon = async () => {
     if (!userProfile) return alert("ユーザーデータが取得できていません");
 
@@ -76,10 +67,8 @@ const ProfilePage: React.FC = () => {
     }
 
     const filePath = `private/${userProfile.id}`;
-    //// **キャッシュ回避用のタイムスタンプ**
-    // const timestamp = new Date().getTime();
 
-    // **現在のファイルが存在するか確認**
+    //現在のファイルが存在するか確認
     const { data: fileList, error: listError } = await supabase.storage
       .from("profile_icons")
       .list("private", { search: userProfile.id });
@@ -98,32 +87,8 @@ const ProfilePage: React.FC = () => {
       console.error("アイコンのアップロードに失敗:", uploadError.message);
       return;
     }
-    // let uploadError;
-    // if (fileExists) {
-    //   // **ファイルがある場合は `update()`**
-    //   const { error } = await supabase.storage
-    //     .from("profile_icons")
-    //     .update(filePath, file, {
-    //       cacheControl: "3600",
-    //       upsert: true, // 念のため指定
-    //     });
 
-    //   uploadError = error;
-    // } else {
-    //   // **ファイルがない場合は `upload()`**
-    //   const { error } = await supabase.storage
-    //     .from("profile_icons")
-    //     .upload(filePath, file, { upsert: true });
-
-    //   uploadError = error;
-    // }
-
-    // if (uploadError) {
-    //   console.error("アイコンのアップロードに失敗:", uploadError.message);
-    //   return;
-    // }
-
-    // **アップロード成功後、URL 取得**
+    //アップロード成功後、URL 取得
     const { data } = await supabase.storage
       .from("profile_icons")
       .getPublicUrl(filePath);
@@ -167,27 +132,8 @@ const ProfilePage: React.FC = () => {
 
   return (
     <>
-      <div className="mx-auto mt-[100px] w-full max-w-2xl">
+      <div className="mx-auto  w-full max-w-2xl">
         <div className="flex flex-col gap-y-6">
-          <h2 className="text-3xl font-bold">各種設定</h2>
-          <div className="flex gap-x-12">
-            <div className="border-b-2 border-black pb-1">
-              <h3 className="px-6 text-xl font-bold"> プロフィール</h3>
-            </div>
-            <NextLink
-              href="/settings/points"
-              className="px-6 pb-1 text-xl font-bold text-gray-500"
-            >
-              ポイント購入
-            </NextLink>
-            <NextLink
-              href="#"
-              className="px-6 pb-1 text-xl font-bold text-gray-500"
-            >
-              通知設定
-            </NextLink>
-          </div>
-
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="mt-8 flex flex-col gap-y-6"
