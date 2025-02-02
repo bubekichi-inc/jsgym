@@ -1,4 +1,29 @@
-import { PrismaClient, User, PointTransactionKind } from "@prisma/client";
+import {
+  Prisma,
+  PrismaClient,
+  User,
+  PointTransactionKind,
+} from "@prisma/client";
+
+/**
+ * chargePointByPurchase における2重チャージ検出エラー
+ *
+ * @remarks
+ * `stripe listen --forward-to` が複数PCで実行されている場合など、
+ * chargePointByPurchase で、同一 stripePaymentId による
+ * 2回目以降のポイントチャージを検出した際にスローされるエラー
+ *
+ */
+export class DuplicatePointChargeError extends Error {
+  public readonly stripePaymentId: string;
+  public readonly occurredAt: Date;
+  constructor(message: string, stripePaymentId: string) {
+    super(message);
+    this.stripePaymentId = stripePaymentId;
+    this.occurredAt = new Date(); // UTC
+    Error.captureStackTrace(this, this.constructor);
+  }
+}
 
 /**
  * ユーザーのポイント管理を行うサービスクラス
@@ -33,43 +58,66 @@ export class PointService {
     points: number,
     stripePaymentId: string
   ): Promise<User> {
-    await this.prisma
-      .$transaction(async (tx) => {
-        // ポイントの更新
-        await tx.user.update({
-          where: { id: userId },
-          data: { points: { increment: points } },
-        });
-        // 取引履歴の作成
-        await tx.pointTransaction.create({
-          data: {
-            userId,
-            stripePaymentId,
-            points,
-            kind: PointTransactionKind.PURCHASE,
-          },
-        });
-      })
+    return await this.prisma
+      .$transaction(
+        async (tx) => {
+          //
+          // 1. pointTransaction に、既に stripePaymentId が記録されていないことを確認
+          const existingTransaction = await tx.pointTransaction.findFirst({
+            where: { stripePaymentId },
+          });
+          // 既に記録が存在する場合は DuplicatePointChargeError をスロー
+          if (existingTransaction)
+            throw new DuplicatePointChargeError(
+              `PaymentId '${stripePaymentId}' による AppUserID '${userId}' に対する '${points}pt' のチャージ要求をキャンセルしました`,
+              stripePaymentId
+            );
+
+          // 2. ポイントの更新
+          const updatedUser = await tx.user.update({
+            where: { id: userId },
+            data: { points: { increment: points } },
+          });
+
+          // 3. 取引履歴の作成
+          await tx.pointTransaction.create({
+            data: {
+              userId,
+              stripePaymentId,
+              points,
+              kind: PointTransactionKind.PURCHASE,
+            },
+          });
+          return updatedUser;
+        },
+        {
+          // 厳格なトランザクション分離レベルとタイムアウトを設定
+          isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
+          maxWait: 5000, // 最大待機時間: 5秒
+          timeout: 10000, // トランザクションタイムアウト: 10秒
+        }
+      )
       .catch(async (e) => {
-        // ポイントチャージに失敗した場合の記録
+        const isDuplicatePointChargeError =
+          e instanceof DuplicatePointChargeError;
+
+        // ポイントチャージ失敗を記録
         await this.prisma.pointTransaction.create({
           data: {
             userId,
             stripePaymentId,
             points: 0,
             kind: PointTransactionKind.FAILED,
-            detail: `${points}ptのチャージ処理に失敗`,
+            detail: isDuplicatePointChargeError
+              ? "当該 PaymentId による要求は処理済のためキャンセル"
+              : `${points}pt のチャージ処理に失敗`,
           },
         });
+        if (isDuplicatePointChargeError) throw e; // 2重チャージエラーは再スロー
         throw new Error(
-          `ポイントのチャージに失敗しました ${userId} ${points} ${e.message} ${stripePaymentId}`
+          `${points}pt のチャージ処理に失敗: ${JSON.stringify(e.message)}`
         );
       });
-
-    const user = await this.prisma.user.findUniqueOrThrow({
-      where: { id: userId },
-    });
-    return user;
   }
 
   /**

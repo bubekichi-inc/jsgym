@@ -1,5 +1,8 @@
 import { NextResponse, NextRequest } from "next/server";
-import { PointService } from "@/app/_serevices/PointService";
+import {
+  PointService,
+  DuplicatePointChargeError,
+} from "@/app/_serevices/PointService";
 import { buildPrisma } from "@/app/_utils/prisma";
 import { stripe } from "@/app/_utils/stripe";
 import { buildError } from "@/app/api/_utils/buildError";
@@ -57,12 +60,12 @@ export const POST = async (request: NextRequest) => {
       const userId = metadata.app_user_id;
       const chargePoint = Number(metadata.point);
 
-      // 3-2. ポイント値のバリデーション
+      // 3-2. 加算ポイント値のバリデーション
       if (isNaN(chargePoint) || chargePoint <= 0) {
-        console.error("ポイント値がおかしい", {
-          eventId: event.id,
-          JSON: JSON.stringify(metadata, null, 2),
-        });
+        console.error(
+          `不正な加算ポイント値「${chargePoint}」を検出（正の整数である必要がある）`,
+          JSON.stringify(event.data, null, 2)
+        );
         return NextResponse.json(
           { error: "Invalid point value" },
           { status: 400 }
@@ -71,17 +74,29 @@ export const POST = async (request: NextRequest) => {
 
       // 3-3. データベース更新
       const prisma = await buildPrisma();
-      const pointService = new PointService(prisma);
-      const user = await pointService.chargePointByPurchase(
-        userId,
-        chargePoint,
-        event.data.object.id
-      );
-
-      // 成功ログ
-      console.info(
-        `■ Payment Succeeded. User "${user.name}" charged ${chargePoint} pt. New balance: ${user.points} pt.`
-      );
+      try {
+        const pointService = new PointService(prisma);
+        const user = await pointService.chargePointByPurchase(
+          userId,
+          chargePoint,
+          event.data.object.id
+        );
+        console.log(
+          `■ ポイントチャージ成功: User "${user.name}" charged ${chargePoint} pt. New balance: ${user.points} pt.`
+        );
+      } catch (e) {
+        // 同一 stripePaymentId による二重ポイントチャージの発生を捕捉
+        // 開発用コマンド `stripe listen --forward-to` の多重起動に起因する可能性が高い
+        if (e instanceof DuplicatePointChargeError) {
+          console.log(
+            `■ 要確認: 既にPaymentId: ${e.stripePaymentId} によるポイントチャージは処理済みです。\n`,
+            "'stripe listen --forward-to' を多重起動している可能性があります。\n",
+            `${e.message} (${e.occurredAt})`
+          );
+        } else {
+          throw e;
+        }
+      }
     }
     return NextResponse.json({ received: true }, { status: 200 });
   } catch (e) {
