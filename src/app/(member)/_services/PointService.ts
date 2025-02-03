@@ -35,13 +35,15 @@ export class DuplicatePointChargeError extends Error {
  */
 export class PointService {
   private prisma: PrismaClient;
+  private userId: string;
 
   /**
    * コンストラクタ
    * @param prisma - buildPrisma() で生成した PrismaClient
    */
-  public constructor(prisma: PrismaClient) {
+  public constructor(prisma: PrismaClient, userId: string) {
     this.prisma = prisma;
+    this.userId = userId;
   }
 
   /**
@@ -54,7 +56,6 @@ export class PointService {
    * @throws DBに対するポイントチャージ処理に失敗した場合
    */
   public async chargePointByPurchase(
-    userId: string,
     points: number,
     stripePaymentId: string
   ): Promise<User> {
@@ -69,20 +70,20 @@ export class PointService {
           // 既に記録が存在する場合は DuplicatePointChargeError をスロー
           if (existingTransaction)
             throw new DuplicatePointChargeError(
-              `PaymentId '${stripePaymentId}' による AppUserID '${userId}' に対する '${points}pt' のチャージ要求をキャンセルしました`,
+              `PaymentId '${stripePaymentId}' による AppUserID '${this.userId}' に対する '${points}pt' のチャージ要求をキャンセルしました`,
               stripePaymentId
             );
 
           // 2. ポイントの更新
           const updatedUser = await tx.user.update({
-            where: { id: userId },
+            where: { id: this.userId },
             data: { points: { increment: points } },
           });
 
           // 3. 取引履歴の作成
           await tx.pointTransaction.create({
             data: {
-              userId,
+              userId: this.userId,
               stripePaymentId,
               points,
               kind: PointTransactionKind.PURCHASE,
@@ -98,22 +99,7 @@ export class PointService {
         }
       )
       .catch(async (e) => {
-        const isDuplicatePointChargeError =
-          e instanceof DuplicatePointChargeError;
-
-        // ポイントチャージ失敗を記録
-        await this.prisma.pointTransaction.create({
-          data: {
-            userId,
-            stripePaymentId,
-            points: 0,
-            kind: PointTransactionKind.FAILED,
-            detail: isDuplicatePointChargeError
-              ? "当該 PaymentId による要求は処理済のためキャンセル"
-              : `${points}pt のチャージ処理に失敗`,
-          },
-        });
-        if (isDuplicatePointChargeError) throw e; // 2重チャージエラーは再スロー
+        if (e instanceof DuplicatePointChargeError) throw e;
         throw new Error(
           `${points}pt のチャージ処理に失敗: ${JSON.stringify(e.message)}`
         );
@@ -127,9 +113,12 @@ export class PointService {
    * @returns 現在のポイント残高（0以上の整数）
    * @throws idで指定されたユーザーが存在しない場合
    */
-  public async getPoints(id: string): Promise<number> {
-    const user = await this.prisma.user.findUnique({ where: { id } });
-    if (!user) throw new Error(`userの取得に失敗しました ${id}`);
+  public async getPoints(): Promise<number> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: this.userId },
+      select: { points: true },
+    });
+    if (!user) throw new Error(`User '${this.userId}' の取得に失敗しました `);
     return user.points;
   }
 }

@@ -2,9 +2,10 @@ import { NextResponse, NextRequest } from "next/server";
 import {
   PointService,
   DuplicatePointChargeError,
-} from "@/app/_serevices/PointService";
+} from "@/app/(member)/_services/PointService";
 import { buildPrisma } from "@/app/_utils/prisma";
 import { stripe } from "@/app/_utils/stripe";
+import { StripeCheckoutError } from "@/app/api/_utils/StripeCheckoutError";
 import { buildError } from "@/app/api/_utils/buildError";
 
 // ローカルエンドポイントにイベントを転送する
@@ -46,43 +47,32 @@ export const POST = async (request: NextRequest) => {
     // 3. 支払い成功イベントの処理 (ポイントをチャージ)
     if (event.type === "payment_intent.succeeded") {
       // 3-1. メタデータの検証
+      const stripePaymentId = event.data.object.id;
       const metadata = event.data.object.metadata;
       if (!metadata?.app_user_id || !metadata?.point) {
-        console.error(
-          "メタデータに app_user_id または point が設定されていない。",
-          JSON.stringify(metadata)
-        );
-        return NextResponse.json(
-          { error: "Invalid metadata" },
-          { status: 400 }
-        );
+        const msg = "支払い情報に app_user_id または point が存在しません。";
+        throw new StripeCheckoutError(msg, stripePaymentId);
       }
       const userId = metadata.app_user_id;
       const chargePoint = Number(metadata.point);
 
       // 3-2. 加算ポイント値のバリデーション
       if (isNaN(chargePoint) || chargePoint <= 0) {
-        console.error(
-          `不正な加算ポイント値「${chargePoint}」を検出（正の整数である必要がある）`,
-          JSON.stringify(event.data, null, 2)
-        );
-        return NextResponse.json(
-          { error: "Invalid point value" },
-          { status: 400 }
-        );
+        const msg = `不正なチャージポイント「${chargePoint}」を検出しました。`;
+        throw new StripeCheckoutError(msg, stripePaymentId, userId);
       }
 
       // 3-3. データベース更新
       const prisma = await buildPrisma();
       try {
-        const pointService = new PointService(prisma);
+        const pointService = new PointService(prisma, userId);
         const user = await pointService.chargePointByPurchase(
-          userId,
           chargePoint,
-          event.data.object.id
+          stripePaymentId
         );
         console.log(
-          `■ ポイントチャージ成功: User "${user.name}" charged ${chargePoint} pt. New balance: ${user.points} pt.`
+          `■ ポイントチャージ成功: User "${user.name}" charged ${chargePoint} pt. ` +
+            `New balance: ${user.points} pt.`
         );
       } catch (e) {
         // 同一 stripePaymentId による二重ポイントチャージの発生を捕捉
@@ -94,7 +84,8 @@ export const POST = async (request: NextRequest) => {
             `${e.message} (${e.occurredAt})`
           );
         } else {
-          throw e;
+          const msg = e instanceof Error ? e.message : `不明なエラー: ${e}`;
+          throw new StripeCheckoutError(msg, stripePaymentId, userId);
         }
       }
     }
