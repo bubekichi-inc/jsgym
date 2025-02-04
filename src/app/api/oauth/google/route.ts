@@ -21,21 +21,26 @@ export const POST = async (request: NextRequest) => {
         supabaseUserId: data.user.id,
       },
     });
-    const avatarUrl = data.user.user_metadata.avatar_url;
+    // if (!user) return;
     if (user) {
       return NextResponse.json(
         { message: "既存ユーザー", isNewUser: false },
         { status: 200 }
       );
     }
-
+    // 名前・メール・アバター名分割代入
+    const {
+      full_name: name,
+      email,
+      avatar_url: avatarUrl,
+    } = data.user.user_metadata;
     // 新規ユーザーの場合
     await prisma.user.create({
       data: {
         supabaseUserId: data.user.id,
         stripeCustomerId: `cus_ReqDummy_${randomBytes(10).toString("hex")}`,
-        name: data.user.user_metadata.full_name,
-        email: data.user.user_metadata.email,
+        name,
+        email,
         iconUrl: avatarUrl,
       },
     });

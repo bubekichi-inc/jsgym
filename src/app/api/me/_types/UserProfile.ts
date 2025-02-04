@@ -3,6 +3,7 @@ export interface UserProfileResponse {
   name: string | null;
   email: string | null;
   iconUrl: string | null;
+  receiptName: string | null;
 }
 
 export interface UserProfileUpdateRequest {
