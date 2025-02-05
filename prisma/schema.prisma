@@ -125,6 +125,7 @@ model PointTransaction {
   message         Message?             @relation(fields: [messageId], references: [id])
   user            User                 @relation(fields: [userId], references: [id])
 
+  @@index([stripePaymentId], name: "stripe_payment_id")
   @@map("point_transactions")
 }
 
@@ -132,6 +133,7 @@ enum PointTransactionKind {
   USE
   PURCHASE
   PURCHASE_CANCELLED
+  FAILED
   BONUS
   COMPENSATION
 }
