@@ -1,5 +1,10 @@
 import Image from "next/image";
 import React from "react";
+// import type { UseFormWatch } from "react-hook-form";
+// import {
+//   UserProfileResponse,
+//   UserProfileUpdateRequest,
+// } from "@/app/api/me/_types/UserProfile";
 
 interface Props {
   iconUrl: string | null;
@@ -8,9 +13,8 @@ interface Props {
   handleDeleteIcon: () => Promise<void>;
 }
 
-const ProfileIcon: React.FC<Props> = ({
+export const ProfileIcon: React.FC<Props> = ({
   iconUrl,
-
   fileInputRef,
   handleUpdateIcon,
   handleDeleteIcon,
@@ -55,5 +59,3 @@ const ProfileIcon: React.FC<Props> = ({
     </div>
   );
 };
-
-export default ProfileIcon;

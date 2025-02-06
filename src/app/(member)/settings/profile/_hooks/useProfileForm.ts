@@ -40,7 +40,10 @@ export const useProfileForm = () => {
 
   const onSubmit = async (data: UserProfileUpdateRequest) => {
     try {
-      await api.put<UserProfileUpdateRequest, void>("/api/me", data);
+      await api.put<UserProfileUpdateRequest, { message: string }>(
+        "/api/me",
+        data
+      );
       await mutate();
       alert("プロフィールを更新しました。");
     } catch (err) {
@@ -107,4 +110,14 @@ export const useProfileForm = () => {
     handleUpdateIcon,
     handleDeleteIcon,
   };
+  // return {
+  //   userProfile,
+  //   error,
+  //   register,
+  //   onSubmit,
+  //   handleSubmit: handleSubmit(onSubmit),
+  //   errors,
+  //   watch,
+  //   setValue,
+  // };
 };

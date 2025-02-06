@@ -13,7 +13,7 @@ export const POST = async (request: NextRequest) => {
 
     if (error) {
       console.error("Supabase error:", error.message);
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      throw new Error("Unauthorized");
     }
 
     const user = await prisma.user.findUnique({
@@ -22,15 +22,11 @@ export const POST = async (request: NextRequest) => {
       },
     });
 
-    if (user) {
+    if (user)
       return NextResponse.json(
         { message: "既存ユーザー", isNewUser: false },
         { status: 200 }
       );
-    }
-
-    if (user)
-      return NextResponse.json({ message: "既存ユーザー" }, { status: 200 });
 
     // Stripeに「顧客」を作成
     // Note: name には full_name ではなく、あえて email を使用
@@ -42,13 +38,19 @@ export const POST = async (request: NextRequest) => {
       preferred_locales: ["ja-JP"],
     });
 
+    const {
+      full_name: fullName,
+      email,
+      avatar_url: avatarUrl,
+    } = data.user.user_metadata;
+
     const newUser = await prisma.user.create({
       data: {
         supabaseUserId: data.user.id,
-        name: data.user.user_metadata.full_name,
-        email: data.user.user_metadata.email,
+        name: fullName,
+        email: email,
         stripeCustomerId: stripeCustomer.id,
-        iconUrl: data.user.user_metadata.avatarUrl,
+        iconUrl: avatarUrl,
       },
     });
 
@@ -61,9 +63,31 @@ export const POST = async (request: NextRequest) => {
       },
     });
 
+    // Googleのアイコン画像を取得してSupabaseストレージにアップロード
+    if (!avatarUrl) {
+      console.error("GoogleアイコンURLが取得できませんでした");
+      return; // 早期リターン
+    }
+
+    const response = await fetch(avatarUrl);
+    const blob = await response.blob();
+    const file = new File([blob], "avatar.jpg", { type: blob.type });
+
+    const { error: uploadError } = await supabase.storage
+      .from("profile_icons")
+      .upload(`private/${newUser.supabaseUserId}`, file, { upsert: false });
+
+    if (uploadError) {
+      console.error("アイコンのアップロードに失敗:", uploadError.message);
+      return NextResponse.json(
+        { error: "アイコンのアップロードに失敗" },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json(
       {
-        user,
+        user: newUser,
         message: "新規ユーザー登録",
         isNewUser: true, // 新規ユーザーであることを示すフラグ
       },

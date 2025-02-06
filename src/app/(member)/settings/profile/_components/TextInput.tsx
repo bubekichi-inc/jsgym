@@ -17,7 +17,7 @@ interface Props<T extends FieldValues> {
   placeholder?: string;
 }
 
-const TextInput = <T extends FieldValues>({
+export const TextInput = <T extends FieldValues>({
   id,
   label,
   type = "text",
@@ -50,5 +50,3 @@ const TextInput = <T extends FieldValues>({
     </div>
   );
 };
-
-export default TextInput;
