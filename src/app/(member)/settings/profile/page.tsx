@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+
 import { ProfileIcon } from "./_components/ProfileIcon";
 import { TextInput } from "./_components/TextInput";
 import { useProfileForm } from "./_hooks/useProfileForm";
@@ -10,14 +11,15 @@ const ProfilePage: React.FC = () => {
   const {
     userProfile,
     error,
-    fileInputRef,
+    // fileInputRef,
     register,
     handleSubmit,
     errors,
     onSubmit,
     iconUrl,
-    handleUpdateIcon,
-    handleDeleteIcon,
+    setValue,
+    // handleUpdateIcon,
+    // handleDeleteIcon,
   } = useProfileForm();
 
   // const {
@@ -87,9 +89,9 @@ const ProfilePage: React.FC = () => {
             <h3 className="mb-4 text-xl font-bold">ユーザーアイコン</h3>
             <ProfileIcon
               iconUrl={iconUrl}
-              fileInputRef={fileInputRef}
-              handleUpdateIcon={handleUpdateIcon}
-              handleDeleteIcon={handleDeleteIcon}
+              // fileInputRef={fileInputRef}
+              userProfile={userProfile}
+              setValue={setValue} // userProfile={undefined}
             />
           </div>
 

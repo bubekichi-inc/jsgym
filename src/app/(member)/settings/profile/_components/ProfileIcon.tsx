@@ -1,5 +1,14 @@
 import Image from "next/image";
-import React from "react";
+import React, { useRef } from "react";
+// import type { UseFormSetValue, UseFormWatch } from "react-hook-form";
+import type { UseFormSetValue } from "react-hook-form";
+
+import { supabase } from "@/app/_utils/supabase";
+import {
+  UserProfileResponse,
+  UserProfileUpdateRequest,
+} from "@/app/api/me/_types/UserProfile";
+
 // import type { UseFormWatch } from "react-hook-form";
 // import {
 //   UserProfileResponse,
@@ -7,18 +16,71 @@ import React from "react";
 // } from "@/app/api/me/_types/UserProfile";
 
 interface Props {
+  userProfile: UserProfileResponse;
   iconUrl: string | null;
-  fileInputRef: React.RefObject<HTMLInputElement | null>;
-  handleUpdateIcon: () => Promise<void>;
-  handleDeleteIcon: () => Promise<void>;
+  // fileInputRef: React.RefObject<HTMLInputElement | null>;
+  // watch: UseFormWatch<UserProfileUpdateRequest>;
+  setValue: UseFormSetValue<UserProfileUpdateRequest>;
+  // handleUpdateIcon: () => Promise<void>;
+  // handleDeleteIcon: () => Promise<void>;
 }
 
 export const ProfileIcon: React.FC<Props> = ({
+  userProfile,
   iconUrl,
-  fileInputRef,
-  handleUpdateIcon,
-  handleDeleteIcon,
+  // fileInputRef,
+  // watch,
+  setValue,
+  // handleUpdateIcon,
+  // handleDeleteIcon,
 }) => {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const getTimestampedUrl = (url: string) => `${url}?t=${new Date().getTime()}`;
+
+  const handleUpdateIcon = async () => {
+    if (!userProfile) return alert("ユーザーデータが取得できていません");
+
+    const file = fileInputRef.current?.files?.[0];
+    if (!file) {
+      alert("画像を選択してください。");
+      return;
+    }
+
+    const filePath = `private/${userProfile.id}`;
+
+    const { data: fileList, error: listError } = await supabase.storage
+      .from("profile_icons")
+      .list("private", { search: userProfile.id });
+
+    if (listError) {
+      console.error("ファイル一覧の取得に失敗:", listError.message);
+      return;
+    }
+
+    const fileExists = fileList?.some((file) => file.name === userProfile.id);
+    const uploadMethod = fileExists ? "update" : "upload";
+
+    const { error: uploadError } = await supabase.storage
+      .from("profile_icons")
+      [uploadMethod](filePath, file, { cacheControl: "3600", upsert: true });
+
+    if (uploadError) {
+      console.error("アイコンのアップロードに失敗:", uploadError.message);
+      return;
+    }
+
+    const { data } = await supabase.storage
+      .from("profile_icons")
+      .getPublicUrl(filePath);
+
+    const newIconUrl = getTimestampedUrl(data.publicUrl);
+    setValue("iconUrl", newIconUrl);
+  };
+
+  const handleDeleteIcon = async () => {
+    setValue("iconUrl", null);
+  };
+
   return (
     <div className="flex items-center gap-x-4">
       {iconUrl ? (
