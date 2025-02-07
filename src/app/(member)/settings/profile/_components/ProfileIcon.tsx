@@ -12,12 +12,14 @@ interface Props {
   userProfile: UserProfileResponse;
   iconUrl: string | null;
   setValue: UseFormSetValue<UserProfileUpdateRequest>;
+  disabled?: boolean;
 }
 
 export const ProfileIcon: React.FC<Props> = ({
   userProfile,
   iconUrl,
   setValue,
+  disabled,
 }) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const getTimestampedUrl = (url: string) => `${url}?t=${new Date().getTime()}`;
@@ -86,6 +88,7 @@ export const ProfileIcon: React.FC<Props> = ({
         type="button"
         className="rounded border bg-gray-100 px-4 py-2"
         onClick={() => fileInputRef.current?.click()}
+        disabled={disabled}
       >
         変更
       </button>
@@ -93,6 +96,7 @@ export const ProfileIcon: React.FC<Props> = ({
         type="button"
         className="rounded bg-red-500 px-4 py-2 text-white"
         onClick={handleDeleteIcon}
+        disabled={disabled}
       >
         削除
       </button>
@@ -102,6 +106,7 @@ export const ProfileIcon: React.FC<Props> = ({
         style={{ display: "none" }}
         accept="image/*"
         onChange={handleUpdateIcon}
+        disabled={disabled}
       />
     </div>
   );

@@ -15,6 +15,7 @@ interface Props<T extends FieldValues> {
   errors: FieldErrors<T>;
   validationRules?: RegisterOptions<T, Path<T>>;
   placeholder?: string;
+  disabled?: boolean;
 }
 
 export const TextInput = <T extends FieldValues>({
@@ -25,6 +26,7 @@ export const TextInput = <T extends FieldValues>({
   errors,
   validationRules,
   placeholder,
+  disabled,
 }: Props<T>) => {
   const errorMessage = errors[id]?.message;
 
@@ -39,6 +41,7 @@ export const TextInput = <T extends FieldValues>({
         className="w-full rounded border px-4 py-2"
         {...register(id, validationRules)}
         placeholder={placeholder}
+        disabled={disabled}
       />
       {errorMessage && (
         <p className="mt-1 text-sm text-red-500">

@@ -15,6 +15,7 @@ const ProfilePage: React.FC = () => {
     onSubmit,
     iconUrl,
     setValue,
+    isSubmitting,
   } = useProfileForm();
 
   if (!userProfile) return <p>読み込み中...</p>;
@@ -34,6 +35,7 @@ const ProfilePage: React.FC = () => {
               iconUrl={iconUrl}
               userProfile={userProfile}
               setValue={setValue}
+              disabled={isSubmitting}
             />
           </div>
 
@@ -49,6 +51,7 @@ const ProfilePage: React.FC = () => {
                 message: "名前は30文字以内で入力してください。",
               },
             }}
+            disabled={isSubmitting}
           />
 
           <TextInput
