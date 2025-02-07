@@ -1,6 +1,5 @@
 import Image from "next/image";
 import React, { useRef } from "react";
-// import type { UseFormSetValue, UseFormWatch } from "react-hook-form";
 import type { UseFormSetValue } from "react-hook-form";
 
 import { supabase } from "@/app/_utils/supabase";
@@ -9,30 +8,16 @@ import {
   UserProfileUpdateRequest,
 } from "@/app/api/me/_types/UserProfile";
 
-// import type { UseFormWatch } from "react-hook-form";
-// import {
-//   UserProfileResponse,
-//   UserProfileUpdateRequest,
-// } from "@/app/api/me/_types/UserProfile";
-
 interface Props {
   userProfile: UserProfileResponse;
   iconUrl: string | null;
-  // fileInputRef: React.RefObject<HTMLInputElement | null>;
-  // watch: UseFormWatch<UserProfileUpdateRequest>;
   setValue: UseFormSetValue<UserProfileUpdateRequest>;
-  // handleUpdateIcon: () => Promise<void>;
-  // handleDeleteIcon: () => Promise<void>;
 }
 
 export const ProfileIcon: React.FC<Props> = ({
   userProfile,
   iconUrl,
-  // fileInputRef,
-  // watch,
   setValue,
-  // handleUpdateIcon,
-  // handleDeleteIcon,
 }) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const getTimestampedUrl = (url: string) => `${url}?t=${new Date().getTime()}`;

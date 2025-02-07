@@ -1,7 +1,5 @@
 "use client";
-
 import React from "react";
-
 import { ProfileIcon } from "./_components/ProfileIcon";
 import { TextInput } from "./_components/TextInput";
 import { useProfileForm } from "./_hooks/useProfileForm";
@@ -11,68 +9,13 @@ const ProfilePage: React.FC = () => {
   const {
     userProfile,
     error,
-    // fileInputRef,
     register,
     handleSubmit,
     errors,
     onSubmit,
     iconUrl,
     setValue,
-    // handleUpdateIcon,
-    // handleDeleteIcon,
   } = useProfileForm();
-
-  // const {
-  //   setValue,
-
-  //   // formState: { errors },
-  // } = useForm<UserProfileUpdateRequest>();
-
-  // const getTimestampedUrl = (url: string) => `${url}?t=${new Date().getTime()}`;
-
-  // const handleUpdateIcon = async () => {
-  //   if (!userProfile) return alert("ユーザーデータが取得できていません");
-
-  //   const file = fileInputRef.current?.files?.[0];
-  //   if (!file) {
-  //     alert("画像を選択してください。");
-  //     return;
-  //   }
-
-  //   const filePath = `private/${userProfile.id}`;
-
-  //   const { data: fileList, error: listError } = await supabase.storage
-  //     .from("profile_icons")
-  //     .list("private", { search: userProfile.id });
-
-  //   if (listError) {
-  //     console.error("ファイル一覧の取得に失敗:", listError.message);
-  //     return;
-  //   }
-
-  //   const fileExists = fileList?.some((file) => file.name === userProfile.id);
-  //   const uploadMethod = fileExists ? "update" : "upload";
-
-  //   const { error: uploadError } = await supabase.storage
-  //     .from("profile_icons")
-  //     [uploadMethod](filePath, file, { cacheControl: "3600", upsert: true });
-
-  //   if (uploadError) {
-  //     console.error("アイコンのアップロードに失敗:", uploadError.message);
-  //     return;
-  //   }
-
-  //   const { data } = await supabase.storage
-  //     .from("profile_icons")
-  //     .getPublicUrl(filePath);
-
-  //   const newIconUrl = getTimestampedUrl(data.publicUrl);
-  //   setValue("iconUrl", newIconUrl);
-  // };
-
-  // const handleDeleteIcon = async () => {
-  //   setValue("iconUrl", null);
-  // };
 
   if (!userProfile) return <p>読み込み中...</p>;
   if (error)
@@ -89,9 +32,8 @@ const ProfilePage: React.FC = () => {
             <h3 className="mb-4 text-xl font-bold">ユーザーアイコン</h3>
             <ProfileIcon
               iconUrl={iconUrl}
-              // fileInputRef={fileInputRef}
               userProfile={userProfile}
-              setValue={setValue} // userProfile={undefined}
+              setValue={setValue}
             />
           </div>
 
@@ -139,7 +81,6 @@ const ProfilePage: React.FC = () => {
             placeholder="株式会社HOGEHOGE"
           />
 
-          {/* ✅ Button.tsx を適用 */}
           <Button type="submit" variant="w-full">
             保存
           </Button>
