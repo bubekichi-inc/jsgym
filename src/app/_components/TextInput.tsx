@@ -1,4 +1,6 @@
 import React from "react";
+import type { ComponentPropsWithRef } from "react";
+
 import type {
   FieldErrors,
   UseFormRegister,
@@ -7,15 +9,13 @@ import type {
   Path,
 } from "react-hook-form";
 
-interface Props<T extends FieldValues> {
+interface Props<T extends FieldValues>
+  extends Omit<ComponentPropsWithRef<"input">, "name"> {
   id: Path<T>;
   label: string;
-  type?: string;
   register: UseFormRegister<T>;
   errors: FieldErrors<T>;
   validationRules?: RegisterOptions<T, Path<T>>;
-  placeholder?: string;
-  disabled?: boolean;
 }
 
 export const TextInput = <T extends FieldValues>({
@@ -25,8 +25,7 @@ export const TextInput = <T extends FieldValues>({
   register,
   errors,
   validationRules,
-  placeholder,
-  disabled,
+  ...rest
 }: Props<T>) => {
   const errorMessage = errors[id]?.message;
 
@@ -40,8 +39,7 @@ export const TextInput = <T extends FieldValues>({
         type={type}
         className="w-full rounded border px-4 py-2"
         {...register(id, validationRules)}
-        placeholder={placeholder}
-        disabled={disabled}
+        {...rest}
       />
       {errorMessage && (
         <p className="mt-1 text-sm text-red-500">

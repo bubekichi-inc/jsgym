@@ -1,9 +1,9 @@
 "use client";
 import React from "react";
 import { ProfileIcon } from "./_components/ProfileIcon";
-import { TextInput } from "./_components/TextInput";
 import { useProfileForm } from "./_hooks/useProfileForm";
 import { Button } from "@/app/_components/Button";
+import { TextInput } from "@/app/_components/TextInput";
 
 const ProfilePage: React.FC = () => {
   const {
@@ -12,7 +12,6 @@ const ProfilePage: React.FC = () => {
     register,
     handleSubmit,
     errors,
-    onSubmit,
     iconUrl,
     setValue,
     isSubmitting,
@@ -25,16 +24,13 @@ const ProfilePage: React.FC = () => {
   return (
     <div className="mx-auto w-full max-w-2xl">
       <div className="flex flex-col gap-y-6">
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="mt-8 flex flex-col gap-y-6"
-        >
+        <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-y-6">
           <div>
             <h3 className="mb-4 text-xl font-bold">ユーザーアイコン</h3>
             <ProfileIcon
               iconUrl={iconUrl}
-              userProfile={userProfile}
-              setValue={setValue}
+              userId={userProfile.id}
+              setValue={(e) => setValue("iconUrl", e)}
               disabled={isSubmitting}
             />
           </div>

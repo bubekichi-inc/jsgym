@@ -39,7 +39,7 @@ export const POST = async (request: NextRequest) => {
     });
 
     const {
-      full_name: fullName,
+      full_name: name,
       email,
       avatar_url: avatarUrl,
     } = data.user.user_metadata;
@@ -47,7 +47,7 @@ export const POST = async (request: NextRequest) => {
     const newUser = await prisma.user.create({
       data: {
         supabaseUserId: data.user.id,
-        name: fullName,
+        name: name,
         email: email,
         stripeCustomerId: stripeCustomer.id,
         iconUrl: avatarUrl,

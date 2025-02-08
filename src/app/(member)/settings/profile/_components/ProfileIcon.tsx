@@ -1,22 +1,16 @@
 import Image from "next/image";
 import React, { useRef } from "react";
-import type { UseFormSetValue } from "react-hook-form";
-
 import { supabase } from "@/app/_utils/supabase";
-import {
-  UserProfileResponse,
-  UserProfileUpdateRequest,
-} from "@/app/api/me/_types/UserProfile";
 
 interface Props {
-  userProfile: UserProfileResponse;
+  userId: string;
   iconUrl: string | null;
-  setValue: UseFormSetValue<UserProfileUpdateRequest>;
+  setValue: (iconUrl: string | null) => void;
   disabled?: boolean;
 }
 
 export const ProfileIcon: React.FC<Props> = ({
-  userProfile,
+  userId,
   iconUrl,
   setValue,
   disabled,
@@ -25,26 +19,24 @@ export const ProfileIcon: React.FC<Props> = ({
   const getTimestampedUrl = (url: string) => `${url}?t=${new Date().getTime()}`;
 
   const handleUpdateIcon = async () => {
-    if (!userProfile) return alert("ユーザーデータが取得できていません");
-
     const file = fileInputRef.current?.files?.[0];
     if (!file) {
       alert("画像を選択してください。");
       return;
     }
 
-    const filePath = `private/${userProfile.id}`;
+    const filePath = `private/${userId}`;
 
     const { data: fileList, error: listError } = await supabase.storage
       .from("profile_icons")
-      .list("private", { search: userProfile.id });
+      .list("private", { search: userId });
 
     if (listError) {
       console.error("ファイル一覧の取得に失敗:", listError.message);
       return;
     }
 
-    const fileExists = fileList?.some((file) => file.name === userProfile.id);
+    const fileExists = fileList?.some((file) => file.name === userId);
     const uploadMethod = fileExists ? "update" : "upload";
 
     const { error: uploadError } = await supabase.storage
@@ -61,11 +53,11 @@ export const ProfileIcon: React.FC<Props> = ({
       .getPublicUrl(filePath);
 
     const newIconUrl = getTimestampedUrl(data.publicUrl);
-    setValue("iconUrl", newIconUrl);
+    setValue(newIconUrl);
   };
 
   const handleDeleteIcon = async () => {
-    setValue("iconUrl", null);
+    setValue(null);
   };
 
   return (
