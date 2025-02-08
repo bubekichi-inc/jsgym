@@ -45,7 +45,6 @@ export const useProfileForm = () => {
 
   return {
     userProfile,
-    userId: userProfile?.id,
     error,
     register,
     onSubmit,

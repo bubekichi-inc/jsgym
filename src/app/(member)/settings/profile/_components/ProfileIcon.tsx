@@ -6,7 +6,7 @@ interface Props {
   userId: string;
   iconUrl: string | null;
   setValue: (iconUrl: string | null) => void;
-  disabled?: boolean;
+  disabled: boolean;
 }
 
 export const ProfileIcon: React.FC<Props> = ({

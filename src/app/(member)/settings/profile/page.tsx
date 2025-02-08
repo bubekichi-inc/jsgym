@@ -38,45 +38,38 @@ const ProfilePage: React.FC = () => {
           <TextInput
             id="name"
             label="名前"
-            register={register}
-            errors={errors}
-            validationRules={{
+            {...register("name", {
               required: "名前は必須です。",
               maxLength: {
                 value: 30,
                 message: "名前は30文字以内で入力してください。",
               },
-            }}
+            })}
             disabled={isSubmitting}
+            errorMessage={errors.name?.message}
           />
 
           <TextInput
             id="email"
             label="連絡先メールアドレス"
-            type="email"
-            register={register}
-            errors={errors}
-            validationRules={{
+            {...register("email", {
               required: "メールアドレスは必須です。",
               pattern: {
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                 message: "正しいメールアドレス形式で入力してください。",
               },
-            }}
+            })}
           />
 
           <TextInput
             id="receiptName"
             label="領収書に記載する名前"
-            type="text"
-            register={register}
-            errors={errors}
-            validationRules={{
+            {...register("receiptName", {
               maxLength: {
                 value: 50,
                 message: "領収書記載名は50文字以内で入力してください。",
               },
-            }}
+            })}
             placeholder="株式会社HOGEHOGE"
           />
 

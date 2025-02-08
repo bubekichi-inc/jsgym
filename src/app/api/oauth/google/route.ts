@@ -47,8 +47,8 @@ export const POST = async (request: NextRequest) => {
     const newUser = await prisma.user.create({
       data: {
         supabaseUserId: data.user.id,
-        name: name,
-        email: email,
+        name,
+        email,
         stripeCustomerId: stripeCustomer.id,
         iconUrl: avatarUrl,
       },
