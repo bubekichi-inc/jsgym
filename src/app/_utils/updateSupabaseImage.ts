@@ -16,34 +16,47 @@ export const updateSupabaseImage = async ({
 }> => {
   if (!userId) return { error: "ユーザーIDが無効です。" };
 
-  const filePath = `private/${userId}`;
+  const timestamp = new Date().getTime();
+  const filePath = `private/${userId}_${timestamp}`;
 
-  // 既存のファイルがあるか確認
   const { data: fileList, error: listError } = await supabase.storage
     .from(bucketName)
-    .list("private", { search: userId });
+    .list("private");
 
   if (listError) {
     console.error("ファイル一覧の取得に失敗:", listError.message);
     return { error: "ファイル一覧の取得に失敗しました。" };
   }
 
-  const fileExists = fileList?.some((file) => file.name === userId);
-  const uploadMethod = fileExists ? "update" : "upload";
+  //古いファイルを削除
+  const oldFiles = fileList?.filter((file) =>
+    file.name.startsWith(`${userId}_`)
+  );
+  if (oldFiles && oldFiles.length > 0) {
+    const oldFilePaths = oldFiles.map((file) => `private/${file.name}`);
+    const { error: deleteError } = await supabase.storage
+      .from(bucketName)
+      .remove(oldFilePaths);
 
-  // 画像アップロード
+    if (deleteError) {
+      console.error("古いアイコンの削除に失敗:", deleteError.message);
+      return { error: "古いアイコンの削除に失敗しました。" };
+    }
+  }
+
+  // 新しい画像をアップロード
+  //remove→uploadのみに変更：updateだと、storageに画像が増えていったため。
   const { error: uploadError } = await supabase.storage
     .from(bucketName)
-    [uploadMethod](filePath, file, { cacheControl: "3600", upsert: true });
+    .upload(filePath, file, { cacheControl: "3600" });
 
   if (uploadError) {
     console.error("アイコンのアップロードに失敗:", uploadError.message);
     return { error: "アイコンのアップロードに失敗しました。" };
   }
 
-  // アップロード成功後、URL を取得
   const { data } = await supabase.storage
     .from(bucketName)
     .getPublicUrl(filePath);
-  return { imageUrl: `${data.publicUrl}?t=${new Date().getTime()}` };
+  return { imageUrl: data.publicUrl };
 };
