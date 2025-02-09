@@ -6,28 +6,20 @@ import { UserProfileUpdateRequest } from "@/app/api/me/_types/UserProfile";
 
 export const useProfileForm = () => {
   const { data: userProfile, mutate } = useMe();
-  const {
-    reset,
-    register,
-    handleSubmit,
-    setValue,
-    watch,
-    formState: { errors, isSubmitting },
-  } = useForm<UserProfileUpdateRequest>();
+
+  const formMethods = useForm<UserProfileUpdateRequest>();
 
   useEffect(() => {
     if (!userProfile) return;
     const { name, email, receiptName, iconUrl } = userProfile;
 
-    reset({
+    formMethods.reset({
       name: name || "",
       email: email || "",
       receiptName: receiptName,
       iconUrl: iconUrl,
     });
-  }, [userProfile, reset]);
-
-  const iconUrl = watch("iconUrl");
+  }, [userProfile, formMethods.reset]);
 
   const onSubmit = async (data: UserProfileUpdateRequest) => {
     try {
@@ -44,14 +36,7 @@ export const useProfileForm = () => {
   };
 
   return {
-    // userProfile,
-    // error,
-    register,
+    ...formMethods,
     onSubmit,
-    handleSubmit: handleSubmit(onSubmit),
-    isSubmitting,
-    errors,
-    iconUrl,
-    setValue,
   };
 };

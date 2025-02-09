@@ -1,64 +1,19 @@
 import Image from "next/image";
 import React, { useRef } from "react";
+import { useFormContext } from "react-hook-form";
 import { useMe } from "../_hooks/useMe";
 import { updateSupabaseImage } from "@/app/_utils/updateSupabaseImage";
 
-interface Props {
-  userId: string;
-  iconUrl: string | null;
-  setValue: (iconUrl: string | null) => void;
-  disabled: boolean;
-}
-
-export const ProfileIcon: React.FC<Props> = ({
-  // userId,
-  iconUrl,
-  setValue,
-  disabled,
-}) => {
+export const ProfileIcon: React.FC = () => {
   const { data: userProfile } = useMe();
-  const userId = userProfile?.id;
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  // const getTimestampedUrl = (url: string) => `${url}?t=${new Date().getTime()}`;
+  const formContext = useFormContext(); // ✅ まず useFormContext() を取得
+  if (!formContext) return null;
+  const { setValue, watch, formState } = formContext;
+  const isSubmitting = formState?.isSubmitting || false;
+  const iconUrl = watch("iconUrl");
+  const userId = userProfile?.id;
 
-  // const handleUpdateIcon = async () => {
-  //   const file = fileInputRef.current?.files?.[0];
-  //   if (!file) {
-  //     alert("画像を選択してください。");
-  //     return;
-  //   }
-
-  // const filePath = `private/${userId}`;
-  // if (!userId) return;
-  // const { data: fileList, error: listError } = await supabase.storage
-  //   .from("profile_icons")
-  //   .list("private", { search: userId });
-
-  // if (listError) {
-  //   console.error("ファイル一覧の取得に失敗:", listError.message);
-  //   return;
-  // }
-
-  // const fileExists = fileList?.some((file) => file.name === userId);
-  // const uploadMethod = fileExists ? "update" : "upload";
-
-  // const { error: uploadError } = await supabase.storage
-  //   .from("profile_icons")
-  //   [uploadMethod](filePath, file, { cacheControl: "3600", upsert: true });
-
-  // if (uploadError) {
-  //   console.error("アイコンのアップロードに失敗:", uploadError.message);
-  //   return;
-  // }
-
-  // const { data } = await supabase.storage
-  //   .from("profile_icons")
-  //   .getPublicUrl(filePath);
-
-  // const newIconUrl = getTimestampedUrl(data.publicUrl);
-  // setValue(newIconUrl);
-  // setValue(data.publicUrl);
-  // };
   const handleUpdateIcon = async () => {
     try {
       const file = fileInputRef.current?.files?.[0];
@@ -77,7 +32,7 @@ export const ProfileIcon: React.FC<Props> = ({
         throw new Error(error || "画像のアップロードに失敗しました。");
       }
 
-      setValue(imageUrl);
+      setValue("iconUrl", imageUrl);
     } catch (err) {
       alert(
         err instanceof Error ? err.message : "予期しないエラーが発生しました。"
@@ -86,7 +41,7 @@ export const ProfileIcon: React.FC<Props> = ({
   };
 
   const handleDeleteIcon = async () => {
-    setValue(null);
+    setValue("iconUrl", null);
   };
 
   return (
@@ -105,29 +60,13 @@ export const ProfileIcon: React.FC<Props> = ({
         </div>
       )}
 
-      {/* <button
-        type="button"
-        className="rounded border bg-gray-100 px-4 py-2"
-        onClick={() => fileInputRef.current?.click()}
-        disabled={disabled}
-      >
-        変更
-      </button>
-      <button
-        type="button"
-        className="rounded bg-red-500 px-4 py-2 text-white"
-        onClick={handleDeleteIcon}
-        disabled={disabled}
-      >
-        削除
-      </button> */}
       {iconUrl ? (
         <>
           <button
             type="button"
             className="rounded border bg-gray-100 px-4 py-2"
             onClick={() => fileInputRef.current?.click()}
-            disabled={disabled}
+            disabled={isSubmitting}
           >
             更新
           </button>
@@ -135,7 +74,7 @@ export const ProfileIcon: React.FC<Props> = ({
             type="button"
             className="rounded bg-red-500 px-4 py-2 text-white"
             onClick={handleDeleteIcon}
-            disabled={disabled}
+            disabled={isSubmitting}
           >
             削除
           </button>
@@ -145,7 +84,7 @@ export const ProfileIcon: React.FC<Props> = ({
           type="button"
           className="rounded border bg-gray-100 px-4 py-2"
           onClick={() => fileInputRef.current?.click()}
-          disabled={disabled}
+          disabled={isSubmitting}
         >
           アップロード
         </button>
@@ -156,7 +95,7 @@ export const ProfileIcon: React.FC<Props> = ({
         style={{ display: "none" }}
         accept="image/*"
         onChange={handleUpdateIcon}
-        disabled={disabled}
+        disabled={isSubmitting}
       />
     </div>
   );
