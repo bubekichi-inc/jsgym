@@ -3,7 +3,6 @@
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
-import { Header } from "@/app/_components/Header";
 
 interface Props {
   children: ReactNode;
@@ -25,7 +24,6 @@ const Layout: React.FC<Props> = ({ children }) => {
 
   return (
     <>
-      <Header />
       <div className="mx-auto mt-[110px] w-full max-w-2xl">
         <div className="flex flex-col">
           <h2 className="mb-6 text-3xl font-bold">各種設定</h2>

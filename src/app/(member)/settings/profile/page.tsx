@@ -1,14 +1,15 @@
 "use client";
 import React from "react";
 import { ProfileIcon } from "./_components/ProfileIcon";
+import { useMe } from "./_hooks/useMe";
 import { useProfileForm } from "./_hooks/useProfileForm";
 import { Button } from "@/app/_components/Button";
 import { TextInput } from "@/app/_components/TextInput";
 
 const ProfilePage: React.FC = () => {
   const {
-    userProfile,
-    error,
+    // userProfile,
+    // error,
     register,
     handleSubmit,
     errors,
@@ -16,7 +17,7 @@ const ProfilePage: React.FC = () => {
     setValue,
     isSubmitting,
   } = useProfileForm();
-
+  const { data: userProfile, error } = useMe();
   if (!userProfile) return <p>読み込み中...</p>;
   if (error)
     return <p className="text-red-500">データ取得に失敗: {error.message}</p>;
@@ -26,7 +27,9 @@ const ProfilePage: React.FC = () => {
       <div className="flex flex-col gap-y-6">
         <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-y-6">
           <div>
-            <h3 className="mb-4 text-xl font-bold">ユーザーアイコン</h3>
+            <label className="mb-4 block text-xl font-bold">
+              ユーザーアイコン
+            </label>
             <ProfileIcon
               iconUrl={iconUrl}
               userId={userProfile.id}

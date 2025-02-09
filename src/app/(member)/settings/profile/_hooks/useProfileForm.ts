@@ -5,7 +5,7 @@ import { api } from "@/app/_utils/api";
 import { UserProfileUpdateRequest } from "@/app/api/me/_types/UserProfile";
 
 export const useProfileForm = () => {
-  const { data: userProfile, error, mutate } = useMe();
+  const { data: userProfile, mutate } = useMe();
   const {
     reset,
     register,
@@ -22,8 +22,8 @@ export const useProfileForm = () => {
     reset({
       name: name || "",
       email: email || "",
-      receiptName: receiptName || null,
-      iconUrl: iconUrl || null,
+      receiptName: receiptName,
+      iconUrl: iconUrl,
     });
   }, [userProfile, reset]);
 
@@ -44,15 +44,14 @@ export const useProfileForm = () => {
   };
 
   return {
-    userProfile,
-    error,
+    // userProfile,
+    // error,
     register,
     onSubmit,
     handleSubmit: handleSubmit(onSubmit),
     isSubmitting,
     errors,
     iconUrl,
-    watch,
     setValue,
   };
 };

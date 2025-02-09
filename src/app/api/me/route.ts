@@ -32,10 +32,15 @@ export const PUT = async (request: NextRequest) => {
   try {
     const currentUser = await getCurrentUser({ request });
     const data: UserProfileUpdateRequest = await request.json();
-
+    const { name, email, receiptName, iconUrl } = data;
     await prisma.user.update({
       where: { id: currentUser.id },
-      data,
+      data: {
+        name,
+        email,
+        receiptName,
+        iconUrl,
+      },
     });
 
     return NextResponse.json({ message: "success" }, { status: 200 });
