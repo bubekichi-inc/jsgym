@@ -21,7 +21,7 @@ export const updateSupabaseImage = async ({
 
   const { data: fileList, error: listError } = await supabase.storage
     .from(bucketName)
-    .list("private");
+    .list("private", { search: userId });
 
   if (listError) {
     console.error("ファイル一覧の取得に失敗:", listError.message);
