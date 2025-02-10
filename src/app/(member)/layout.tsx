@@ -1,4 +1,5 @@
 "use client";
+import { Header } from "../_components/Header";
 import { useRouteGuard } from "../_hooks/useRouteGuard";
 export default function MemberLayout({
   children,
@@ -6,5 +7,10 @@ export default function MemberLayout({
   children: React.ReactNode;
 }>) {
   useRouteGuard();
-  return <div className="">{children}</div>;
+  return (
+    <>
+      <Header />
+      <div className="">{children}</div>
+    </>
+  );
 }
