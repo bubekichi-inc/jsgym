@@ -1,5 +1,3 @@
-// この位置に配置すべきか自信ありませんが、とりあえずここに配置しています。
-
 export class StripeCheckoutError extends Error {
   public readonly userId: string | null;
   public readonly stripePaymentId: string;
