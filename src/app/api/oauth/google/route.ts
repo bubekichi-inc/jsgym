@@ -31,7 +31,6 @@ export const POST = async (request: NextRequest) => {
     // Stripeに「顧客」を作成
     // Note: name には full_name ではなく、あえて email を使用
     //  (full_name には Stripeでの管理上、識別子に使いずらい値が設定されていることがあるため)
-    // Note: /settings/profile で receiptName が設定されたときは name をそれに更新
     const stripeCustomer = await stripe.customers.create({
       email: data.user.user_metadata.email,
       name: data.user.user_metadata.email, // 注意,
