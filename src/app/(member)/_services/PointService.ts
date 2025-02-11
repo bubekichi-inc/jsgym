@@ -49,7 +49,6 @@ export class PointService {
   /**
    * Stripeによる支払い完了後のポイントチャージ処理
    *
-   * @param userId - ポイントをチャージするユーザーのID
    * @param points - チャージするポイント数（呼出し側で正の整数を保証）
    * @param stripePaymentId - Stripeの支払いID（Webhookから取得）
    * @returns ポイントチャージ後のユーザー情報
@@ -107,11 +106,10 @@ export class PointService {
   }
 
   /**
-   * idで指定したユーザーの現在のポイント残高を取得
+   * ユーザーの現在のポイント残高を取得
    *
-   * @param id - ポイント残高を確認したいユーザーのID
    * @returns 現在のポイント残高（0以上の整数）
-   * @throws idで指定されたユーザーが存在しない場合
+   * @throws ユーザーが存在しない場合
    */
   public async getPoints(): Promise<number> {
     const user = await this.prisma.user.findUnique({
