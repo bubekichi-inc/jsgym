@@ -51,11 +51,7 @@ export const PUT = async (request: NextRequest) => {
     if (email !== currentUser.email) stripeCustomerUpdateRequest.email = email;
 
     if (receiptName !== currentUser.receiptName)
-      if (receiptName !== null && receiptName.trim() !== "") {
-        stripeCustomerUpdateRequest.name = receiptName.trim();
-      } else {
-        stripeCustomerUpdateRequest.name = email;
-      }
+      stripeCustomerUpdateRequest.name = receiptName?.trim() || email;
 
     // stripeCustomerUpdateRequest が空でなければ Stripe の顧客情報を更新
     if (Object.keys(stripeCustomerUpdateRequest).length > 0)
