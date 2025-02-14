@@ -19,7 +19,7 @@ export const useProfileForm = () => {
       receiptName: receiptName,
       iconUrl: iconUrl,
     });
-  }, [userProfile, formMethods.reset]);
+  }, [userProfile, formMethods]);
 
   const onSubmit = async (data: UserProfileUpdateRequest) => {
     try {
