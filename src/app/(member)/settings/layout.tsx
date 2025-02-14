@@ -16,7 +16,7 @@ const Layout: React.FC<Props> = ({ children }) => {
   const settingsPageTabs: Tab[] = [
     { label: "プロフィール", href: "/settings/profile" },
     { label: "ポイント購入", href: "/settings/points" },
-    { label: "通知設定", href: "/settings/notification" },
+    { label: "通知設定", href: "/settings/notifications" },
   ];
 
   const pathname = usePathname();
