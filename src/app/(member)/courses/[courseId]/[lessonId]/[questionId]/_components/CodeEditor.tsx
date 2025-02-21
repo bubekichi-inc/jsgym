@@ -24,7 +24,7 @@ export const CodeEditor: React.FC<Props> = ({
       onChange={(value) => value && onChange(value)}
       theme="vs-dark"
       options={{
-        fontSize: 20,
+        fontSize: 16,
         tabSize: 2,
       }}
     />
