@@ -1,10 +1,17 @@
-import { Sender, AnswerStatus } from "@prisma/client";
+import {
+  Sender,
+  AnswerStatus,
+  CodeReviewResult,
+  MessageType,
+} from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-import { CodeReviewRequest, CodeReviewResponse } from "./_types/CodeReview";
+import { CodeReviewRequest } from "./_types/CodeReview";
 import { AIReviewService } from "@/app/_serevices/AIReviewService";
 import { buildPrisma } from "@/app/_utils/prisma";
 import { buildError } from "@/app/api/_utils/buildError";
 import { getCurrentUser } from "@/app/api/_utils/getCurrentUser";
+
+const prisma = await buildPrisma();
 
 interface Props {
   params: Promise<{
@@ -12,7 +19,6 @@ interface Props {
   }>;
 }
 export const POST = async (request: NextRequest, { params }: Props) => {
-  const prisma = await buildPrisma();
   const { questionId } = await params;
   try {
     const { id: userId } = await getCurrentUser({ request });
@@ -24,15 +30,15 @@ export const POST = async (request: NextRequest, { params }: Props) => {
       answer,
     });
 
-    if (!res) throw new Error("AIレビューに失敗しました");
+    if (!res) throw new Error("レビュー中にエラーが発生しました");
 
-    const { isCorrect, overview, goodPoints, badPoints, improvedCode } = res;
+    const { result, overview, comments } = res;
 
-    const status = isCorrect
-      ? AnswerStatus.PASSED
-      : AnswerStatus.REVISION_REQUIRED;
+    const status =
+      result === CodeReviewResult.APPROVED
+        ? AnswerStatus.PASSED
+        : AnswerStatus.REVISION_REQUIRED;
 
-    //ステータスを更新する
     const answerResponse = await prisma.answer.findUnique({
       where: {
         userId_questionId: {
@@ -42,7 +48,6 @@ export const POST = async (request: NextRequest, { params }: Props) => {
       },
     });
 
-    //回答が既にあったら削除
     if (answerResponse) {
       await prisma.answer.delete({
         where: {
@@ -59,19 +64,15 @@ export const POST = async (request: NextRequest, { params }: Props) => {
         userId,
       },
     });
+
     const userMessage = AIReviewService.buildPrompt({ question, answer });
     await prisma.message.create({
       data: {
         message: userMessage,
         sender: Sender.USER,
         answerId: answerData.id,
+        type: MessageType.SUBMISSION,
       },
-    });
-    const systemMessage = AIReviewService.buildSystemMessage({
-      overview,
-      goodPoints,
-      badPoints,
-      improvedCode,
     });
 
     //メッセージにも登録(履歴送るときに備えて、回答なども含める)
@@ -79,9 +80,24 @@ export const POST = async (request: NextRequest, { params }: Props) => {
     await Promise.all([
       prisma.message.create({
         data: {
-          message: systemMessage,
+          message: "",
           sender: Sender.SYSTEM,
           answerId: answerData.id,
+          type: MessageType.REVIEW,
+          codeReview: {
+            create: {
+              overview,
+              result,
+              comments: {
+                createMany: {
+                  data: comments.map(({ code, message }) => ({
+                    code,
+                    message,
+                  })),
+                },
+              },
+            },
+          },
         },
       }),
       prisma.answerHistory.create({
@@ -93,21 +109,9 @@ export const POST = async (request: NextRequest, { params }: Props) => {
       }),
     ]);
 
-    return NextResponse.json<CodeReviewResponse>(
+    return NextResponse.json(
       {
-        isCorrect,
-        overview,
-        goodPoints,
-        badPoints,
-        improvedCode,
-        messages: [
-          {
-            message: systemMessage,
-            sender: Sender.SYSTEM,
-            answerId: answerData.id,
-          },
-        ],
-        answerId: answerData.id,
+        message: "success",
       },
       { status: 200 }
     );

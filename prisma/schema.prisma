@@ -153,9 +153,9 @@ model PointTransaction {
 }
 
 enum MessageType {
-  CHAT
-  SUBMISSION
-  REVIEW
+  CHAT // 質問 or　質問への回答
+  SUBMISSION // 提出
+  REVIEW // レビュー
 }
 
 enum CodeReviewResult {

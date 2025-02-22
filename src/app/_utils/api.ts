@@ -7,7 +7,7 @@ const getAccessToken = async () => {
   return data.session.access_token;
 };
 export const api = {
-  post: async <RequestType, ResponseType>(
+  post: async <RequestType, ResponseType = undefined>(
     endpoint: string,
     payload: RequestType
   ) => {

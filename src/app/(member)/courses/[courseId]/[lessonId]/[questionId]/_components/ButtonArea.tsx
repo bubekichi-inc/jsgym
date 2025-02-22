@@ -3,14 +3,9 @@ import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import type { KeyedMutator } from "swr";
-import { ChatMessage } from "../_types/ChatMessage";
-import { ReviewModal } from "./ReviewModal";
 import { Button } from "@/app/_components/Button";
 import { api } from "@/app/_utils/api";
-import {
-  CodeReviewResponse,
-  CodeReviewRequest,
-} from "@/app/api/questions/[questionId]/code_review/_types/CodeReview";
+import { CodeReviewRequest } from "@/app/api/questions/[questionId]/code_review/_types/CodeReview";
 import { Draft } from "@/app/api/questions/_types/Draft";
 import { QuestionResponse } from "@/app/api/questions/_types/QuestionResponse";
 interface Props {
@@ -33,9 +28,6 @@ export const ButtonArea: React.FC<Props> = ({
   onResetSuccess,
   mutate,
 }) => {
-  const [isCorrect, setIsCorrect] = useState(false);
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
-  const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { courseId, lessonId, questionId } = useParams();
@@ -58,17 +50,13 @@ export const ButtonArea: React.FC<Props> = ({
   const review = async () => {
     try {
       setIsSubmitting(true);
-      setIsOpen(true);
-      const reviewContent = await api.post<
-        CodeReviewRequest,
-        CodeReviewResponse
-      >(`/api/questions/${questionId}/code_review`, {
-        question,
-        answer,
-      });
-      setIsCorrect(reviewContent.isCorrect);
-      setChatMessages(reviewContent.messages);
-      setAnswerId(reviewContent.answerId);
+      await api.post<CodeReviewRequest>(
+        `/api/questions/${questionId}/code_review`,
+        {
+          question,
+          answer,
+        }
+      );
       setIsSubmitting(false);
       mutate();
     } catch (e) {
@@ -84,8 +72,6 @@ export const ButtonArea: React.FC<Props> = ({
       await api.del(`/api/answers/${answerId}`);
       mutate();
       setAnswerCode("");
-      setIsCorrect(false);
-      setChatMessages([]);
       setAnswerId("");
       onResetSuccess();
       toast.success("削除しました");
@@ -102,9 +88,6 @@ export const ButtonArea: React.FC<Props> = ({
   //合格済OR未提出の場合はやり直すボタン出さない
   const startOverButton = status !== AnswerStatus.DRAFT && status !== undefined;
 
-  //提出済みの場合のみレビューを見るボタン表示
-  const reviewModalOpen =
-    status === AnswerStatus.PASSED || status === AnswerStatus.REVISION_REQUIRED;
   return (
     <>
       <Toaster position="top-right" />
@@ -121,16 +104,7 @@ export const ButtonArea: React.FC<Props> = ({
               やり直す
             </Button>
           )}
-          {reviewModalOpen && (
-            <Button
-              type="button"
-              variant="text-blue"
-              onClick={() => setIsOpen(true)}
-              disabled={isSubmitting}
-            >
-              レビューを見る
-            </Button>
-          )}
+
           <Button
             type="button"
             variant="bg-gray"
@@ -149,16 +123,6 @@ export const ButtonArea: React.FC<Props> = ({
           </Button>
         </div>
       </div>
-
-      <ReviewModal
-        isCorrect={isCorrect}
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        isSubmitting={isSubmitting}
-        answerId={answerId}
-        chatMessages={chatMessages}
-        setChatMessages={setChatMessages}
-      />
     </>
   );
 };
