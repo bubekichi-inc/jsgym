@@ -1,4 +1,4 @@
-import { StatusType } from "@prisma/client";
+import { AnswerStatus } from "@prisma/client";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
@@ -20,7 +20,7 @@ interface Props {
   setAnswerId: (answerId: string | null) => void;
   setAnswerCode: (value: string) => void;
   mutate: KeyedMutator<QuestionResponse | undefined>;
-  status: StatusType | undefined;
+  status: AnswerStatus | undefined;
   onResetSuccess: () => void;
 }
 export const ButtonArea: React.FC<Props> = ({
@@ -100,11 +100,11 @@ export const ButtonArea: React.FC<Props> = ({
   };
 
   //合格済OR未提出の場合はやり直すボタン出さない
-  const startOverButton = status !== StatusType.DRAFT && status !== undefined;
+  const startOverButton = status !== AnswerStatus.DRAFT && status !== undefined;
 
   //提出済みの場合のみレビューを見るボタン表示
   const reviewModalOpen =
-    status === StatusType.PASSED || status === StatusType.REVISION_REQUIRED;
+    status === AnswerStatus.PASSED || status === AnswerStatus.REVISION_REQUIRED;
   return (
     <>
       <Toaster position="top-right" />

@@ -1,4 +1,4 @@
-import { CourseType, StatusType } from "@prisma/client";
+import { CourseType, AnswerStatus } from "@prisma/client";
 
 export type QuestionResponse = {
   course: {
@@ -15,6 +15,6 @@ export type QuestionResponse = {
   answer: {
     id: string;
     answer: string;
-    status: StatusType;
+    status: AnswerStatus;
   } | null;
 };

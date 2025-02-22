@@ -1,4 +1,4 @@
-import { Sender, StatusType } from "@prisma/client";
+import { Sender, AnswerStatus } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { CodeReviewRequest, CodeReviewResponse } from "./_types/CodeReview";
 import { AIReviewService } from "@/app/_serevices/AIReviewService";
@@ -28,7 +28,9 @@ export const POST = async (request: NextRequest, { params }: Props) => {
 
     const { isCorrect, overview, goodPoints, badPoints, improvedCode } = res;
 
-    const status = isCorrect ? StatusType.PASSED : StatusType.REVISION_REQUIRED;
+    const status = isCorrect
+      ? AnswerStatus.PASSED
+      : AnswerStatus.REVISION_REQUIRED;
 
     //ステータスを更新する
     const answerResponse = await prisma.answer.findUnique({

@@ -42,6 +42,7 @@ model Lesson {
   courseId  Int        @map("course_id")
   createdAt DateTime   @default(now()) @map("created_at")
   updatedAt DateTime   @updatedAt @map("updated_at")
+  caution   String?
   course    Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
   questions Question[]
 
@@ -55,6 +56,7 @@ model Question {
   content         String
   lessonId        Int             @map("lesson_id")
   template        String
+  exampleAnswer   String
   createdAt       DateTime        @default(now()) @map("created_at")
   updatedAt       DateTime        @updatedAt @map("updated_at")
   answerHistories AnswerHistory[]
@@ -65,15 +67,15 @@ model Question {
 }
 
 model Answer {
-  id         String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  userId     String     @map("user_id") @db.Uuid
-  questionId Int        @map("question_id")
+  id         String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId     String       @map("user_id") @db.Uuid
+  questionId Int          @map("question_id")
   answer     String
-  status     StatusType
-  createdAt  DateTime   @default(now()) @map("created_at")
-  updatedAt  DateTime   @updatedAt @map("updated_at")
-  question   Question   @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status     AnswerStatus
+  createdAt  DateTime     @default(now()) @map("created_at")
+  updatedAt  DateTime     @updatedAt @map("updated_at")
+  question   Question     @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   messages   Message[]
 
   @@unique([userId, questionId])
@@ -100,10 +102,37 @@ model Message {
   sender           Sender
   createdAt        DateTime          @default(now()) @map("created_at")
   updatedAt        DateTime          @updatedAt @map("updated_at")
+  type             MessageType
+  codeReview       CodeReview?
   answer           Answer            @relation(fields: [answerId], references: [id], onDelete: Cascade)
   pointTransaction PointTransaction?
 
   @@map("messages")
+}
+
+model CodeReview {
+  id        String              @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  messageId String              @unique @map("message_id") @db.Uuid
+  overview  String
+  result    CodeReviewResult
+  createdAt DateTime            @default(now()) @map("created_at")
+  updatedAt DateTime            @updatedAt @map("updated_at")
+  comments  CodeReviewComment[]
+  message   Message             @relation(fields: [messageId], references: [id])
+
+  @@map("code_reviews")
+}
+
+model CodeReviewComment {
+  id           String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  codeReviewId String     @map("code_review_id") @db.Uuid
+  code         String
+  message      String
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+  codeReview   CodeReview @relation(fields: [codeReviewId], references: [id])
+
+  @@map("code_review_comments")
 }
 
 model PointTransaction {
@@ -123,6 +152,17 @@ model PointTransaction {
   @@map("point_transactions")
 }
 
+enum MessageType {
+  CHAT
+  SUBMISSION
+  REVIEW
+}
+
+enum CodeReviewResult {
+  APPROVED
+  REJECTED
+}
+
 enum PointTransactionKind {
   USE
   PURCHASE
@@ -137,7 +177,7 @@ enum CourseType {
   TYPE_SCRIPT
 }
 
-enum StatusType {
+enum AnswerStatus {
   DRAFT
   PASSED
   REVISION_REQUIRED

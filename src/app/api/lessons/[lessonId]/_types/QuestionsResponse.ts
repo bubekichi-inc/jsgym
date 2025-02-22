@@ -1,8 +1,8 @@
-import { StatusType } from "@prisma/client";
+import { AnswerStatus } from "@prisma/client";
 export type Question = {
   id: number;
   title: string;
   content: string;
-  status: StatusType;
+  status: AnswerStatus;
 };
 export type QuestionsResponse = { questions: Question[] };

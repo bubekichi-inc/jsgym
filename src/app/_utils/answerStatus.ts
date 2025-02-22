@@ -1,13 +1,13 @@
-import { StatusType } from "@prisma/client";
+import { AnswerStatus } from "@prisma/client";
 import { Status } from "../_types/Status";
 
-export const answerStatus = (status: StatusType | null): Status => {
+export const answerStatus = (status: AnswerStatus | null): Status => {
   switch (status) {
-    case StatusType.DRAFT:
+    case AnswerStatus.DRAFT:
       return "未提出";
-    case StatusType.PASSED:
+    case AnswerStatus.PASSED:
       return "合格済み";
-    case StatusType.REVISION_REQUIRED:
+    case AnswerStatus.REVISION_REQUIRED:
       return "再提出";
     default:
       return "未提出";

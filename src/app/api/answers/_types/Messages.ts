@@ -1,8 +1,8 @@
-import { StatusType } from "@prisma/client";
+import { AnswerStatus } from "@prisma/client";
 import { ChatMessage } from "@/app/(member)/courses/[courseId]/[lessonId]/[questionId]/_types/ChatMessage";
 
 export type MessagesReasponse = {
-  status: StatusType;
+  status: AnswerStatus;
   answer: string;
   messages: ChatMessage[];
 };
