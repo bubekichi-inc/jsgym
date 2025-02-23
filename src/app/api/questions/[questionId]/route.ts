@@ -1,7 +1,7 @@
+import { AnswerStatus, CourseType } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { buildError } from "../../_utils/buildError";
 import { getCurrentUser } from "../../_utils/getCurrentUser";
-import { QuestionResponse } from "../_types/QuestionResponse";
 import { buildPrisma } from "@/app/_utils/prisma";
 
 interface Props {
@@ -9,6 +9,30 @@ interface Props {
     questionId: string;
   }>;
 }
+
+export type QuestionResponse = {
+  question: {
+    id: number;
+    title: string;
+    example: string | null;
+    exampleAnswer: string;
+    content: string;
+    template: string;
+    lesson: {
+      id: number;
+      name: string;
+      course: {
+        id: number;
+        name: CourseType;
+      };
+    };
+  };
+  answer: {
+    id: string;
+    answer: string;
+    status: AnswerStatus;
+  } | null;
+};
 
 const prisma = await buildPrisma();
 
@@ -20,9 +44,24 @@ export const GET = async (request: NextRequest, { params }: Props) => {
       where: {
         id: parseInt(questionId, 10),
       },
-      include: {
+      select: {
+        id: true,
+        title: true,
+        example: true,
+        exampleAnswer: true,
+        content: true,
+        template: true,
         lesson: {
-          include: { course: true },
+          select: {
+            id: true,
+            name: true,
+            course: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
         },
       },
     });
@@ -43,14 +82,7 @@ export const GET = async (request: NextRequest, { params }: Props) => {
 
     return NextResponse.json<QuestionResponse>(
       {
-        course: question.lesson.course,
-        question: {
-          id: question.id,
-          title: question.title,
-          content: question.content,
-          example: question.example,
-          template: question.template,
-        },
+        question,
         answer,
       },
       { status: 200 }

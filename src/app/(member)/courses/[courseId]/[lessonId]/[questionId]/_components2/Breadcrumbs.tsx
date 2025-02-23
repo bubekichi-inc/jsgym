@@ -9,12 +9,10 @@ import { courseName } from "@/app/_utils/courseName";
 
 export const BreadCrumbs: React.FC = () => {
   const { courseId, questionId, lessonId } = useParams();
-  const { data, error, isLoading } = useQuestion({
+  const { data } = useQuestion({
     questionId: questionId as string,
   });
 
-  if (isLoading) return <div>読込み中...</div>;
-  if (error) return <div>問題情報取得中にエラー発生</div>;
   if (!data) return <div>データがありません</div>;
 
   return (
@@ -27,7 +25,7 @@ export const BreadCrumbs: React.FC = () => {
       </li>
       <li className="flex items-center gap-3">
         <Link href={`/courses/${courseId}`} className="hover:underline">
-          {courseName(data.course.name)}
+          {courseName(data.question.lesson.course.name)}
         </Link>
         <FontAwesomeIcon icon={faChevronRight} className="size-3" />
       </li>
@@ -36,7 +34,7 @@ export const BreadCrumbs: React.FC = () => {
           href={`/courses/${courseId}/${lessonId}`}
           className="hover:underline"
         >
-          {courseName(data.course.name)}
+          {data.question.lesson.name}
         </Link>
       </li>
     </ol>
