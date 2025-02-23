@@ -26,16 +26,6 @@ export default function Page() {
   //   setExecutionResult([]);
   // };
 
-  if (!data) {
-    return <div className="text-center">読込み中</div>;
-  }
-
-  if (error) {
-    return (
-      <div className="text-center">問題の取得中にエラーが発生しました</div>
-    );
-  }
-
   return (
     <div className="flex justify-center">
       <div className="w-1/2 space-y-6 p-6">
