@@ -1,20 +1,15 @@
 "use client";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { ButtonArea } from "./_components/ButtonArea";
-import { ContentArea } from "./_components/ContetArea";
+import { BreadCrumbs } from "./_components2/Breadcrumbs";
 import { useMessages } from "./_hooks/useChat";
 import { LogType } from "./_types/LogType";
 import { useQuestion } from "@/app/_hooks/useQuestion";
 
 type LogObj = { type: LogType; message: string };
 
-export default function Question() {
+export default function Page() {
   const params = useParams();
   const questionId = params.questionId as string;
-  const [answerId, setAnswerId] = useState<string | null>(null);
-  const [executionResult, setExecutionResult] = useState<LogObj[]>([]);
-  const [answerCode, setAnswerCode] = useState("");
   const { data, error, mutate } = useQuestion({
     questionId,
   });
@@ -23,23 +18,13 @@ export default function Question() {
   });
   console.log(messagesData);
 
-  useEffect(() => {
-    if (!data) return;
-    if (data.answer) {
-      setAnswerCode(data.answer.answer);
-      setAnswerId(data.answer.id);
-    } else {
-      setAnswerCode(data.question.template);
-    }
-  }, [data]);
+  // const addLog = (type: LogType, message: string) => {
+  //   setExecutionResult((prevLogs) => [...prevLogs, { type, message }]);
+  // };
 
-  const addLog = (type: LogType, message: string) => {
-    setExecutionResult((prevLogs) => [...prevLogs, { type, message }]);
-  };
-
-  const resetLogs = () => {
-    setExecutionResult([]);
-  };
+  // const resetLogs = () => {
+  //   setExecutionResult([]);
+  // };
 
   if (!data) {
     return <div className="text-center">読込み中</div>;
@@ -52,8 +37,12 @@ export default function Question() {
   }
 
   return (
-    <div className="h-full">
-      <ContentArea
+    <div className="flex justify-center">
+      <div className="w-1/2 space-y-6 p-6">
+        <BreadCrumbs />
+      </div>
+      <div className="w-1/2">codeEditor</div>
+      {/* <ContentArea
         answerCode={answerCode}
         setAnswerCode={setAnswerCode}
         addLog={addLog}
@@ -69,7 +58,7 @@ export default function Question() {
         status={data.answer?.status}
         onResetSuccess={resetLogs}
         mutate={mutate}
-      />
+      /> */}
     </div>
   );
 }
