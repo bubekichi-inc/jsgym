@@ -1,21 +1,15 @@
-import { CodeReviewResult, Sender } from "@prisma/client";
-
-type Message = {
-  message: string;
-  sender: Sender;
-  answerId: string;
-};
+import { CodeReviewResult } from "@prisma/client";
 
 export type AIReviewJsonResponse = {
   result: CodeReviewResult;
   overview: string;
-  comments: CodeReviewComment[]
+  comments: CodeReviewComment[];
 };
 
 type CodeReviewComment = {
-  code: string;
+  targetCode: string;
   message: string;
-}
+};
 
 export type CodeReviewRequest = {
   question: string;

@@ -14,7 +14,7 @@ export class AIReviewService {
     overview: z.string(),
     comments: z.array(
       z.object({
-        code: z.string(),
+        targetCode: z.string(),
         message: z.string(),
       })
     ),

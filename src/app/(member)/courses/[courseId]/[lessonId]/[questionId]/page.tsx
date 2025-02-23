@@ -3,19 +3,25 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ButtonArea } from "./_components/ButtonArea";
 import { ContentArea } from "./_components/ContetArea";
+import { useMessages } from "./_hooks/useChat";
 import { LogType } from "./_types/LogType";
 import { useQuestion } from "@/app/_hooks/useQuestion";
 
 type LogObj = { type: LogType; message: string };
 
 export default function Question() {
-  const { questionId } = useParams();
+  const params = useParams();
+  const questionId = params.questionId as string;
   const [answerId, setAnswerId] = useState<string | null>(null);
   const [executionResult, setExecutionResult] = useState<LogObj[]>([]);
   const [answerCode, setAnswerCode] = useState("");
   const { data, error, mutate } = useQuestion({
-    questionId: questionId as string,
+    questionId,
   });
+  const { data: messagesData } = useMessages({
+    questionId,
+  });
+  console.log(messagesData);
 
   useEffect(() => {
     if (!data) return;
@@ -28,7 +34,7 @@ export default function Question() {
   }, [data]);
 
   const addLog = (type: LogType, message: string) => {
-    setExecutionResult(prevLogs => [...prevLogs, { type, message }]);
+    setExecutionResult((prevLogs) => [...prevLogs, { type, message }]);
   };
 
   const resetLogs = () => {

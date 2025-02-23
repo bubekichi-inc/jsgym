@@ -9,8 +9,10 @@ interface Props {
     questionId: string;
   }>;
 }
+
+const prisma = await buildPrisma();
+
 export const GET = async (request: NextRequest, { params }: Props) => {
-  const prisma = await buildPrisma();
   const { questionId } = await params;
   try {
     const { id: userId } = await getCurrentUser({ request });

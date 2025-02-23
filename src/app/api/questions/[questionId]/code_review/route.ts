@@ -90,8 +90,8 @@ export const POST = async (request: NextRequest, { params }: Props) => {
               result,
               comments: {
                 createMany: {
-                  data: comments.map(({ code, message }) => ({
-                    code,
+                  data: comments.map(({ targetCode, message }) => ({
+                    code: targetCode,
                     message,
                   })),
                 },
