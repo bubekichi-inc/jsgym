@@ -1,6 +1,7 @@
 "use client";
 import { useParams } from "next/navigation";
 import { BreadCrumbs } from "./_components2/Breadcrumbs";
+import { TitleSection } from "./_components2/TitleSection";
 import { useMessages } from "./_hooks/useChat";
 import { LogType } from "./_types/LogType";
 import { useQuestion } from "@/app/_hooks/useQuestion";
@@ -30,6 +31,7 @@ export default function Page() {
     <div className="flex justify-center">
       <div className="w-1/2 space-y-6 p-6">
         <BreadCrumbs />
+        <TitleSection />
       </div>
       <div className="w-1/2">codeEditor</div>
       {/* <ContentArea
