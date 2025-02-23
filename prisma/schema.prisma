@@ -126,7 +126,7 @@ model CodeReview {
 model CodeReviewComment {
   id           String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   codeReviewId String     @map("code_review_id") @db.Uuid
-  code         String
+  targetCode   String
   message      String
   createdAt    DateTime   @default(now()) @map("created_at")
   updatedAt    DateTime   @updatedAt @map("updated_at")
@@ -153,9 +153,9 @@ model PointTransaction {
 }
 
 enum MessageType {
-  CHAT // 質問 or　質問への回答
-  SUBMISSION // 提出
-  REVIEW // レビュー
+  CHAT
+  SUBMISSION
+  REVIEW
 }
 
 enum CodeReviewResult {

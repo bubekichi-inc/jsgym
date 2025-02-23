@@ -39,25 +39,18 @@ export const POST = async (request: NextRequest, { params }: Props) => {
         ? AnswerStatus.PASSED
         : AnswerStatus.REVISION_REQUIRED;
 
-    const answerResponse = await prisma.answer.findUnique({
+    const answerData = await prisma.answer.upsert({
       where: {
         userId_questionId: {
           userId: userId,
           questionId: parseInt(questionId, 10),
         },
       },
-    });
-
-    if (answerResponse) {
-      await prisma.answer.delete({
-        where: {
-          id: answerResponse.id,
-        },
-      });
-    }
-
-    const answerData = await prisma.answer.create({
-      data: {
+      update: {
+        answer,
+        status,
+      },
+      create: {
         questionId: parseInt(questionId, 10),
         answer,
         status,
@@ -91,7 +84,7 @@ export const POST = async (request: NextRequest, { params }: Props) => {
               comments: {
                 createMany: {
                   data: comments.map(({ targetCode, message }) => ({
-                    code: targetCode,
+                    targetCode,
                     message,
                   })),
                 },

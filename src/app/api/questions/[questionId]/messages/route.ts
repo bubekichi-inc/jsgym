@@ -26,7 +26,7 @@ export type Message = {
     result: CodeReviewResult;
     comments: {
       id: string;
-      code: string;
+      targetCode: string;
       message: string;
     }[];
   } | null;
