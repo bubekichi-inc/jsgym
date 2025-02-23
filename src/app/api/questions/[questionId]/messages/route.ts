@@ -81,7 +81,8 @@ export type PostMessageBody = {
 };
 
 export const POST = async (request: NextRequest, { params }: Props) => {
-  const { questionId } = await params;
+  const questionId = Number((await params).questionId);
+
   try {
     const { id: currentUserId } = await getCurrentUser({ request });
     const { message }: PostMessageBody = await request.json();
