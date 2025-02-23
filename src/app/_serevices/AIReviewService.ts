@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
+import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { z } from "zod";
-import { Message } from "../_types/Message";
 import { AIReviewJsonResponse } from "../api/questions/[questionId]/code_review/_types/CodeReview";
 
 export class AIReviewService {
@@ -80,9 +80,9 @@ export class AIReviewService {
   public static async getChatResponse({
     openAIMessages,
   }: {
-    openAIMessages: Message[];
+    openAIMessages: ChatCompletionMessageParam[];
   }) {
-    const messages: Message[] = [
+    const messages: ChatCompletionMessageParam[] = [
       {
         role: "system",
         content: "JSON形式で返さないでください。",

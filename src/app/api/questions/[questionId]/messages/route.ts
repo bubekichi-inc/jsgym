@@ -1,6 +1,7 @@
 import { CodeReviewResult, MessageType, Sender } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
+import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { AIReviewService } from "@/app/_serevices/AIReviewService";
 import { buildPrisma } from "@/app/_utils/prisma";
 import { buildError } from "@/app/api/_utils/buildError";
@@ -95,6 +96,8 @@ export const POST = async (request: NextRequest, { params }: Props) => {
       },
     });
 
+    if (!answer) return buildError(new Error("Answer not found"));
+
     const messageHistory = await prisma.message.findMany({
       where: {
         answer: {
@@ -102,17 +105,34 @@ export const POST = async (request: NextRequest, { params }: Props) => {
           questionId,
         },
       },
+      select: {
+        id: true,
+        message: true,
+        sender: true,
+        createdAt: true,
+        type: true,
+        codeReview: {
+          select: {
+            id: true,
+            overview: true,
+            result: true,
+            comments: true,
+          },
+        },
+      },
       orderBy: { createdAt: "desc" },
       //履歴は最大10個送る
       take: 10,
     });
 
-    const openAIMessages = messageHistory.map((message) => ({
-      role: message.sender === "USER" ? "user" : "assistant",
-      content: message.message,
-    }));
+    const openAIMessages: ChatCompletionMessageParam[] = messageHistory.map(
+      (message) => ({
+        role: message.sender === Sender.USER ? "user" : "assistant",
+        content: message.message,
+      })
+    );
 
-    openAIMessages.unshift({ role: "user", content: answer?.answer || "" });
+    openAIMessages.unshift({ role: "user", content: answer.answer });
 
     openAIMessages.push({
       role: "user",
@@ -122,25 +142,27 @@ export const POST = async (request: NextRequest, { params }: Props) => {
     const systemMessageContent = await AIReviewService.getChatResponse({
       openAIMessages,
     });
-    const systemMessage = {
-      message: systemMessageContent,
-      sender: "SYSTEM" as const,
-      answerId,
-    };
+
     await prisma.message.createMany({
       data: [
         {
           message,
           sender: "USER",
-          answerId,
+          type: MessageType.CHAT,
+          answerId: answer.id,
         },
-        systemMessage,
+        {
+          message: systemMessageContent,
+          sender: "SYSTEM" as const,
+          type: MessageType.CHAT,
+          answerId: answer.id,
+        },
       ],
     });
 
     return NextResponse.json(
       {
-        systemMessage,
+        message: "succcess",
       },
       { status: 200 }
     );
