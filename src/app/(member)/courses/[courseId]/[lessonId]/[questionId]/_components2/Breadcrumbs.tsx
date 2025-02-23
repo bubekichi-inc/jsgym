@@ -18,29 +18,27 @@ export const BreadCrumbs: React.FC = () => {
   if (!data) return <div>データがありません</div>;
 
   return (
-    <nav>
-      <ol className="flex items-center gap-3">
-        <li className="flex items-center gap-3">
-          <Link href={`/courses`} className="hover:underline">
-            コース一覧
-          </Link>
-          <FontAwesomeIcon icon={faChevronRight} className="size-3" />
-        </li>
-        <li className="flex items-center gap-3">
-          <Link href={`/courses/${courseId}`} className="hover:underline">
-            {courseName(data.course.name)}
-          </Link>
-          <FontAwesomeIcon icon={faChevronRight} className="size-3" />
-        </li>
-        <li className="flex items-center gap-3">
-          <Link
-            href={`/courses/${courseId}/${lessonId}`}
-            className="hover:underline"
-          >
-            {courseName(data.course.name)}
-          </Link>
-        </li>
-      </ol>
-    </nav>
+    <ol className="flex items-center gap-3">
+      <li className="flex items-center gap-3">
+        <Link href={`/courses`} className="hover:underline">
+          コース一覧
+        </Link>
+        <FontAwesomeIcon icon={faChevronRight} className="size-3" />
+      </li>
+      <li className="flex items-center gap-3">
+        <Link href={`/courses/${courseId}`} className="hover:underline">
+          {courseName(data.course.name)}
+        </Link>
+        <FontAwesomeIcon icon={faChevronRight} className="size-3" />
+      </li>
+      <li className="flex items-center gap-3">
+        <Link
+          href={`/courses/${courseId}/${lessonId}`}
+          className="hover:underline"
+        >
+          {courseName(data.course.name)}
+        </Link>
+      </li>
+    </ol>
   );
 };
