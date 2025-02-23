@@ -4,6 +4,7 @@ import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { Skeleton } from "@/app/_components/Skeleton";
 import { useQuestion } from "@/app/_hooks/useQuestion";
 import { courseName } from "@/app/_utils/courseName";
 
@@ -13,7 +14,7 @@ export const BreadCrumbs: React.FC = () => {
     questionId: questionId as string,
   });
 
-  if (!data) return <div>データがありません</div>;
+  if (!data) return <Skeleton height={24} />;
 
   return (
     <ol className="flex items-center gap-3">
