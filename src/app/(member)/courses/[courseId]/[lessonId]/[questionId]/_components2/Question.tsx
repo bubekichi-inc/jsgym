@@ -12,7 +12,7 @@ export const Question: React.FC = () => {
     questionId,
   });
 
-  if (!data) return <Skeleton height={200} />;
+  if (!data) return <Skeleton height={300} />;
 
   return (
     <div className="bg-white rounded-lg p-4 space-y-6">
@@ -22,15 +22,18 @@ export const Question: React.FC = () => {
           {data.question.content}
         </div>
       </div>
-      <div className="flex p-3 bg-orange-50 rounded-lg gap-3">
-        <FontAwesomeIcon
-          icon={faExclamationTriangle}
-          className="text-orange-400"
-        />
-        <div className="text-xs whitespace-pre-wrap break-words">
-          {data.question.lesson.caution}
+
+      {data.question.lesson.caution && (
+        <div className="flex p-3 bg-orange-50 rounded-lg gap-3">
+          <FontAwesomeIcon
+            icon={faExclamationTriangle}
+            className="text-orange-400"
+          />
+          <div className="text-xs whitespace-pre-wrap break-words">
+            {data.question.lesson.caution}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
