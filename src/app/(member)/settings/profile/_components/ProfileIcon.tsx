@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React, { useRef } from "react";
 import { useFormContext } from "react-hook-form";
-import { useMe } from "../_hooks/useMe";
+import { useMe } from "../../../_hooks/useMe";
 import { updateSupabaseImage } from "@/app/_utils/updateSupabaseImage";
 
 export const ProfileIcon: React.FC = () => {

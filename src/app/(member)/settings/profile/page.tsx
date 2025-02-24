@@ -2,7 +2,7 @@
 import React from "react";
 import { FormProvider } from "react-hook-form";
 import { ProfileIcon } from "./_components/ProfileIcon";
-import { useMe } from "./_hooks/useMe";
+import { useMe } from "../../_hooks/useMe";
 import { useProfileForm } from "./_hooks/useProfileForm";
 import { Button } from "@/app/_components/Button";
 import { TextInput } from "@/app/_components/TextInput";

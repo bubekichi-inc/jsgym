@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { StatusBadge } from "@/app/_components/StatusBadge";
 import { useQuestions } from "@/app/_hooks/useQuestions";
 import { answerStatus } from "@/app/_utils/answerStatus";
 
@@ -25,7 +24,7 @@ export default function Lesson() {
         >
           <div className="flex items-center gap-4">
             <div className="font-bold">問題{index + 1}</div>
-            <StatusBadge status={answerStatus(question.status)} />
+            {question.status}
           </div>
           <div className="">{question.title}</div>
         </Link>

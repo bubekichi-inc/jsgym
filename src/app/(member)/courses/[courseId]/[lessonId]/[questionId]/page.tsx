@@ -6,20 +6,11 @@ import { useMessages } from "./_hooks/useChat";
 import { LogType } from "./_types/LogType";
 import { useQuestion } from "@/app/_hooks/useQuestion";
 import { Question } from "./_components2/Question";
+import { Chat } from "./_components2/Chat";
 
 type LogObj = { type: LogType; message: string };
 
 export default function Page() {
-  const params = useParams();
-  const questionId = params.questionId as string;
-  const { data, error, mutate } = useQuestion({
-    questionId,
-  });
-  const { data: messagesData } = useMessages({
-    questionId,
-  });
-  console.log(messagesData);
-
   // const addLog = (type: LogType, message: string) => {
   //   setExecutionResult((prevLogs) => [...prevLogs, { type, message }]);
   // };
@@ -34,6 +25,7 @@ export default function Page() {
         <BreadCrumbs />
         <TitleSection />
         <Question />
+        <Chat />
       </div>
       <div className="w-1/2">codeEditor</div>
       {/* <ContentArea
