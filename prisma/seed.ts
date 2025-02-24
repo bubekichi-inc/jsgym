@@ -80,6 +80,15 @@ const createData = async () => {
       id: 1,
       name: "初級",
       courseId: 1,
+      caution: `必ず、
+1. 関数の定義
+2. 引数となる定数の定義
+3. 実行結果をconsole.logで出力
+の手順で記述してください。
+
+アロー関数を用いて書いてください。
+
+出来るだけ省略記法を用いて短く書いてください。`
     },
   ];
   const questions = [

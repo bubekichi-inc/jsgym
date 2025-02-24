@@ -5,6 +5,7 @@ import { TitleSection } from "./_components2/TitleSection";
 import { useMessages } from "./_hooks/useChat";
 import { LogType } from "./_types/LogType";
 import { useQuestion } from "@/app/_hooks/useQuestion";
+import { Question } from "./_components2/Question";
 
 type LogObj = { type: LogType; message: string };
 
@@ -32,6 +33,7 @@ export default function Page() {
       <div className="w-1/2 space-y-6 p-6">
         <BreadCrumbs />
         <TitleSection />
+        <Question />
       </div>
       <div className="w-1/2">codeEditor</div>
       {/* <ContentArea
