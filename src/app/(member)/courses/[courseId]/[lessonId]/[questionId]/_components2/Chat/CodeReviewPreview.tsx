@@ -57,6 +57,23 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
         <div className="whitespace-pre-wrap break-words">
           {codeReview?.overview}
         </div>
+        {codeReview.result === "REJECTED" && (
+          <div className="space-y-2 text-xs">
+            {codeReview.comments.map((comment) => (
+              <div
+                key={comment.id}
+                className="bg-orange-50 p-3 rounded space-y-2"
+              >
+                <pre className="bg-editorDark text-gray-100 py-1 px-3 rounded">
+                  {comment.targetCode}
+                </pre>
+                <p className="whitespace-pre-wrap break-words">
+                  {comment.message}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

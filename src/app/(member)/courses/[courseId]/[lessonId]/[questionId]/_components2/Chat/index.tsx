@@ -5,6 +5,7 @@ import React from "react";
 import { useMessages } from "../../_hooks/useChat";
 import { ChatMssage } from "./ChatMssage";
 import { Skeleton } from "@/app/_components/Skeleton";
+import { ChatInput } from "./ChatInput";
 
 export const Chat: React.FC = () => {
   const params = useParams();
@@ -15,11 +16,16 @@ export const Chat: React.FC = () => {
 
   if (!data) return <Skeleton height={300} />;
 
+  if (!data.messages.length) return null;
+
   return (
-    <div className="space-y-3">
-      {data.messages.map((message) => {
-        return <ChatMssage key={message.id} message={message} />;
-      })}
+    <div className="space-y-6">
+      <div className="space-y-3 relative">
+        {data.messages.map((message) => {
+          return <ChatMssage key={message.id} message={message} />;
+        })}
+      </div>
+      <ChatInput />
     </div>
   );
 };
