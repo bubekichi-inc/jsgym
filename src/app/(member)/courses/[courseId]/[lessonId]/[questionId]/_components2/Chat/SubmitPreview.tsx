@@ -22,11 +22,14 @@ export const SubmitPreview: React.FC<Props> = ({ answer }) => {
       <div className="flex justify-between text-gray-600">
         <p>レビュー依頼を提出しました</p>
         <button
-          className="flex items-center gap-2 py-1"
+          className="flex items-center gap-1 py-1"
           onClick={() => setShow((prev) => !prev)}
         >
           <span className="text-xs">提出したコード</span>
-          <FontAwesomeIcon icon={faCaretDown} />
+          <FontAwesomeIcon
+            icon={faCaretDown}
+            className={`size-3 duration-300 ${show && "rotate-180"}`}
+          />
         </button>
       </div>
 
