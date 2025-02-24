@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { SenderIcon } from "./SenderIcon";
 import { SubmitPreview } from "./SubmitPreview";
 import { Message } from "@/app/api/questions/[questionId]/messages/route";
+import { CodeReviewPreview } from "./CodeReviewPreview";
 
 interface Props {
   message: Message;
@@ -20,9 +21,7 @@ export const ChatMssage: React.FC<Props> = ({ message }) => {
       <div className="w-full text-sm">
         {messageType === "SUBMIT" && <SubmitPreview answer={message.answer!} />}
         {messageType === "CODE_REVIEW" && (
-          <div className="rounded bg-white p-4">
-            {message.codeReview?.overview}
-          </div>
+          <CodeReviewPreview codeReview={message.codeReview!} />
         )}
         {messageType === "CHAT" && (
           <div className="rounded bg-white p-4">{message.message}</div>

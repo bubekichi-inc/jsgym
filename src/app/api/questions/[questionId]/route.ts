@@ -87,14 +87,16 @@ export const GET = async (request: NextRequest, { params }: Props) => {
       },
     });
 
-    const answer = await prisma.answer.findFirst({
-      where: {
-        userQuestionId: userQuestion?.id,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+    const answer = userQuestion
+      ? await prisma.answer.findFirst({
+          where: {
+            userQuestionId: userQuestion.id,
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+        })
+      : null;
 
     return NextResponse.json<QuestionResponse>(
       {
