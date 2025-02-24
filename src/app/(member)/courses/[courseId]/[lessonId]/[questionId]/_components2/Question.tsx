@@ -16,7 +16,7 @@ export const Question: React.FC = () => {
 
   return (
     <div className="bg-white rounded-lg p-4 space-y-6">
-      <div className="space-y-3">
+      <div className="space-y-2">
         <p className="font-bold">お題</p>
         <div className="text-sm whitespace-pre-wrap break-words">
           {data.question.content}
