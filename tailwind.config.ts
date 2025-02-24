@@ -11,6 +11,7 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        editorDark: "#1e1e1e",
       },
       boxShadow: {
         card: "0px 10px 30px rgba(0, 0, 0, 0.03)",

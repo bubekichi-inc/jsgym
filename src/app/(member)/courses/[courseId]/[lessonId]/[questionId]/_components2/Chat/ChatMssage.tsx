@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { SenderIcon } from "./SenderIcon";
+import { SubmitPreview } from "./SubmitPreview";
 import { Message } from "@/app/api/questions/[questionId]/messages/route";
 
 interface Props {
@@ -7,10 +8,26 @@ interface Props {
 }
 
 export const ChatMssage: React.FC<Props> = ({ message }) => {
+  const messageType = useMemo(() => {
+    if (message.answer) return "SUBMIT";
+    if (message.codeReview) return "CODE_REVIEW";
+    return "CHAT";
+  }, [message]);
+
   return (
     <div className="flex gap-3">
       <SenderIcon sender={message.sender} />
-      <div className="w-full rounded bg-white p-4">a</div>
+      <div className="w-full text-sm">
+        {messageType === "SUBMIT" && <SubmitPreview answer={message.answer!} />}
+        {messageType === "CODE_REVIEW" && (
+          <div className="rounded bg-white p-4">
+            {message.codeReview?.overview}
+          </div>
+        )}
+        {messageType === "CHAT" && (
+          <div className="rounded bg-white p-4">{message.message}</div>
+        )}
+      </div>
     </div>
   );
 };

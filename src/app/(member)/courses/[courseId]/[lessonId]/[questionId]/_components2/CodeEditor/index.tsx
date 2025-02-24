@@ -24,7 +24,7 @@ export const CodeEditor: React.FC = () => {
   return (
     <div className="relative">
       <Editor
-        className="bg-[#1e1e1e] py-6"
+        className="bg-editorDark py-6"
         height="50vh"
         defaultLanguage={language(data.question.lesson.course.name)}
         value={value}
