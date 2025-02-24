@@ -32,6 +32,12 @@ export type QuestionResponse = {
     id: string;
     status: UserQuestionStatus;
   } | null;
+  answer: {
+    answer: string;
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+  } | null;
 };
 
 const prisma = await buildPrisma();
@@ -81,10 +87,20 @@ export const GET = async (request: NextRequest, { params }: Props) => {
       },
     });
 
+    const answer = await prisma.answer.findFirst({
+      where: {
+        userQuestionId: userQuestion?.id,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
     return NextResponse.json<QuestionResponse>(
       {
         question,
         userQuestion,
+        answer,
       },
       { status: 200 }
     );

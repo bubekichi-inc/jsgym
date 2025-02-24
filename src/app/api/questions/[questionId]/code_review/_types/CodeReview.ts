@@ -12,6 +12,5 @@ type CodeReviewComment = {
 };
 
 export type CodeReviewRequest = {
-  question: string;
   answer: string;
 };

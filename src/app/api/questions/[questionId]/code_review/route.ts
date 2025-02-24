@@ -18,10 +18,18 @@ export const POST = async (request: NextRequest, { params }: Props) => {
   try {
     const { id: userId } = await getCurrentUser({ request });
     const body = await request.json();
-    const { question, answer }: CodeReviewRequest = body;
+    const { answer }: CodeReviewRequest = body;
+
+    const question = await prisma.question.findUnique({
+      where: {
+        id: parseInt(questionId, 10),
+      },
+    });
+
+    if (!question) throw new Error("質問が見つかりません");
 
     const res = await AIReviewService.getCodeReview({
-      question,
+      question: question.content,
       answer,
     });
 
@@ -53,7 +61,10 @@ export const POST = async (request: NextRequest, { params }: Props) => {
 
     const userMessage = await prisma.message.create({
       data: {
-        message: AIReviewService.buildPrompt({ question, answer }),
+        message: AIReviewService.buildPrompt({
+          question: question.content,
+          answer,
+        }),
         sender: Sender.USER,
         userQuestionId: userQuestionData.id,
       },
