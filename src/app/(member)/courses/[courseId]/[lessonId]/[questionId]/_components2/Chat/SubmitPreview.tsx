@@ -62,7 +62,10 @@ export const SubmitPreview: React.FC<Props> = ({ answer }) => {
             options={{
               fontSize: 14,
               tabSize: 2,
-              trimAutoWhitespace: true,
+              readOnly: true,
+              readOnlyMessage: {
+                value: "編集できません",
+              },
             }}
           />
         </div>
