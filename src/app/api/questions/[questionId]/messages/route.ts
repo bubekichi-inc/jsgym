@@ -1,4 +1,4 @@
-import { CodeReviewResult, MessageType, Sender } from "@prisma/client";
+import { CodeReviewResult, Sender } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
@@ -20,7 +20,6 @@ export type Message = {
   message: string;
   sender: Sender;
   createdAt: Date;
-  type: MessageType;
   codeReview: {
     id: string;
     overview: string;
@@ -29,7 +28,13 @@ export type Message = {
       id: string;
       targetCode: string;
       message: string;
+      createdAt: Date;
     }[];
+  } | null;
+  answer: {
+    id: string;
+    answer: string;
+    createdAt: Date;
   } | null;
 };
 
@@ -41,7 +46,7 @@ export const GET = async (request: NextRequest, { params }: Props) => {
 
     const messages = await prisma.message.findMany({
       where: {
-        answer: {
+        userQuestion: {
           userId: currentUserId,
           questionId,
         },
@@ -51,13 +56,20 @@ export const GET = async (request: NextRequest, { params }: Props) => {
         message: true,
         sender: true,
         createdAt: true,
-        type: true,
         codeReview: {
           select: {
             id: true,
             overview: true,
             result: true,
             comments: true,
+            createdAt: true,
+          },
+        },
+        answer: {
+          select: {
+            id: true,
+            answer: true,
+            createdAt: true,
           },
         },
       },
@@ -87,7 +99,7 @@ export const POST = async (request: NextRequest, { params }: Props) => {
   try {
     const { id: currentUserId } = await getCurrentUser({ request });
     const { message }: PostMessageBody = await request.json();
-    const answer = await prisma.answer.findUnique({
+    const userQuestion = await prisma.userQuestion.findUnique({
       where: {
         userId_questionId: {
           userId: currentUserId,
@@ -96,11 +108,11 @@ export const POST = async (request: NextRequest, { params }: Props) => {
       },
     });
 
-    if (!answer) return buildError(new Error("Answer not found"));
+    if (!userQuestion) return buildError(new Error("UserQuestion not found"));
 
     const messageHistory = await prisma.message.findMany({
       where: {
-        answer: {
+        userQuestion: {
           userId: currentUserId,
           questionId,
         },
@@ -110,13 +122,18 @@ export const POST = async (request: NextRequest, { params }: Props) => {
         message: true,
         sender: true,
         createdAt: true,
-        type: true,
         codeReview: {
           select: {
             id: true,
             overview: true,
             result: true,
             comments: true,
+          },
+        },
+        answer: {
+          select: {
+            id: true,
+            answer: true,
           },
         },
       },
@@ -132,7 +149,7 @@ export const POST = async (request: NextRequest, { params }: Props) => {
       })
     );
 
-    openAIMessages.unshift({ role: "user", content: answer.answer });
+    // openAIMessages.unshift({ role: "user", content: answer.answer });
 
     openAIMessages.push({
       role: "user",
@@ -147,15 +164,13 @@ export const POST = async (request: NextRequest, { params }: Props) => {
       data: [
         {
           message,
-          sender: "USER",
-          type: MessageType.CHAT,
-          answerId: answer.id,
+          sender: Sender.USER,
+          userQuestionId: userQuestion.id,
         },
         {
           message: systemMessageContent,
-          sender: "SYSTEM" as const,
-          type: MessageType.CHAT,
-          answerId: answer.id,
+          sender: Sender.SYSTEM,
+          userQuestionId: userQuestion.id,
         },
       ],
     });

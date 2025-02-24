@@ -1,9 +1,4 @@
-import {
-  Sender,
-  AnswerStatus,
-  CodeReviewResult,
-  MessageType,
-} from "@prisma/client";
+import { Sender, CodeReviewResult, UserQuestionStatus } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { CodeReviewRequest } from "./_types/CodeReview";
 import { AIReviewService } from "@/app/_serevices/AIReviewService";
@@ -36,10 +31,10 @@ export const POST = async (request: NextRequest, { params }: Props) => {
 
     const status =
       result === CodeReviewResult.APPROVED
-        ? AnswerStatus.PASSED
-        : AnswerStatus.REVISION_REQUIRED;
+        ? UserQuestionStatus.PASSED
+        : UserQuestionStatus.REVISION_REQUIRED;
 
-    const answerData = await prisma.answer.upsert({
+    const userQuestionData = await prisma.userQuestion.upsert({
       where: {
         userId_questionId: {
           userId: userId,
@@ -47,60 +42,53 @@ export const POST = async (request: NextRequest, { params }: Props) => {
         },
       },
       update: {
-        answer,
         status,
       },
       create: {
         questionId: parseInt(questionId, 10),
-        answer,
         status,
         userId,
       },
     });
 
-    const userMessage = AIReviewService.buildPrompt({ question, answer });
-    await prisma.message.create({
+    const userMessage = await prisma.message.create({
       data: {
-        message: userMessage,
+        message: AIReviewService.buildPrompt({ question, answer }),
         sender: Sender.USER,
-        answerId: answerData.id,
-        type: MessageType.SUBMISSION,
+        userQuestionId: userQuestionData.id,
       },
     });
 
-    //メッセージにも登録(履歴送るときに備えて、回答なども含める)
-    //同時に回答履歴登録
-    await Promise.all([
-      prisma.message.create({
-        data: {
-          message: "",
-          sender: Sender.SYSTEM,
-          answerId: answerData.id,
-          type: MessageType.REVIEW,
-          codeReview: {
-            create: {
-              overview,
-              result,
-              comments: {
-                createMany: {
-                  data: comments.map(({ targetCode, message }) => ({
-                    targetCode,
-                    message,
-                  })),
-                },
+    await prisma.answer.create({
+      data: {
+        userQuestionId: userQuestionData.id,
+        messageId: userMessage.id,
+        answer,
+      },
+    });
+
+    await prisma.message.create({
+      data: {
+        message: "",
+        sender: Sender.SYSTEM,
+        userQuestionId: userQuestionData.id,
+        codeReview: {
+          create: {
+            userQuestionId: userQuestionData.id,
+            overview,
+            result,
+            comments: {
+              createMany: {
+                data: comments.map(({ targetCode, message }) => ({
+                  targetCode,
+                  message,
+                })),
               },
             },
           },
         },
-      }),
-      prisma.answerHistory.create({
-        data: {
-          userId: userId,
-          questionId: parseInt(questionId, 10),
-          answer,
-        },
-      }),
-    ]);
+      },
+    });
 
     return NextResponse.json(
       {
