@@ -1,4 +1,4 @@
-import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
+import { faCaretDown, faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 
@@ -12,6 +12,10 @@ interface Props {
 
 export const SubmitPreview: React.FC<Props> = ({ answer }) => {
   const [show, setShow] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(answer.answer);
+  };
 
   return (
     <div className="space-y-2 px-4 pb-4">
@@ -27,7 +31,13 @@ export const SubmitPreview: React.FC<Props> = ({ answer }) => {
       </div>
 
       {show && (
-        <div className="">
+        <div className="relative">
+          <button
+            className="absolute right-4 top-4 text-gray-200"
+            onClick={handleCopy}
+          >
+            <FontAwesomeIcon icon={faCopy} className="size-5" />
+          </button>
           <pre className="rounded-md bg-editorDark p-4 text-white">
             {answer.answer}
           </pre>
