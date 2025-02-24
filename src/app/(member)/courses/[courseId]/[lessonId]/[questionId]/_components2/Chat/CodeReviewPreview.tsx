@@ -1,11 +1,5 @@
-import { useQuestion } from "@/app/_hooks/useQuestion";
-import { language } from "@/app/_utils/language";
-import { faCaretDown, faCopy } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Editor } from "@monaco-editor/react";
 import { CodeReviewResult } from "@prisma/client";
-import { useParams } from "next/navigation";
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import Image from "next/image";
 
 interface Props {
