@@ -1,7 +1,7 @@
+import { UserQuestionStatus } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { buildError } from "../../_utils/buildError";
 import { getCurrentUser } from "../../_utils/getCurrentUser";
-import { QuestionsResponse } from "./_types/QuestionsResponse";
 import { buildPrisma } from "@/app/_utils/prisma";
 
 interface Props {
@@ -9,6 +9,17 @@ interface Props {
     lessonId: string;
   }>;
 }
+
+export type Question = {
+  id: number;
+  title: string;
+  content: string;
+  userQuestions: {
+    id: string;
+    status: UserQuestionStatus;
+  }[];
+};
+
 export const GET = async (request: NextRequest, { params }: Props) => {
   const prisma = await buildPrisma();
   const { lessonId } = await params;
@@ -21,9 +32,16 @@ export const GET = async (request: NextRequest, { params }: Props) => {
       include: {
         questions: {
           orderBy: { id: "asc" },
-          include: {
-            answers: {
+          select: {
+            id: true,
+            title: true,
+            content: true,
+            userQuestions: {
               where: { userId: user.id },
+              select: {
+                id: true,
+                status: true,
+              },
             },
           },
         },
@@ -35,13 +53,9 @@ export const GET = async (request: NextRequest, { params }: Props) => {
         { error: "lesson情報の取得に失敗しました" },
         { status: 404 }
       );
-    const answerStatus = lesson.questions.map((question) => ({
-      ...question,
-      status: question.answers[0]?.status || null,
-    }));
 
-    return NextResponse.json<QuestionsResponse>(
-      { questions: answerStatus },
+    return NextResponse.json<{ questions: Question[] }>(
+      { questions: lesson.questions },
       { status: 200 }
     );
   } catch (e) {

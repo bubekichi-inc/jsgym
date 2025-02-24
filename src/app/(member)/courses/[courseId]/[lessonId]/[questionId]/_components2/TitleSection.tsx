@@ -27,7 +27,7 @@ export const TitleSection: React.FC = () => {
           )}
         </p>
         <h1 className="text-2xl font-bold">{data.question.title}</h1>
-        <StatusBadge status={data.answer?.status || null} />
+        <StatusBadge status={data.userQuestion?.status || null} />
       </div>
       <EllipsisButton />
     </div>

@@ -3,9 +3,8 @@
 import { useParams } from "next/navigation";
 import React from "react";
 import { useMessages } from "../../_hooks/useChat";
-import { Skeleton } from "@/app/_components/Skeleton";
-import { MessageType } from "@prisma/client";
 import { ChatMssage } from "./ChatMssage";
+import { Skeleton } from "@/app/_components/Skeleton";
 
 export const Chat: React.FC = () => {
   const params = useParams();

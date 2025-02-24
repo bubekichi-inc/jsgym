@@ -1,4 +1,4 @@
-import { AnswerStatus, CourseType } from "@prisma/client";
+import { CourseType, UserQuestionStatus } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { buildError } from "../../_utils/buildError";
 import { getCurrentUser } from "../../_utils/getCurrentUser";
@@ -28,10 +28,9 @@ export type QuestionResponse = {
       };
     };
   };
-  answer: {
+  userQuestion: {
     id: string;
-    answer: string;
-    status: AnswerStatus;
+    status: UserQuestionStatus;
   } | null;
 };
 
@@ -73,7 +72,7 @@ export const GET = async (request: NextRequest, { params }: Props) => {
         { status: 404 }
       );
 
-    const answer = await prisma.answer.findUnique({
+    const userQuestion = await prisma.userQuestion.findUnique({
       where: {
         userId_questionId: {
           userId,
@@ -85,7 +84,7 @@ export const GET = async (request: NextRequest, { params }: Props) => {
     return NextResponse.json<QuestionResponse>(
       {
         question,
-        answer,
+        userQuestion,
       },
       { status: 200 }
     );

@@ -2,7 +2,6 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useQuestions } from "@/app/_hooks/useQuestions";
-import { answerStatus } from "@/app/_utils/answerStatus";
 
 export default function Lesson() {
   const { courseId, lessonId } = useParams();
@@ -24,7 +23,8 @@ export default function Lesson() {
         >
           <div className="flex items-center gap-4">
             <div className="font-bold">問題{index + 1}</div>
-            {question.status}
+            {question.userQuestions.length > 0 &&
+              question.userQuestions[0].status}
           </div>
           <div className="">{question.title}</div>
         </Link>

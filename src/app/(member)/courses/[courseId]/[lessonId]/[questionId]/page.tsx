@@ -1,14 +1,10 @@
 "use client";
-import { useParams } from "next/navigation";
 import { BreadCrumbs } from "./_components2/Breadcrumbs";
-import { TitleSection } from "./_components2/TitleSection";
-import { useMessages } from "./_hooks/useChat";
-import { LogType } from "./_types/LogType";
-import { useQuestion } from "@/app/_hooks/useQuestion";
-import { Question } from "./_components2/Question";
 import { Chat } from "./_components2/Chat";
+import { Question } from "./_components2/Question";
+import { TitleSection } from "./_components2/TitleSection";
 
-type LogObj = { type: LogType; message: string };
+// type LogObj = { type: LogType; message: string };
 
 export default function Page() {
   // const addLog = (type: LogType, message: string) => {
