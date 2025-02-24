@@ -1,5 +1,9 @@
+import { useQuestion } from "@/app/_hooks/useQuestion";
+import { language } from "@/app/_utils/language";
 import { faCaretDown, faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Editor } from "@monaco-editor/react";
+import { useParams } from "next/navigation";
 import React, { useState } from "react";
 
 interface Props {
@@ -11,6 +15,12 @@ interface Props {
 }
 
 export const SubmitPreview: React.FC<Props> = ({ answer }) => {
+  const params = useParams();
+  const questionId = params.questionId as string;
+  const { data } = useQuestion({
+    questionId,
+  });
+
   const [show, setShow] = useState(false);
 
   const handleCopy = () => {
@@ -20,7 +30,7 @@ export const SubmitPreview: React.FC<Props> = ({ answer }) => {
   return (
     <div className="space-y-2 px-4 pb-4">
       <div className="flex justify-between text-gray-600">
-        <p>レビュー依頼を提出しました</p>
+        <p>回答コードを提出しました。</p>
         <button
           className="flex items-center gap-1 py-1"
           onClick={() => setShow((prev) => !prev)}
@@ -41,9 +51,20 @@ export const SubmitPreview: React.FC<Props> = ({ answer }) => {
           >
             <FontAwesomeIcon icon={faCopy} className="size-5" />
           </button>
-          <pre className="rounded-md bg-editorDark p-4 text-white">
-            {answer.answer}
-          </pre>
+          <Editor
+            className="bg-editorDark py-6"
+            height="300px"
+            defaultLanguage={language(
+              data?.question.lesson.course.name || "JAVA_SCRIPT"
+            )}
+            value={answer.answer}
+            theme="vs-dark"
+            options={{
+              fontSize: 14,
+              tabSize: 2,
+              trimAutoWhitespace: true,
+            }}
+          />
         </div>
       )}
     </div>
