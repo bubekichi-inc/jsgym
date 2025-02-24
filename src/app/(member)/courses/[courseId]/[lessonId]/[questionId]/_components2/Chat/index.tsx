@@ -19,7 +19,7 @@ export const Chat: React.FC = () => {
   if (!data.messages.length) return null;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
       <div className="space-y-3 relative">
         {data.messages.map((message) => {
           return <ChatMssage key={message.id} message={message} />;
