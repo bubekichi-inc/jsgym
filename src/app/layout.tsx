@@ -16,7 +16,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body className={`${notSansJp.className} bg-[#f5f8fa] antialiased`}>
+      <body
+        className={`${notSansJp.className} bg-[#f5f8fa] antialiased text-textMain`}
+      >
         {children}
       </body>
     </html>

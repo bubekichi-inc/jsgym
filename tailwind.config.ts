@@ -11,6 +11,8 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        textMain: "#333333",
+        buttonMain: "#333333",
         editorDark: "#1e1e1e",
       },
       boxShadow: {
