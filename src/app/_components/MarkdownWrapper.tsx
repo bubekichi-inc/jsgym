@@ -14,7 +14,6 @@ export const MarkdownWrapper: React.FC<Props> = ({ children }) => {
         code({ node, className, children: codeChildren, ...props }) {
           const isInline =
             node?.tagName === "code" && node?.children[0].position;
-          console.log(node?.children[0].position);
           return isInline ? (
             <code
               className={className}

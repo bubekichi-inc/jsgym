@@ -19,7 +19,6 @@ export const POST = async (request: NextRequest) => {
         { error: "user情報の取得に失敗しました" },
         { status: 404 }
       );
-    // console.log("■ user", JSON.stringify(user, null, 2));
 
     // リクエストボディからポイントパックを取得
     const body = await request.json();

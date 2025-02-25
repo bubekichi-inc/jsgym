@@ -38,6 +38,7 @@ export const Chat: React.FC<Props> = ({ reviewBusy }) => {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatBusy, reviewBusy, data?.messages]);
+  console.log(chatBusy)
 
   if (!data) return <Skeleton height={300} />;
 
