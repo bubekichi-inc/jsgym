@@ -3,7 +3,6 @@ import { GoogleRequest } from "./_types/GoogleRequest";
 import { buildPrisma } from "@/app/_utils/prisma";
 import { stripe } from "@/app/_utils/stripe";
 import { supabase } from "@/app/_utils/supabase";
-import { updateSupabaseImage } from "@/app/_utils/updateSupabaseImage";
 import { buildError } from "@/app/api/_utils/buildError";
 
 export const POST = async (request: NextRequest) => {
@@ -50,7 +49,7 @@ export const POST = async (request: NextRequest) => {
         name,
         email,
         stripeCustomerId: stripeCustomer.id,
-        iconUrl: avatarUrl,
+        iconUrl: avatarUrl || "",
       },
     });
 
@@ -62,30 +61,6 @@ export const POST = async (request: NextRequest) => {
         supabase_user_id: newUser.supabaseUserId,
       },
     });
-
-    // Googleのアイコン画像を取得してSupabaseストレージにアップロード
-    if (!avatarUrl) {
-      console.error("GoogleアイコンURLが取得できませんでした");
-      return; // 早期リターン
-    }
-
-    const response = await fetch(avatarUrl);
-    const blob = await response.blob();
-    const file = new File([blob], "avatar.jpg", { type: blob.type });
-
-    const { error: uploadError } = await updateSupabaseImage({
-      bucketName: "profile_icons",
-      userId: newUser.supabaseUserId,
-      file,
-    });
-
-    if (uploadError) {
-      console.error("アイコンのアップロードに失敗:", uploadError);
-      return NextResponse.json(
-        { error: "アイコンのアップロードに失敗" },
-        { status: 500 }
-      );
-    }
 
     return NextResponse.json(
       {
