@@ -6,13 +6,17 @@ import React, { useRef, useEffect } from "react";
 import { useMessages } from "../../_hooks/useChat";
 import { useForm } from "react-hook-form";
 
+type FormData = {
+  message: string;
+};
+
 export const ChatInput: React.FC = () => {
   const params = useParams();
   const questionId = params.questionId as string;
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const { mutate } = useMessages({
+  const { mutate, isValidating } = useMessages({
     questionId,
   });
 
@@ -22,7 +26,7 @@ export const ChatInput: React.FC = () => {
     handleSubmit,
     reset,
     formState: { isSubmitting },
-  } = useForm<{ message: string }>({
+  } = useForm<FormData>({
     defaultValues: {
       message: "",
     },
@@ -35,11 +39,12 @@ export const ChatInput: React.FC = () => {
     }
   }, [watch("message")]);
 
-  const submit = async (data: { message: string }) => {
+  const submit = async (data: FormData) => {
     reset({
       message: "",
     });
     const submitText = data.message.trim();
+    if (!submitText) return;
     await api.post(`/api/questions/${questionId}/messages`, {
       message: submitText,
     });
@@ -47,6 +52,8 @@ export const ChatInput: React.FC = () => {
   };
 
   const { ref, ...rest } = register("message");
+
+  const disabled = isSubmitting || isValidating;
 
   return (
     <form
@@ -64,12 +71,14 @@ export const ChatInput: React.FC = () => {
           ref(e);
           textareaRef.current = e;
         }}
-        disabled={isSubmitting}
+        disabled={disabled}
       />
       <button
         type="submit"
-        className="whitespace-nowrap text-sm text-white bg-buttonMain flex items-center justify-center rounded-full size-8 min-w-8 shadow-lg"
-        disabled={isSubmitting}
+        className={`whitespace-nowrap text-sm text-white flex items-center justify-center rounded-full size-8 min-w-8 shadow-lg ${
+          disabled ? "bg-gray-600" : "bg-buttonMain"
+        }`}
+        disabled={disabled}
       >
         <FontAwesomeIcon icon={faPaperPlane} />
       </button>
