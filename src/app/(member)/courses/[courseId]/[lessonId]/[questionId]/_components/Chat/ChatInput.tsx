@@ -3,7 +3,7 @@ import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useParams } from "next/navigation";
 import React, { useRef, useEffect } from "react";
-import { useMessages } from "../../_hooks/useChat";
+import { useMessages } from "../../_hooks/useMessages";
 import { useForm } from "react-hook-form";
 
 type FormData = {

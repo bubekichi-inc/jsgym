@@ -1,7 +1,7 @@
 import { useParams } from "next/navigation";
 import React from "react";
 import toast from "react-hot-toast";
-import { useMessages } from "../../_hooks/useChat";
+import { useMessages } from "../../_hooks/useMessages";
 import { useQuestion } from "@/app/_hooks/useQuestion";
 import { api } from "@/app/_utils/api";
 import { CodeReviewRequest } from "@/app/api/questions/[questionId]/code_review/_types/CodeReview";

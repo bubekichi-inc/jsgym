@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 import React from "react";
-import { useMessages } from "../../_hooks/useChat";
+import { useMessages } from "../../_hooks/useMessages";
 import { ChatMssage } from "./ChatMssage";
 import { Skeleton } from "@/app/_components/Skeleton";
 import { ChatInput } from "./ChatInput";

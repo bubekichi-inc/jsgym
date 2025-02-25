@@ -1,6 +1,7 @@
 import DOMPurify from "dompurify";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { LogType } from "../(member)/courses/[courseId]/[lessonId]/[questionId]/_types/LogType";
+
+type LogType = "normal" | "error" | "warn";
 
 export type LogObj = { type: LogType; message: string };
 
