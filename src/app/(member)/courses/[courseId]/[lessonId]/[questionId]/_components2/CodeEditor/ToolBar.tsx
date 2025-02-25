@@ -9,9 +9,10 @@ import { Draft } from "@/app/api/questions/_types/Draft";
 
 interface Props {
   answer: string;
+  onExecuteCode: () => void;
 }
 
-export const ToolBar: React.FC<Props> = ({ answer }) => {
+export const ToolBar: React.FC<Props> = ({ answer, onExecuteCode }) => {
   const params = useParams();
   const questionId = params.questionId as string;
   const { mutate: mutateMessages } = useMessages({
@@ -59,6 +60,7 @@ export const ToolBar: React.FC<Props> = ({ answer }) => {
     <div className="absolute bottom-4 right-4 flex gap-4 rounded-full border border-gray-700 bg-black px-6 py-4 text-white">
       <button onClick={saveDraft}>下書き保存</button>
       <button onClick={review}>提出</button>
+      <button onClick={onExecuteCode}>実行</button>
     </div>
   );
 };

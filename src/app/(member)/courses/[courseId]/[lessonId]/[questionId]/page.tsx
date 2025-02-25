@@ -8,17 +8,11 @@ import { TitleSection } from "./_components2/TitleSection";
 // type LogObj = { type: LogType; message: string };
 
 export default function Page() {
-  // const addLog = (type: LogType, message: string) => {
-  //   setExecutionResult((prevLogs) => [...prevLogs, { type, message }]);
-  // };
 
-  // const resetLogs = () => {
-  //   setExecutionResult([]);
-  // };
 
   return (
     <div className="flex justify-center">
-      <div className="relative max-h-[calc(100vh-72px)] w-1/2 space-y-6 overflow-y-auto p-6">
+      <div className="relative max-h-[calc(100vh-48px)] w-1/2 space-y-6 overflow-y-auto p-6">
         <BreadCrumbs />
         <TitleSection />
         <Question />
