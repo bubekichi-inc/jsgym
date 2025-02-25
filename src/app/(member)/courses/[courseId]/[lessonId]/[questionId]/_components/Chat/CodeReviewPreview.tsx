@@ -63,9 +63,11 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
                 key={comment.id}
                 className="space-y-2 rounded bg-orange-50 p-3"
               >
-                <pre className="rounded bg-editorDark px-3 py-1 text-gray-100">
-                  {comment.targetCode}
-                </pre>
+                {comment.targetCode && (
+                  <pre className="rounded bg-editorDark px-3 py-1 text-gray-100">
+                    {comment.targetCode}
+                  </pre>
+                )}
                 <MarkdownWrapper>{comment.message}</MarkdownWrapper>
               </div>
             ))}
