@@ -13,7 +13,7 @@ export const AIBusy: React.FC<Props> = ({ mode }) => {
   }, []);
 
   const height = useMemo(() => {
-    if (mode === "CODE_REVIEW") return "h-[320px]";
+    if (mode === "CODE_REVIEW") return "h-[240px]";
     return "h-[120px]";
   }, []);
 
