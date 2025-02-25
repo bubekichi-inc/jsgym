@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { useMessages } from "../../_hooks/useMessages";
 import { api } from "@/app/_utils/api";
 import { ChatForm } from ".";
+import { Sender } from "@prisma/client";
 
 export const ChatInput: React.FC = () => {
   const {
@@ -21,21 +22,43 @@ export const ChatInput: React.FC = () => {
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const { mutate, isValidating } = useMessages({
+  const { data, mutate, isValidating } = useMessages({
     questionId,
   });
 
-  const submit = async (data: ChatForm) => {
+  const optimisticPushMessage = async (message: string) => {
+    if (!data) return;
+    await mutate(
+      {
+        messages: [
+          ...data.messages,
+          {
+            id: Math.random().toString(),
+            message,
+            sender: Sender.USER,
+            codeReview: null,
+            createdAt: new Date(),
+            answer: null,
+          },
+        ],
+      },
+      false
+    );
+  };
+
+  const submit = async (formData: ChatForm) => {
     try {
-      const submitText = data.message.trim();
+      const submitText = formData.message.trim();
       if (!submitText) return;
-      await api.post(`/api/questions/${questionId}/messages`, {
-        message: submitText,
-      });
+      await optimisticPushMessage(submitText);
       reset({
         message: "",
       });
-      mutate();
+      await api.post(`/api/questions/${questionId}/messages`, {
+        message: submitText,
+      });
+
+      await mutate();
     } catch {
       toast.error("送信に失敗しました");
     }
