@@ -25,7 +25,7 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
       case "REJECTED":
         return "もう少し";
     }
-  }, []);
+  }, [codeReview.result]);
 
   const icon = useMemo(() => {
     switch (codeReview.result) {
@@ -34,7 +34,7 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
       case "REJECTED":
         return "🙏🙏";
     }
-  }, []);
+  }, [codeReview.result]);
 
   return (
     <div className="space-y-4 rounded bg-white p-4">

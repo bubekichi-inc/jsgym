@@ -37,6 +37,7 @@ export const ChatInput: React.FC = () => {
       textareaRef.current.style.height = "auto";
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watch("message")]);
 
   const submit = async (data: FormData) => {
