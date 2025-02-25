@@ -9,7 +9,7 @@ import { AIBusy } from "./AIBusy";
 import { Skeleton } from "@/app/_components/Skeleton";
 import { FormProvider, useForm } from "react-hook-form";
 
-export type FormData = {
+export type ChatForm = {
   message: string;
 };
 
@@ -25,7 +25,7 @@ export const Chat: React.FC<Props> = ({ reviewBusy }) => {
     questionId,
   });
 
-  const methods = useForm<FormData>({
+  const methods = useForm<ChatForm>({
     defaultValues: {
       message: "",
     },

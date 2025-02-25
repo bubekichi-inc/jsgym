@@ -6,6 +6,7 @@ import { FieldValues, useForm, useFormContext } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useMessages } from "../../_hooks/useMessages";
 import { api } from "@/app/_utils/api";
+import { ChatForm } from ".";
 
 export const ChatInput: React.FC = () => {
   const {
@@ -14,7 +15,7 @@ export const ChatInput: React.FC = () => {
     handleSubmit,
     reset,
     formState: { isSubmitting },
-  } = useFormContext();
+  } = useFormContext<ChatForm>();
   const params = useParams();
   const questionId = params.questionId as string;
 
@@ -24,7 +25,7 @@ export const ChatInput: React.FC = () => {
     questionId,
   });
 
-  const submit = async (data: FieldValues) => {
+  const submit = async (data: ChatForm) => {
     try {
       const submitText = data.message.trim();
       if (!submitText) return;
