@@ -3,9 +3,9 @@
 import { useParams } from "next/navigation";
 import React from "react";
 import { useMessages } from "../../_hooks/useMessages";
+import { ChatInput } from "./ChatInput";
 import { ChatMssage } from "./ChatMssage";
 import { Skeleton } from "@/app/_components/Skeleton";
-import { ChatInput } from "./ChatInput";
 
 export const Chat: React.FC = () => {
   const params = useParams();
@@ -19,8 +19,8 @@ export const Chat: React.FC = () => {
   if (!data.messages.length) return null;
 
   return (
-    <div className="space-y-6 relative">
-      <div className="space-y-3 relative">
+    <div className="relative space-y-6">
+      <div className="relative space-y-3">
         {data.messages.map((message) => {
           return <ChatMssage key={message.id} message={message} />;
         })}
