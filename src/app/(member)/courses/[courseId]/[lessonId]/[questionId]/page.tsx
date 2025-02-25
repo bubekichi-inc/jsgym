@@ -18,7 +18,7 @@ export default function Page() {
         <Chat reviewBusy={reviewBusy} />
       </div>
       <div className="w-1/2">
-        <CodeEditor setReviewBusy={setReviewBusy} />
+        <CodeEditor reviewBusy={reviewBusy} setReviewBusy={setReviewBusy} />
       </div>
     </div>
   );

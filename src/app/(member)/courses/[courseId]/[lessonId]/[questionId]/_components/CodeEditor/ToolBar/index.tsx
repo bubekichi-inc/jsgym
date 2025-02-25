@@ -13,17 +13,23 @@ import { Sender } from "@prisma/client";
 interface Props {
   answer: string;
   onExecuteCode: () => void;
+  reviewBusy: boolean;
   setReviewBusy: (busy: boolean) => void;
 }
 
 export const ToolBar: React.FC<Props> = ({
   answer,
   onExecuteCode,
+  reviewBusy,
   setReviewBusy,
 }) => {
   const params = useParams();
   const questionId = params.questionId as string;
-  const { data: messagesData, mutate: mutateMessages } = useMessages({
+  const {
+    data: messagesData,
+    mutate: mutateMessages,
+    isValidating: isValidatingMessages,
+  } = useMessages({
     questionId,
   });
   const { mutate: mutateQuestion } = useQuestion({
@@ -91,6 +97,8 @@ export const ToolBar: React.FC<Props> = ({
     }
   };
 
+  const submitButtonBusy = reviewBusy || isValidatingMessages;
+
   return (
     <div className="absolute bottom-4 right-4 flex gap-4 rounded-full border border-gray-700 bg-black px-6 py-4 text-white">
       <button
@@ -104,12 +112,20 @@ export const ToolBar: React.FC<Props> = ({
       <button
         type="button"
         onClick={review}
-        className="flex items-center gap-2 rounded-full bg-blue-500 px-4 py-[10px] text-sm font-bold"
+        className={`flex items-center gap-2 rounded-full px-4 py-[10px] text-sm font-bold ${
+          submitButtonBusy ? "bg-blue-400 cursor-not-allowed" : "bg-blue-500"
+        }`}
+        disabled={submitButtonBusy}
       >
         <span>提出してレビューを受ける</span>
         <FontAwesomeIcon icon={faPaperPlane} className="size-3" />
       </button>
-      <button type="button" onClick={saveDraft} className="text-sm">
+      <button
+        type="button"
+        onClick={saveDraft}
+        className="text-sm"
+        disabled={submitButtonBusy}
+      >
         下書き保存
       </button>
       {/* <EllipsisButton /> */}

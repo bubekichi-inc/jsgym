@@ -10,10 +10,11 @@ import { useQuestion } from "@/app/_hooks/useQuestion";
 import { language } from "@/app/_utils/language";
 
 interface Props {
+  reviewBusy: boolean;
   setReviewBusy: (busy: boolean) => void;
 }
 
-export const CodeEditor: React.FC<Props> = ({ setReviewBusy }) => {
+export const CodeEditor: React.FC<Props> = ({ reviewBusy, setReviewBusy }) => {
   const params = useParams();
   const questionId = params.questionId as string;
   const { data } = useQuestion({
@@ -47,6 +48,7 @@ export const CodeEditor: React.FC<Props> = ({ setReviewBusy }) => {
         <ToolBar
           answer={value}
           onExecuteCode={() => executeCode(value)}
+          reviewBusy={reviewBusy}
           setReviewBusy={setReviewBusy}
         />
       </div>
