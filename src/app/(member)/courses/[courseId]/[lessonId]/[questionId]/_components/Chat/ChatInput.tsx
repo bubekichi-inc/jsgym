@@ -2,16 +2,19 @@ import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useParams } from "next/navigation";
 import React, { useRef, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { FieldValues, useForm, useFormContext } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useMessages } from "../../_hooks/useMessages";
 import { api } from "@/app/_utils/api";
 
-type FormData = {
-  message: string;
-};
-
 export const ChatInput: React.FC = () => {
+  const {
+    register,
+    watch,
+    handleSubmit,
+    reset,
+    formState: { isSubmitting },
+  } = useFormContext();
   const params = useParams();
   const questionId = params.questionId as string;
 
@@ -21,27 +24,7 @@ export const ChatInput: React.FC = () => {
     questionId,
   });
 
-  const {
-    register,
-    watch,
-    handleSubmit,
-    reset,
-    formState: { isSubmitting },
-  } = useForm<FormData>({
-    defaultValues: {
-      message: "",
-    },
-  });
-
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [watch("message")]);
-
-  const submit = async (data: FormData) => {
+  const submit = async (data: FieldValues) => {
     try {
       const submitText = data.message.trim();
       if (!submitText) return;
@@ -56,6 +39,14 @@ export const ChatInput: React.FC = () => {
       toast.error("送信に失敗しました");
     }
   };
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watch("message")]);
 
   const { ref, ...rest } = register("message");
 

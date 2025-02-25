@@ -1,11 +1,17 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 import { useMessages } from "../../_hooks/useMessages";
 import { ChatInput } from "./ChatInput";
 import { ChatMssage } from "./ChatMssage";
+import { AIBusy } from "./AIBusy";
 import { Skeleton } from "@/app/_components/Skeleton";
+import { FormProvider, useForm } from "react-hook-form";
+
+export type FormData = {
+  message: string;
+};
 
 interface Props {
   reviewBusy: boolean;
@@ -18,6 +24,23 @@ export const Chat: React.FC<Props> = ({ reviewBusy }) => {
     questionId,
   });
 
+  const methods = useForm<FormData>({
+    defaultValues: {
+      message: "",
+    },
+  });
+
+  const {
+    formState: { isSubmitting: chatBusy },
+  } = methods;
+
+  useEffect(() => {
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [chatBusy, reviewBusy]);
+
   if (!data) return <Skeleton height={300} />;
 
   if (!data.messages.length) return null;
@@ -29,8 +52,12 @@ export const Chat: React.FC<Props> = ({ reviewBusy }) => {
           return <ChatMssage key={message.id} message={message} />;
         })}
       </div>
-      {reviewBusy && <ReviewBusy />}
-      <ChatInput />
+      {reviewBusy && <AIBusy mode="CODE_REVIEW" />}
+      {chatBusy && <AIBusy mode="CHAT" />}
+      {/* <div ref={bottomRef} /> */}
+      <FormProvider {...methods}>
+        <ChatInput />
+      </FormProvider>
     </div>
   );
 };
