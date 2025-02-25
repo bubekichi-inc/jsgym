@@ -30,7 +30,7 @@ export const SubmitPreview: React.FC<Props> = ({ answer }) => {
   return (
     <div className="space-y-2 px-4 pb-4">
       <div className="flex justify-between text-gray-600">
-        <p>回答コードを提出しました。</p>
+        <p>コードを提出しました。</p>
         <button
           className="flex items-center gap-1 py-1"
           onClick={() => setShow((prev) => !prev)}
