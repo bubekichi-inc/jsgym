@@ -1,6 +1,6 @@
 import { CodeReviewResult } from "@prisma/client";
-import React, { useMemo } from "react";
 import Image from "next/image";
+import React, { useMemo } from "react";
 import { MarkdownWrapper } from "@/app/_components/MarkdownWrapper";
 
 interface Props {
@@ -37,7 +37,7 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
   }, []);
 
   return (
-    <div className="rounded bg-white p-4 space-y-4">
+    <div className="space-y-4 rounded bg-white p-4">
       <div className="flex items-center gap-1">
         <Image
           src="/images/AI.svg"
@@ -46,7 +46,7 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
           alt="review"
           className="size-[18px]"
         />
-        <p className="text-blue-500 text-xs font-bold">レビュー結果</p>
+        <p className="text-xs font-bold text-blue-500">レビュー結果</p>
       </div>
       <div className="space-y-2">
         <div className="flex items-end gap-2">
@@ -61,9 +61,9 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
             {codeReview.comments.map((comment) => (
               <div
                 key={comment.id}
-                className="bg-orange-50 p-3 rounded space-y-2"
+                className="space-y-2 rounded bg-orange-50 p-3"
               >
-                <pre className="bg-editorDark text-gray-100 py-1 px-3 rounded">
+                <pre className="rounded bg-editorDark px-3 py-1 text-gray-100">
                   {comment.targetCode}
                 </pre>
                 <MarkdownWrapper>{comment.message}</MarkdownWrapper>
