@@ -1,7 +1,7 @@
+import { CourseType, UserQuestionStatus } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { buildError } from "../../_utils/buildError";
 import { getCurrentUser } from "../../_utils/getCurrentUser";
-import { QuestionResponse } from "../_types/QuestionResponse";
 import { buildPrisma } from "@/app/_utils/prisma";
 
 interface Props {
@@ -9,8 +9,40 @@ interface Props {
     questionId: string;
   }>;
 }
+
+export type QuestionResponse = {
+  question: {
+    id: number;
+    title: string;
+    example: string | null;
+    exampleAnswer: string;
+    content: string;
+    template: string;
+    lesson: {
+      id: number;
+      name: string;
+      caution: string | null;
+      course: {
+        id: number;
+        name: CourseType;
+      };
+    };
+  };
+  userQuestion: {
+    id: string;
+    status: UserQuestionStatus;
+  } | null;
+  answer: {
+    answer: string;
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+  } | null;
+};
+
+const prisma = await buildPrisma();
+
 export const GET = async (request: NextRequest, { params }: Props) => {
-  const prisma = await buildPrisma();
   const { questionId } = await params;
   try {
     const { id: userId } = await getCurrentUser({ request });
@@ -18,9 +50,25 @@ export const GET = async (request: NextRequest, { params }: Props) => {
       where: {
         id: parseInt(questionId, 10),
       },
-      include: {
+      select: {
+        id: true,
+        title: true,
+        example: true,
+        exampleAnswer: true,
+        content: true,
+        template: true,
         lesson: {
-          include: { course: true },
+          select: {
+            id: true,
+            name: true,
+            caution: true,
+            course: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
         },
       },
     });
@@ -30,7 +78,7 @@ export const GET = async (request: NextRequest, { params }: Props) => {
         { status: 404 }
       );
 
-    const answer = await prisma.answer.findUnique({
+    const userQuestion = await prisma.userQuestion.findUnique({
       where: {
         userId_questionId: {
           userId,
@@ -39,16 +87,21 @@ export const GET = async (request: NextRequest, { params }: Props) => {
       },
     });
 
+    const answer = userQuestion
+      ? await prisma.answer.findFirst({
+          where: {
+            userQuestionId: userQuestion.id,
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+        })
+      : null;
+
     return NextResponse.json<QuestionResponse>(
       {
-        course: question.lesson.course,
-        question: {
-          id: question.id,
-          title: question.title,
-          content: question.content,
-          example: question.example,
-          template: question.template,
-        },
+        question,
+        userQuestion,
         answer,
       },
       { status: 200 }

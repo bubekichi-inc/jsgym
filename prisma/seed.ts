@@ -18,6 +18,7 @@ type Question = {
   template: string;
   title: string;
   example: string;
+  exampleAnswer: string;
 };
 type TableType =
   | {
@@ -40,7 +41,7 @@ const createData = async () => {
     switch (updateTable.name) {
       case "course":
         await Promise.all(
-          updateTable.data.map(course =>
+          updateTable.data.map((course) =>
             prisma.course.upsert({
               where: { id: course.id },
               create: course,
@@ -51,7 +52,7 @@ const createData = async () => {
         break;
       case "lesson":
         await Promise.all(
-          updateTable.data.map(lesson =>
+          updateTable.data.map((lesson) =>
             prisma.lesson.upsert({
               where: { id: lesson.id },
               create: lesson,
@@ -62,7 +63,7 @@ const createData = async () => {
         break;
       case "question":
         await Promise.all(
-          updateTable.data.map(question =>
+          updateTable.data.map((question) =>
             prisma.question.upsert({
               where: { id: question.id },
               create: question,
@@ -79,6 +80,15 @@ const createData = async () => {
       id: 1,
       name: "初級",
       courseId: 1,
+      caution: `必ず、
+1. 関数の定義
+2. 引数となる定数の定義
+3. 実行結果をconsole.logで出力
+の手順で記述してください。
+
+アロー関数を用いて書いてください。
+
+出来るだけ省略記法を用いて短く書いてください。`
     },
   ];
   const questions = [
@@ -91,6 +101,7 @@ const createData = async () => {
         "// ① 引数となる定数の定義\nconst number = 2;\n\n// ② お題を満たす関数の定義\n// ここに関数定義のコードを書いてください。\n\n// ③ 関数の実行\n// ここに関数定義のコードを書いてください。 ",
       title: "数値を2倍にする関数",
       example: "引数: 2, 返り値: 4",
+      exampleAnswer: "hoge",
     },
     {
       id: 2,
@@ -101,6 +112,7 @@ const createData = async () => {
         "// ① 引数となる定数の定義\nconst array = [1, 3, 2, 5, 4];\n\n// ② お題を満たす関数の定義\n// ここに関数定義のコードを書いてください。\n\n// ③ 関数の実行\n// ここに関数定義のコードを書いてください。 ",
       title: "最大値を求める関数",
       example: "引数: 1, 3, 2, 5, 4, 返り値: 5",
+      exampleAnswer: "hoge",
     },
     {
       id: 3,
@@ -111,6 +123,7 @@ const createData = async () => {
         "// ① 引数となる定数の定義\nconst array = [1, 2, 3, 4, 5, 6];\n\n// ② お題を満たす関数の定義\n// ここに関数定義のコードを書いてください。\n\n// ③ 関数の実行\n// ここに関数定義のコードを書いてください。 ",
       title: "偶数をフィルタリングする関数",
       example: "引数: [1, 2, 3, 4, 5, 6], 返り値: [2, 4, 6]",
+      exampleAnswer: "hoge",
     },
     {
       id: 4,
@@ -121,6 +134,7 @@ const createData = async () => {
         "// ① 引数となる定数の定義\nconst array = [1, 2, 3, 2, 4, 5, 6, 5, 6];\n\n// ② お題を満たす関数の定義\n// ここに関数定義のコードを書いてください。\n\n// ③ 関数の実行\n// ここに関数定義のコードを書いてください。 ",
       title: "配列の重複を除去する関数",
       example: "引数: [1, 2, 3, 2, 4, 5, 6, 5, 6], 返り値: [1, 2, 3, 4, 5, 6]",
+      exampleAnswer: "hoge",
     },
     {
       id: 5,
@@ -131,6 +145,7 @@ const createData = async () => {
         "// ① 引数となる定数の定義\nconst name = '太郎';\n\n// ② お題を満たす関数の定義\n// ここに関数定義のコードを書いてください。\n\n// ③ 関数の実行\n// ここに関数定義のコードを書いてください。 ",
       title: "テンプレートリテラル",
       example: "引数: '太郎', 出力: こんにちは、太郎さん",
+      exampleAnswer: "hoge",
     },
     {
       id: 6,
@@ -141,6 +156,7 @@ const createData = async () => {
         "// ① 引数となる定数の定義\nconst array = [1, 2, 3];\n\n// ② お題を満たす関数の定義\n// ここに関数定義のコードを書いてください。\n\n// ③ 関数の実行\n// ここに関数定義のコードを書いてください。 ",
       title: "配列の要素を2倍にする関数",
       example: "引数: [1, 2, 3], 返り値: [2, 4, 6]",
+      exampleAnswer: "hoge",
     },
     {
       id: 7,
@@ -152,6 +168,7 @@ const createData = async () => {
       title: "オブジェクトを返す関数",
       example:
         "引数: ['a', 'b', 'c'], 返り値: [{ index: 0, value: 'a' }, { index: 1, value: 'b' }, { index: 2, value: 'c' }]",
+      exampleAnswer: "hoge",
     },
     {
       id: 8,
@@ -163,6 +180,7 @@ const createData = async () => {
       title: "一致するオブジェクトの検索",
       example:
         "第一引数: [{ name: '太郎', age: 20 }, { name: '次郎', age: 30 }, { name: '三郎', age: 40 }], 第二引数: 30, 返り値: { name: '次郎', age: 30 }",
+      exampleAnswer: "hoge",
     },
     {
       id: 9,
@@ -173,6 +191,7 @@ const createData = async () => {
         "// ① 引数となる定数の定義\nconst array = [1, 2, 3, 4, 5, 6];\n\n// ② お題を満たす関数の定義\n// ここに関数定義のコードを書いてください。\n\n// ③ 関数の実行\n// ここに関数定義のコードを書いてください。 ",
       title: "偶数を2倍にする関数",
       example: "引数: [1, 2, 3, 4, 5, 6], 返り値: [4, 8, 12]",
+      exampleAnswer: "hoge",
     },
     {
       id: 10,
@@ -183,6 +202,7 @@ const createData = async () => {
         "// ① 引数となる定数の定義\nconst array = [1, 2, 3, 4, 5, 6];\n\n// ② お題を満たす関数の定義\n// ここに関数定義のコードを書いてください。\n\n// ③ 関数の実行\n// ここに関数定義のコードを書いてください。 ",
       title: "ソートした配列の作成",
       example: "引数: [1, 2, 3, 4, 5, 6], 返り値: [2, 4, 6, 8, 10, 12]",
+      exampleAnswer: "hoge",
     },
   ];
 

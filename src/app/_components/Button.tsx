@@ -40,7 +40,7 @@ export const Button = forwardRef<HTMLButtonElement, Props>(
       <button
         ref={ref}
         {...props}
-        className={`rounded-md px-4 py-2 ${className()}`}
+        className={`rounded-md p-2 text-sm ${className()}`}
       >
         {children}
       </button>

@@ -19,19 +19,19 @@ export const Header: React.FC = () => {
     }
   };
   return (
-    <header className="fixed top-0 z-10 flex h-[72px] w-full items-center justify-between bg-white/50 p-6 shadow-sm">
+    <header className="fixed top-0 z-10 flex h-[48px] w-full items-center justify-between bg-white/50 p-6 shadow-sm">
       <Link className="font-bold" href={"/courses/1/1"}>
-        ShiftB code
+        JS Gym
       </Link>
       <a
         href="https://docs.google.com/spreadsheets/d/1tNUMeAZxxfQEe4PFOD8v-jlzeWHNCOke_-jM2GnLEPI/edit?usp=sharing"
         target="_blank"
-        className="flex items-center rounded-lg bg-blue-500 px-4 py-2 text-lg font-bold text-white"
+        className="flex items-center rounded-lg bg-blue-500 px-4 py-1 text-sm font-bold text-white"
       >
         フィードバックはこちら
-        <FontAwesomeIcon icon={faExternalLink} className="ml-2 size-5" />
+        <FontAwesomeIcon icon={faExternalLink} className="ml-2 size-4" />
       </a>
-      <div>
+      <div className="flex items-center gap-4">
         <Link href="/settings/profile">
           <Button type="button" variant="text-black">
             設定

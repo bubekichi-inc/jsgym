@@ -1,11 +1,22 @@
 import DOMPurify from "dompurify";
-import { useEffect, useRef } from "react";
-import { LogType } from "../(member)/courses/[courseId]/[lessonId]/[questionId]/_types/LogType";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-export const useCodeExecutor = (
-  addLog: (type: LogType, message: string) => void
-) => {
+type LogType = "normal" | "error" | "warn";
+
+export type LogObj = { type: LogType; message: string };
+
+export const useCodeExecutor = () => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [executionResult, setExecutionResult] = useState<LogObj[]>([]);
+
+  const addLog = useCallback((type: LogType, message: string) => {
+    setExecutionResult((prevLogs) => [...prevLogs, { type, message }]);
+  }, []);
+
+  const resetLogs = () => {
+    setExecutionResult([]);
+  };
+
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       const { type, messages } = event.data;
@@ -18,6 +29,7 @@ export const useCodeExecutor = (
       window.removeEventListener("message", handleMessage);
     };
   }, [addLog]);
+
   const executeCode = (code: string) => {
     if (!iframeRef.current) return;
     const iframe = iframeRef.current;
@@ -66,5 +78,5 @@ export const useCodeExecutor = (
     `;
   };
 
-  return { iframeRef, executeCode };
+  return { iframeRef, executeCode, executionResult, resetLogs };
 };

@@ -1,10 +1,12 @@
-import { Sender, StatusType } from "@prisma/client";
+import { Sender, CodeReviewResult, UserQuestionStatus } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-import { CodeReviewRequest, CodeReviewResponse } from "./_types/CodeReview";
+import { CodeReviewRequest } from "./_types/CodeReview";
 import { AIReviewService } from "@/app/_serevices/AIReviewService";
 import { buildPrisma } from "@/app/_utils/prisma";
 import { buildError } from "@/app/api/_utils/buildError";
 import { getCurrentUser } from "@/app/api/_utils/getCurrentUser";
+
+const prisma = await buildPrisma();
 
 interface Props {
   params: Promise<{
@@ -12,100 +14,96 @@ interface Props {
   }>;
 }
 export const POST = async (request: NextRequest, { params }: Props) => {
-  const prisma = await buildPrisma();
   const { questionId } = await params;
   try {
     const { id: userId } = await getCurrentUser({ request });
     const body = await request.json();
-    const { question, answer }: CodeReviewRequest = body;
+    const { answer }: CodeReviewRequest = body;
+
+    const question = await prisma.question.findUnique({
+      where: {
+        id: parseInt(questionId, 10),
+      },
+    });
+
+    if (!question) throw new Error("質問が見つかりません");
 
     const res = await AIReviewService.getCodeReview({
-      question,
+      question: question.content,
       answer,
     });
 
-    if (!res) throw new Error("AIレビューに失敗しました");
+    if (!res) throw new Error("レビュー中にエラーが発生しました");
 
-    const { isCorrect, overview, goodPoints, badPoints, improvedCode } = res;
+    const { result, overview, comments } = res;
 
-    const status = isCorrect ? StatusType.PASSED : StatusType.REVISION_REQUIRED;
+    const status =
+      result === CodeReviewResult.APPROVED
+        ? UserQuestionStatus.PASSED
+        : UserQuestionStatus.REVISION_REQUIRED;
 
-    //ステータスを更新する
-    const answerResponse = await prisma.answer.findUnique({
+    const userQuestionData = await prisma.userQuestion.upsert({
       where: {
         userId_questionId: {
           userId: userId,
           questionId: parseInt(questionId, 10),
         },
       },
-    });
-
-    //回答が既にあったら削除
-    if (answerResponse) {
-      await prisma.answer.delete({
-        where: {
-          id: answerResponse.id,
-        },
-      });
-    }
-
-    const answerData = await prisma.answer.create({
-      data: {
+      update: {
+        status,
+      },
+      create: {
         questionId: parseInt(questionId, 10),
-        answer,
         status,
         userId,
       },
     });
-    const userMessage = AIReviewService.buildPrompt({ question, answer });
-    await prisma.message.create({
+
+    const userMessage = await prisma.message.create({
       data: {
-        message: userMessage,
+        message: AIReviewService.buildPrompt({
+          question: question.content,
+          answer,
+        }),
         sender: Sender.USER,
-        answerId: answerData.id,
+        userQuestionId: userQuestionData.id,
       },
     });
-    const systemMessage = AIReviewService.buildSystemMessage({
-      overview,
-      goodPoints,
-      badPoints,
-      improvedCode,
+
+    await prisma.answer.create({
+      data: {
+        userQuestionId: userQuestionData.id,
+        messageId: userMessage.id,
+        answer,
+      },
     });
 
-    //メッセージにも登録(履歴送るときに備えて、回答なども含める)
-    //同時に回答履歴登録
-    await Promise.all([
-      prisma.message.create({
-        data: {
-          message: systemMessage,
-          sender: Sender.SYSTEM,
-          answerId: answerData.id,
-        },
-      }),
-      prisma.answerHistory.create({
-        data: {
-          userId: userId,
-          questionId: parseInt(questionId, 10),
-          answer,
-        },
-      }),
-    ]);
-
-    return NextResponse.json<CodeReviewResponse>(
-      {
-        isCorrect,
-        overview,
-        goodPoints,
-        badPoints,
-        improvedCode,
-        messages: [
-          {
-            message: systemMessage,
-            sender: Sender.SYSTEM,
-            answerId: answerData.id,
+    await prisma.message.create({
+      data: {
+        message: "",
+        sender: Sender.SYSTEM,
+        userQuestionId: userQuestionData.id,
+        codeReview: {
+          create: {
+            userQuestionId: userQuestionData.id,
+            overview,
+            result,
+            comments: {
+              createMany: {
+                data: comments.map(({ targetCode, message }) => ({
+                  targetCode,
+                  message,
+                })),
+              },
+            },
           },
-        ],
-        answerId: answerData.id,
+        },
+      },
+    });
+
+    return NextResponse.json(
+      {
+        message: "success",
       },
       { status: 200 }
     );

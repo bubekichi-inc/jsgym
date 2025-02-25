@@ -15,38 +15,18 @@ export const POST = async (request: NextRequest, { params }: Props) => {
   try {
     const { id: userId } = await getCurrentUser({ request });
     const body: Draft = await request.json();
-    const answer = await prisma.answer.findMany({
+
+    const userQuestion = await prisma.userQuestion.upsert({
       where: {
-        AND: [{ userId, questionId: parseInt(questionId, 10) }],
+        userId_questionId: { userId, questionId: parseInt(questionId, 10) },
       },
+      update: {},
+      create: { userId, questionId: parseInt(questionId, 10), status: "DRAFT" },
     });
 
-    if (answer.length === 0) {
-      await prisma.answer.create({
-        data: {
-          questionId: parseInt(questionId, 10),
-          answer: body.answer,
-          status: "DRAFT",
-          userId,
-        },
-      });
-    } else {
-      await prisma.answer.update({
-        where: {
-          id: answer[0].id,
-        },
-        data: {
-          answer: body.answer,
-          status: "DRAFT",
-        },
-      });
-    }
-
-    //下書きも履歴登録
-    await prisma.answerHistory.create({
+    await prisma.answer.create({
       data: {
-        userId: userId,
-        questionId: parseInt(questionId, 10),
+        userQuestionId: userQuestion.id,
         answer: body.answer,
       },
     });

@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useCourses } from "@/app/_hooks/useCourses";
-import { language } from "@/app/_utils/language";
+import { courseName } from "@/app/_utils/courseName";
 export const CoursesList: React.FC = () => {
   const { data, error } = useCourses();
   if (!data) return <div className="text-center">読込み中...</div>;
@@ -20,7 +20,7 @@ export const CoursesList: React.FC = () => {
           key={course.id}
           className="bg-white p-6 font-bold shadow-card"
         >
-          <div className="">{language(course.name)}コース</div>
+          <div className="">{courseName(course.name)}コース</div>
         </Link>
       ))}
     </div>

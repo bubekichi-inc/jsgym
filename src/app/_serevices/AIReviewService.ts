@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
+import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { z } from "zod";
-import { Message } from "../_types/Message";
 import { AIReviewJsonResponse } from "../api/questions/[questionId]/code_review/_types/CodeReview";
 
 export class AIReviewService {
@@ -10,11 +10,14 @@ export class AIReviewService {
   });
 
   private static CodeReview = z.object({
-    isCorrect: z.boolean(),
+    result: z.enum(["APPROVED", "REJECTED"]),
     overview: z.string(),
-    goodPoints: z.string(),
-    badPoints: z.string(),
-    improvedCode: z.string(),
+    comments: z.array(
+      z.object({
+        targetCode: z.string(),
+        message: z.string(),
+      })
+    ),
   });
 
   public static buildPrompt({
@@ -27,12 +30,6 @@ export class AIReviewService {
     return `
 # 概要
 コードレビューしてJSON形式で出力してください。
-key名は以下の通りです。
-isCorrect: レビュー方針に沿って回答出来ていて、かつ処理が正しいかをbooleanで返してください。
-overview: isCollectの理由と、全体の総括をstringで返してください。
-goodPoints: 処理の中で具体的に良かった点をstringで返してください。
-badPoints: 処理の中で具体的に悪かった点をstringで返してください。回答が完璧な場合は「特にありません。」と記載してください。
-improvedCode: 改善後のコードをstringで返してください。回答が完璧な場合は「特にありません。」と記載してください。
 
 # 問題と回答
 問題は${question}で、回答は${answer}です。
@@ -83,9 +80,9 @@ improvedCode: 改善後のコードをstringで返してください。回答が
   public static async getChatResponse({
     openAIMessages,
   }: {
-    openAIMessages: Message[];
+    openAIMessages: ChatCompletionMessageParam[];
   }) {
-    const messages: Message[] = [
+    const messages: ChatCompletionMessageParam[] = [
       {
         role: "system",
         content: "JSON形式で返さないでください。",
@@ -104,25 +101,5 @@ improvedCode: 改善後のコードをstringで返してください。回答が
 
     console.log(response.choices[0]?.message?.content);
     return response.choices[0]?.message?.content || "";
-  }
-
-  public static buildSystemMessage({
-    overview,
-    goodPoints,
-    badPoints,
-    improvedCode,
-  }: Omit<AIReviewJsonResponse, "isCorrect">): string {
-    const message = `⚪︎全体
-${overview}
-
-⚪︎良かった点
-${goodPoints}
-
-⚪︎改善できる点
-${badPoints}
-
-⚪︎改善後のコード
-${improvedCode}`;
-    return message;
   }
 }

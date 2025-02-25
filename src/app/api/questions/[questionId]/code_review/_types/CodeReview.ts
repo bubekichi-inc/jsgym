@@ -1,25 +1,16 @@
-import { Sender } from "@prisma/client";
-
-type Message = {
-  message: string;
-  sender: Sender;
-  answerId: string;
-};
+import { CodeReviewResult } from "@prisma/client";
 
 export type AIReviewJsonResponse = {
-  isCorrect: boolean;
+  result: CodeReviewResult;
   overview: string;
-  goodPoints: string;
-  badPoints: string;
-  improvedCode: string;
+  comments: CodeReviewComment[];
 };
 
-export type CodeReviewResponse = {
-  messages: Message[];
-  answerId: string;
-} & AIReviewJsonResponse;
+type CodeReviewComment = {
+  targetCode: string;
+  message: string;
+};
 
 export type CodeReviewRequest = {
-  question: string;
   answer: string;
 };

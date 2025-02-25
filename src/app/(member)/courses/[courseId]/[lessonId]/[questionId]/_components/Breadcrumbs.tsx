@@ -1,37 +1,43 @@
 "use client";
 
+import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { Skeleton } from "@/app/_components/Skeleton";
 import { useQuestion } from "@/app/_hooks/useQuestion";
+import { courseName } from "@/app/_utils/courseName";
 
 export const BreadCrumbs: React.FC = () => {
-  const { questionId } = useParams();
-  const { data, error, isLoading } = useQuestion({
+  const { courseId, questionId, lessonId } = useParams();
+  const { data } = useQuestion({
     questionId: questionId as string,
   });
 
-  if (isLoading) return <div>読込み中...</div>;
-  if (error) return <div>問題情報取得中にエラー発生</div>;
-  if (!data) return <div>データがありません</div>;
+  if (!data) return <Skeleton height={24} />;
 
   return (
-    <nav>
-      <ol className="flex items-center gap-2">
-        {/* <li className="flex items-center gap-2">
-          <Link href={`/courses`} className="underline">
-            コース一覧
-          </Link>
-          <span>&gt;</span>
-        </li> */}
-        <li className="flex items-center gap-2">
-          <Link href={`/courses/1/1`} className="underline">
-            {/* {language(data.course.name)} */}
-            問題一覧
-          </Link>
-          <span>&gt;</span>
-        </li>
-        <li className="flex items-center gap-2">{data.question.title}</li>
-      </ol>
-    </nav>
+    <ol className="flex items-center gap-3">
+      <li className="flex items-center gap-3">
+        <Link href={`/courses`} className="hover:underline">
+          コース一覧
+        </Link>
+        <FontAwesomeIcon icon={faChevronRight} className="size-3" />
+      </li>
+      <li className="flex items-center gap-3">
+        <Link href={`/courses/${courseId}`} className="hover:underline">
+          {courseName(data.question.lesson.course.name)}
+        </Link>
+        <FontAwesomeIcon icon={faChevronRight} className="size-3" />
+      </li>
+      <li className="flex items-center gap-3">
+        <Link
+          href={`/courses/${courseId}/${lessonId}`}
+          className="hover:underline"
+        >
+          {data.question.lesson.name}
+        </Link>
+      </li>
+    </ol>
   );
 };

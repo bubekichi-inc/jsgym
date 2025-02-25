@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useMe } from "../_hooks/useMe";
+import { useMe } from "../../../_hooks/useMe";
 import { api } from "@/app/_utils/api";
 import { UserProfileUpdateRequest } from "@/app/api/me/_types/UserProfile";
 
