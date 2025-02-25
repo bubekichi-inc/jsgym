@@ -8,6 +8,7 @@ import { useQuestion } from "@/app/_hooks/useQuestion";
 import { api } from "@/app/_utils/api";
 import { CodeReviewRequest } from "@/app/api/questions/[questionId]/code_review/_types/CodeReview";
 import { Draft } from "@/app/api/questions/_types/Draft";
+import { Sender } from "@prisma/client";
 
 interface Props {
   answer: string;
@@ -22,12 +23,36 @@ export const ToolBar: React.FC<Props> = ({
 }) => {
   const params = useParams();
   const questionId = params.questionId as string;
-  const { mutate: mutateMessages } = useMessages({
+  const { data: messagesData, mutate: mutateMessages } = useMessages({
     questionId,
   });
   const { mutate: mutateQuestion } = useQuestion({
     questionId,
   });
+
+  const optimisticPushMessage = async () => {
+    if (!messagesData) return;
+    await mutateMessages(
+      {
+        messages: [
+          ...messagesData.messages,
+          {
+            id: Math.random().toString(),
+            message: "",
+            sender: Sender.USER,
+            codeReview: null,
+            createdAt: new Date(),
+            answer: {
+              id: Math.random().toString(),
+              answer: "",
+              createdAt: new Date(),
+            },
+          },
+        ],
+      },
+      false
+    );
+  };
 
   const saveDraft = async () => {
     try {
@@ -47,6 +72,7 @@ export const ToolBar: React.FC<Props> = ({
 
   const review = async () => {
     try {
+      await optimisticPushMessage();
       setReviewBusy(true);
       await api.post<CodeReviewRequest>(
         `/api/questions/${questionId}/code_review`,
