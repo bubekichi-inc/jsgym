@@ -55,9 +55,7 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
           </span>
           <span className="text-sm font-bold">です {icon}</span>
         </div>
-        <div className="whitespace-pre-wrap break-words">
-          {codeReview?.overview}
-        </div>
+        <MarkdownWrapper>{codeReview?.overview}</MarkdownWrapper>
         {codeReview.result === "REJECTED" && (
           <div className="space-y-2 text-xs">
             {codeReview.comments.map((comment) => (
