@@ -3,6 +3,7 @@ import { GoogleRequest } from "./_types/GoogleRequest";
 import { buildPrisma } from "@/app/_utils/prisma";
 import { stripe } from "@/app/_utils/stripe";
 import { supabase } from "@/app/_utils/supabase";
+import { updateSupabaseImage } from "@/app/_utils/updateSupabaseImage";
 import { buildError } from "@/app/api/_utils/buildError";
 
 export const POST = async (request: NextRequest) => {
@@ -72,12 +73,14 @@ export const POST = async (request: NextRequest) => {
     const blob = await response.blob();
     const file = new File([blob], "avatar.jpg", { type: blob.type });
 
-    const { error: uploadError } = await supabase.storage
-      .from("profile_icons")
-      .upload(`private/${newUser.supabaseUserId}`, file, { upsert: false });
+    const { error: uploadError } = await updateSupabaseImage({
+      bucketName: "profile_icons",
+      userId: newUser.supabaseUserId,
+      file,
+    });
 
     if (uploadError) {
-      console.error("アイコンのアップロードに失敗:", uploadError.message);
+      console.error("アイコンのアップロードに失敗:", uploadError);
       return NextResponse.json(
         { error: "アイコンのアップロードに失敗" },
         { status: 500 }
