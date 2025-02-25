@@ -31,7 +31,7 @@ export const Header: React.FC = () => {
         フィードバックはこちら
         <FontAwesomeIcon icon={faExternalLink} className="ml-2 size-4" />
       </a>
-      <div>
+      <div className="flex items-center gap-4">
         <Link href="/settings/profile">
           <Button type="button" variant="text-black">
             設定
