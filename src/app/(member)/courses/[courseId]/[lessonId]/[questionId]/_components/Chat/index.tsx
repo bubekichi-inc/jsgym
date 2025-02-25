@@ -7,7 +7,11 @@ import { ChatInput } from "./ChatInput";
 import { ChatMssage } from "./ChatMssage";
 import { Skeleton } from "@/app/_components/Skeleton";
 
-export const Chat: React.FC = () => {
+interface Props {
+  reviewBusy: boolean;
+}
+
+export const Chat: React.FC<Props> = ({ reviewBusy }) => {
   const params = useParams();
   const questionId = params.questionId as string;
   const { data } = useMessages({
@@ -25,6 +29,7 @@ export const Chat: React.FC = () => {
           return <ChatMssage key={message.id} message={message} />;
         })}
       </div>
+      {reviewBusy && <ReviewBusy />}
       <ChatInput />
     </div>
   );

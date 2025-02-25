@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useParams } from "next/navigation";
 import React, { useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { useMessages } from "../../_hooks/useMessages";
 import { api } from "@/app/_utils/api";
 
@@ -41,15 +42,19 @@ export const ChatInput: React.FC = () => {
   }, [watch("message")]);
 
   const submit = async (data: FormData) => {
-    const submitText = data.message.trim();
-    if (!submitText) return;
-    await api.post(`/api/questions/${questionId}/messages`, {
-      message: submitText,
-    });
-    reset({
-      message: "",
-    });
-    mutate();
+    try {
+      const submitText = data.message.trim();
+      if (!submitText) return;
+      await api.post(`/api/questions/${questionId}/messages`, {
+        message: submitText,
+      });
+      reset({
+        message: "",
+      });
+      mutate();
+    } catch {
+      toast.error("送信に失敗しました");
+    }
   };
 
   const { ref, ...rest } = register("message");

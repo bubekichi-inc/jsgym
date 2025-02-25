@@ -9,7 +9,11 @@ import { useCodeExecutor } from "@/app/_hooks/useCodeExecutor";
 import { useQuestion } from "@/app/_hooks/useQuestion";
 import { language } from "@/app/_utils/language";
 
-export const CodeEditor: React.FC = () => {
+interface Props {
+  setReviewBusy: (busy: boolean) => void;
+}
+
+export const CodeEditor: React.FC<Props> = ({ setReviewBusy }) => {
   const params = useParams();
   const questionId = params.questionId as string;
   const { data } = useQuestion({
@@ -40,7 +44,11 @@ export const CodeEditor: React.FC = () => {
             tabSize: 2,
           }}
         />
-        <ToolBar answer={value} onExecuteCode={() => executeCode(value)} />
+        <ToolBar
+          answer={value}
+          onExecuteCode={() => executeCode(value)}
+          setReviewBusy={setReviewBusy}
+        />
       </div>
       <Terminal executionResult={executionResult} iframeRef={iframeRef} />
     </div>

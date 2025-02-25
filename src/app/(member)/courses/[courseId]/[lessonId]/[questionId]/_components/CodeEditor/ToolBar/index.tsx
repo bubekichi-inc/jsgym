@@ -12,9 +12,14 @@ import { Draft } from "@/app/api/questions/_types/Draft";
 interface Props {
   answer: string;
   onExecuteCode: () => void;
+  setReviewBusy: (busy: boolean) => void;
 }
 
-export const ToolBar: React.FC<Props> = ({ answer, onExecuteCode }) => {
+export const ToolBar: React.FC<Props> = ({
+  answer,
+  onExecuteCode,
+  setReviewBusy,
+}) => {
   const params = useParams();
   const questionId = params.questionId as string;
   const { mutate: mutateMessages } = useMessages({
@@ -42,7 +47,7 @@ export const ToolBar: React.FC<Props> = ({ answer, onExecuteCode }) => {
 
   const review = async () => {
     try {
-      // setIsSubmitting(true);
+      setReviewBusy(true);
       await api.post<CodeReviewRequest>(
         `/api/questions/${questionId}/code_review`,
         {
@@ -55,6 +60,8 @@ export const ToolBar: React.FC<Props> = ({ answer, onExecuteCode }) => {
     } catch (e) {
       console.error(e);
       toast.error("提出に失敗しました");
+    } finally {
+      setReviewBusy(false);
     }
   };
 
