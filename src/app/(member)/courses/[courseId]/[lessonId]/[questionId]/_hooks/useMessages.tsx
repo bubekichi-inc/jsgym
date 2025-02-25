@@ -6,4 +6,6 @@ interface Props {
 }
 
 export const useMessages = ({ questionId }: Props) =>
-  useFetch<{ messages: Message[] }>(`/api/questions/${questionId}/messages`);
+  useFetch<{ messages: Message[] }>(`/api/questions/${questionId}/messages`, {
+    revalidateOnFocus: false,
+  });

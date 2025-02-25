@@ -1,8 +1,9 @@
 "use client";
 import useSWR from "swr";
+import type { SWRConfiguration } from "swr";
 import { useSupabaseSession } from "./useSupabaseSessoin";
 
-export const useFetch = <T>(path: string) => {
+export const useFetch = <T>(path: string, configuration?: SWRConfiguration) => {
   const baseUrl = process.env.NEXT_PUBLIC_APP_BASE_URL;
   const { token } = useSupabaseSession();
   const fetcher = async () => {
@@ -24,6 +25,10 @@ export const useFetch = <T>(path: string) => {
     const data: T = await resp.json();
     return data;
   };
-  const results = useSWR(token ? `${baseUrl}${path}` : null, fetcher);
+  const results = useSWR(
+    token ? `${baseUrl}${path}` : null,
+    fetcher,
+    configuration
+  );
   return results;
 };
