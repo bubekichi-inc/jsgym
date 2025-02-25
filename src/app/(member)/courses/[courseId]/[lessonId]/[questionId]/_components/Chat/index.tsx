@@ -43,8 +43,6 @@ export const Chat: React.FC<Props> = ({
 
   if (!data) return <Skeleton height={300} />;
 
-  if (!data.messages.length) return null;
-
   return (
     <div className="relative space-y-6">
       <div className="relative space-y-3">
@@ -55,9 +53,11 @@ export const Chat: React.FC<Props> = ({
       {reviewBusy && <AIBusy mode="CODE_REVIEW" />}
       {chatBusy && <AIBusy mode="CHAT" />}
       <div ref={bottomRef} />
-      <FormProvider {...methods}>
-        <ChatInput setChatBusy={setChatBusy} />
-      </FormProvider>
+      {data.messages.length > 0 && (
+        <FormProvider {...methods}>
+          <ChatInput setChatBusy={setChatBusy} />
+        </FormProvider>
+      )}
     </div>
   );
 };
