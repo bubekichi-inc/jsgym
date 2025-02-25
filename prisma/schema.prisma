@@ -131,7 +131,7 @@ model CodeReviewComment {
   message      String
   createdAt    DateTime   @default(now()) @map("created_at")
   updatedAt    DateTime   @updatedAt @map("updated_at")
-  codeReview   CodeReview @relation(fields: [codeReviewId], references: [id])
+  codeReview   CodeReview @relation(fields: [codeReviewId], references: [id], onDelete: Cascade)
 
   @@map("code_review_comments")
 }
