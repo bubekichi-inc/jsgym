@@ -1,5 +1,6 @@
 import { faPaperPlane, faPlay } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Sender } from "@prisma/client";
 import { useParams } from "next/navigation";
 import React from "react";
 import toast from "react-hot-toast";
@@ -8,7 +9,6 @@ import { useQuestion } from "@/app/_hooks/useQuestion";
 import { api } from "@/app/_utils/api";
 import { CodeReviewRequest } from "@/app/api/questions/[questionId]/code_review/_types/CodeReview";
 import { Draft } from "@/app/api/questions/_types/Draft";
-import { Sender } from "@prisma/client";
 
 interface Props {
   answer: string;
@@ -113,7 +113,7 @@ export const ToolBar: React.FC<Props> = ({
         type="button"
         onClick={review}
         className={`flex items-center gap-2 rounded-full px-4 py-[10px] text-sm font-bold ${
-          submitButtonBusy ? "bg-blue-400 cursor-not-allowed" : "bg-blue-500"
+          submitButtonBusy ? "cursor-not-allowed bg-blue-400" : "bg-blue-500"
         }`}
         disabled={submitButtonBusy}
       >

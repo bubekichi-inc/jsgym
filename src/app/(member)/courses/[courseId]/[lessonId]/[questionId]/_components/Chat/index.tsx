@@ -2,12 +2,12 @@
 
 import { useParams } from "next/navigation";
 import React, { useEffect } from "react";
+import { FormProvider, useForm } from "react-hook-form";
 import { useMessages } from "../../_hooks/useMessages";
+import { AIBusy } from "./AIBusy";
 import { ChatInput } from "./ChatInput";
 import { ChatMssage } from "./ChatMssage";
-import { AIBusy } from "./AIBusy";
 import { Skeleton } from "@/app/_components/Skeleton";
-import { FormProvider, useForm } from "react-hook-form";
 
 export type ChatForm = {
   message: string;

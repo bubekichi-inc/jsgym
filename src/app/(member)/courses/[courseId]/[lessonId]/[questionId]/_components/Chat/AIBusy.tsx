@@ -10,12 +10,12 @@ export const AIBusy: React.FC<Props> = ({ mode }) => {
   const text = useMemo(() => {
     if (mode === "CODE_REVIEW") return "レビュー中...";
     return "返信中...";
-  }, []);
+  }, [mode]);
 
   const height = useMemo(() => {
     if (mode === "CODE_REVIEW") return "h-[240px]";
     return "h-[120px]";
-  }, []);
+  }, [mode]);
 
   return (
     <div className="flex gap-3">

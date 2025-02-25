@@ -1,13 +1,13 @@
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Sender } from "@prisma/client";
 import { useParams } from "next/navigation";
 import React, { useRef, useEffect } from "react";
-import { FieldValues, useForm, useFormContext } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useMessages } from "../../_hooks/useMessages";
-import { api } from "@/app/_utils/api";
 import { ChatForm } from ".";
-import { Sender } from "@prisma/client";
+import { api } from "@/app/_utils/api";
 
 export const ChatInput: React.FC = () => {
   const {
