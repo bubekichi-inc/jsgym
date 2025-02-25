@@ -1,8 +1,8 @@
 import { useParams } from "next/navigation";
 import React from "react";
-import { questionNumber } from "../_utils/quetionNumber";
-import { StatusBadge } from "./StatusBadge";
-import { EllipsisButton } from "@/app/_components/EllipsisButton";
+import { questionNumber } from "../../_utils/quetionNumber";
+import { StatusBadge } from "../StatusBadge";
+import { DropdownMenu } from "./DropdownMenu";
 import { Skeleton } from "@/app/_components/Skeleton";
 import { useQuestion } from "@/app/_hooks/useQuestion";
 
@@ -29,7 +29,7 @@ export const TitleSection: React.FC = () => {
         <h1 className="text-2xl font-bold">{data.question.title}</h1>
         <StatusBadge status={data.userQuestion?.status || null} />
       </div>
-      <EllipsisButton />
+      <DropdownMenu />
     </div>
   );
 };

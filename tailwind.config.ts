@@ -16,6 +16,7 @@ export default {
         editorDark: "#1e1e1e",
       },
       boxShadow: {
+        popup: "4px 4px 20px 0px #ECECEC",
         card: "0px 10px 30px rgba(0, 0, 0, 0.03)",
       },
     },
