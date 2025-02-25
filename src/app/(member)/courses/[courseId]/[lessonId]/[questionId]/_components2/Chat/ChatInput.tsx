@@ -40,13 +40,13 @@ export const ChatInput: React.FC = () => {
   }, [watch("message")]);
 
   const submit = async (data: FormData) => {
-    reset({
-      message: "",
-    });
     const submitText = data.message.trim();
     if (!submitText) return;
     await api.post(`/api/questions/${questionId}/messages`, {
       message: submitText,
+    });
+    reset({
+      message: "",
     });
     mutate();
   };
@@ -61,7 +61,9 @@ export const ChatInput: React.FC = () => {
       className="pl-9 sticky bottom-0 flex gap-2 items-end"
     >
       <textarea
-        className="w-full text-sm py-2 px-3 rounded-lg outline-none border border-gray-200 shadow-lg resize-none"
+        className={`w-full text-sm py-2 px-3 rounded-lg outline-none border border-gray-200 shadow-lg resize-none ${
+          disabled && "text-gray-600 cursor-not-allowed"
+        }`}
         style={{ overflow: "hidden" }}
         rows={2}
         placeholder="追加の質問"
@@ -76,7 +78,7 @@ export const ChatInput: React.FC = () => {
       <button
         type="submit"
         className={`whitespace-nowrap text-sm text-white flex items-center justify-center rounded-full size-8 min-w-8 shadow-lg ${
-          disabled ? "bg-gray-600" : "bg-buttonMain"
+          disabled ? "bg-gray-500 cursor-not-allowed" : "bg-buttonMain"
         }`}
         disabled={disabled}
       >
