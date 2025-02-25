@@ -9,7 +9,11 @@ import { useMessages } from "../../_hooks/useMessages";
 import { ChatForm } from ".";
 import { api } from "@/app/_utils/api";
 
-export const ChatInput: React.FC = () => {
+interface Props {
+  setChatBusy: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export const ChatInput: React.FC<Props> = ({ setChatBusy }) => {
   const {
     register,
     watch,
@@ -48,6 +52,7 @@ export const ChatInput: React.FC = () => {
 
   const submit = async (formData: ChatForm) => {
     try {
+      setChatBusy(true);
       const submitText = formData.message.trim();
       if (!submitText) return;
       await optimisticPushMessage(submitText);
@@ -61,6 +66,8 @@ export const ChatInput: React.FC = () => {
       await mutate();
     } catch {
       toast.error("送信に失敗しました");
+    } finally {
+      setChatBusy(false);
     }
   };
 

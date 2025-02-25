@@ -15,9 +15,15 @@ export type ChatForm = {
 
 interface Props {
   reviewBusy: boolean;
+  chatBusy: boolean;
+  setChatBusy: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const Chat: React.FC<Props> = ({ reviewBusy }) => {
+export const Chat: React.FC<Props> = ({
+  reviewBusy,
+  chatBusy,
+  setChatBusy,
+}) => {
   const bottomRef = React.useRef<HTMLDivElement>(null);
   const params = useParams();
   const questionId = params.questionId as string;
@@ -31,14 +37,9 @@ export const Chat: React.FC<Props> = ({ reviewBusy }) => {
     },
   });
 
-  const {
-    formState: { isSubmitting: chatBusy },
-  } = methods;
-
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatBusy, reviewBusy, data?.messages]);
-  console.log(chatBusy)
 
   if (!data) return <Skeleton height={300} />;
 
@@ -55,7 +56,7 @@ export const Chat: React.FC<Props> = ({ reviewBusy }) => {
       {chatBusy && <AIBusy mode="CHAT" />}
       <div ref={bottomRef} />
       <FormProvider {...methods}>
-        <ChatInput />
+        <ChatInput setChatBusy={setChatBusy} />
       </FormProvider>
     </div>
   );

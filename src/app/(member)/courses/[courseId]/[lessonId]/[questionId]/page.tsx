@@ -8,6 +8,7 @@ import { TitleSection } from "./_components/TitleSection";
 
 export default function Page() {
   const [reviewBusy, setReviewBusy] = useState(false);
+  const [chatBusy, setChatBusy] = useState(false);
 
   return (
     <div className="flex justify-center">
@@ -15,7 +16,11 @@ export default function Page() {
         <BreadCrumbs />
         <TitleSection />
         <Question />
-        <Chat reviewBusy={reviewBusy} />
+        <Chat
+          reviewBusy={reviewBusy}
+          chatBusy={chatBusy}
+          setChatBusy={setChatBusy}
+        />
       </div>
       <div className="w-1/2">
         <CodeEditor reviewBusy={reviewBusy} setReviewBusy={setReviewBusy} />
