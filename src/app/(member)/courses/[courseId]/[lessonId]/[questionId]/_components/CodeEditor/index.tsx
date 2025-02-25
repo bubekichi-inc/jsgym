@@ -30,7 +30,7 @@ export const CodeEditor: React.FC = () => {
       <div className="relative">
         <Editor
           className="bg-editorDark py-6"
-          height="50vh"
+          height="calc(100vh - 48px - 320px)"
           defaultLanguage={language(data.question.lesson.course.name)}
           value={value}
           onChange={(value) => value && setValue(value)}

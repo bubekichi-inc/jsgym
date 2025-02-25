@@ -16,7 +16,7 @@ export const Terminal: React.FC<Props> = ({ executionResult, iframeRef }) => {
   return (
     <div className="border-t border-gray-700">
       <Header />
-      <div className="h-[20vh] overflow-y-scroll bg-black">
+      <div className="h-[280px] overflow-y-scroll bg-black">
         <div className="px-4 text-white">
           {executionResult.map((item, index) => {
             return (
