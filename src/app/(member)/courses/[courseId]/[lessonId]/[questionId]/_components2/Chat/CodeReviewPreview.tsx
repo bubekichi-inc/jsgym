@@ -1,6 +1,7 @@
 import { CodeReviewResult } from "@prisma/client";
 import React, { useMemo } from "react";
 import Image from "next/image";
+import { MarkdownWrapper } from "@/app/_components/MarkdownWrapper";
 
 interface Props {
   codeReview: {
@@ -67,9 +68,7 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
                 <pre className="bg-editorDark text-gray-100 py-1 px-3 rounded">
                   {comment.targetCode}
                 </pre>
-                <p className="whitespace-pre-wrap break-words">
-                  {comment.message}
-                </p>
+                <MarkdownWrapper>{comment.message}</MarkdownWrapper>
               </div>
             ))}
           </div>
