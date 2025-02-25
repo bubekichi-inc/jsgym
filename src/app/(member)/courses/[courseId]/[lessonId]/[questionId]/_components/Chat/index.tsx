@@ -18,6 +18,7 @@ interface Props {
 }
 
 export const Chat: React.FC<Props> = ({ reviewBusy }) => {
+  const bottomRef = React.useRef<HTMLDivElement>(null);
   const params = useParams();
   const questionId = params.questionId as string;
   const { data } = useMessages({
@@ -35,11 +36,8 @@ export const Chat: React.FC<Props> = ({ reviewBusy }) => {
   } = methods;
 
   useEffect(() => {
-    window.scrollTo({
-      top: document.body.scrollHeight,
-      behavior: "smooth",
-    });
-  }, [chatBusy, reviewBusy]);
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatBusy, reviewBusy, data?.messages]);
 
   if (!data) return <Skeleton height={300} />;
 
@@ -54,7 +52,7 @@ export const Chat: React.FC<Props> = ({ reviewBusy }) => {
       </div>
       {reviewBusy && <AIBusy mode="CODE_REVIEW" />}
       {chatBusy && <AIBusy mode="CHAT" />}
-      {/* <div ref={bottomRef} /> */}
+      <div ref={bottomRef} />
       <FormProvider {...methods}>
         <ChatInput />
       </FormProvider>
