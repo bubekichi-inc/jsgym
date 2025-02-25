@@ -1,7 +1,7 @@
-import { useMe } from "@/app/(member)/_hooks/useMe";
 import { Sender } from "@prisma/client";
 import Image from "next/image";
 import React from "react";
+import { useMe } from "@/app/(member)/_hooks/useMe";
 
 interface Props {
   sender: Sender;

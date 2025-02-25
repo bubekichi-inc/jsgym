@@ -1,9 +1,9 @@
 import React, { useMemo } from "react";
+import { ChatPreview } from "./ChatPreview";
+import { CodeReviewPreview } from "./CodeReviewPreview";
 import { SenderIcon } from "./SenderIcon";
 import { SubmitPreview } from "./SubmitPreview";
 import { Message } from "@/app/api/questions/[questionId]/messages/route";
-import { CodeReviewPreview } from "./CodeReviewPreview";
-import { ChatPreview } from "./ChatPreview";
 
 interface Props {
   message: Message;

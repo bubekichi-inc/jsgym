@@ -1,10 +1,10 @@
-import { api } from "@/app/_utils/api";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useParams } from "next/navigation";
 import React, { useRef, useEffect } from "react";
-import { useMessages } from "../../_hooks/useMessages";
 import { useForm } from "react-hook-form";
+import { useMessages } from "../../_hooks/useMessages";
+import { api } from "@/app/_utils/api";
 
 type FormData = {
   message: string;
@@ -58,11 +58,11 @@ export const ChatInput: React.FC = () => {
   return (
     <form
       onSubmit={handleSubmit(submit)}
-      className="pl-9 sticky bottom-0 flex gap-2 items-end"
+      className="sticky bottom-0 flex items-end gap-2 pl-9"
     >
       <textarea
-        className={`w-full text-sm py-2 px-3 rounded-lg outline-none border border-gray-200 shadow-lg resize-none ${
-          disabled && "text-gray-600 cursor-not-allowed"
+        className={`w-full resize-none rounded-lg border border-gray-200 px-3 py-2 text-sm shadow-lg outline-none ${
+          disabled && "cursor-not-allowed text-gray-600"
         }`}
         style={{ overflow: "hidden" }}
         rows={2}
@@ -77,8 +77,8 @@ export const ChatInput: React.FC = () => {
       />
       <button
         type="submit"
-        className={`whitespace-nowrap text-sm text-white flex items-center justify-center rounded-full size-8 min-w-8 shadow-lg ${
-          disabled ? "bg-gray-500 cursor-not-allowed" : "bg-buttonMain"
+        className={`flex size-8 min-w-8 items-center justify-center whitespace-nowrap rounded-full text-sm text-white shadow-lg ${
+          disabled ? "cursor-not-allowed bg-gray-500" : "bg-buttonMain"
         }`}
         disabled={disabled}
       >

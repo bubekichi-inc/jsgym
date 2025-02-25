@@ -1,6 +1,5 @@
-import { MarkdownWrapper } from "@/app/_components/MarkdownWrapper";
 import React from "react";
-import ReactMarkdown from "react-markdown";
+import { MarkdownWrapper } from "@/app/_components/MarkdownWrapper";
 
 interface Props {
   message: string;
@@ -8,7 +7,7 @@ interface Props {
 
 export const ChatPreview: React.FC<Props> = ({ message }) => {
   return (
-    <div className="rounded bg-white p-4 whitespace-pre-wrap break-words">
+    <div className="whitespace-pre-wrap break-words rounded bg-white p-4">
       <MarkdownWrapper>{message}</MarkdownWrapper>
     </div>
   );
