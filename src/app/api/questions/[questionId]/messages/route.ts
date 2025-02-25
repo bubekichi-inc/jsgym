@@ -160,19 +160,20 @@ export const POST = async (request: NextRequest, { params }: Props) => {
       openAIMessages,
     });
 
-    await prisma.message.createMany({
-      data: [
-        {
-          message,
-          sender: Sender.USER,
-          userQuestionId: userQuestion.id,
-        },
-        {
-          message: systemMessageContent,
-          sender: Sender.SYSTEM,
-          userQuestionId: userQuestion.id,
-        },
-      ],
+    await prisma.message.create({
+      data: {
+        message,
+        sender: Sender.USER,
+        userQuestionId: userQuestion.id,
+      },
+    });
+
+    await prisma.message.create({
+      data: {
+        message: systemMessageContent,
+        sender: Sender.SYSTEM,
+        userQuestionId: userQuestion.id,
+      },
     });
 
     return NextResponse.json(
