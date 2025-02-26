@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Sender } from "@prisma/client";
 import { useParams } from "next/navigation";
 import React from "react";
+import { useReward } from "react-rewards";
 import { toast } from "react-toastify";
 import { useMessages } from "../../../_hooks/useMessages";
 import { useQuestion } from "@/app/_hooks/useQuestion";
@@ -23,6 +24,8 @@ export const ToolBar: React.FC<Props> = ({
   reviewBusy,
   setReviewBusy,
 }) => {
+  const { reward: rewardRight } = useReward("rewardRight", "confetti");
+  const { reward: rewardLeft } = useReward("rewardLeft", "confetti");
   const params = useParams();
   const questionId = params.questionId as string;
   const {
@@ -87,8 +90,10 @@ export const ToolBar: React.FC<Props> = ({
         }
       );
       // setIsSubmitting(false);
-      mutateMessages();
       mutateQuestion();
+      await mutateMessages();
+      rewardRight();
+      rewardLeft();
     } catch (e) {
       console.error(e);
       toast.error("提出に失敗しました");
