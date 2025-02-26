@@ -23,16 +23,13 @@ export const Modal: FC<Props> = ({
       contentLabel="Modal"
       closeTimeoutMS={300}
       ariaHideApp={false}
-      className={`relative z-[99] h-screen w-screen bg-black/80`}
-      overlayClassName="fixed inset-0 bg-black_main bg-opacity-60 flex items-center justify-center z-[99]"
+      className={`relative z-[99] rounded-2xl bg-white p-8`}
+      overlayClassName="fixed inset-0 bg-black/30 backdrop-blur-[2px] flex items-center justify-center z-[99] duration-300"
     >
-      <div
-        className="flex size-full items-center justify-center"
-        onClick={onClose}
-      >
+      <div className="">
         <button
           type="button"
-          className={`absolute right-0 top-0 z-[999] p-3`}
+          className={`absolute right-2 top-2 z-[999] p-3`}
           onClick={onClose}
         >
           <FontAwesomeIcon
@@ -40,7 +37,7 @@ export const Modal: FC<Props> = ({
             icon={faXmark}
           />
         </button>
-        {children}
+        <div className="pt-6">{children}</div>
       </div>
     </ReactModal>
   );

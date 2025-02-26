@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Sender } from "@prisma/client";
 import { useParams } from "next/navigation";
 import React from "react";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 import { useMessages } from "../../../_hooks/useMessages";
 import { useQuestion } from "@/app/_hooks/useQuestion";
 import { api } from "@/app/_utils/api";

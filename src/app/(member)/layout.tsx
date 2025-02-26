@@ -1,4 +1,6 @@
 "use client";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 import { Header } from "../_components/Header";
 import { useRouteGuard } from "../_hooks/useRouteGuard";
 export default function MemberLayout({
@@ -11,6 +13,15 @@ export default function MemberLayout({
     <>
       <Header />
       <div className="">{children}</div>
+      <ToastContainer
+        position="top-right"
+        autoClose={2500}
+        hideProgressBar={true}
+        closeOnClick
+        pauseOnHover
+        theme="colored"
+        toastStyle={{ background: "#0E77B8" }}
+      />
     </>
   );
 }

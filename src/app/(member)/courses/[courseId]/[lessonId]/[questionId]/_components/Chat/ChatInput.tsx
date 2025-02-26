@@ -4,7 +4,7 @@ import { Sender } from "@prisma/client";
 import { useParams } from "next/navigation";
 import React, { useRef, useEffect } from "react";
 import { useFormContext } from "react-hook-form";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 import { useMessages } from "../../_hooks/useMessages";
 import { ChatForm } from ".";
 import { api } from "@/app/_utils/api";
