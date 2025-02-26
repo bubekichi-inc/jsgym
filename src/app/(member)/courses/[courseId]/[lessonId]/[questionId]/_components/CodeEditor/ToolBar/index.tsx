@@ -90,6 +90,7 @@ export const ToolBar: React.FC<Props> = ({
       });
 
       await Promise.all([mutateQuestion(), mutateMessages()]);
+
       if (result === CodeReviewResult.APPROVED) reward();
     } catch {
       toast.error("提出に失敗しました");
