@@ -38,6 +38,10 @@ export type QuestionResponse = {
     createdAt: Date;
     updatedAt: Date;
   } | null;
+  nextQuestion: {
+    id: number;
+    title: string;
+  } | null;
 };
 
 const prisma = await buildPrisma();
@@ -98,10 +102,27 @@ export const GET = async (request: NextRequest, { params }: Props) => {
         })
       : null;
 
+    const nextQuestion = await prisma.question.findFirst({
+      where: {
+        lessonId: question.lesson.id,
+        id: {
+          gt: question.id,
+        },
+      },
+      select: {
+        id: true,
+        title: true,
+      },
+      orderBy: {
+        id: "asc",
+      },
+    });
+
     return NextResponse.json<QuestionResponse>(
       {
         question,
         userQuestion,
+        nextQuestion,
         answer,
       },
       { status: 200 }

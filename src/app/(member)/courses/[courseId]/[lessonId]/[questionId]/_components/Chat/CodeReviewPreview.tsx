@@ -1,7 +1,12 @@
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CodeReviewResult } from "@prisma/client";
 import Image from "next/image";
+import Link from "next/link";
+import { useParams } from "next/navigation";
 import React, { useMemo } from "react";
 import { MarkdownWrapper } from "@/app/_components/MarkdownWrapper";
+import { useQuestion } from "@/app/_hooks/useQuestion";
 
 interface Props {
   codeReview: {
@@ -35,6 +40,10 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
         return "🙏🙏";
     }
   }, [codeReview.result]);
+
+  const params = useParams();
+  const questionId = params.questionId as string;
+  const { data } = useQuestion({ questionId });
 
   return (
     <div className="space-y-4 rounded bg-white p-4">
@@ -74,6 +83,17 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
           </div>
         )}
       </div>
+      {data?.nextQuestion && codeReview.result === "APPROVED" && (
+        <div className="flex justify-end">
+          <Link
+            href={`/courses/${data.question.lesson.course.id}/${data.question.lesson.id}/${data.nextQuestion.id}`}
+            className="flex items-center gap-1 rounded border border-blue-500 px-3 py-1 text-sm font-bold text-blue-500 duration-150 hover:bg-blue-50"
+          >
+            <span>次の問題へ進む</span>
+            <FontAwesomeIcon icon={faArrowRight} className="size-3" />
+          </Link>
+        </div>
+      )}
     </div>
   );
 };
