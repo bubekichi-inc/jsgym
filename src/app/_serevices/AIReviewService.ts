@@ -16,7 +16,7 @@ export class AIReviewService {
     comments: z.array(
       z.object({
         targetCode: z.string(),
-        level: z.enum(["INFO", "WARNING", "ERROR"]),
+        level: z.enum(["GOOD", "WARNING", "ERROR"]),
         message: z.string(),
       })
     ),
