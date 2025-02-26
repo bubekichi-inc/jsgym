@@ -37,6 +37,8 @@ export const POST = async (request: NextRequest, { params }: Props) => {
       answer,
     });
 
+    console.log(res);
+
     if (!res) throw new Error("レビュー中にエラーが発生しました");
 
     const { result, overview, comments } = res;
