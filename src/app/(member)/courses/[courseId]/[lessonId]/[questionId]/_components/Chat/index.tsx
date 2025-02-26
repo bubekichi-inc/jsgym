@@ -53,6 +53,7 @@ export const Chat: React.FC<Props> = ({
       {reviewBusy && <AIBusy mode="CODE_REVIEW" />}
       {chatBusy && <AIBusy mode="CHAT" />}
       <div ref={bottomRef} />
+      <span className="fixed bottom-0 left-0" id="rewardId"></span>
       {data.messages.length > 1 && (
         <FormProvider {...methods}>
           <ChatInput chatBusy={chatBusy} setChatBusy={setChatBusy} />

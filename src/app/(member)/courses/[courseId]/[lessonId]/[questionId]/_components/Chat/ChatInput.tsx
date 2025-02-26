@@ -59,7 +59,6 @@ export const ChatInput: React.FC<Props> = ({ chatBusy, setChatBusy }) => {
       });
 
       await mutate();
-      reward();
     } catch {
       toast.error("送信に失敗しました");
     } finally {
