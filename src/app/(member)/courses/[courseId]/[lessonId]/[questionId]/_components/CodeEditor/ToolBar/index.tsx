@@ -70,7 +70,7 @@ export const ToolBar: React.FC<Props> = ({
           answer,
         }
       );
-      mutateQuestion();
+      await mutateQuestion();
       toast.success("下書き保存しました");
     } catch (e) {
       console.error(e);
