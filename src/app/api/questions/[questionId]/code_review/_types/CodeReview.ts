@@ -1,4 +1,4 @@
-import { CodeReviewResult } from "@prisma/client";
+import { CodeReviewCommentLevel, CodeReviewResult } from "@prisma/client";
 
 export type AIReviewJsonResponse = {
   result: CodeReviewResult;
@@ -9,7 +9,7 @@ export type AIReviewJsonResponse = {
 type CodeReviewComment = {
   targetCode: string;
   message: string;
-  level: "GOOD" | "WARNING" | "ERROR";
+  level: CodeReviewCommentLevel;
 };
 
 export type CodeReviewRequest = {

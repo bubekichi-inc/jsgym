@@ -1,4 +1,8 @@
-import { CodeReviewResult, Sender } from "@prisma/client";
+import {
+  CodeReviewCommentLevel,
+  CodeReviewResult,
+  Sender,
+} from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
@@ -29,6 +33,7 @@ export type Message = {
       targetCode: string;
       message: string;
       createdAt: Date;
+      level: CodeReviewCommentLevel | null;
     }[];
   } | null;
   answer: {

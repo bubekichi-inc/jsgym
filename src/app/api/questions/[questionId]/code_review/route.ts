@@ -97,9 +97,10 @@ export const POST = async (request: NextRequest, { params }: Props) => {
             result,
             comments: {
               createMany: {
-                data: comments.map(({ targetCode, message }) => ({
+                data: comments.map(({ targetCode, message, level }) => ({
                   targetCode,
                   message,
+                  level,
                 })),
               },
             },

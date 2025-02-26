@@ -1,10 +1,11 @@
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { CodeReviewResult } from "@prisma/client";
+import { CodeReviewCommentLevel, CodeReviewResult } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import React, { useMemo } from "react";
+import { CommentLevelBadge } from "./CommentLevelBadge";
 import { MarkdownWrapper } from "@/app/_components/MarkdownWrapper";
 import { useQuestion } from "@/app/_hooks/useQuestion";
 
@@ -18,6 +19,7 @@ interface Props {
       targetCode: string;
       message: string;
       createdAt: Date;
+      level: CodeReviewCommentLevel | null;
     }[];
   };
 }
@@ -77,7 +79,10 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
                     {comment.targetCode}
                   </pre>
                 )}
-                <MarkdownWrapper>{comment.message}</MarkdownWrapper>
+                <div className="flex gap-1">
+                  <CommentLevelBadge level={comment.level} />
+                  <MarkdownWrapper>{comment.message}</MarkdownWrapper>
+                </div>
               </div>
             ))}
           </div>

@@ -125,13 +125,14 @@ model CodeReview {
 }
 
 model CodeReviewComment {
-  id           String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  codeReviewId String     @map("code_review_id") @db.Uuid
+  id           String                  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  codeReviewId String                  @map("code_review_id") @db.Uuid
   targetCode   String
   message      String
-  createdAt    DateTime   @default(now()) @map("created_at")
-  updatedAt    DateTime   @updatedAt @map("updated_at")
-  codeReview   CodeReview @relation(fields: [codeReviewId], references: [id], onDelete: Cascade)
+  createdAt    DateTime                @default(now()) @map("created_at")
+  updatedAt    DateTime                @updatedAt @map("updated_at")
+  level        CodeReviewCommentLevel?
+  codeReview   CodeReview              @relation(fields: [codeReviewId], references: [id], onDelete: Cascade)
 
   @@map("code_review_comments")
 }
@@ -156,6 +157,12 @@ model PointTransaction {
 enum CodeReviewResult {
   APPROVED
   REJECTED
+}
+
+enum CodeReviewCommentLevel {
+  GOOD
+  WARN
+  ERROR
 }
 
 enum PointTransactionKind {
