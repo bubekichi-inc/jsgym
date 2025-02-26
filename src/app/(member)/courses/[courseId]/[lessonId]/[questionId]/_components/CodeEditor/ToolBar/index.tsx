@@ -100,7 +100,7 @@ export const ToolBar: React.FC<Props> = ({
   const submitButtonBusy = reviewBusy || isValidatingMessages;
 
   return (
-    <div className="absolute bottom-4 right-4 flex gap-4 rounded-full border border-gray-700 bg-black px-6 py-4 text-white">
+    <div className="absolute bottom-4 right-4 flex gap-4 rounded-full border border-gray-700 bg-black px-4 py-3 text-white">
       <button
         type="button"
         onClick={onExecuteCode}
