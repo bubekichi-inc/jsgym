@@ -119,7 +119,7 @@ export const ToolBar: React.FC<Props> = ({
       <button
         type="button"
         onClick={review}
-        className={`flex items-center gap-2 rounded-full px-4 py-[10px] text-sm font-bold ${
+        className={`flex items-center gap-2 rounded-full px-4 py-[10px] text-sm font-bold duration-300 ${
           submitButtonDisabled
             ? "cursor-not-allowed bg-blue-300"
             : "bg-blue-500"
@@ -129,7 +129,11 @@ export const ToolBar: React.FC<Props> = ({
         <span>提出してレビューを受ける</span>
         <FontAwesomeIcon icon={faPaperPlane} className="size-3" />
       </button>
-      <DropdownMenu onSaveDraft={saveDraft} onReset={onReset} reviewBusy={reviewBusy} />
+      <DropdownMenu
+        onSaveDraft={saveDraft}
+        onReset={onReset}
+        reviewBusy={reviewBusy}
+      />
     </div>
   );
 };
