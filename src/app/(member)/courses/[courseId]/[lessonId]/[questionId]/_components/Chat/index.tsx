@@ -55,7 +55,7 @@ export const Chat: React.FC<Props> = ({
       <div ref={bottomRef} />
       {data.messages.length > 1 && (
         <FormProvider {...methods}>
-          <ChatInput setChatBusy={setChatBusy} />
+          <ChatInput chatBusy={chatBusy} setChatBusy={setChatBusy} />
         </FormProvider>
       )}
     </div>

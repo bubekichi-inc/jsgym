@@ -10,23 +10,18 @@ import { ChatForm } from ".";
 import { api } from "@/app/_utils/api";
 
 interface Props {
+  chatBusy: boolean;
   setChatBusy: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const ChatInput: React.FC<Props> = ({ setChatBusy }) => {
-  const {
-    register,
-    watch,
-    handleSubmit,
-    reset,
-    formState: { isSubmitting },
-  } = useFormContext<ChatForm>();
+export const ChatInput: React.FC<Props> = ({ chatBusy, setChatBusy }) => {
+  const { register, watch, handleSubmit, reset } = useFormContext<ChatForm>();
   const params = useParams();
   const questionId = params.questionId as string;
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const { data, mutate, isValidating } = useMessages({
+  const { data, mutate } = useMessages({
     questionId,
   });
 
@@ -64,6 +59,7 @@ export const ChatInput: React.FC<Props> = ({ setChatBusy }) => {
       });
 
       await mutate();
+      reward();
     } catch {
       toast.error("送信に失敗しました");
     } finally {
@@ -81,8 +77,6 @@ export const ChatInput: React.FC<Props> = ({ setChatBusy }) => {
 
   const { ref, ...rest } = register("message");
 
-  const disabled = isSubmitting || isValidating;
-
   return (
     <form
       onSubmit={handleSubmit(submit)}
@@ -90,7 +84,7 @@ export const ChatInput: React.FC<Props> = ({ setChatBusy }) => {
     >
       <textarea
         className={`w-full resize-none rounded-lg border border-gray-200 px-3 py-2 text-sm shadow-lg outline-none ${
-          disabled && "cursor-not-allowed text-gray-600"
+          chatBusy && "cursor-not-allowed text-gray-600"
         }`}
         style={{ overflow: "hidden" }}
         rows={2}
@@ -101,14 +95,14 @@ export const ChatInput: React.FC<Props> = ({ setChatBusy }) => {
           ref(e);
           textareaRef.current = e;
         }}
-        disabled={disabled}
+        disabled={chatBusy}
       />
       <button
         type="submit"
         className={`flex size-8 min-w-8 items-center justify-center whitespace-nowrap rounded-full text-sm text-white shadow-lg ${
-          disabled ? "cursor-not-allowed bg-gray-500" : "bg-buttonMain"
+          chatBusy ? "cursor-not-allowed bg-gray-500" : "bg-buttonMain"
         }`}
-        disabled={disabled}
+        disabled={chatBusy}
       >
         <FontAwesomeIcon icon={faPaperPlane} />
       </button>
