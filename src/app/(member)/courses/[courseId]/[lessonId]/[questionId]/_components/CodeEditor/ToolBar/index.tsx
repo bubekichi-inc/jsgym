@@ -6,6 +6,7 @@ import React from "react";
 import { toast } from "react-toastify";
 import { useMessages } from "../../../_hooks/useMessages";
 import { useRewardApprove } from "../../../_hooks/useRewardApprove";
+import { DropdownMenu } from "./DropdownMenu";
 import { useQuestion } from "@/app/_hooks/useQuestion";
 import { api } from "@/app/_utils/api";
 import { CodeReviewRequest } from "@/app/api/questions/[questionId]/code_review/_types/CodeReview";
@@ -17,6 +18,7 @@ interface Props {
   reviewBusy: boolean;
   setReviewBusy: (busy: boolean) => void;
   touched: boolean;
+  onReset: () => void;
 }
 
 export const ToolBar: React.FC<Props> = ({
@@ -25,6 +27,7 @@ export const ToolBar: React.FC<Props> = ({
   reviewBusy,
   setReviewBusy,
   touched,
+  onReset,
 }) => {
   const { reward } = useRewardApprove();
   const params = useParams();
@@ -104,7 +107,7 @@ export const ToolBar: React.FC<Props> = ({
   const submitButtonDisabled = reviewBusy || isValidatingMessages || !touched;
 
   return (
-    <div className="absolute bottom-4 right-4 flex gap-4 rounded-full border border-gray-700 bg-black px-4 py-3 text-white">
+    <div className="absolute bottom-4 right-4 flex items-center gap-4 rounded-full border border-gray-700 bg-black px-4 py-3 text-white">
       <button
         type="button"
         onClick={onExecuteCode}
@@ -126,15 +129,7 @@ export const ToolBar: React.FC<Props> = ({
         <span>提出してレビューを受ける</span>
         <FontAwesomeIcon icon={faPaperPlane} className="size-3" />
       </button>
-      <button
-        type="button"
-        onClick={saveDraft}
-        className="text-sm"
-        disabled={submitButtonDisabled}
-      >
-        下書き保存
-      </button>
-      {/* <EllipsisButton /> */}
+      <DropdownMenu onSaveDraft={saveDraft} onReset={onReset} reviewBusy={reviewBusy} />
     </div>
   );
 };

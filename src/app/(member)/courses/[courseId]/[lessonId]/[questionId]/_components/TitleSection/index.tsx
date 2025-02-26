@@ -3,7 +3,7 @@ import { useParams } from "next/navigation";
 import React, { useState } from "react";
 import { questionNumber } from "../../_utils/quetionNumber";
 import { StatusBadge } from "../StatusBadge";
-import { DropdownMenu } from "./DropdownMenu";
+import { DropdownMenu } from "../CodeEditor/ToolBar/DropdownMenu";
 import { Modal } from "@/app/_components/Modal";
 import { Skeleton } from "@/app/_components/Skeleton";
 import { useQuestion } from "@/app/_hooks/useQuestion";

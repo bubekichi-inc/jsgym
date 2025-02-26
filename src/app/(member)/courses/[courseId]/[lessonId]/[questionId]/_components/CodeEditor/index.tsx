@@ -40,6 +40,8 @@ export const CodeEditor: React.FC<Props> = ({ reviewBusy, setReviewBusy }) => {
 
   if (!data) return null;
 
+  const reset = () => setValue(data.question.template);
+
   return (
     <div className="">
       <div className="relative">
@@ -61,6 +63,7 @@ export const CodeEditor: React.FC<Props> = ({ reviewBusy, setReviewBusy }) => {
           reviewBusy={reviewBusy}
           setReviewBusy={setReviewBusy}
           touched={touched}
+          onReset={reset}
         />
       </div>
       <Terminal executionResult={executionResult} iframeRef={iframeRef} />
