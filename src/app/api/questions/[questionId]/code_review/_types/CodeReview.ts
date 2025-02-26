@@ -9,6 +9,7 @@ export type AIReviewJsonResponse = {
 type CodeReviewComment = {
   targetCode: string;
   message: string;
+  level: "GOOD" | "WARNING" | "ERROR";
 };
 
 export type CodeReviewRequest = {
