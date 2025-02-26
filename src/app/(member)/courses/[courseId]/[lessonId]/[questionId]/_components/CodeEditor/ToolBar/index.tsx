@@ -16,6 +16,7 @@ interface Props {
   onExecuteCode: () => void;
   reviewBusy: boolean;
   setReviewBusy: (busy: boolean) => void;
+  touched: boolean;
 }
 
 export const ToolBar: React.FC<Props> = ({
@@ -23,6 +24,7 @@ export const ToolBar: React.FC<Props> = ({
   onExecuteCode,
   reviewBusy,
   setReviewBusy,
+  touched,
 }) => {
   const { reward } = useRewardApprove();
   const params = useParams();
@@ -99,7 +101,7 @@ export const ToolBar: React.FC<Props> = ({
     }
   };
 
-  const submitButtonBusy = reviewBusy || isValidatingMessages;
+  const submitButtonDisabled = reviewBusy || isValidatingMessages || !touched;
 
   return (
     <div className="absolute bottom-4 right-4 flex gap-4 rounded-full border border-gray-700 bg-black px-4 py-3 text-white">
@@ -115,9 +117,11 @@ export const ToolBar: React.FC<Props> = ({
         type="button"
         onClick={review}
         className={`flex items-center gap-2 rounded-full px-4 py-[10px] text-sm font-bold ${
-          submitButtonBusy ? "cursor-not-allowed bg-blue-400" : "bg-blue-500"
+          submitButtonDisabled
+            ? "cursor-not-allowed bg-blue-300"
+            : "bg-blue-500"
         }`}
-        disabled={submitButtonBusy}
+        disabled={submitButtonDisabled}
       >
         <span>提出してレビューを受ける</span>
         <FontAwesomeIcon icon={faPaperPlane} className="size-3" />
@@ -126,7 +130,7 @@ export const ToolBar: React.FC<Props> = ({
         type="button"
         onClick={saveDraft}
         className="text-sm"
-        disabled={submitButtonBusy}
+        disabled={submitButtonDisabled}
       >
         下書き保存
       </button>

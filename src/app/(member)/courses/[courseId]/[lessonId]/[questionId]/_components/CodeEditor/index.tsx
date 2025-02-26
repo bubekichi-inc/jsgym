@@ -21,12 +21,22 @@ export const CodeEditor: React.FC<Props> = ({ reviewBusy, setReviewBusy }) => {
     questionId,
   });
   const [value, setValue] = useState("");
+  const [touched, setTouched] = useState(false);
+
   const { iframeRef, executeCode, executionResult } = useCodeExecutor();
 
   useEffect(() => {
     if (!data) return;
     setValue(data.answer?.answer || data.question.template);
   }, [data]);
+
+  useEffect(() => {
+    if (value !== data?.question.template) {
+      setTouched(true);
+    } else {
+      setTouched(false);
+    }
+  }, [value, data]);
 
   if (!data) return null;
 
@@ -50,6 +60,7 @@ export const CodeEditor: React.FC<Props> = ({ reviewBusy, setReviewBusy }) => {
           onExecuteCode={() => executeCode(value)}
           reviewBusy={reviewBusy}
           setReviewBusy={setReviewBusy}
+          touched={touched}
         />
       </div>
       <Terminal executionResult={executionResult} iframeRef={iframeRef} />
