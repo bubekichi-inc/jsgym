@@ -1,14 +1,8 @@
 "use client";
-import { UserQuestionStatus } from "@prisma/client";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { StatusBadge } from "./[questionId]/_components/StatusBadge";
 import { useQuestions } from "@/app/_hooks/useQuestions";
-
-const textMap: Record<UserQuestionStatus, string> = {
-  PASSED: "合格 🎉",
-  REVISION_REQUIRED: "再提出 🙏",
-  DRAFT: "下書き ✏️",
-};
 
 export default function Lesson() {
   const { courseId, lessonId } = useParams();
@@ -30,8 +24,9 @@ export default function Lesson() {
         >
           <div className="flex items-center gap-4">
             <div className="font-bold">問題{index + 1}</div>
-            {question.userQuestions.length > 0 &&
-              textMap[question.userQuestions[0].status]}
+            {question.userQuestions.length > 0 && (
+              <StatusBadge status={question.userQuestions[0].status} />
+            )}
           </div>
           <div className="">{question.title}</div>
         </Link>
