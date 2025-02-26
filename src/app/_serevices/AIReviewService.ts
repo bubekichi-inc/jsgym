@@ -1,3 +1,4 @@
+import { Lesson, Question } from "@prisma/client";
 import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
@@ -15,6 +16,7 @@ export class AIReviewService {
     comments: z.array(
       z.object({
         targetCode: z.string(),
+        level: z.enum(["INFO", "WARNING", "ERROR"]),
         message: z.string(),
       })
     ),
@@ -22,47 +24,58 @@ export class AIReviewService {
 
   public static buildPrompt({
     question,
+    lesson,
     answer,
   }: {
-    question: string;
+    question: Question;
+    lesson: Lesson;
     answer: string;
   }) {
     return `
 # 概要
 コードレビューしてJSON形式で出力してください。
 
-# 問題と回答
-問題は${question}で、回答は${answer}です。
+# 問題文
+${question.content}
+
+# ユーザーの回答
+${answer}
 
 # レビューの方針
 ・正しく動作すること
-・処理の順番が
-  1. 引数になる定数の定義
-  2. 関数の定義
-  3. 関数に引数を渡して実行した結果をconsole.log
-  の順で記述されていること
-・アロー関数を用いていること
-・配列メソッド（mapやfilterなど）で書ける部分をfor文などで書いていないこと（可読性のため）
 ・省略記法を用いていること（「1行でreturnするだけの関数場合、{}とreturnを省略する」など）
 ・変数名や関数名が適切であること(適切でなければ適切な命名例を書いてください。)
+${lesson.caution}
+
+# 模範回答
+${question.exampleAnswer}
 
 # 補足
 ・stringで返すものは、適切に改行コードも含めてください。
-・レビュー方針というワードは使ってほしくないです。
+・"レビューの方針"というワードは使ってほしくないです。
+・コメント文は無視してください。
+・模範解答はユーザーに見せたくないので、回答には含めないでください。
+・JSONのcommentsは、良くない箇所だけコメントしてください。targetCodeは必ず入れてください。targetCodeには、ユーザーの回答コード以外のコードは入れないでください。
+・resultがAPPROVEDの場合、commentsは空の配列で返してください。
 ・すべて日本語でお願いします。`;
   }
 
   public static async getCodeReview({
     question,
+    lesson,
     answer,
   }: {
-    question: string;
+    question: Question;
+    lesson: Lesson;
     answer: string;
   }): Promise<AIReviewJsonResponse | null> {
     const response = await this.openai.beta.chat.completions.parse({
       model: "gpt-4o-mini-2024-07-18",
       messages: [
-        { role: "user", content: this.buildPrompt({ question, answer }) },
+        {
+          role: "user",
+          content: this.buildPrompt({ question, lesson, answer }),
+        },
       ],
       temperature: 1,
       max_tokens: 16384,

@@ -24,12 +24,16 @@ export const POST = async (request: NextRequest, { params }: Props) => {
       where: {
         id: parseInt(questionId, 10),
       },
+      include: {
+        lesson: true,
+      },
     });
 
     if (!question) throw new Error("質問が見つかりません");
 
     const res = await AIReviewService.getCodeReview({
-      question: question.content,
+      question,
+      lesson: question.lesson,
       answer,
     });
 
@@ -62,7 +66,8 @@ export const POST = async (request: NextRequest, { params }: Props) => {
     const userMessage = await prisma.message.create({
       data: {
         message: AIReviewService.buildPrompt({
-          question: question.content,
+          question: question,
+          lesson: question.lesson,
           answer,
         }),
         sender: Sender.USER,
