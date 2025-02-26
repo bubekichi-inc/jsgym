@@ -104,6 +104,7 @@ export const POST = async (request: NextRequest, { params }: Props) => {
     return NextResponse.json(
       {
         message: "success",
+        result,
       },
       { status: 200 }
     );

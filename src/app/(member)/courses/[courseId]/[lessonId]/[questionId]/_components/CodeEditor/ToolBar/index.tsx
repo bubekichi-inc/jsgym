@@ -1,11 +1,11 @@
 import { faPaperPlane, faPlay } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Sender } from "@prisma/client";
+import { CodeReviewResult, Sender } from "@prisma/client";
 import { useParams } from "next/navigation";
 import React from "react";
-import { useReward } from "react-rewards";
 import { toast } from "react-toastify";
 import { useMessages } from "../../../_hooks/useMessages";
+import { useRewardApprove } from "../../../_hooks/useRewardApprove";
 import { useQuestion } from "@/app/_hooks/useQuestion";
 import { api } from "@/app/_utils/api";
 import { CodeReviewRequest } from "@/app/api/questions/[questionId]/code_review/_types/CodeReview";
@@ -24,8 +24,7 @@ export const ToolBar: React.FC<Props> = ({
   reviewBusy,
   setReviewBusy,
 }) => {
-  const { reward: rewardRight } = useReward("rewardRight", "confetti");
-  const { reward: rewardLeft } = useReward("rewardLeft", "confetti");
+  const { reward } = useRewardApprove();
   const params = useParams();
   const questionId = params.questionId as string;
   const {
@@ -83,19 +82,16 @@ export const ToolBar: React.FC<Props> = ({
     try {
       await optimisticPushMessage();
       setReviewBusy(true);
-      await api.post<CodeReviewRequest>(
-        `/api/questions/${questionId}/code_review`,
-        {
-          answer,
-        }
-      );
-      // setIsSubmitting(false);
-      mutateQuestion();
-      await mutateMessages();
-      rewardRight();
-      rewardLeft();
-    } catch (e) {
-      console.error(e);
+      const { result } = await api.post<
+        CodeReviewRequest,
+        { result: CodeReviewResult }
+      >(`/api/questions/${questionId}/code_review`, {
+        answer,
+      });
+
+      await Promise.all([mutateQuestion(), mutateMessages()]);
+      if (result === CodeReviewResult.APPROVED) reward();
+    } catch {
       toast.error("提出に失敗しました");
     } finally {
       setReviewBusy(false);

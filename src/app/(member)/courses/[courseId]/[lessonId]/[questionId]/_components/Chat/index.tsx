@@ -7,6 +7,7 @@ import { useMessages } from "../../_hooks/useMessages";
 import { AIBusy } from "./AIBusy";
 import { ChatInput } from "./ChatInput";
 import { ChatMssage } from "./ChatMssage";
+import { Rewards } from "./Rewards";
 import { Skeleton } from "@/app/_components/Skeleton";
 
 export type ChatForm = {
@@ -53,8 +54,9 @@ export const Chat: React.FC<Props> = ({
       {reviewBusy && <AIBusy mode="CODE_REVIEW" />}
       {chatBusy && <AIBusy mode="CHAT" />}
       <div ref={bottomRef} />
-      <span className="fixed bottom-0 left-0" id="rewardLeft" />
-      <span className="fixed bottom-0 left-[50vw]" id="rewardRight" />
+
+      <Rewards />
+
       {data.messages.length > 1 && (
         <FormProvider {...methods}>
           <ChatInput chatBusy={chatBusy} setChatBusy={setChatBusy} />
