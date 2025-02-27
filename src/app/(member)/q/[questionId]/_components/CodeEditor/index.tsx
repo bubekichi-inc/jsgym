@@ -2,13 +2,15 @@
 
 import { Editor } from "@monaco-editor/react";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Tabs } from "./Tabs";
 import { Terminal } from "./Terminal";
 import { ToolBar } from "./ToolBar";
 import { useCodeExecutor } from "@/app/_hooks/useCodeExecutor";
 import { useQuestion } from "@/app/_hooks/useQuestion";
 import { language } from "@/app/_utils/language";
+import { useEditorSetting } from "@/app/(member)/_hooks/useEditorSetting";
+import { EditorTheme } from "@prisma/client";
 
 interface Props {
   reviewBusy: boolean;
@@ -17,6 +19,7 @@ interface Props {
 
 export const CodeEditor: React.FC<Props> = ({ reviewBusy, setReviewBusy }) => {
   const params = useParams();
+  const { data: editorSettingData } = useEditorSetting();
   const questionId = params.questionId as string;
   const { data } = useQuestion({
     questionId,
@@ -25,6 +28,30 @@ export const CodeEditor: React.FC<Props> = ({ reviewBusy, setReviewBusy }) => {
   const [touched, setTouched] = useState(false);
 
   const { iframeRef, executeCode, executionResult } = useCodeExecutor();
+
+  const theme = useMemo(() => {
+    switch (editorSettingData?.editorSetting.editorTheme) {
+      case EditorTheme.LIGHT:
+        return "vs-light";
+      case EditorTheme.DARK:
+        return "vs-dark";
+      default:
+        return "vs-dark";
+    }
+  }, [editorSettingData]);
+
+  const fontSize = useMemo(() => {
+    switch (editorSettingData?.editorSetting.editorFontSize) {
+      case "SMALL":
+        return 14;
+      case "MEDIUM":
+        return 16;
+      case "LARGE":
+        return 18;
+      default:
+        return 16;
+    }
+  }, [editorSettingData]);
 
   useEffect(() => {
     if (!data) return;
@@ -40,6 +67,7 @@ export const CodeEditor: React.FC<Props> = ({ reviewBusy, setReviewBusy }) => {
   }, [value, data]);
 
   if (!data) return null;
+  if (!editorSettingData) return null;
 
   const reset = () => setValue(data.question.template);
 
@@ -53,9 +81,9 @@ export const CodeEditor: React.FC<Props> = ({ reviewBusy, setReviewBusy }) => {
           defaultLanguage={language(data.question.lesson.course.name)}
           value={value}
           onChange={(value) => value && setValue(value)}
-          theme="vs-dark"
+          theme={theme}
           options={{
-            fontSize: 16,
+            fontSize,
             tabSize: 2,
           }}
           loading={

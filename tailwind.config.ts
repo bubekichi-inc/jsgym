@@ -14,6 +14,7 @@ export default {
         textMain: "#333333",
         buttonMain: "#333333",
         editorDark: "#1e1e1e",
+        bgMain: "#f5f8fa",
       },
       boxShadow: {
         popup: "4px 4px 20px 0px #ECECEC",
