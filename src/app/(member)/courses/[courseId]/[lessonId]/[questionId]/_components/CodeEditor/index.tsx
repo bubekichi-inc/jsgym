@@ -3,6 +3,7 @@
 import { Editor } from "@monaco-editor/react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Tabs } from "./Tabs";
 import { Terminal } from "./Terminal";
 import { ToolBar } from "./ToolBar";
 import { useCodeExecutor } from "@/app/_hooks/useCodeExecutor";
@@ -45,9 +46,10 @@ export const CodeEditor: React.FC<Props> = ({ reviewBusy, setReviewBusy }) => {
   return (
     <div className="">
       <div className="relative">
+        <Tabs />
         <Editor
-          className="bg-editorDark py-6"
-          height="calc(100vh - 48px - 320px)"
+          className="bg-editorDark"
+          height="calc(100vh - 48px - 280px - 36px)"
           defaultLanguage={language(data.question.lesson.course.name)}
           value={value}
           onChange={(value) => value && setValue(value)}
@@ -56,6 +58,7 @@ export const CodeEditor: React.FC<Props> = ({ reviewBusy, setReviewBusy }) => {
             fontSize: 16,
             tabSize: 2,
           }}
+          loading={<div>Loading!!!</div>}
         />
         <ToolBar
           answer={value}

@@ -19,6 +19,8 @@ model User {
   points            Int                @default(0)
   createdAt         DateTime           @default(now()) @map("created_at")
   updatedAt         DateTime           @updatedAt @map("updated_at")
+  editorFontSize    EditorFontSize     @default(MEDIUM) @map("editor_font_size")
+  editorTheme       EditorTheme        @default(DARK) @map("editor_theme")
   pointTransactions PointTransaction[]
   userQuestions     UserQuestion[]
 
@@ -152,6 +154,17 @@ model PointTransaction {
 
   @@index([stripePaymentId], map: "stripe_payment_id")
   @@map("point_transactions")
+}
+
+enum EditorTheme {
+  DARK
+  LIGHT
+}
+
+enum EditorFontSize {
+  SMALL
+  MEDIUM
+  LARGE
 }
 
 enum CodeReviewResult {
