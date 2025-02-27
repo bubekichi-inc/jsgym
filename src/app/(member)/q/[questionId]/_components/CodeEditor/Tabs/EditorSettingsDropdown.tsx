@@ -3,9 +3,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Menu, MenuButton, MenuItems } from "@headlessui/react";
 import { EditorFontSize, EditorTheme } from "@prisma/client";
 import React, { useEffect, useMemo, useState } from "react";
+import { toast } from "react-toastify";
 import { useEditorSetting } from "@/app/(member)/_hooks/useEditorSetting";
 import { api } from "@/app/_utils/api";
-import { toast } from "react-toastify";
 
 const EDITOR_THEMES = [
   {
@@ -49,16 +49,16 @@ export const EditorSettingsDropdown: React.FC = () => {
     setEditorFontSize(data.editorSetting.editorFontSize);
   }, [data]);
 
-  if (!data) return null;
-  if (!editorSettingData) return null;
-
   const cogClass = useMemo(
     () =>
-      editorSettingData.editorSetting.editorTheme === EditorTheme.LIGHT
+      editorSettingData?.editorSetting.editorTheme === EditorTheme.LIGHT
         ? "textMain"
         : "text-white",
-    [editorSettingData.editorSetting.editorTheme]
+    [editorSettingData?.editorSetting.editorTheme]
   );
+
+  if (!data) return null;
+  if (!editorSettingData) return null;
 
   const updateTheme = async (theme: EditorTheme) => {
     if (isBusy || isValidating) return;
@@ -107,7 +107,7 @@ export const EditorSettingsDropdown: React.FC = () => {
         <MenuItems
           transition
           anchor={{ to: "bottom end", gap: "0px" }}
-          className="w-[200px] origin-top-right rounded-lg bg-white text-sm transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-50 data-[closed]:opacity-0 p-4 border border-gray-100 shadow-lg"
+          className="w-[200px] origin-top-right rounded-lg border border-gray-100 bg-white p-4 text-sm shadow-lg transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-50 data-[closed]:opacity-0"
         >
           <div className="space-y-6">
             <div className="space-y-2">

@@ -1,29 +1,29 @@
+import { EditorTheme } from "@prisma/client";
 import Image from "next/image";
 import React, { useMemo } from "react";
 import { EditorSettingsDropdown } from "./EditorSettingsDropdown";
 import { useEditorSetting } from "@/app/(member)/_hooks/useEditorSetting";
-import { EditorTheme } from "@prisma/client";
 
 const Tab: React.FC = () => {
   const { data } = useEditorSetting();
 
-  if (!data) return;
-
   const textClass = useMemo(
     () =>
-      data.editorSetting.editorTheme === EditorTheme.LIGHT
+      data?.editorSetting.editorTheme === EditorTheme.LIGHT
         ? "textMain"
         : "text-white",
-    [data.editorSetting.editorTheme]
+    [data?.editorSetting.editorTheme]
   );
 
   const tabClass = useMemo(
     () =>
-      data.editorSetting.editorTheme === EditorTheme.LIGHT
+      data?.editorSetting.editorTheme === EditorTheme.LIGHT
         ? "bg-white"
         : "bg-editorDark",
-    [data.editorSetting.editorTheme]
+    [data?.editorSetting.editorTheme]
   );
+
+  if (!data) return;
 
   return (
     <li
@@ -44,15 +44,15 @@ const Tab: React.FC = () => {
 export const Tabs: React.FC = () => {
   const { data } = useEditorSetting();
 
-  if (!data) return;
-
   const headerClass = useMemo(
     () =>
-      data.editorSetting.editorTheme === EditorTheme.LIGHT
+      data?.editorSetting.editorTheme === EditorTheme.LIGHT
         ? "bg-transparent"
         : "bg-gray-600",
-    [data.editorSetting.editorTheme]
+    [data?.editorSetting.editorTheme]
   );
+
+  if (!data) return;
 
   return (
     <header

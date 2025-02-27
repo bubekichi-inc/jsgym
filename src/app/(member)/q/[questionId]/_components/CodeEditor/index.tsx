@@ -1,16 +1,16 @@
 "use client";
 
 import { Editor } from "@monaco-editor/react";
+import { EditorTheme } from "@prisma/client";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { Tabs } from "./Tabs";
 import { Terminal } from "./Terminal";
 import { ToolBar } from "./ToolBar";
+import { useEditorSetting } from "@/app/(member)/_hooks/useEditorSetting";
 import { useCodeExecutor } from "@/app/_hooks/useCodeExecutor";
 import { useQuestion } from "@/app/_hooks/useQuestion";
 import { language } from "@/app/_utils/language";
-import { useEditorSetting } from "@/app/(member)/_hooks/useEditorSetting";
-import { EditorTheme } from "@prisma/client";
 
 interface Props {
   reviewBusy: boolean;
