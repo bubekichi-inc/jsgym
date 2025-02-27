@@ -22,8 +22,7 @@ export default function OAuthCallback() {
           "/api/oauth/google",
           { accessToken }
         );
-        //プロトタイプはJS問題一覧へ遷移
-        router.replace("/courses/1/1");
+        router.replace("/c");
         return;
       } catch (e) {
         console.error("ユーザー情報の登録に失敗:", e);

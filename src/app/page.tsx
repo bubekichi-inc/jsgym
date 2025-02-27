@@ -11,7 +11,7 @@ export default function Home() {
   useEffect(() => {
     if (isLoading) return;
     if (session) {
-      router.replace("/courses/1/1");
+      router.replace("/c");
     }
   }, [session, isLoading, router]);
 
