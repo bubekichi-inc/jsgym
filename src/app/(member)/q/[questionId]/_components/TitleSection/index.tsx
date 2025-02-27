@@ -1,3 +1,5 @@
+"use client";
+
 import { Editor } from "@monaco-editor/react";
 import { useParams } from "next/navigation";
 import React, { useState } from "react";

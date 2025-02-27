@@ -1,12 +1,30 @@
 import { supabase } from "./supabase";
 
 const getAccessToken = async () => {
-  const { data, error } = await supabase.auth.getSession();
-  if (error) throw new Error("セッション情報がありません");
-  if (!data.session) throw new Error("セッション情報がありません");
-  return data.session.access_token;
+  const { data } = await supabase.auth.getSession();
+  return data.session?.access_token || "";
 };
 export const api = {
+  get: async <ResponseType>(endpoint: string) => {
+    try {
+      const response = await fetch(endpoint, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: await getAccessToken(),
+        },
+      });
+
+      if (response.status !== 200)
+        throw new Error("データの取得に失敗しました。");
+
+      const data: ResponseType = await response.json();
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
   post: async <RequestType, ResponseType = undefined>(
     endpoint: string,
     payload: RequestType

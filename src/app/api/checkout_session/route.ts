@@ -27,7 +27,7 @@ export const POST = async (request: NextRequest) => {
 
     const session = await stripe.checkout.sessions.create({
       customer: user.stripeCustomerId,
-      success_url: `${process.env.NEXT_PUBLIC_APP_BASE_URL}/settings/points`,
+      success_url: `${process.env.APP_BASE_URL}/settings/points`,
       line_items: [
         {
           price: pointProduct.stripePriceId,

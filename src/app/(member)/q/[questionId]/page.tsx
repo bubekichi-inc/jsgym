@@ -1,30 +1,42 @@
-"use client";
-import { useState } from "react";
-import { BreadCrumbs } from "./_components/Breadcrumbs";
-import { Chat } from "./_components/Chat";
-import { CodeEditor } from "./_components/CodeEditor";
-import { Question } from "./_components/Question";
-import { TitleSection } from "./_components/TitleSection";
+import { Metadata } from "next";
+import { QuestionDetailPage } from "./_components/QuestionDetailPage";
+import { api } from "@/app/_utils/api";
+import { QuestionResponse } from "@/app/api/questions/[questionId]/route";
 
-export default function Page() {
-  const [reviewBusy, setReviewBusy] = useState(false);
-  const [chatBusy, setChatBusy] = useState(false);
-
-  return (
-    <div className="flex justify-center">
-      <div className="relative max-h-[calc(100vh-48px)] w-1/2 space-y-6 overflow-y-auto p-6">
-        <BreadCrumbs />
-        <TitleSection />
-        <Question />
-        <Chat
-          reviewBusy={reviewBusy}
-          chatBusy={chatBusy}
-          setChatBusy={setChatBusy}
-        />
-      </div>
-      <div className="w-1/2">
-        <CodeEditor reviewBusy={reviewBusy} setReviewBusy={setReviewBusy} />
-      </div>
-    </div>
+export const generateMetadata = async ({
+  params,
+}: {
+  params: Promise<{ questionId: string }>;
+}): Promise<Metadata> => {
+  const { questionId } = await params;
+  const data = await api.get<QuestionResponse>(
+    `${process.env.APP_BASE_URL}/api/questions/${questionId}`
   );
+
+  if (!data.question) return { title: "Not Found" };
+
+  const { title, content } = data.question;
+
+  return {
+    title: title + "｜JS Gym",
+    description: content,
+    openGraph: {
+      title: title + "｜JS Gym",
+      description: content,
+      siteName: "JS Gym",
+      locale: "ja_JP",
+      type: "website",
+      // images: article.thumbnailImageUrl || "",
+    },
+    twitter: {
+      title: title + "｜JS Gym",
+      description: content,
+      card: "summary_large_image",
+      // images: article.thumbnailImageUrl || "",
+    },
+  };
+};
+
+export default async function Page() {
+  return <QuestionDetailPage />;
 }
