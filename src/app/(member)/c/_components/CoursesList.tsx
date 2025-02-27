@@ -16,7 +16,7 @@ export const CoursesList: React.FC = () => {
     <div className="flex flex-col gap-10 p-10">
       {data.courses.map((course) => (
         <Link
-          href={`/courses/${course.id}`}
+          href={`/c/${course.id}`}
           key={course.id}
           className="bg-white p-6 font-bold shadow-card"
         >

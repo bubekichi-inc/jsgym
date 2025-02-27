@@ -12,7 +12,7 @@ export default function MemberLayout({
   return (
     <>
       <Header />
-      <div className="">{children}</div>
+      <div className="pt-[48px]">{children}</div>
       <ToastContainer
         position="top-right"
         autoClose={2500}

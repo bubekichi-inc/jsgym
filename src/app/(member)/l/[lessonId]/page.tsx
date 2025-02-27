@@ -1,11 +1,11 @@
 "use client";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { StatusBadge } from "./[questionId]/_components/StatusBadge";
+import { StatusBadge } from "../../q/[questionId]/_components/StatusBadge";
 import { useQuestions } from "@/app/_hooks/useQuestions";
 
 export default function Lesson() {
-  const { courseId, lessonId } = useParams();
+  const { lessonId } = useParams();
   const { data, error } = useQuestions({ lessonId: lessonId as string });
   if (!data) return <div className="text-center">読込み中...</div>;
   if (error)
@@ -18,7 +18,7 @@ export default function Lesson() {
     <div className="flex flex-col gap-4 p-10">
       {data.questions.map((question, index) => (
         <Link
-          href={`/courses/${courseId}/${lessonId}/${question.id}`}
+          href={`/q/${question.id}`}
           key={question.id}
           className="flex flex-col gap-2 bg-white p-6 font-bold shadow-card"
         >

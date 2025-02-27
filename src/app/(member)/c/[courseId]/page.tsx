@@ -21,7 +21,7 @@ export default function Course() {
       <div className="flex flex-col gap-10 p-10">
         {data.lessons.map((lesson) => (
           <Link
-            href={`/courses/${courseId}/${lesson.id}`}
+            href={`/l/${lesson.id}`}
             key={lesson.id}
             className="bg-white p-6 font-bold shadow-card"
           >
