@@ -28,6 +28,7 @@ export const GET = async (request: NextRequest) => {
         })
       : null;
 
+    // 認証されていないユーザーにはデフォルト値返す
     if (!user) {
       return NextResponse.json<{ editorSetting: EditorSetting }>(
         {
