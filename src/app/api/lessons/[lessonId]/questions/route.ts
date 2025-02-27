@@ -1,8 +1,8 @@
 import { UserQuestionStatus } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-import { buildError } from "../../_utils/buildError";
-import { getCurrentUser } from "../../_utils/getCurrentUser";
 import { buildPrisma } from "@/app/_utils/prisma";
+import { buildError } from "@/app/api/_utils/buildError";
+import { getCurrentUser } from "@/app/api/_utils/getCurrentUser";
 
 interface Props {
   params: Promise<{
