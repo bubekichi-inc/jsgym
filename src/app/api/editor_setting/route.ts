@@ -1,6 +1,7 @@
 import { EditorFontSize, EditorTheme } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { buildPrisma } from "@/app/_utils/prisma";
+import { supabase } from "@/app/_utils/supabase";
 import { buildError } from "@/app/api/_utils/buildError";
 import { getCurrentUser } from "@/app/api/_utils/getCurrentUser";
 
@@ -13,20 +14,29 @@ const prisma = await buildPrisma();
 
 export const GET = async (request: NextRequest) => {
   try {
-    const { id } = await getCurrentUser({ request });
-
-    const user = await prisma.user.findUnique({
-      where: { id },
-      select: {
-        editorTheme: true,
-        editorFontSize: true,
-      },
-    });
+    const token = request.headers.get("Authorization") ?? "";
+    const { data } = await supabase.auth.getUser(token);
+    const user = data.user
+      ? await prisma.user.findUnique({
+          where: {
+            supabaseUserId: data.user.id,
+          },
+          select: {
+            editorTheme: true,
+            editorFontSize: true,
+          },
+        })
+      : null;
 
     if (!user) {
-      return NextResponse.json(
-        { error: "ユーザー情報の取得に失敗しました" },
-        { status: 404 }
+      return NextResponse.json<{ editorSetting: EditorSetting }>(
+        {
+          editorSetting: {
+            editorTheme: EditorTheme.DARK,
+            editorFontSize: EditorFontSize.MEDIUM,
+          },
+        },
+        { status: 200 }
       );
     }
 
