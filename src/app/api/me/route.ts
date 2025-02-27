@@ -6,6 +6,7 @@ import {
 } from "./_types/UserProfile";
 import { buildPrisma } from "@/app/_utils/prisma";
 import { stripe } from "@/app/_utils/stripe";
+import { supabase } from "@/app/_utils/supabase";
 import { buildError } from "@/app/api/_utils/buildError";
 import { getCurrentUser } from "@/app/api/_utils/getCurrentUser";
 
@@ -14,15 +15,21 @@ const prisma = await buildPrisma();
 //GET
 export const GET = async (request: NextRequest) => {
   try {
-    const currentUser = await getCurrentUser({ request });
+    const token = request.headers.get("Authorization") ?? "";
+    const { data } = await supabase.auth.getUser(token);
+    const currentUser = data.user
+      ? await prisma.user.findUnique({
+          where: {
+            supabaseUserId: data.user.id,
+          },
+        })
+      : null;
 
-    // ユーザーが見つからない場合は早期リターン
-    if (!currentUser) {
-      return NextResponse.json(
-        { error: "ユーザーが見つかりません。" },
-        { status: 404 }
-      );
-    }
+    if (!currentUser)
+      return NextResponse.json<UserProfileResponse>(null, {
+        status: 200,
+      });
+
     return NextResponse.json<UserProfileResponse>(currentUser, { status: 200 });
   } catch (e) {
     return buildError(e);

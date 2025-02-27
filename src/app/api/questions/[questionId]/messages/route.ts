@@ -8,6 +8,7 @@ import { NextRequest, NextResponse } from "next/server";
 import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { AIReviewService } from "@/app/_serevices/AIReviewService";
 import { buildPrisma } from "@/app/_utils/prisma";
+import { supabase } from "@/app/_utils/supabase";
 import { buildError } from "@/app/api/_utils/buildError";
 import { getCurrentUser } from "@/app/api/_utils/getCurrentUser";
 
@@ -47,41 +48,51 @@ export const GET = async (request: NextRequest, { params }: Props) => {
   const questionId = Number((await params).questionId);
 
   try {
-    const { id: currentUserId } = await getCurrentUser({ request });
+    const token = request.headers.get("Authorization") ?? "";
+    const { data } = await supabase.auth.getUser(token);
+    const currentUser = data.user
+      ? await prisma.user.findUnique({
+          where: {
+            supabaseUserId: data.user.id,
+          },
+        })
+      : null;
 
-    const messages = await prisma.message.findMany({
-      where: {
-        userQuestion: {
-          userId: currentUserId,
-          questionId,
-        },
-      },
-      select: {
-        id: true,
-        message: true,
-        sender: true,
-        createdAt: true,
-        codeReview: {
+    const messages = currentUser
+      ? await prisma.message.findMany({
+          where: {
+            userQuestion: {
+              userId: currentUser.id,
+              questionId,
+            },
+          },
           select: {
             id: true,
-            overview: true,
-            result: true,
-            comments: true,
+            message: true,
+            sender: true,
             createdAt: true,
+            codeReview: {
+              select: {
+                id: true,
+                overview: true,
+                result: true,
+                comments: true,
+                createdAt: true,
+              },
+            },
+            answer: {
+              select: {
+                id: true,
+                answer: true,
+                createdAt: true,
+              },
+            },
           },
-        },
-        answer: {
-          select: {
-            id: true,
-            answer: true,
-            createdAt: true,
+          orderBy: {
+            createdAt: "asc",
           },
-        },
-      },
-      orderBy: {
-        createdAt: "asc",
-      },
-    });
+        })
+      : [];
 
     return NextResponse.json<{ messages: Message[] }>(
       {

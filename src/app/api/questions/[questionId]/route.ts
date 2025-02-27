@@ -1,8 +1,8 @@
 import { CourseType, UserQuestionStatus } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { buildError } from "../../_utils/buildError";
-import { getCurrentUser } from "../../_utils/getCurrentUser";
 import { buildPrisma } from "@/app/_utils/prisma";
+import { supabase } from "@/app/_utils/supabase";
 
 interface Props {
   params: Promise<{
@@ -49,7 +49,16 @@ const prisma = await buildPrisma();
 export const GET = async (request: NextRequest, { params }: Props) => {
   const { questionId } = await params;
   try {
-    const { id: userId } = await getCurrentUser({ request });
+    const token = request.headers.get("Authorization") ?? "";
+    const { data } = await supabase.auth.getUser(token);
+    const currentUser = data.user
+      ? await prisma.user.findUnique({
+          where: {
+            supabaseUserId: data.user.id,
+          },
+        })
+      : null;
+
     const question = await prisma.question.findUnique({
       where: {
         id: parseInt(questionId, 10),
@@ -82,14 +91,16 @@ export const GET = async (request: NextRequest, { params }: Props) => {
         { status: 404 }
       );
 
-    const userQuestion = await prisma.userQuestion.findUnique({
-      where: {
-        userId_questionId: {
-          userId,
-          questionId: parseInt(questionId, 10),
-        },
-      },
-    });
+    const userQuestion = currentUser
+      ? await prisma.userQuestion.findUnique({
+          where: {
+            userId_questionId: {
+              userId: currentUser.id,
+              questionId: parseInt(questionId, 10),
+            },
+          },
+        })
+      : null;
 
     const answer = userQuestion
       ? await prisma.answer.findFirst({

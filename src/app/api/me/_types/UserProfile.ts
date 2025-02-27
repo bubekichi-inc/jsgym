@@ -1,10 +1,10 @@
-export interface UserProfileResponse {
+export type UserProfileResponse = {
   id: string;
   name: string | null;
   email: string | null;
   iconUrl: string | null;
   receiptName: string | null;
-}
+} | null;
 
 export interface UserProfileUpdateRequest {
   name: string;
