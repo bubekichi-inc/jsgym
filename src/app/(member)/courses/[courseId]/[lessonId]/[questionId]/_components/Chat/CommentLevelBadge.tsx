@@ -19,5 +19,5 @@ export const CommentLevelBadge: React.FC<Props> = ({ level }) => {
     }
   })();
 
-  return <span>{icon}</span>;
+  return <span className="text-base">{icon}</span>;
 };

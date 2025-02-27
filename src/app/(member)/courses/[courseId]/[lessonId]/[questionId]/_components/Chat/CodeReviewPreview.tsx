@@ -72,14 +72,14 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
             {codeReview.comments.map((comment) => (
               <div
                 key={comment.id}
-                className="space-y-2 rounded bg-orange-50 p-3"
+                className="space-y-1 rounded bg-orange-50 p-3"
               >
                 {comment.targetCode && (
                   <pre className="rounded bg-editorDark px-3 py-1 text-gray-100">
                     {comment.targetCode}
                   </pre>
                 )}
-                <div className="flex gap-1">
+                <div className="flex items-center gap-2">
                   <CommentLevelBadge level={comment.level} />
                   <MarkdownWrapper>{comment.message}</MarkdownWrapper>
                 </div>

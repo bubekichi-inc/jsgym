@@ -17,7 +17,7 @@ export const BreadCrumbs: React.FC = () => {
   if (!data) return <Skeleton height={24} />;
 
   return (
-    <ol className="flex items-center gap-3">
+    <ol className="flex items-center gap-3 text-sm">
       <li className="flex items-center gap-3">
         <Link href={`/courses`} className="hover:underline">
           コース一覧
