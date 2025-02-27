@@ -58,7 +58,9 @@ export const CodeEditor: React.FC<Props> = ({ reviewBusy, setReviewBusy }) => {
             fontSize: 16,
             tabSize: 2,
           }}
-          loading={<div>Loading!!!</div>}
+          loading={
+            <div className="text-sm font-bold text-gray-400">Loading...</div>
+          }
         />
         <ToolBar
           answer={value}
