@@ -27,7 +27,7 @@ export const DropdownMenu: React.FC<Props> = ({
         <MenuItems
           transition
           anchor={{ to: "top end", gap: "8px" }}
-          className="w-[180px] origin-top-right rounded-xl border border-gray-100 bg-white p-1 text-sm transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
+          className="w-[180px] origin-bottom-right rounded-xl border border-gray-100 bg-white p-1 text-sm transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-50 data-[closed]:opacity-0"
         >
           <MenuItem>
             <button

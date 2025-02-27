@@ -19,7 +19,7 @@ export const EditorSettingsDropdown: React.FC = () => {
         <MenuItems
           transition
           anchor={{ to: "bottom end", gap: "4px" }}
-          className="w-52 origin-top-right rounded-lg border border-gray-100 bg-white p-1 text-sm transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
+          className="w-52 origin-top-right rounded-lg border border-gray-100 bg-white p-1 text-sm transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-50 data-[closed]:opacity-0"
         ></MenuItems>
       </Menu>
     </>
