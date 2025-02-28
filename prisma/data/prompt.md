@@ -1,0 +1,234 @@
+```ts
+import { CourseType } from "@prisma/client";
+import { Course, Lesson, Question } from "../seed";
+
+export const courses: Course[] = [{ id: 1, name: CourseType.JAVA_SCRIPT }];
+
+export const lessons: Lesson[] = [
+  {
+    id: 1,
+    name: "初級",
+    courseId: 1,
+    caution: `・必ず、
+　1. 関数の定義
+　2. 引数となる定数の定義
+　3. 実行結果をconsole.logで出力
+　の手順で記述してください。
+
+・アロー関数を用いて書いてください。
+・配列メソッド（mapやfilterなど）で書ける部分にfor文は使わないでください。
+・出来るだけ省略記法を用いて短く書いてください。`,
+  },
+];
+
+export const questions: Question[] = [
+  {
+    id: 1,
+    lessonId: 1,
+    content:
+      "引数として受け取った数値を2倍にして返す関数を作成して実行してください。console.logで実行結果を表示してください。",
+    template:
+      "// ① 引数となる定数の定義\nconst number = 2;\n\n// ② お題を満たす関数の定義\n// ここに関数定義のコードを書いてください。\n\n// ③ 関数の実行\n// ここに関数定義のコードを書いてください。 ",
+    title: "数値を2倍にする関数",
+    example: "引数: 2, 返り値: 4",
+    exampleAnswer: `const double = num => num * 2;
+const number = 2;
+console.log(double(number)); // 4
+`,
+  },
+  {
+    id: 2,
+    lessonId: 1,
+    content:
+      "最大値を返す関数を作成して実行してください。console.logで実行結果を表示してください",
+    template:
+      "// ① 引数となる定数の定義\nconst array = [1, 3, 2, 5, 4];\n\n// ② お題を満たす関数の定義\n// ここに関数定義のコードを書いてください。\n\n// ③ 関数の実行\n// ここに関数定義のコードを書いてください。 ",
+    title: "最大値を求める関数",
+    example: "引数: 1, 3, 2, 5, 4, 返り値: 5",
+    exampleAnswer: `const max = (...nums) => Math.max(...nums);
+const array1 = [1, 3, 2, 5, 4];
+console.log(max(...array1)); // 5
+
+// for文を使う書き方
+const max2 = (...nums) => {
+  let maxNum = nums[0]; // 最初の要素を仮の最大値とする
+  for (let num of nums) {
+    if (num > maxNum) maxNum = num; // より大きい値があれば更新
+  }
+  return maxNum;
+};
+const array2 = [1, 3, 2, 5, 4];
+console.log(max2(...array2)); // 5`,
+  },
+  {
+    id: 3,
+    lessonId: 1,
+    content:
+      "配列を引数として受け取り、偶数のみを返す関数を作成して実行してください。console.logで実行結果を表示してください",
+    template:
+      "// ① 引数となる定数の定義\nconst array = [1, 2, 3, 4, 5, 6];\n\n// ② お題を満たす関数の定義\n// ここに関数定義のコードを書いてください。\n\n// ③ 関数の実行\n// ここに関数定義のコードを書いてください。 ",
+    title: "偶数をフィルタリングする関数",
+    example: "引数: [1, 2, 3, 4, 5, 6], 返り値: [2, 4, 6]",
+    exampleAnswer: `const filterEven = nums => nums.filter(n => n % 2 === 0);
+const array2 = [1, 2, 3, 4, 5, 6];
+console.log(filterEven(array2)); // [2, 4, 6]`,
+  },
+  {
+    id: 4,
+    lessonId: 1,
+    content:
+      "配列内の重複を除去する関数を作成してください。console.logで実行結果を表示してください。",
+    template:
+      "// ① 引数となる定数の定義\nconst array = [1, 2, 3, 2, 4, 5, 6, 5, 6];\n\n// ② お題を満たす関数の定義\n// ここに関数定義のコードを書いてください。\n\n// ③ 関数の実行\n// ここに関数定義のコードを書いてください。 ",
+    title: "配列の重複を除去する関数",
+    example: "引数: [1, 2, 3, 2, 4, 5, 6, 5, 6], 返り値: [1, 2, 3, 4, 5, 6]",
+    exampleAnswer: `const unique = nums => [...new Set(nums)];
+const array1 = [1, 2, 3, 2, 4, 5, 6, 5, 6];
+console.log(unique(array1)); // [1, 2, 3, 4, 5, 6]
+
+// for文を使う書き方
+const unique2 = nums => {
+  let result = [];
+  for (let num of nums) {
+    if (!result.includes(num)) result.push(num); // まだ含まれていない場合のみ追加
+  }
+  return result;
+};
+const array2 = [1, 2, 3, 2, 4, 5, 6, 5, 6];
+console.log(unique(array2)); // [1, 2, 3, 4, 5, 6]`,
+  },
+  {
+    id: 5,
+    lessonId: 1,
+    content:
+      "テンプレートリテラルを使用して、引数で受け取った名前を元に「こんにちは、○○さん」と出力する関数を作成してください。console.logで実行結果を表示してください。",
+    template:
+      "// ① 引数となる定数の定義\nconst name = '太郎';\n\n// ② お題を満たす関数の定義\n// ここに関数定義のコードを書いてください。\n\n// ③ 関数の実行\n// ここに関数定義のコードを書いてください。 ",
+    title: "テンプレートリテラル",
+    example: "引数: '太郎', 出力: こんにちは、太郎さん",
+    exampleAnswer: `const greet = name => \`こんにちは、\${name}さん\`;
+const name = '太郎';
+console.log(greet(name)); // こんにちは、太郎さん
+`,
+  },
+  {
+    id: 6,
+    lessonId: 1,
+    content:
+      "配列を引数として受け取り、各要素を2倍にした新しい配列を返す関数を作成してください。console.logで実行結果を表示してください。",
+    template:
+      "// ① 引数となる定数の定義\nconst array = [1, 2, 3];\n\n// ② お題を満たす関数の定義\n// ここに関数定義のコードを書いてください。\n\n// ③ 関数の実行\n// ここに関数定義のコードを書いてください。 ",
+    title: "配列の要素を2倍にする関数",
+    example: "引数: [1, 2, 3], 返り値: [2, 4, 6]",
+    exampleAnswer: `const doubleArray = nums => nums.map(n => n * 2);
+const array4 = [1, 2, 3];
+console.log(doubleArray(array4)); // [2, 4, 6]`,
+  },
+  {
+    id: 7,
+    lessonId: 1,
+    content:
+      "文字列の配列を受け取り、index番号を付けたオブジェクトを返す関数を作成してください。console.logで実行結果を表示してください。",
+    template:
+      "// ① 引数となる定数の定義\nconst array = ['a', 'b', 'c'];\n\n// ② お題を満たす関数の定義\n// ここに関数定義のコードを書いてください。\n\n// ③ 関数の実行\n// ここに関数定義のコードを書いてください。 ",
+    title: "オブジェクトを返す関数",
+    example:
+      "引数: ['a', 'b', 'c'], 返り値: [{ index: 0, value: 'a' }, { index: 1, value: 'b' }, { index: 2, value: 'c' }]",
+    exampleAnswer: `const toObjectArray = arr => arr.map((value, index) => ({ index, value }));
+const array5 = ['a', 'b', 'c'];
+console.log(toObjectArray(array5)); // [{ index: 0, value: 'a' }, { index: 1, value: 'b' }, { index: 2, value: 'c' }]
+`,
+  },
+  {
+    id: 8,
+    lessonId: 1,
+    content:
+      "名前と年齢オブジェクトの配列を受け取り、ageが第二引数で受け取った数字と一致するオブジェクトを返す関数を作成してください。console.logで実行結果を表示してください。",
+    template:
+      "// ① 引数となる定数の定義\nconst array = [{ name: '太郎', age: 20 }, { name: '次郎', age: 30 }, { name: '三郎', age: 40 }];\n\n// ② お題を満たす関数の定義\n// ここに関数定義のコードを書いてください。\n\n// ③ 関数の実行\n// ここに関数定義のコードを書いてください。 ",
+    title: "一致するオブジェクトの検索",
+    example:
+      "第一引数: [{ name: '太郎', age: 20 }, { name: '次郎', age: 30 }, { name: '三郎', age: 40 }], 第二引数: 30, 返り値: { name: '次郎', age: 30 }",
+    exampleAnswer: `const findByAge = (arr, age) => arr.find(obj => obj.age === age);
+const people = [{ name: '太郎', age: 20 }, { name: '次郎', age: 30 }, { name: '三郎', age: 40 }];
+console.log(findByAge(people, 30)); // { name: '次郎', age: 30 }`,
+  },
+  {
+    id: 9,
+    lessonId: 1,
+    content:
+      "配列を引数として受け取り、偶数のみをフィルタリングし、その後各要素を2倍にした新しい配列を返す関数を作成してください。console.logで実行結果を表示してください。",
+    template:
+      "// ① 引数となる定数の定義\nconst array = [1, 2, 3, 4, 5, 6];\n\n// ② お題を満たす関数の定義\n// ここに関数定義のコードを書いてください。\n\n// ③ 関数の実行\n// ここに関数定義のコードを書いてください。 ",
+    title: "偶数を2倍にする関数",
+    example: "引数: [1, 2, 3, 4, 5, 6], 返り値: [4, 8, 12]",
+    exampleAnswer: `const doubleEven = nums => nums.filter(n => n % 2 === 0).map(n => n * 2);
+const array6 = [1, 2, 3, 4, 5, 6];
+console.log(doubleEven(array6)); // [4, 8, 12]`,
+  },
+  {
+    id: 10,
+    lessonId: 1,
+    content:
+      "配列を引数として受け取り、各要素を2倍にし、その後偶数のみをフィルタリングし、最後に要素を昇順にソートした新しい配列を返す関数を作成してください。console.logで実行結果を表示してください。",
+    template:
+      "// ① 引数となる定数の定義\nconst array = [1, 2, 3, 4, 5, 6];\n\n// ② お題を満たす関数の定義\n// ここに関数定義のコードを書いてください。\n\n// ③ 関数の実行\n// ここに関数定義のコードを書いてください。 ",
+    title: "ソートした配列の作成",
+    example: "引数: [1, 2, 3, 4, 5, 6], 返り値: [2, 4, 6, 8, 10, 12]",
+    exampleAnswer: `const processArray = nums => nums.map(n => n * 2).filter(n => n % 2 === 0).sort((a, b) => a - b);
+const array7 = [1, 2, 3, 4, 5, 6];
+console.log(processArray(array7)); // [2, 4, 6, 8, 10, 12]`,
+  },
+];
+```
+
+以下のフォーマットに従い、JavaScript の学習カリキュラムの lesson データを作成してください。
+初級、中級、上級の３つを作ってください。
+
+【条件】
+
+- JavaScript の学習レベル: **初級 / 中級 / 上級**
+- レッスン名: 各レベルに適したレッスン名を指定
+- 各レッスンに 3 つ以上の問題を含める
+- 注意点 (`caution`): コーディングのルールを明確に記述
+  - 関数の定義 → 定数の定義 → 実行結果の出力の順に書く
+  - アロー関数を用いる
+  - 配列メソッド（map, filter, reduce など）を優先する
+  - 省略記法を活用する
+  - `for` 文の使用を避ける（必要な場合は例外）
+
+【フォーマット】
+
+```json
+{
+  "id": [ユニークなID],
+  "name": "[レッスン名]",
+  "courseId": [該当するコースのID],
+  "caution": "[コーディングルールや注意点]"
+}
+```
+
+また、以下のフォーマットに従い、JavaScript の question データを作成してください。
+初級、中級、上級でそれぞれ 50 問ずつ作ってください。
+
+【条件】
+
+- JavaScript の学習レベル: **{初級 | 中級 | 上級}**
+- 問題のテーマ: **{関数の作成 | 配列操作 | 文字列操作 | オブジェクト操作 | 高階関数 | 非同期処理 | アルゴリズム}**
+- コードの書き方: **ES6+、アロー関数を使用、配列メソッドを活用**
+- できるだけ省略記法を用いて簡潔にする
+- `for`文は極力使わず、適切な配列メソッド（map, filter, reduce など）を活用する
+
+【フォーマット】
+
+```json
+{
+  "id": [ユニークなID],
+  "lessonId": [レッスンのID],
+  "content": "[問題文（日本語）]",
+  "template": "[コードのテンプレート（未完成の状態）]",
+  "title": "[問題のタイトル]",
+  "example": "[具体的な入出力例]",
+  "exampleAnswer": "[模範解答（JavaScriptのコード）]"
+}
+```
