@@ -1,6 +1,6 @@
 import { CourseType } from "@prisma/client";
 import { buildPrisma } from "../src/app/_utils/prisma";
-import { courses, lessons, questions } from "./data/js_course";
+import { courses, lessons, questions } from "./data/javascriptCourse";
 
 export type Course = {
   id: number;
