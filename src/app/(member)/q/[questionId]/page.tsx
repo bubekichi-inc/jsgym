@@ -10,7 +10,7 @@ export const generateMetadata = async ({
 }): Promise<Metadata> => {
   const { questionId } = await params;
   const data = await api.get<QuestionResponse>(
-    `${process.env.APP_BASE_URL}/api/questions/${questionId}`
+    `${process.env.NEXT_PUBLIC_APP_BASE_URL}/api/questions/${questionId}`
   );
 
   if (!data.question) return { title: "Not Found" };

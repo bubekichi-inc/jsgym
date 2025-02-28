@@ -8,9 +8,11 @@ import { supabase } from "./_utils/supabase";
 export default function Home() {
   const router = useRouter();
   const { session, isLoading } = useSupabaseSession();
+
   useEffect(() => {
     if (isLoading) return;
     if (session) {
+      console.log("session", session);
       router.replace("/c");
     }
   }, [session, isLoading, router]);
@@ -20,7 +22,7 @@ export default function Home() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${process.env.APP_BASE_URL}/oauth/callback/google`,
+          redirectTo: `${process.env.NEXT_PUBLIC_APP_BASE_URL}/oauth/callback/google`,
         },
       });
       if (error) throw new Error(error.message);
