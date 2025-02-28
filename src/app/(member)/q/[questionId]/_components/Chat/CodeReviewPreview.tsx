@@ -91,7 +91,7 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
       {data?.nextQuestion && codeReview.result === "APPROVED" && (
         <div className="flex justify-end">
           <Link
-            href={`/c/${data.nextQuestion.id}`}
+            href={`/q/${data.nextQuestion.id}`}
             className="flex items-center gap-1 rounded border border-blue-500 px-3 py-1 text-sm font-bold text-blue-500 duration-150 hover:bg-blue-50"
           >
             <span>次の問題へ進む</span>
