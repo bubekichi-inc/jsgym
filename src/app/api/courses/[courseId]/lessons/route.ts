@@ -18,7 +18,13 @@ export const GET = async (request: NextRequest, { params }: Props) => {
       where: {
         id: parseInt(courseId, 10),
       },
-      include: { lessons: true },
+      include: {
+        lessons: {
+          orderBy: {
+            id: "asc",
+          },
+        },
+      },
     });
 
     if (!course)
