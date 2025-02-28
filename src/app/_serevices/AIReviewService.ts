@@ -6,7 +6,9 @@ import { z } from "zod";
 import { AIReviewJsonResponse } from "../api/questions/[questionId]/code_review/_types/CodeReview";
 import { Message } from "../api/questions/[questionId]/messages/route";
 
-const MODEL = "gpt-4o-mini-2024-07-18";
+const MODEL = "gpt-4.5-preview-2025-02-27";
+// 4.5: "gpt-4.5-preview-2025-02-27";
+// 4o-mini: "gpt-4o-mini-2024-07-18";
 
 export class AIReviewService {
   private static openai = new OpenAI({
