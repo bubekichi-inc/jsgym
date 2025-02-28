@@ -126,7 +126,7 @@ export const POST = async (request: NextRequest, { params }: Props) => {
 
     if (!userQuestion) return buildError(new Error("UserQuestion not found"));
 
-    const messageHistory = await prisma.message.findMany({
+    const messageHistory: Message[] = await prisma.message.findMany({
       where: {
         userQuestion: {
           userId: currentUserId,
@@ -144,12 +144,14 @@ export const POST = async (request: NextRequest, { params }: Props) => {
             overview: true,
             result: true,
             comments: true,
+            createdAt: true,
           },
         },
         answer: {
           select: {
             id: true,
             answer: true,
+            createdAt: true,
           },
         },
       },
@@ -161,11 +163,12 @@ export const POST = async (request: NextRequest, { params }: Props) => {
     const openAIMessages: ChatCompletionMessageParam[] = messageHistory.map(
       (message) => ({
         role: message.sender === Sender.USER ? "user" : "assistant",
-        content: message.message,
+        content:
+          message.sender === Sender.USER
+            ? message.message
+            : AIReviewService.buildSystemMessageContent({ message }),
       })
     );
-
-    // openAIMessages.unshift({ role: "user", content: answer.answer });
 
     openAIMessages.push({
       role: "user",

@@ -4,6 +4,9 @@ import { zodResponseFormat } from "openai/helpers/zod";
 import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { z } from "zod";
 import { AIReviewJsonResponse } from "../api/questions/[questionId]/code_review/_types/CodeReview";
+import { Message } from "../api/questions/[questionId]/messages/route";
+
+const MODEL = "gpt-4o-mini-2024-07-18";
 
 export class AIReviewService {
   private static openai = new OpenAI({
@@ -62,6 +65,24 @@ ${lesson.caution}
 ・すべて日本語でお願いします。`;
   }
 
+  public static buildSystemMessageContent({
+    message,
+  }: {
+    message: Message;
+  }): string {
+    if (message.codeReview) {
+      const result = `レビューの結果は「${message.codeReview.result}」でした。`;
+      const overview = message.codeReview.overview;
+      const comments = message.codeReview.comments
+        .map((comment) => {
+          return `${comment.targetCode}について、${comment.message}`;
+        })
+        .join(" ");
+      return `${result} ${overview} 以下、コードに対してのコメントです。 ${comments}`;
+    }
+    return message.message;
+  }
+
   public static async getCodeReview({
     question,
     lesson,
@@ -72,7 +93,7 @@ ${lesson.caution}
     answer: string;
   }): Promise<AIReviewJsonResponse | null> {
     const response = await this.openai.beta.chat.completions.parse({
-      model: "gpt-4o-mini-2024-07-18",
+      model: MODEL,
       messages: [
         {
           role: "user",
@@ -104,8 +125,9 @@ ${lesson.caution}
       },
       ...openAIMessages,
     ];
+
     const response = await this.openai.chat.completions.create({
-      model: "gpt-4o-mini-2024-07-18",
+      model: MODEL,
       messages,
       temperature: 1,
       max_tokens: 16384,
