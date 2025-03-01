@@ -1,7 +1,5 @@
 "use client";
 
-import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useParams } from "next/navigation";
 import React from "react";
 import { Skeleton } from "@/app/_components/Skeleton";
@@ -25,7 +23,7 @@ export const Question: React.FC = () => {
         </div>
       </div>
 
-      {data.question.lesson.caution && (
+      {/* {data.question.lesson.caution && (
         <div className="flex gap-3 rounded-lg bg-orange-50 p-3">
           <FontAwesomeIcon
             icon={faExclamationTriangle}
@@ -35,7 +33,7 @@ export const Question: React.FC = () => {
             {data.question.lesson.caution}
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

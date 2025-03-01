@@ -8,15 +8,16 @@ export const lessons: Lesson[] = [
     id: 1,
     name: "初級",
     courseId: 1,
-    caution: `・必ず、
-　1. 関数の定義
-　2. 引数となる定数の定義
-　3. 実行結果をconsole.logで出力
-　の手順で記述してください。
-
-・アロー関数を用いて書いてください。
-・配列メソッド（mapやfilterなど）で書ける部分にfor文は使わないでください。
-・出来るだけ省略記法を用いて短く書いてください。`,
+  },
+  {
+    id: 2,
+    name: "中級",
+    courseId: 1,
+  },
+  {
+    id: 3,
+    name: "上級",
+    courseId: 1,
   },
 ];
 

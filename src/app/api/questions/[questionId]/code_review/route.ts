@@ -33,7 +33,6 @@ export const POST = async (request: NextRequest, { params }: Props) => {
 
     const res = await AIReviewService.getCodeReview({
       question,
-      lesson: question.lesson,
       answer,
     });
 
@@ -67,7 +66,6 @@ export const POST = async (request: NextRequest, { params }: Props) => {
       data: {
         message: AIReviewService.buildPrompt({
           question: question,
-          lesson: question.lesson,
           answer,
         }),
         sender: Sender.USER,

@@ -11,7 +11,6 @@ export type Lesson = {
   id: number;
   name: string;
   courseId: number;
-  caution: string;
 };
 
 export type Question = {

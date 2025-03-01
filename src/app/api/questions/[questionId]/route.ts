@@ -21,7 +21,6 @@ export type QuestionResponse = {
     lesson: {
       id: number;
       name: string;
-      caution: string | null;
       course: {
         id: number;
         name: CourseType;
@@ -74,7 +73,6 @@ export const GET = async (request: NextRequest, { params }: Props) => {
           select: {
             id: true,
             name: true,
-            caution: true,
             course: {
               select: {
                 id: true,

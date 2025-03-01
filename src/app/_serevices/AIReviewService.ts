@@ -1,4 +1,4 @@
-import { Lesson, Question } from "@prisma/client";
+import { Question } from "@prisma/client";
 import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
@@ -29,11 +29,9 @@ export class AIReviewService {
 
   public static buildPrompt({
     question,
-    lesson,
     answer,
   }: {
     question: Question;
-    lesson: Lesson;
     answer: string;
   }) {
     return `
@@ -56,7 +54,6 @@ ${question.exampleAnswer}
 ・関数名や定数名や変数名の命名はこだわらなくて良いです。
 ・関数の引数の命名はこだわらなくて良いです。
 ・模範解答は参考程度として、細かく比較しなくて良いです。
-${lesson.caution}
 
 # 補足
 ・stringで返すものは、適切に改行コードも含めてください。
@@ -87,11 +84,9 @@ ${lesson.caution}
 
   public static async getCodeReview({
     question,
-    lesson,
     answer,
   }: {
     question: Question;
-    lesson: Lesson;
     answer: string;
   }): Promise<AIReviewJsonResponse | null> {
     const response = await this.openai.beta.chat.completions.parse({
@@ -99,7 +94,7 @@ ${lesson.caution}
       messages: [
         {
           role: "user",
-          content: this.buildPrompt({ question, lesson, answer }),
+          content: this.buildPrompt({ question, answer }),
         },
       ],
       temperature: 1,

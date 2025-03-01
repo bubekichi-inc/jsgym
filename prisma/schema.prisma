@@ -43,7 +43,6 @@ model Lesson {
   courseId  Int        @map("course_id")
   createdAt DateTime   @default(now()) @map("created_at")
   updatedAt DateTime   @updatedAt @map("updated_at")
-  caution   String?
   course    Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
   questions Question[]
 
