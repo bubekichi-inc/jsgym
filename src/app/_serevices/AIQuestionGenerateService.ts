@@ -7,7 +7,7 @@ import { OPENAI_MODEL } from "../_constants/openAI";
 import { AIReviewJsonResponse } from "../api/questions/[questionId]/code_review/_types/CodeReview";
 import { Message } from "../api/questions/[questionId]/messages/route";
 
-export class AIReviewService {
+export class AIQuestionGenerateService {
   private static openai = new OpenAI({
     apiKey: process.env.OPENAI_SECRET_KEY,
   });
