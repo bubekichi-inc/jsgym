@@ -10,9 +10,8 @@ export type EditorSetting = {
   editorFontSize: EditorFontSize;
 };
 
-const prisma = await buildPrisma();
-
 export const GET = async (request: NextRequest) => {
+  const prisma = await buildPrisma();
   try {
     const token = request.headers.get("Authorization") ?? "";
     const { data } = await supabase.auth.getUser(token);
@@ -51,6 +50,7 @@ export const GET = async (request: NextRequest) => {
 };
 
 export const PUT = async (request: NextRequest) => {
+  const prisma = await buildPrisma();
   try {
     const currentUser = await getCurrentUser({ request });
     const data: EditorSetting = await request.json();

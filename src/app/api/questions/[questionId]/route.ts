@@ -43,9 +43,8 @@ export type QuestionResponse = {
   } | null;
 };
 
-const prisma = await buildPrisma();
-
 export const GET = async (request: NextRequest, { params }: Props) => {
+  const prisma = await buildPrisma();
   const { questionId } = await params;
   try {
     const token = request.headers.get("Authorization") ?? "";

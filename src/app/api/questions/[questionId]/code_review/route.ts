@@ -6,14 +6,13 @@ import { buildPrisma } from "@/app/_utils/prisma";
 import { buildError } from "@/app/api/_utils/buildError";
 import { getCurrentUser } from "@/app/api/_utils/getCurrentUser";
 
-const prisma = await buildPrisma();
-
 interface Props {
   params: Promise<{
     questionId: string;
   }>;
 }
 export const POST = async (request: NextRequest, { params }: Props) => {
+  const prisma = await buildPrisma();
   const { questionId } = await params;
   try {
     const { id: userId } = await getCurrentUser({ request });

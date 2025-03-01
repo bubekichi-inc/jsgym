@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/crons/generate_questions",
+      "schedule": "0 3 * * *"
+    }
+  ]
+}

@@ -10,9 +10,8 @@ interface Props {
   }>;
 }
 
-const prisma = await buildPrisma();
-
 export const DELETE = async (request: NextRequest, { params }: Props) => {
+  const prisma = await buildPrisma();
   const { questionId } = await params;
 
   try {
