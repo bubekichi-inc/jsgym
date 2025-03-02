@@ -18,10 +18,10 @@ export const POST = async (request: NextRequest, { params }: Props) => {
 
     const userQuestion = await prisma.userQuestion.upsert({
       where: {
-        userId_questionId: { userId, questionId: parseInt(questionId, 10) },
+        userId_questionId: { userId, questionId },
       },
       update: {},
-      create: { userId, questionId: parseInt(questionId, 10), status: "DRAFT" },
+      create: { userId, questionId, status: "DRAFT" },
     });
 
     await prisma.answer.create({
