@@ -33,7 +33,7 @@ export default function OAuthCallback() {
       }
     };
     postUser();
-  }, [accessToken, router]);
+  }, [accessToken, redirectQid, router]);
 
   return <div className="text-center">読込み中...</div>;
 }

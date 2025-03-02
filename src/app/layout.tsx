@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { Metadata } from "next";
 import { Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
+import { Suspense } from "react";
 import { ToastContainer } from "react-toastify";
 import { Header } from "./_components/Header";
 
@@ -24,7 +25,9 @@ export default function RootLayout({
         className={`${notSansJp.className} bg-bgMain text-textMain antialiased`}
       >
         <Header />
-        <div className="pt-[48px]">{children}</div>
+        <Suspense>
+          <div className="pt-[48px]">{children}</div>
+        </Suspense>
         <ToastContainer
           position="top-right"
           autoClose={2500}
