@@ -1,6 +1,6 @@
 import { CourseType } from "@prisma/client";
 import { buildPrisma } from "../src/app/_utils/prisma";
-import { courses, lessons, questions } from "./data/javascriptCourse";
+import { courses, lessons } from "./data/javascriptCourse";
 import { QuestionTag, questionTags } from "./data/questionTags";
 
 export type Course = {
@@ -51,17 +51,17 @@ const seedData = async () => {
     );
   };
 
-  const upsertQuestions = async (questions: Question[]) => {
-    await Promise.all(
-      questions.map((question) =>
-        prisma.question.upsert({
-          where: { id: question.id },
-          create: question,
-          update: question,
-        })
-      )
-    );
-  };
+  // const upsertQuestions = async (questions: Question[]) => {
+  //   await Promise.all(
+  //     questions.map((question) =>
+  //       prisma.question.upsert({
+  //         where: { id: question.id },
+  //         create: question,
+  //         update: question,
+  //       })
+  //     )
+  //   );
+  // };
 
   const upsertQuestionTags = async (questionTags: QuestionTag[]) => {
     await Promise.all(
@@ -78,7 +78,7 @@ const seedData = async () => {
   try {
     await upsertCourses(courses);
     await upsertLessons(lessons);
-    await upsertQuestions(questions);
+    // await upsertQuestions(questions);
     await upsertQuestionTags(questionTags);
   } catch (error) {
     console.error(`エラー発生${error}`);
