@@ -3,6 +3,8 @@ import { Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
 import { Header } from "./_components/Header";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExternalLink } from "@fortawesome/free-solid-svg-icons";
 
 const notSansJp = Noto_Sans_JP({ subsets: ["latin"] });
 
@@ -32,6 +34,14 @@ export default function RootLayout({
           theme="colored"
           toastStyle={{ background: "#0E77B8" }}
         />
+        <a
+          href="https://docs.google.com/spreadsheets/d/1tNUMeAZxxfQEe4PFOD8v-jlzeWHNCOke_-jM2GnLEPI/edit?usp=sharing"
+          target="_blank"
+          className="fixed bottom-10 right-10 hidden items-center rounded-lg bg-blue-500 px-4 py-3 text-sm font-bold text-white lg:flex"
+        >
+          フィードバック
+          <FontAwesomeIcon icon={faExternalLink} className="ml-2 size-4" />
+        </a>
       </body>
     </html>
   );

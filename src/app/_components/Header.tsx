@@ -1,6 +1,4 @@
 "use client";
-import { faExternalLink } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Logo } from "../(lp)/_components/logo";
@@ -55,14 +53,7 @@ export const Header: React.FC = () => {
         <Link className="font-bold" href={"/q"}>
           <Logo />
         </Link>
-        <a
-          href="https://docs.google.com/spreadsheets/d/1tNUMeAZxxfQEe4PFOD8v-jlzeWHNCOke_-jM2GnLEPI/edit?usp=sharing"
-          target="_blank"
-          className="hidden items-center rounded-lg bg-blue-500 px-4 py-1 text-sm font-bold text-white lg:flex"
-        >
-          フィードバックはこちら
-          <FontAwesomeIcon icon={faExternalLink} className="ml-2 size-4" />
-        </a>
+
         {rightContent()}
       </header>
     </>
