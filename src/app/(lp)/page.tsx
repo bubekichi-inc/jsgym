@@ -1,3 +1,4 @@
+import { Footer } from "./_components/footer";
 import { Questions } from "@/app/(lp)/_components/Questions";
 import { BenefitsSection } from "@/app/(lp)/_components/benefits-section";
 import { CtaSection } from "@/app/(lp)/_components/cta-section";
@@ -16,6 +17,7 @@ export default function Home() {
         <FaqSection />
         <CtaSection />
       </main>
+      <Footer />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 export function Footer() {
   return (
-    <footer className="border-t py-6 md:py-0">
-      <div className="container mx-auto flex flex-col items-center justify-between gap-4 px-4 md:h-24 md:flex-row">
+    <footer className="border-t py-6">
+      <div className="container mx-auto flex flex-col items-center justify-between gap-4 px-4">
         <div className="flex items-center gap-2">
           <div className="flex items-center justify-center rounded-md bg-yellow-400 p-1">
             <svg
@@ -49,7 +49,7 @@ export function Footer() {
           </div>
           <span className="text-xl font-bold">JS Gym</span>
         </div>
-        <div className="flex flex-wrap items-center gap-4 md:gap-6">
+        <div className="flex flex-wrap items-center justify-center gap-4">
           <a
             href="https://bubekichi.com"
             target="_blank"
@@ -187,7 +187,7 @@ export function Footer() {
           </a> */}
         </div>
       </div>
-      <div className="container mx-auto mt-4 px-4 md:mt-0">
+      <div className="container mx-auto mt-4 px-4">
         <p className="text-center text-xs text-gray-500">
           © 2025 JS Gym. All rights reserved.
         </p>
