@@ -1,11 +1,13 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { api } from "@/app/_utils/api";
 import { GoogleRequest } from "@/app/api/oauth/google/_types/GoogleRequest";
 export default function OAuthCallback() {
   const router = useRouter();
   const [accessToken, setAccessToken] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  const redirectQid = searchParams.get("redirect_qid");
 
   useEffect(() => {
     const hash = window.location.hash.substring(1);
@@ -22,7 +24,9 @@ export default function OAuthCallback() {
           "/api/oauth/google",
           { accessToken }
         );
-        router.replace("/q");
+        router.replace(
+          redirectQid === "undefined" ? "/q" : `/q/${redirectQid}`
+        );
         return;
       } catch (e) {
         console.error("ユーザー情報の登録に失敗:", e);

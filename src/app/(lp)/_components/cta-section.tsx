@@ -54,7 +54,7 @@ export function CtaSection() {
             <div className="flex justify-center py-4">
               <button
                 className="inline-flex w-full items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
-                onClick={signIn}
+                onClick={() => signIn({})}
               >
                 <svg
                   className="mr-2 size-4"

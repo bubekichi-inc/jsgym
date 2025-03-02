@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Logo } from "../(lp)/_components/logo";
 import { useMe } from "../(member)/_hooks/useMe";
 import { signIn } from "../_utils/auth";
@@ -8,6 +8,8 @@ import { supabase } from "../_utils/supabase";
 import { Button } from "./Button";
 
 export const Header: React.FC = () => {
+  const params = useParams();
+  const questionId = params.questionId;
   const { data, isLoading, mutate } = useMe();
   const { replace } = useRouter();
   const logout = async () => {
@@ -39,7 +41,7 @@ export const Header: React.FC = () => {
       );
     return (
       <button
-        onClick={signIn}
+        onClick={() => signIn({ redirectQid: questionId as string })}
         className="inline-flex h-8 items-center justify-center rounded-md bg-yellow-400 px-4 py-2 text-sm font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
       >
         ログイン
