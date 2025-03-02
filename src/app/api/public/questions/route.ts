@@ -5,7 +5,7 @@ import { buildPrisma } from "@/app/_utils/prisma";
 export const dynamic = "force-dynamic";
 
 export type Question = {
-  id: number;
+  id: string;
   title: string;
   content: string;
   questions: {
