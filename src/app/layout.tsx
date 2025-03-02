@@ -10,8 +10,8 @@ import { Header } from "./_components/Header";
 const notSansJp = Noto_Sans_JP({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "JS学習サイト(プロトタイプ)",
-  description: "",
+  title: "JS Gym",
+  description: "JS Gymは、JavaScriptの学習をサポートするサービスです。",
 };
 
 export default function RootLayout({
