@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "@/app/_utils/autu";
+import { signIn } from "@/app/_utils/auth";
 
 export function HeroSection() {
   const [showLoginDialog, setShowLoginDialog] = useState(false);

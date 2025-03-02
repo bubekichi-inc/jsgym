@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Logo } from "../(lp)/_components/logo";
 import { useMe } from "../(member)/_hooks/useMe";
-import { signIn } from "../_utils/autu";
+import { signIn } from "../_utils/auth";
 import { supabase } from "../_utils/supabase";
 import { Button } from "./Button";
 
