@@ -20,6 +20,8 @@ export const buildError = (e: unknown) => {
   }
 
   if (e instanceof Error) {
+    console.error(e.message);
+
     if (e.message === "Unauthorized") {
       return NextResponse.json({ error: e.message }, { status: 401 });
     }
