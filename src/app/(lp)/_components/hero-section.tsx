@@ -46,7 +46,7 @@ export function HeroSection() {
             </div>
           </div>
           <div className="flex items-center justify-center">
-            <div className="relative overflow-hidden rounded border bg-gray-100 shadow-card">
+            <div className="overflow-hidden rounded border bg-gray-100 shadow-card">
               <video
                 className="size-full object-cover"
                 src="/images/demo.mov"
