@@ -1,12 +1,28 @@
 "use client";
 
 import { useState } from "react";
+import { supabase } from "@/app/_utils/supabase";
 
 export function CtaSection() {
   const [showLoginDialog, setShowLoginDialog] = useState(false);
 
+  const signIn = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${process.env.NEXT_PUBLIC_APP_BASE_URL}/oauth/callback/google`,
+        },
+      });
+      if (error) throw new Error(error.message);
+    } catch (e) {
+      alert(`ログインに失敗しました:${e}`);
+      console.error(e);
+    }
+  };
+
   return (
-    <section className="bg-black py-16 text-white dark:bg-white dark:text-black">
+    <section className="bg-black py-16 text-white">
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
           <div className="space-y-2">
@@ -19,7 +35,7 @@ export function CtaSection() {
           </div>
           <div className="flex flex-col gap-2 min-[400px]:flex-row">
             <button
-              className="inline-flex h-10 items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 dark:bg-black dark:text-white dark:hover:bg-gray-800"
+              className="inline-flex h-10 items-center justify-center rounded-md bg-yellow-300 px-4 py-2 text-sm font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
               onClick={() => setShowLoginDialog(true)}
             >
               無料ではじめる
@@ -29,19 +45,32 @@ export function CtaSection() {
       </div>
 
       {showLoginDialog && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="relative w-full max-w-md rounded-lg bg-white p-6 shadow-lg dark:bg-gray-950">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          onClick={() => {
+            setShowLoginDialog(false);
+          }}
+        >
+          <div
+            className="relative w-full max-w-md rounded-lg bg-white p-6 shadow-lg "
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
             <div className="flex flex-col space-y-1.5 pb-6">
-              <h2 className="text-lg font-semibold leading-none tracking-tight text-black dark:text-white">
+              <h2 className="text-lg font-semibold leading-none tracking-tight text-black ">
                 アカウント
               </h2>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-gray-500">
                 Googleアカウントでログインして、JS
                 Gymのすべての機能を利用しましょう。
               </p>
             </div>
             <div className="flex justify-center py-4">
-              <button className="inline-flex w-full items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 dark:border-gray-800 dark:bg-gray-950 dark:text-white dark:hover:bg-gray-800">
+              <button
+                className="inline-flex w-full items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+                onClick={signIn}
+              >
                 <svg
                   className="mr-2 size-4"
                   xmlns="http://www.w3.org/2000/svg"

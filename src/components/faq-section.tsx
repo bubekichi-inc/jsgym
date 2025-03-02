@@ -17,7 +17,7 @@ export function FaqSection() {
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
               よくある質問
             </h2>
-            <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+            <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
               JS Gymについてよくある質問と回答をまとめました。
             </p>
           </div>

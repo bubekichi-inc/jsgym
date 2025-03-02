@@ -52,7 +52,7 @@ export function Footer() {
         <div className="flex flex-wrap items-center gap-4 md:gap-6">
           <a
             href="#"
-            className="flex items-center gap-1 text-xs text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+            className="flex items-center gap-1 text-xs text-gray-500 transition-colors hover:text-gray-900"
           >
             運営会社
             <svg
@@ -79,7 +79,7 @@ export function Footer() {
           </a>
           <a
             href="#"
-            className="flex items-center gap-1 text-xs text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+            className="flex items-center gap-1 text-xs text-gray-500 transition-colors hover:text-gray-900 "
           >
             運営スクール
             <svg
@@ -106,7 +106,7 @@ export function Footer() {
           </a>
           <a
             href="#"
-            className="flex items-center gap-1 text-xs text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+            className="flex items-center gap-1 text-xs text-gray-500 transition-colors hover:text-gray-900"
           >
             <svg
               className="size-3"
@@ -140,7 +140,7 @@ export function Footer() {
           </a>
           <a
             href="#"
-            className="flex items-center gap-1 text-xs text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+            className="flex items-center gap-1 text-xs text-gray-500 transition-colors hover:text-gray-900"
           >
             <svg
               className="size-3"
@@ -167,20 +167,20 @@ export function Footer() {
           </a>
           <a
             href="#"
-            className="text-xs text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+            className="text-xs text-gray-500 transition-colors hover:text-gray-900"
           >
             利用規約
           </a>
           <a
             href="#"
-            className="text-xs text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+            className="text-xs text-gray-500 transition-colors hover:text-gray-900"
           >
             プライバシーポリシー
           </a>
         </div>
       </div>
       <div className="container mx-auto mt-4 px-4 md:mt-0">
-        <p className="text-center text-xs text-gray-500 dark:text-gray-400">
+        <p className="text-center text-xs text-gray-500">
           © 2025 JS Gym. All rights reserved.
         </p>
       </div>

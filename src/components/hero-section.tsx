@@ -24,19 +24,21 @@ export function HeroSection() {
   return (
     <section className="py-20 md:py-28">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="grid gap-6 lg:grid-cols-[1fr_600px] lg:gap-12 xl:grid-cols-[1fr_800px]">
-          <div className="flex flex-col justify-center space-y-4">
+        <div className="items-center justify-center gap-8 lg:flex">
+          <div className="flex flex-col justify-center space-y-4 lg:w-1/2">
             <div className="space-y-2">
-              <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
-                JavaScript開発の自走力を鍛えるトレーニングジム
+              <h1 className="space-y-2 text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl/none">
+                <div className="">JavaScript開発の</div>
+                <div className="">自走力を鍛える</div>
+                <div className="">トレーニングジム</div>
               </h1>
-              <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400">
+              <p className="max-w-[600px] text-gray-500 md:text-xl">
                 JavaScriptに特化した、プログラミング学習サイトです。
               </p>
             </div>
             <div className="flex flex-col gap-2 min-[400px]:flex-row">
               <button
-                className="inline-flex h-10 items-center justify-center rounded-md bg-black px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+                className="inline-flex h-10 items-center justify-center rounded-md bg-yellow-300 px-4 py-2 text-sm font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
                 onClick={() => setShowLoginDialog(true)}
               >
                 無料ではじめる
@@ -44,11 +46,11 @@ export function HeroSection() {
             </div>
           </div>
           <div className="flex items-center justify-center">
-            <div className="relative aspect-video overflow-hidden rounded-xl border bg-gray-100 dark:bg-gray-800">
+            <div className="relative aspect-video overflow-hidden rounded-xl border bg-gray-100">
               <div className="flex size-full items-center justify-center">
                 <div className="flex flex-col items-center gap-2 p-4 text-center">
                   <div className="text-2xl font-bold">デモ動画</div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <p className="text-sm text-gray-500">
                     問題を解いて、AIがコードレビューするまでのデモ
                   </p>
                 </div>
@@ -59,20 +61,30 @@ export function HeroSection() {
       </div>
 
       {showLoginDialog && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="relative w-full max-w-md rounded-lg bg-white p-6 shadow-lg dark:bg-gray-950">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          onClick={() => {
+            setShowLoginDialog(false);
+          }}
+        >
+          <div
+            className="relative w-full max-w-md rounded-lg bg-white p-6 shadow-lg dark:bg-gray-950"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
             <div className="flex flex-col space-y-1.5 pb-6">
               <h2 className="text-lg font-semibold leading-none tracking-tight">
                 アカウント
               </h2>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-gray-500">
                 Googleアカウントでログインして、JS
                 Gymのすべての機能を利用しましょう。
               </p>
             </div>
             <div className="flex justify-center py-4">
               <button
-                className="inline-flex w-full items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800"
+                className="inline-flex w-full items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
                 onClick={signIn}
               >
                 <svg
