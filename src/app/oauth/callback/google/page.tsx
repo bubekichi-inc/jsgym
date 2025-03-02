@@ -33,7 +33,8 @@ export default function OAuthCallback() {
       }
     };
     postUser();
-  }, [accessToken, redirectQid, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accessToken, router]);
 
   return <div className="text-center">読込み中...</div>;
 }
