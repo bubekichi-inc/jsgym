@@ -19,7 +19,7 @@ export const DELETE = async (request: NextRequest, { params }: Props) => {
 
     await prisma.userQuestion.delete({
       where: {
-        userId_questionId: { userId, questionId: parseInt(questionId, 10) },
+        userId_questionId: { userId, questionId },
       },
     });
 
