@@ -35,6 +35,9 @@ export class AIReviewService {
 # 概要
 コードレビューしてJSON形式で出力してください。
 
+# 問題タイトル
+${question.title}
+
 # 問題文
 ${question.content}
 
