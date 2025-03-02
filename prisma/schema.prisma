@@ -50,7 +50,6 @@ model Lesson {
 }
 
 model Question {
-  id            Int                   @id @default(autoincrement())
   title         String
   example       String?
   content       String
@@ -59,6 +58,7 @@ model Question {
   exampleAnswer String
   createdAt     DateTime              @default(now()) @map("created_at")
   updatedAt     DateTime              @updatedAt @map("updated_at")
+  id            String                @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   questions     QuestionTagRelation[]
   lesson        Lesson                @relation(fields: [lessonId], references: [id], onDelete: Cascade)
   userQuestions UserQuestion[]
@@ -78,8 +78,8 @@ model QuestionTag {
 
 model QuestionTagRelation {
   id         String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  questionId Int
   tagId      Int
+  questionId String      @map("question_id") @db.Uuid
   question   Question    @relation(fields: [questionId], references: [id], onDelete: Cascade)
   tag        QuestionTag @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
@@ -89,10 +89,10 @@ model QuestionTagRelation {
 model UserQuestion {
   id          String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   userId      String             @map("user_id") @db.Uuid
-  questionId  Int                @map("question_id")
   createdAt   DateTime           @default(now()) @map("created_at")
   updatedAt   DateTime           @updatedAt @map("updated_at")
   status      UserQuestionStatus
+  questionId  String             @map("question_id") @db.Uuid
   answers     Answer[]
   codeReviews CodeReview[]
   messages    Message[]

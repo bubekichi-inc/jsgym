@@ -1,4 +1,5 @@
 import { CourseType } from "@prisma/client";
+import { nanoid } from "nanoid";
 import { NextResponse } from "next/server";
 import { buildError } from "../../_utils/buildError";
 import {
@@ -54,6 +55,7 @@ export const GET = async () => {
 
     const question = await prisma.question.create({
       data: {
+        id: nanoid(10),
         content: response.content,
         template: response.template,
         title: response.title,
