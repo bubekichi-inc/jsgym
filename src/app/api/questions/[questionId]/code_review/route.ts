@@ -21,7 +21,7 @@ export const POST = async (request: NextRequest, { params }: Props) => {
 
     const question = await prisma.question.findUnique({
       where: {
-        id: parseInt(questionId, 10),
+        id: questionId,
       },
       include: {
         lesson: true,
