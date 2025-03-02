@@ -7,8 +7,6 @@ import {
 } from "@/app/_serevices/AIQuestionGenerateService";
 import { buildPrisma } from "@/app/_utils/prisma";
 
-export const dynamic = "force-dynamic";
-
 /**
  * 難易度を "EASY", "MEDIUM", "HARD" の比率 5:3:2 で返す関数
  * @returns {("EASY"|"MEDIUM"|"HARD")} ランダムに選ばれた難易度
@@ -38,6 +36,7 @@ const getLessonId = (level: QuestionLevel) => {
   }
 };
 
+export const dynamic = "force-dynamic";
 export const maxDuration = 30;
 
 export const GET = async () => {
