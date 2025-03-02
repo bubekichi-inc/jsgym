@@ -24,7 +24,7 @@ export function HeroSection() {
   return (
     <section className="py-20 md:py-28">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="items-center justify-center gap-10 lg:flex">
+        <div className="items-center justify-center gap-10 space-y-6 lg:flex">
           <div className="flex flex-col justify-center space-y-4 lg:w-1/2">
             <div className="space-y-2">
               <h1 className="space-y-2 whitespace-nowrap text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl/none">
@@ -32,7 +32,7 @@ export function HeroSection() {
                 <div className="">自走力を鍛える</div>
                 <div className="">トレーニングジム</div>
               </h1>
-              <p className="max-w-[600px] text-gray-500 md:text-xl">
+              <p className="max-w-[600px] text-gray-500 md:text-lg">
                 JavaScriptに特化した、プログラミング学習サイトです。
               </p>
             </div>
