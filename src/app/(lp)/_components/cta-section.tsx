@@ -1,25 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { supabase } from "@/app/_utils/supabase";
+import { signIn } from "@/app/_utils/autu";
 
 export function CtaSection() {
   const [showLoginDialog, setShowLoginDialog] = useState(false);
-
-  const signIn = async () => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: `${process.env.NEXT_PUBLIC_APP_BASE_URL}/oauth/callback/google`,
-        },
-      });
-      if (error) throw new Error(error.message);
-    } catch (e) {
-      alert(`ログインに失敗しました:${e}`);
-      console.error(e);
-    }
-  };
 
   return (
     <section className="bg-black py-16 text-white">

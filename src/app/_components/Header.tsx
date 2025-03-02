@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Logo } from "../(lp)/_components/logo";
 import { useMe } from "../(member)/_hooks/useMe";
+import { signIn } from "../_utils/autu";
 import { supabase } from "../_utils/supabase";
 import { Button } from "./Button";
 
@@ -46,21 +47,6 @@ export const Header: React.FC = () => {
         ログイン
       </button>
     );
-  };
-
-  const signIn = async () => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: `${process.env.NEXT_PUBLIC_APP_BASE_URL}/oauth/callback/google`,
-        },
-      });
-      if (error) throw new Error(error.message);
-    } catch (e) {
-      alert(`ログインに失敗しました:${e}`);
-      console.error(e);
-    }
   };
 
   return (
