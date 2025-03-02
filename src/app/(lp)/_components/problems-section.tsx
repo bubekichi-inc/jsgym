@@ -1,94 +1,40 @@
 "use client";
 
 import { useState } from "react";
-
-// Mock data for problems
-const problems = [
-  {
-    id: 1,
-    title: "配列の要素を合計する",
-    description:
-      "与えられた配列の全ての要素の合計を返す関数を実装してください。",
-    difficulty: "初級",
-    tags: ["配列", "ループ", "reduce"],
-    createdAt: "2025-01-01",
-  },
-  {
-    id: 2,
-    title: "文字列の逆順",
-    description: "与えられた文字列を逆順にして返す関数を実装してください。",
-    difficulty: "初級",
-    tags: ["文字列", "配列"],
-    createdAt: "2025-01-01",
-  },
-  {
-    id: 3,
-    title: "オブジェクトのマージ",
-    description: "2つのオブジェクトを1つにマージする関数を実装してください。",
-    difficulty: "中級",
-    tags: ["オブジェクト", "スプレッド構文"],
-    createdAt: "2025-01-01",
-  },
-  {
-    id: 4,
-    title: "非同期処理の順序制御",
-    description: "複数の非同期処理を順番に実行する関数を実装してください。",
-    difficulty: "上級",
-    tags: ["Promise", "async/await"],
-    createdAt: "2025-01-02",
-  },
-  {
-    id: 5,
-    title: "DOM操作の最適化",
-    description:
-      "複数の要素を追加する際のDOM操作を最適化する方法を実装してください。",
-    difficulty: "中級",
-    tags: ["DOM", "パフォーマンス"],
-    createdAt: "2025-01-02",
-  },
-  {
-    id: 6,
-    title: "イベントデリゲーション",
-    description:
-      "イベントデリゲーションを使用して、動的に追加される要素にイベントを設定する実装をしてください。",
-    difficulty: "中級",
-    tags: ["イベント", "DOM"],
-    createdAt: "2025-01-02",
-  },
-  {
-    id: 7,
-    title: "カリー化関数",
-    description: "任意の関数をカリー化する高階関数を実装してください。",
-    difficulty: "上級",
-    tags: ["関数型", "高階関数"],
-    createdAt: "2025-01-03",
-  },
-  {
-    id: 8,
-    title: "ディープコピー",
-    description:
-      "ネストされたオブジェクトの完全なディープコピーを行う関数を実装してください。",
-    difficulty: "上級",
-    tags: ["オブジェクト", "再帰"],
-    createdAt: "2025-01-03",
-  },
-  {
-    id: 9,
-    title: "メモ化関数",
-    description: "関数の結果をキャッシュするメモ化関数を実装してください。",
-    difficulty: "中級",
-    tags: ["パフォーマンス", "キャッシュ", "クロージャ"],
-    createdAt: "2025-01-03",
-  },
-];
+import { useFetch } from "@/app/_hooks/useFetch";
+import { Question } from "@/app/api/public/questions/route";
+import { QuestionLevel } from "@/app/_serevices/AIQuestionGenerateService";
 
 export function ProblemsSection() {
-  const [activeTab, setActiveTab] = useState("all");
+  const [activeTab, setActiveTab] = useState<QuestionLevel | "ALL">("ALL");
+  const { data } = useFetch<{ questions: Question[] }>("/api/public/questions");
+
+  const problems = data?.questions ?? [];
+
+  const levelMap = {
+    EASY: 1,
+    MEDIUM: 2,
+    HARD: 3,
+  };
+
+  const levelMapReverse = {
+    "1": "初級",
+    "2": "中級",
+    "3": "上級",
+  };
+
+  const tagMap = {
+    VALUE: "値",
+    ARRAY: "配列",
+    OBJECT: "オブジェクト",
+    FUNCTION: "関数",
+    CLASS: "クラス",
+  };
 
   const filteredProblems =
-    activeTab === "all"
+    activeTab === "ALL"
       ? problems
-      : problems.filter((problem) => problem.difficulty === activeTab);
+      : problems.filter((problem) => problem.lesson.id === levelMap[activeTab]);
 
   return (
     <section className="bg-gray-100/50 py-12 ">
@@ -109,41 +55,41 @@ export function ProblemsSection() {
               <div className="inline-flex h-10 items-center justify-center rounded-md bg-gray-100 p-1 text-gray-500">
                 <button
                   className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
-                    activeTab === "all"
+                    activeTab === "ALL"
                       ? "bg-white text-gray-950 shadow-sm"
                       : ""
                   }`}
-                  onClick={() => setActiveTab("all")}
+                  onClick={() => setActiveTab("ALL")}
                 >
                   すべて
                 </button>
                 <button
                   className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
-                    activeTab === "初級"
+                    activeTab === "EASY"
                       ? "bg-white text-gray-950 shadow-sm"
                       : ""
                   }`}
-                  onClick={() => setActiveTab("初級")}
+                  onClick={() => setActiveTab("EASY")}
                 >
                   初級
                 </button>
                 <button
                   className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
-                    activeTab === "中級"
+                    activeTab === "MEDIUM"
                       ? "bg-white text-gray-950 shadow-sm"
                       : ""
                   }`}
-                  onClick={() => setActiveTab("中級")}
+                  onClick={() => setActiveTab("MEDIUM")}
                 >
                   中級
                 </button>
                 <button
                   className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
-                    activeTab === "上級"
+                    activeTab === "HARD"
                       ? "bg-white text-gray-950 shadow-sm"
                       : ""
                   }`}
-                  onClick={() => setActiveTab("上級")}
+                  onClick={() => setActiveTab("HARD")}
                 >
                   上級
                 </button>
@@ -158,33 +104,35 @@ export function ProblemsSection() {
                   >
                     <div className="pb-4">
                       <div className="flex items-start justify-between">
-                        <h3 className="text-xl font-bold text-white">
-                          {problem.title}
-                        </h3>
+                        <h3 className="text-xl font-bold">{problem.title}</h3>
                         <span
-                          className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 ${
-                            problem.difficulty === "初級"
+                          className={`inline-flex whitespace-nowrap items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 ${
+                            problem.lesson.id === levelMap["EASY"]
                               ? "border-transparent bg-blue-500 text-white"
-                              : problem.difficulty === "中級"
+                              : problem.lesson.id === levelMap["MEDIUM"]
                               ? "border-transparent bg-yellow-500 text-white"
                               : "border-transparent bg-red-500 text-white"
                           }`}
                         >
-                          {problem.difficulty}
+                          {
+                            levelMapReverse[
+                              problem.lesson.id.toString() as keyof typeof levelMapReverse
+                            ]
+                          }
                         </span>
                       </div>
-                      <p className="text-gray-500">
-                        {problem.description}
+                      <p className="text-gray-500 line-clamp-2">
+                        {problem.content}
                       </p>
                     </div>
                     <div className="grow">
                       <div className="flex flex-wrap gap-2">
-                        {problem.tags.map((tag) => (
+                        {problem.questions.map((q) => (
                           <span
-                            key={tag}
+                            key={q.tag.name}
                             className="inline-flex items-center rounded-md border border-gray-200 px-2.5 py-0.5 text-xs font-semibold text-gray-800 transition-colors"
                           >
-                            {tag}
+                            {tagMap[q.tag.name as keyof typeof tagMap]}
                           </span>
                         ))}
                       </div>

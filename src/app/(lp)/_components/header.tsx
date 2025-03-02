@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { supabase } from "@/app/_utils/supabase";
-import { Logo } from "@/components/logo";
+import { Logo } from "@/app/(lp)/_components/logo";
 
 export function Header() {
   const [showLoginDialog, setShowLoginDialog] = useState(false);
