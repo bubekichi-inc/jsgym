@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
+import { Header } from "./_components/Header";
 
 const notSansJp = Noto_Sans_JP({ subsets: ["latin"] });
 
@@ -20,7 +21,8 @@ export default function RootLayout({
       <body
         className={`${notSansJp.className} bg-bgMain text-textMain antialiased`}
       >
-        {children}
+        <Header />
+        <div className="pt-[48px]">{children}</div>
         <ToastContainer
           position="top-right"
           autoClose={2500}

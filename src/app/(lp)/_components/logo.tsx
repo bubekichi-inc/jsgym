@@ -3,7 +3,7 @@ export function Logo({ className }: { className?: string }) {
     <div className={`flex items-center gap-2 ${className}`}>
       <div className="flex items-center justify-center rounded-md bg-yellow-400 p-1">
         <svg
-          className="size-6 text-gray-900"
+          className="size-5 text-gray-900"
           viewBox="0 0 24 24"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
