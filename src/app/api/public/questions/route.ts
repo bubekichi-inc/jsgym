@@ -7,6 +7,7 @@ export const dynamic = "force-dynamic";
 export type Question = {
   id: string;
   title: string;
+  createdAt: Date;
   content: string;
   questions: {
     tag: {
@@ -37,6 +38,7 @@ export const GET = async (request: NextRequest) => {
       select: {
         id: true,
         title: true,
+        createdAt: true,
         content: true,
         questions: {
           select: {

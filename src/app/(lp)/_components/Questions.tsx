@@ -1,5 +1,6 @@
 "use client";
 
+import dayjs from "dayjs";
 import Link from "next/link";
 import { useState } from "react";
 import { useFetch } from "@/app/_hooks/useFetch";
@@ -110,6 +111,9 @@ export const Questions: React.FC<Props> = ({ limit }) => {
                     className="flex h-full flex-col rounded-lg border bg-white p-6 shadow-sm"
                   >
                     <div className="pb-4">
+                      <p className="mb-1 text-sm text-gray-600">
+                        {dayjs(problem.createdAt).format("YYYY/MM/DD_HH:mm")}
+                      </p>
                       <div className="flex items-start justify-between">
                         <h3 className="text-xl font-bold">{problem.title}</h3>
                         <span
