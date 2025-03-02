@@ -26,7 +26,7 @@ export const DropdownMenu: React.FC<Props> = ({ onShowAnswer }) => {
   });
 
   const handleClickRset = async () => {
-    if (!confirm("回答とレビュー履歴が削除されます。宜しいですか？")) return;
+    if (!confirm("解答とレビュー履歴が削除されます。宜しいですか？")) return;
     try {
       await api.del(`/api/questions/${questionId}/reset`);
       mutateQuestion();
@@ -66,7 +66,7 @@ export const DropdownMenu: React.FC<Props> = ({ onShowAnswer }) => {
               onClick={handleClickRset}
             >
               <FontAwesomeIcon icon={faRefresh} />
-              回答をリセット
+              解答をリセット
             </button>
           </MenuItem>
         </MenuItems>

@@ -38,10 +38,10 @@ export class AIReviewService {
 # 問題文
 ${question.content}
 
-# ユーザーの回答
+# ユーザーの解答
 ${answer}
 
-# 模範回答例（参考程度）
+# 模範解答例（参考程度）
 ${question.exampleAnswer}
 
 # レビューの方針
@@ -55,8 +55,8 @@ ${question.exampleAnswer}
 # 補足
 ・stringで返すものは、適切に改行コードも含めてください。
 ・"レビューの方針"というワードは使ってほしくないです。
-・模範解答はユーザーに見せたくないので、回答には含めないでください。
-・JSONのcommentsは、良くない箇所だけコメントしてください。targetCodeは必ず入れてください。targetCodeには、ユーザーの回答コード以外のコードは入れないでください。
+・模範解答はユーザーに見せたくないので、解答には含めないでください。
+・JSONのcommentsは、良くない箇所だけコメントしてください。targetCodeは必ず入れてください。targetCodeには、ユーザーの解答コード以外のコードは入れないでください。
 ・resultがAPPROVEDの場合、commentsは空の配列で返してください。
 ・すべて日本語でお願いします。`;
   }

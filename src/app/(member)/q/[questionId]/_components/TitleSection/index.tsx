@@ -41,7 +41,7 @@ export const TitleSection: React.FC = () => {
 
       <Modal isOpen={showAnswerModal} onClose={() => setShowAnswerModal(false)}>
         <div className="w-[800px] space-y-4">
-          <p className="text-lg font-bold">{data.question.title}の回答コード</p>
+          <p className="text-lg font-bold">{data.question.title}の解答コード</p>
           <Editor
             className="bg-editorDark py-6"
             height="300px"
