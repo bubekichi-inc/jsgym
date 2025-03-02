@@ -52,7 +52,7 @@ export const GET = async () => {
 
     const allTags = await prisma.questionTag.findMany();
 
-    await prisma.question.create({
+    const question = await prisma.question.create({
       data: {
         content: response.content,
         template: response.template,
@@ -60,18 +60,21 @@ export const GET = async () => {
         example: response.inputOutputExample,
         exampleAnswer: response.exampleAnswer,
         lessonId: getLessonId(response.level),
-        questions: {
-          create: response.tags.map((tag) => ({
-            tag: {
-              connect: {
-                id: allTags.find((t) => t.name === tag)?.id,
-                name: tag,
-              },
-            },
-          })),
-        },
       },
     });
+
+    await Promise.all(
+      response.tags.map(async (tag) => {
+        const tagId = allTags.find((t) => t.name === tag)?.id;
+        if (!tagId) return;
+        await prisma.questionTagRelation.create({
+          data: {
+            questionId: question.id,
+            tagId,
+          },
+        });
+      })
+    );
 
     return NextResponse.json({ message: "success." }, { status: 200 });
   } catch (e) {
