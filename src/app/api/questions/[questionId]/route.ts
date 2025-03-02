@@ -12,7 +12,7 @@ interface Props {
 
 export type QuestionResponse = {
   question: {
-    id: number;
+    id: string;
     title: string;
     example: string | null;
     exampleAnswer: string;
@@ -38,7 +38,7 @@ export type QuestionResponse = {
     updatedAt: Date;
   } | null;
   nextQuestion: {
-    id: number;
+    id: string;
     title: string;
   } | null;
 };
@@ -93,7 +93,7 @@ export const GET = async (request: NextRequest, { params }: Props) => {
           where: {
             userId_questionId: {
               userId: currentUser.id,
-              questionId: parseInt(questionId, 10),
+              questionId,
             },
           },
         })

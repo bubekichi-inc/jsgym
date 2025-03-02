@@ -48,14 +48,14 @@ export const POST = async (request: NextRequest, { params }: Props) => {
       where: {
         userId_questionId: {
           userId: userId,
-          questionId: parseInt(questionId, 10),
+          questionId,
         },
       },
       update: {
         status,
       },
       create: {
-        questionId: parseInt(questionId, 10),
+        questionId,
         status,
         userId,
       },
