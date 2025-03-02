@@ -3,7 +3,6 @@ import { BenefitsSection } from "@/app/(lp)/_components/benefits-section";
 import { CtaSection } from "@/app/(lp)/_components/cta-section";
 import { FaqSection } from "@/app/(lp)/_components/faq-section";
 import { FeaturesSection } from "@/app/(lp)/_components/features-section";
-import { Footer } from "@/app/(lp)/_components/footer";
 import { HeroSection } from "@/app/(lp)/_components/hero-section";
 
 export default function Home() {
@@ -17,7 +16,6 @@ export default function Home() {
         <FaqSection />
         <CtaSection />
       </main>
-      <Footer />
     </div>
   );
 }
