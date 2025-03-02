@@ -66,7 +66,7 @@ export const DropdownMenu: React.FC<Props> = ({ onShowAnswer }) => {
               onClick={handleClickRset}
             >
               <FontAwesomeIcon icon={faRefresh} />
-              リセット
+              回答をリセット
             </button>
           </MenuItem>
         </MenuItems>

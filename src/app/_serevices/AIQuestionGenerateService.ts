@@ -1,21 +1,22 @@
-import { Question, QuestionTagValue } from "@prisma/client";
+import { CourseType, QuestionTagValue } from "@prisma/client";
 import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
-import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { z } from "zod";
 import { OPENAI_MODEL } from "../_constants/openAI";
-import { Message } from "../api/questions/[questionId]/messages/route";
 
 type GenerateQuestionJsonResponse = {
   title: string;
   inputOutputExample: string;
   content: string;
+  template: string;
   level: QuestionLevel;
   exampleAnswer: string;
   tags: QuestionTagValue[];
 };
 
-type QuestionLevel = "EASY" | "MEDIUM" | "HARD";
+export type QuestionLevel = "EASY" | "MEDIUM" | "HARD";
+
+type NewType = CourseType;
 
 export class AIQuestionGenerateService {
   private static openai = new OpenAI({
@@ -25,6 +26,7 @@ export class AIQuestionGenerateService {
   private static Question = z.object({
     title: z.string(),
     inputOutputExample: z.string(),
+    template: z.string(),
     content: z.string(),
     level: z.enum(["EASY", "MEDIUM", "HARD"]),
     exampleAnswer: z.string(),
@@ -32,73 +34,97 @@ export class AIQuestionGenerateService {
   });
 
   public static buildPrompt({
-    question,
-    answer,
+    course,
+    level,
   }: {
-    question: Question;
-    answer: string;
+    course: NewType;
+    level: QuestionLevel;
   }) {
     return `
 # 概要
-コードレビューしてJSON形式で出力してください。
+${course}の問題を作成してください。
+これから、JavaScriptを自走して描けるようになるための問題です。
+アプリケーションのユーザーが、その問題を解いて、提出して、判定を得ることで、学習を進めることができます。
 
-# 問題文
-${question.content}
+# 問題のレベル
+${level}
 
-# ユーザーの回答
-${answer}
+# 出力型の説明
+* title: 問題のタイトル
+* inputOutputExample: 入力と出力の例
+* content: 問題の内容(何をすれば良いのか、具体的に)
+* level: 問題の難易度
+* template: ユーザーが回答するコードのテンプレートです。デフォルト値として表示します。#のコメント文で、次行に何を書いたら良いのかの説明をしてください。
+* exampleAnswer: 模範的な回答
+* tags: 問題のタグ（複数可）
 
-# 模範回答例（参考程度）
-${question.exampleAnswer}
+# 出力例
+## 初級の例
+  {
+    content:
+      "引数として受け取った数値を2倍にして返す関数を作成して実行してください。console.logで実行結果を表示してください。",
+    template:
+      "// ① 引数となる定数の定義\nconst number = 2;\n\n// ② お題を満たす関数の定義\n// ここに関数定義のコードを書いてください。\n\n// ③ 関数の実行\n// ここに関数定義のコードを書いてください。 ",
+    title: "数値を2倍にする関数",
+    example: "引数: 2, 返り値: 4",
+    exampleAnswer: "const double = num => num * 2;
+                    const number = 2;
+                    console.log(double(number)); // 4",
+    tags: ["FUNCTION"],
+    level: "EASY",
+    inputOutputExample: "引数: 2, 返り値: 4",
+  }
 
-# レビューの方針
-・正しく動作すること
-・省略記法を用いていること（「1行でreturnするだけの関数場合、{}とreturnを省略する」など）
-・「//」以降のコメント文はレビュー対象に入れないでください。
-・関数名や定数名や変数名の命名はこだわらなくて良いです。
-・関数の引数の命名はこだわらなくて良いです。
-・模範解答は参考程度として、細かく比較しなくて良いです。
+## 中級の例
+ {
+    content:
+      "名前と年齢オブジェクトの配列を受け取り、ageが第二引数で受け取った数字と一致するオブジェクトを返す関数を作成してください。console.logで実行結果を表示してください。",
+    template:
+      "// ① 引数となる定数の定義\nconst array = [{ name: '太郎', age: 20 }, { name: '次郎', age: 30 }, { name: '三郎', age: 40 }];\n\n// ② お題を満たす関数の定義\n// ここに関数定義のコードを書いてください。\n\n// ③ 関数の実行\n// ここに関数定義のコードを書いてください。 ",
+    title: "一致するオブジェクトの検索",
+    example:
+      "第一引数: [{ name: '太郎', age: 20 }, { name: '次郎', age: 30 }, { name: '三郎', age: 40 }], 第二引数: 30, 返り値: { name: '次郎', age: 30 }",
+    exampleAnswer: "const findByAge = (arr, age) => arr.find(obj => obj.age === age);
+                    const people = [{ name: '太郎', age: 20 }, { name: '次郎', age: 30 }, { name: '三郎', age: 40 }];
+                    console.log(findByAge(people, 30)); // { name: '次郎', age: 30 }",
+    tags: ["FUNCTION", "OBJECT"],
+    level: "MEDIUM",
+    inputOutputExample: "第一引数: [{ name: '太郎', age: 20 }, { name: '次郎', age: 30 }, { name: '三郎', age: 40 }], 第二引数: 30, 返り値: { name: '次郎', age: 30 }",
+  }
+
+## 上級の例
+  {
+    content:
+      "引数として受け取った数値を2倍にして返す関数を作成して実行してください。console.logで実行結果を表示してください。",
+    template:
+      "// ① 引数となる定数の定義\nconst number = 2;\n\n// ② お題を満たす関数の定義\n// ここに関数定義のコードを書いてください。\n\n// ③ 関数の実行\n// ここに関数定義のコードを書いてください。 ",
+    title: "数値を2倍にする関数",
+    example: "引数: 2, 返り値: 4",
+    exampleAnswer: "const double = num => num * 2;
+                    const number = 2;
+                    console.log(double(number)); // 4",
+    tags: ["FUNCTION", "OBJECT"],
+    level: "HARD",
+    inputOutputExample: "引数: 2, 返り値: 4",
+  }
 
 # 補足
-・stringで返すものは、適切に改行コードも含めてください。
-・"レビューの方針"というワードは使ってほしくないです。
-・模範解答はユーザーに見せたくないので、回答には含めないでください。
-・JSONのcommentsは、良くない箇所だけコメントしてください。targetCodeは必ず入れてください。targetCodeには、ユーザーの回答コード以外のコードは入れないでください。
-・resultがAPPROVEDの場合、commentsは空の配列で返してください。
-・すべて日本語でお願いします。`;
+・説明は、すべて日本語でお願いします。`;
   }
 
-  public static buildSystemMessageContent({
-    message,
+  public static async generateQuestion({
+    course,
+    level,
   }: {
-    message: Message;
-  }): string {
-    if (message.codeReview) {
-      const result = `レビューの結果は「${message.codeReview.result}」でした。`;
-      const overview = message.codeReview.overview;
-      const comments = message.codeReview.comments
-        .map((comment) => {
-          return `${comment.targetCode}について、${comment.message}`;
-        })
-        .join(" ");
-      return `${result} ${overview} 以下、コードに対してのコメントです。 ${comments}`;
-    }
-    return message.message;
-  }
-
-  public static async getCodeReview({
-    question,
-    answer,
-  }: {
-    question: Question;
-    answer: string;
+    course: CourseType;
+    level: QuestionLevel;
   }): Promise<GenerateQuestionJsonResponse | null> {
     const response = await this.openai.beta.chat.completions.parse({
       model: OPENAI_MODEL,
       messages: [
         {
           role: "user",
-          content: this.buildPrompt({ question, answer }),
+          content: this.buildPrompt({ course, level }),
         },
       ],
       temperature: 1,
@@ -112,31 +138,5 @@ ${question.exampleAnswer}
     const content = response.choices[0].message.parsed;
 
     return content;
-  }
-
-  public static async getChatResponse({
-    openAIMessages,
-  }: {
-    openAIMessages: ChatCompletionMessageParam[];
-  }) {
-    const messages: ChatCompletionMessageParam[] = [
-      {
-        role: "system",
-        content: "JSON形式で返さないでください。",
-      },
-      ...openAIMessages,
-    ];
-
-    const response = await this.openai.chat.completions.create({
-      model: OPENAI_MODEL,
-      messages,
-      temperature: 1,
-      max_tokens: 16384,
-      top_p: 1,
-      frequency_penalty: 0,
-      presence_penalty: 0,
-    });
-
-    return response.choices[0]?.message?.content || "";
   }
 }

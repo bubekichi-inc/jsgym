@@ -23,17 +23,12 @@ export const Question: React.FC = () => {
         </div>
       </div>
 
-      {/* {data.question.lesson.caution && (
-        <div className="flex gap-3 rounded-lg bg-orange-50 p-3">
-          <FontAwesomeIcon
-            icon={faExclamationTriangle}
-            className="text-orange-400"
-          />
-          <div className="whitespace-pre-wrap break-words text-xs">
-            {data.question.lesson.caution}
-          </div>
+      <div className="space-y-1 rounded-lg bg-orange-50 p-3">
+        <p className="text-xs font-bold">入出力例</p>
+        <div className="whitespace-pre-wrap break-words text-xs">
+          {data.question.example}
         </div>
-      )} */}
+      </div>
     </div>
   );
 };

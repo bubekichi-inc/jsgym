@@ -1,5 +1,6 @@
 "use client";
 
+import { UserQuestionStatus } from "@prisma/client";
 import { useParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -9,6 +10,7 @@ import { ChatInput } from "./ChatInput";
 import { ChatMssage } from "./ChatMssage";
 import { Rewards } from "./Rewards";
 import { Skeleton } from "@/app/_components/Skeleton";
+import { useQuestion } from "@/app/_hooks/useQuestion";
 
 export type ChatForm = {
   message: string;
@@ -31,6 +33,9 @@ export const Chat: React.FC<Props> = ({
   const { data } = useMessages({
     questionId,
   });
+  const { data: questionData } = useQuestion({
+    questionId,
+  });
 
   const methods = useForm<ChatForm>({
     defaultValues: {
@@ -43,6 +48,10 @@ export const Chat: React.FC<Props> = ({
   }, [chatBusy, reviewBusy, data?.messages]);
 
   if (!data) return <Skeleton height={300} />;
+
+  const isPassed =
+    questionData?.userQuestion?.status === UserQuestionStatus.PASSED;
+  const showChatInput = data.messages.length > 1 && !isPassed;
 
   return (
     <div className="relative space-y-6">
@@ -57,7 +66,7 @@ export const Chat: React.FC<Props> = ({
 
       <Rewards />
 
-      {data.messages.length > 1 && (
+      {showChatInput && (
         <FormProvider {...methods}>
           <ChatInput chatBusy={chatBusy} setChatBusy={setChatBusy} />
         </FormProvider>
