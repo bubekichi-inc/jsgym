@@ -38,6 +38,8 @@ const getLessonId = (level: QuestionLevel) => {
   }
 };
 
+export const maxDuration = 30;
+
 export const GET = async () => {
   try {
     const response = await AIQuestionGenerateService.generateQuestion({
