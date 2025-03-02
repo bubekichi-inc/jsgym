@@ -24,10 +24,10 @@ export function HeroSection() {
   return (
     <section className="py-20 md:py-28">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="items-center justify-center gap-8 lg:flex">
+        <div className="items-center justify-center gap-10 lg:flex">
           <div className="flex flex-col justify-center space-y-4 lg:w-1/2">
             <div className="space-y-2">
-              <h1 className="space-y-2 text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl/none">
+              <h1 className="space-y-2 whitespace-nowrap text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl/none">
                 <div className="">JavaScript開発の</div>
                 <div className="">自走力を鍛える</div>
                 <div className="">トレーニングジム</div>
@@ -46,15 +46,18 @@ export function HeroSection() {
             </div>
           </div>
           <div className="flex items-center justify-center">
-            <div className="relative aspect-video overflow-hidden rounded-xl border bg-gray-100">
-              <div className="flex size-full items-center justify-center">
-                <div className="flex flex-col items-center gap-2 p-4 text-center">
-                  <div className="text-2xl font-bold">デモ動画</div>
-                  <p className="text-sm text-gray-500">
-                    問題を解いて、AIがコードレビューするまでのデモ
-                  </p>
-                </div>
-              </div>
+            <div className="relative overflow-hidden rounded border bg-gray-100 shadow-card">
+              <video
+                className="size-full object-cover"
+                src="/images/demo.mov"
+                controls={false}
+                autoPlay
+                muted
+                loop
+                playsInline
+              >
+                お使いのブラウザは動画再生をサポートしていません。
+              </video>
             </div>
           </div>
         </div>

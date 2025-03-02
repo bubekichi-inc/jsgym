@@ -51,7 +51,9 @@ export function Footer() {
         </div>
         <div className="flex flex-wrap items-center gap-4 md:gap-6">
           <a
-            href="#"
+            href="https://bubekichi.com"
+            target="_blank"
+            rel="noopener noreferrer"
             className="flex items-center gap-1 text-xs text-gray-500 transition-colors hover:text-gray-900"
           >
             運営会社
@@ -78,7 +80,9 @@ export function Footer() {
             </svg>
           </a>
           <a
-            href="#"
+            href="https://shiftb.dev"
+            target="_blank"
+            rel="noopener noreferrer"
             className="flex items-center gap-1 text-xs text-gray-500 transition-colors hover:text-gray-900 "
           >
             運営スクール
@@ -105,7 +109,9 @@ export function Footer() {
             </svg>
           </a>
           <a
-            href="#"
+            href="https://www.instagram.com/bube.code"
+            target="_blank"
+            rel="noopener noreferrer"
             className="flex items-center gap-1 text-xs text-gray-500 transition-colors hover:text-gray-900"
           >
             <svg
@@ -139,7 +145,9 @@ export function Footer() {
             bube.code
           </a>
           <a
-            href="#"
+            href="https://www.instagram.com/bube.code"
+            target="_blank"
+            rel="noopener noreferrer"
             className="flex items-center gap-1 text-xs text-gray-500 transition-colors hover:text-gray-900"
           >
             <svg
@@ -165,7 +173,7 @@ export function Footer() {
             </svg>
             お問い合わせ
           </a>
-          <a
+          {/* <a
             href="#"
             className="text-xs text-gray-500 transition-colors hover:text-gray-900"
           >
@@ -176,7 +184,7 @@ export function Footer() {
             className="text-xs text-gray-500 transition-colors hover:text-gray-900"
           >
             プライバシーポリシー
-          </a>
+          </a> */}
         </div>
       </div>
       <div className="container mx-auto mt-4 px-4 md:mt-0">
