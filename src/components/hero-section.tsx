@@ -68,7 +68,7 @@ export function HeroSection() {
           }}
         >
           <div
-            className="relative w-full max-w-md rounded-lg bg-white p-6 shadow-lg dark:bg-gray-950"
+            className="relative w-full max-w-md rounded-lg bg-white p-6 shadow-lg"
             onClick={(e) => {
               e.stopPropagation();
             }}
