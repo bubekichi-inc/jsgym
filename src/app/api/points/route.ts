@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PointsResponse } from "./_types/PointsResponse";
-import { PointService } from "@/app/(member)/_services/PointService";
+import { PointService } from "@/app/api/_services/PointService";
 import { buildPrisma } from "@/app/_utils/prisma";
 import { buildError } from "@/app/api/_utils/buildError";
 import { getCurrentUser } from "@/app/api/_utils/getCurrentUser";

@@ -22,7 +22,7 @@ export default function OAuthCallback() {
           "/api/oauth/google",
           { accessToken }
         );
-        router.replace("/c");
+        router.replace("/q");
         return;
       } catch (e) {
         console.error("ユーザー情報の登録に失敗:", e);

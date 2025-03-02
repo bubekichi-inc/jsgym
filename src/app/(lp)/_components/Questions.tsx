@@ -6,7 +6,7 @@ import { useFetch } from "@/app/_hooks/useFetch";
 import { QuestionLevel } from "@/app/_serevices/AIQuestionGenerateService";
 import { Question } from "@/app/api/public/questions/route";
 
-export function ProblemsSection() {
+export function Questions() {
   const [activeTab, setActiveTab] = useState<QuestionLevel | "ALL">("ALL");
   const { data } = useFetch<{ questions: Question[] }>("/api/public/questions");
 
@@ -43,7 +43,7 @@ export function ProblemsSection() {
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
           <div className="space-y-2">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-              今日の問題
+              新しい問題
             </h2>
             <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
               毎日9つの新しい問題が追加されます。自分のレベルに合わせて挑戦してみましょう。

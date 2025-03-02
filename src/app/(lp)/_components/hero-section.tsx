@@ -45,8 +45,8 @@ export function HeroSection() {
               </button>
             </div>
           </div>
-          <div className="flex items-center justify-center">
-            <div className="overflow-hidden rounded border bg-gray-100 shadow-card">
+          <div className="z-[-1] flex items-center justify-center">
+            <div className="overflow-hidden rounded-lg border bg-gray-50 shadow-card">
               <video
                 className="size-full object-cover"
                 src="/images/demo.mov"

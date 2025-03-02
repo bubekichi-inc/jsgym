@@ -1,3 +1,4 @@
+import { Questions } from "@/app/(lp)/_components/Questions";
 import { BenefitsSection } from "@/app/(lp)/_components/benefits-section";
 import { CtaSection } from "@/app/(lp)/_components/cta-section";
 import { FaqSection } from "@/app/(lp)/_components/faq-section";
@@ -5,7 +6,6 @@ import { FeaturesSection } from "@/app/(lp)/_components/features-section";
 import { Footer } from "@/app/(lp)/_components/footer";
 import { Header } from "@/app/(lp)/_components/header";
 import { HeroSection } from "@/app/(lp)/_components/hero-section";
-import { ProblemsSection } from "@/app/(lp)/_components/problems-section";
 
 export default function Home() {
   return (
@@ -15,7 +15,7 @@ export default function Home() {
         <HeroSection />
         <BenefitsSection />
         <FeaturesSection />
-        <ProblemsSection />
+        <Questions />
         <FaqSection />
         <CtaSection />
       </main>
