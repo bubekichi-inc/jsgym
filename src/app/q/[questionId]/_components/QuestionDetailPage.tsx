@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { BreadCrumbs } from "./Breadcrumbs";
 import { Chat } from "./Chat";
 import { CodeEditor } from "./CodeEditor";
 import { Question } from "./Question";
@@ -14,7 +13,6 @@ export const QuestionDetailPage: React.FC = () => {
   return (
     <div className="flex justify-center">
       <div className="relative max-h-[calc(100vh-48px)] w-1/2 space-y-6 overflow-y-auto p-6">
-        <BreadCrumbs />
         <TitleSection />
         <Question />
         <Chat

@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { buildError } from "../../_utils/buildError";
 import { buildPrisma } from "@/app/_utils/prisma";
 
@@ -23,11 +23,14 @@ export type Question = {
   };
 };
 
-export const GET = async () => {
+export const GET = async (request: NextRequest) => {
   const prisma = await buildPrisma();
+
+  const limit = Number(request.nextUrl.searchParams.get("limit"));
+
   try {
     const questions = await prisma.question.findMany({
-      take: 9,
+      take: limit,
       orderBy: {
         id: "desc",
       },

@@ -15,7 +15,7 @@ export default function Home() {
         <HeroSection />
         <BenefitsSection />
         <FeaturesSection />
-        <Questions />
+        <Questions limit={24} />
         <FaqSection />
         <CtaSection />
       </main>

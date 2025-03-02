@@ -6,9 +6,15 @@ import { useFetch } from "@/app/_hooks/useFetch";
 import { QuestionLevel } from "@/app/_serevices/AIQuestionGenerateService";
 import { Question } from "@/app/api/public/questions/route";
 
-export function Questions() {
+interface Props {
+  limit: number;
+}
+
+export const Questions: React.FC<Props> = ({ limit }) => {
   const [activeTab, setActiveTab] = useState<QuestionLevel | "ALL">("ALL");
-  const { data } = useFetch<{ questions: Question[] }>("/api/public/questions");
+  const { data } = useFetch<{ questions: Question[] }>(
+    `/api/public/questions/?limit=${limit}`
+  );
 
   const problems = data?.questions ?? [];
 
@@ -155,4 +161,4 @@ export function Questions() {
       </div>
     </section>
   );
-}
+};
