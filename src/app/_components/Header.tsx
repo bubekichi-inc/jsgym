@@ -49,7 +49,7 @@ export const Header: React.FC = () => {
 
   return (
     <>
-      <header className="fixed top-0 z-10 flex h-[48px] w-full items-center justify-between bg-white/50 p-6 shadow-sm">
+      <header className="fixed top-0 z-10 flex h-[48px] w-full items-center justify-between bg-white/50 p-6 shadow-sm backdrop-blur-sm">
         <Link className="font-bold" href={"/q"}>
           <Logo />
         </Link>
