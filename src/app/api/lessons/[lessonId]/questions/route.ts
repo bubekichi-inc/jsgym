@@ -11,7 +11,7 @@ interface Props {
 }
 
 export type Question = {
-  id: number;
+  id: string;
   title: string;
   content: string;
   userQuestions: {
