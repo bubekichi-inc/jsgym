@@ -44,7 +44,7 @@ export type Message = {
 
 export const GET = async (request: NextRequest, { params }: Props) => {
   const prisma = await buildPrisma();
-  const questionId = Number((await params).questionId);
+  const questionId = (await params).questionId;
 
   try {
     const token = request.headers.get("Authorization") ?? "";
@@ -110,7 +110,7 @@ export type PostMessageBody = {
 
 export const POST = async (request: NextRequest, { params }: Props) => {
   const prisma = await buildPrisma();
-  const questionId = Number((await params).questionId);
+  const questionId = (await params).questionId;
 
   try {
     const { id: currentUserId } = await getCurrentUser({ request });
