@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useFetch } from "@/app/_hooks/useFetch";
 import { Question } from "@/app/api/public/questions/route";
 import { QuestionLevel } from "@/app/_serevices/AIQuestionGenerateService";
+import Link from "next/link";
 
 export function ProblemsSection() {
   const [activeTab, setActiveTab] = useState<QuestionLevel | "ALL">("ALL");
@@ -138,9 +139,12 @@ export function ProblemsSection() {
                       </div>
                     </div>
                     <div className="pt-4">
-                      <button className="inline-flex w-full items-center justify-center rounded-md bg-black px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
+                      <Link
+                        href={`/q/${problem.id}`}
+                        className="inline-flex w-full items-center justify-center rounded-md bg-black px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+                      >
                         問題に挑戦する
-                      </button>
+                      </Link>
                     </div>
                   </div>
                 ))}
