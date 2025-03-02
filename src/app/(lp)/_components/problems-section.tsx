@@ -1,10 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { useFetch } from "@/app/_hooks/useFetch";
-import { Question } from "@/app/api/public/questions/route";
 import { QuestionLevel } from "@/app/_serevices/AIQuestionGenerateService";
-import Link from "next/link";
+import { Question } from "@/app/api/public/questions/route";
 
 export function ProblemsSection() {
   const [activeTab, setActiveTab] = useState<QuestionLevel | "ALL">("ALL");
@@ -107,7 +107,7 @@ export function ProblemsSection() {
                       <div className="flex items-start justify-between">
                         <h3 className="text-xl font-bold">{problem.title}</h3>
                         <span
-                          className={`inline-flex whitespace-nowrap items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 ${
+                          className={`inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 ${
                             problem.lesson.id === levelMap["EASY"]
                               ? "border-transparent bg-blue-500 text-white"
                               : problem.lesson.id === levelMap["MEDIUM"]
@@ -122,7 +122,7 @@ export function ProblemsSection() {
                           }
                         </span>
                       </div>
-                      <p className="text-gray-500 line-clamp-2">
+                      <p className="line-clamp-2 text-gray-500">
                         {problem.content}
                       </p>
                     </div>

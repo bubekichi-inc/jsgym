@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { supabase } from "@/app/_utils/supabase";
 import { Logo } from "@/app/(lp)/_components/logo";
+import { supabase } from "@/app/_utils/supabase";
 
 export function Header() {
   const [showLoginDialog, setShowLoginDialog] = useState(false);

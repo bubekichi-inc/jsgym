@@ -1,6 +1,6 @@
-import { buildPrisma } from "@/app/_utils/prisma";
 import { NextResponse } from "next/server";
 import { buildError } from "../../_utils/buildError";
+import { buildPrisma } from "@/app/_utils/prisma";
 
 export const dynamic = "force-dynamic";
 
