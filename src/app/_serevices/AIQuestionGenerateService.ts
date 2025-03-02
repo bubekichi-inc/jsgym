@@ -4,16 +4,18 @@ import { zodResponseFormat } from "openai/helpers/zod";
 import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { z } from "zod";
 import { OPENAI_MODEL } from "../_constants/openAI";
-import { AIReviewJsonResponse } from "../api/questions/[questionId]/code_review/_types/CodeReview";
 import { Message } from "../api/questions/[questionId]/messages/route";
 
-const questionTags: QuestionTagValue[] = [
-  "VALUE",
-  "ARRAY",
-  "OBJECT",
-  "FUNCTION",
-  "CLASS",
-];
+type GenerateQuestionJsonResponse = {
+  title: string;
+  inputOutputExample: string;
+  content: string;
+  level: QuestionLevel;
+  exampleAnswer: string;
+  tags: QuestionTagValue[];
+};
+
+type QuestionLevel = "EASY" | "MEDIUM" | "HARD";
 
 export class AIQuestionGenerateService {
   private static openai = new OpenAI({
@@ -26,7 +28,7 @@ export class AIQuestionGenerateService {
     content: z.string(),
     level: z.enum(["EASY", "MEDIUM", "HARD"]),
     exampleAnswer: z.string(),
-    tags: z.array(z.enum(questionTags)),
+    tags: z.array(z.enum(["VALUE", "ARRAY", "OBJECT", "FUNCTION", "CLASS"])),
   });
 
   public static buildPrompt({
@@ -90,7 +92,7 @@ ${question.exampleAnswer}
   }: {
     question: Question;
     answer: string;
-  }): Promise<AIReviewJsonResponse | null> {
+  }): Promise<GenerateQuestionJsonResponse | null> {
     const response = await this.openai.beta.chat.completions.parse({
       model: OPENAI_MODEL,
       messages: [
@@ -104,7 +106,7 @@ ${question.exampleAnswer}
       top_p: 1,
       frequency_penalty: 0,
       presence_penalty: 0,
-      response_format: zodResponseFormat(this.CodeReview, "event"),
+      response_format: zodResponseFormat(this.Question, "event"),
     });
 
     const content = response.choices[0].message.parsed;
