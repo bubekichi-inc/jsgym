@@ -58,7 +58,7 @@ export const Header: React.FC = () => {
         <a
           href="https://docs.google.com/spreadsheets/d/1tNUMeAZxxfQEe4PFOD8v-jlzeWHNCOke_-jM2GnLEPI/edit?usp=sharing"
           target="_blank"
-          className="flex items-center rounded-lg bg-blue-500 px-4 py-1 text-sm font-bold text-white"
+          className="hidden items-center rounded-lg bg-blue-500 px-4 py-1 text-sm font-bold text-white lg:flex"
         >
           フィードバックはこちら
           <FontAwesomeIcon icon={faExternalLink} className="ml-2 size-4" />
