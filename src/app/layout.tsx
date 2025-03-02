@@ -1,10 +1,10 @@
+import { faExternalLink } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { Metadata } from "next";
 import { Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
 import { Header } from "./_components/Header";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExternalLink } from "@fortawesome/free-solid-svg-icons";
 
 const notSansJp = Noto_Sans_JP({ subsets: ["latin"] });
 
