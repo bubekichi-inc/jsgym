@@ -50,19 +50,40 @@ model Lesson {
 }
 
 model Question {
-  id            Int            @id @default(autoincrement())
+  id            Int                   @id @default(autoincrement())
   title         String
   example       String?
   content       String
-  lessonId      Int            @map("lesson_id")
+  lessonId      Int                   @map("lesson_id")
   template      String
   exampleAnswer String
-  createdAt     DateTime       @default(now()) @map("created_at")
-  updatedAt     DateTime       @updatedAt @map("updated_at")
-  lesson        Lesson         @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  createdAt     DateTime              @default(now()) @map("created_at")
+  updatedAt     DateTime              @updatedAt @map("updated_at")
+  questions     QuestionTagRelation[]
+  lesson        Lesson                @relation(fields: [lessonId], references: [id], onDelete: Cascade)
   userQuestions UserQuestion[]
 
   @@map("questions")
+}
+
+model QuestionTag {
+  id        Int                   @id @default(autoincrement())
+  createdAt DateTime              @default(now()) @map("created_at")
+  updatedAt DateTime              @updatedAt @map("updated_at")
+  name      QuestionTagValue
+  questions QuestionTagRelation[]
+
+  @@map("question_tags")
+}
+
+model QuestionTagRelation {
+  id         String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  questionId Int
+  tagId      Int
+  question   Question    @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  tag        QuestionTag @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@map("question_tag_relations")
 }
 
 model UserQuestion {
@@ -153,6 +174,14 @@ model PointTransaction {
 
   @@index([stripePaymentId], map: "stripe_payment_id")
   @@map("point_transactions")
+}
+
+enum QuestionTagValue {
+  VALUE
+  ARRAY
+  OBJECT
+  FUNCTION
+  CLASS
 }
 
 enum EditorTheme {

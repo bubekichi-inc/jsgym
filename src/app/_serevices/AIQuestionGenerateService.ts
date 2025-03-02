@@ -1,4 +1,4 @@
-import { Question } from "@prisma/client";
+import { Question, QuestionTagValue } from "@prisma/client";
 import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
@@ -7,21 +7,26 @@ import { OPENAI_MODEL } from "../_constants/openAI";
 import { AIReviewJsonResponse } from "../api/questions/[questionId]/code_review/_types/CodeReview";
 import { Message } from "../api/questions/[questionId]/messages/route";
 
+const questionTags: QuestionTagValue[] = [
+  "VALUE",
+  "ARRAY",
+  "OBJECT",
+  "FUNCTION",
+  "CLASS",
+];
+
 export class AIQuestionGenerateService {
   private static openai = new OpenAI({
     apiKey: process.env.OPENAI_SECRET_KEY,
   });
 
-  private static CodeReview = z.object({
-    result: z.enum(["APPROVED", "REJECTED"]),
-    overview: z.string(),
-    comments: z.array(
-      z.object({
-        targetCode: z.string(),
-        level: z.enum(["GOOD", "WARN", "ERROR"]),
-        message: z.string(),
-      })
-    ),
+  private static Question = z.object({
+    title: z.string(),
+    inputOutputExample: z.string(),
+    content: z.string(),
+    level: z.enum(["EASY", "MEDIUM", "HARD"]),
+    exampleAnswer: z.string(),
+    tags: z.array(z.enum(questionTags)),
   });
 
   public static buildPrompt({

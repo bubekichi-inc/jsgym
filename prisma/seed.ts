@@ -1,6 +1,7 @@
 import { CourseType } from "@prisma/client";
 import { buildPrisma } from "../src/app/_utils/prisma";
 import { courses, lessons, questions } from "./data/javascriptCourse";
+import { QuestionTag, questionTags } from "./data/questionTags";
 
 export type Course = {
   id: number;
@@ -62,10 +63,23 @@ const seedData = async () => {
     );
   };
 
+  const upsertQuestionTags = async (questionTags: QuestionTag[]) => {
+    await Promise.all(
+      questionTags.map((questionTag) =>
+        prisma.questionTag.upsert({
+          where: { id: questionTag.id },
+          create: questionTag,
+          update: questionTag,
+        })
+      )
+    );
+  };
+
   try {
     await upsertCourses(courses);
     await upsertLessons(lessons);
     await upsertQuestions(questions);
+    await upsertQuestionTags(questionTags);
   } catch (error) {
     console.error(`エラー発生${error}`);
   } finally {
