@@ -1,6 +1,6 @@
 import { faPaperPlane, faPlay } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { CodeReviewResult, Sender } from "@prisma/client";
+import { CodeReviewResult, Sender, UserQuestionStatus } from "@prisma/client";
 import { useParams } from "next/navigation";
 import React from "react";
 import { toast } from "react-toastify";
@@ -39,7 +39,7 @@ export const ToolBar: React.FC<Props> = ({
   } = useMessages({
     questionId,
   });
-  const { mutate: mutateQuestion } = useQuestion({
+  const { data: questionData, mutate: mutateQuestion } = useQuestion({
     questionId,
   });
 
@@ -104,7 +104,10 @@ export const ToolBar: React.FC<Props> = ({
     }
   };
 
-  const submitButtonDisabled = reviewBusy || isValidatingMessages || !touched;
+  const isPassed =
+    questionData?.userQuestion?.status === UserQuestionStatus.PASSED;
+  const submitButtonDisabled =
+    reviewBusy || isValidatingMessages || !touched || isPassed;
 
   return (
     <div className="absolute bottom-4 right-4 flex items-center gap-4 rounded-full border border-gray-700 bg-black px-4 py-3 text-white">
