@@ -2,7 +2,7 @@ import { Metadata } from "next";
 
 export const DESCRIPTON =
   "JavaScriptに特化した、自走力を鍛えるトレーニングサイトです。毎日問題が更新されます。";
-export const OGP_IMAGE_URL = "https://jsgym.shiftb.dev/images/ogp.jpg";
+export const OGP_IMAGE_URL = "https://jsgym.shiftb.dev/images/ogp.png";
 export const APP_URL = "https://jsgym.shiftb.dev";
 
 interface MetadataProps {

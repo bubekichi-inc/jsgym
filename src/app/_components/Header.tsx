@@ -52,9 +52,14 @@ export const Header: React.FC = () => {
   return (
     <>
       <header className="fixed top-0 z-10 flex h-[48px] w-full items-center justify-between bg-white/50 p-6 shadow-sm backdrop-blur-sm">
-        <Link className="font-bold" href={data ? "/q" : "/"}>
-          <Logo />
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link className="font-bold" href={data ? "/q" : "/"}>
+            <Logo />
+          </Link>
+          <span className="rounded-full bg-green-600 px-3 pb-[5px] pt-1 text-sm font-bold text-white">
+            β版
+          </span>
+        </div>
 
         {rightContent()}
       </header>
