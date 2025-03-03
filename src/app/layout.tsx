@@ -11,7 +11,7 @@ import { buildMetaData } from "./_utils/metadata";
 const notSansJp = Noto_Sans_JP({ subsets: ["latin"] });
 
 export const metadata = buildMetaData({
-  title: "JS Gym",
+  title: "JS Gym (β版)",
   path: "/",
 });
 
