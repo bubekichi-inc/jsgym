@@ -2,6 +2,7 @@
 import { ImageResponse } from "next/og";
 import { OgImage } from "./_components/OgImage";
 import { api } from "@/app/_utils/api";
+import { buildMetaData } from "@/app/_utils/metadata";
 import { QuestionResponse } from "@/app/api/questions/[questionId]/route";
 
 export const runtime = "edge";
@@ -12,12 +13,13 @@ export const size = {
   height: 630,
 };
 
-export const metadata = {
+export const metadata = buildMetaData({
   title: "JS Gym",
+  path: "/q/[questionId]",
   robots: {
     index: false,
   },
-};
+});
 
 const getUniqueChars = (text: string) => {
   const charSet = new Set();
