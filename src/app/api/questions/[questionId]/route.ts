@@ -18,6 +18,7 @@ export type QuestionResponse = {
     exampleAnswer: string;
     content: string;
     template: string;
+    createdAt: Date;
     lesson: {
       id: number;
       name: string;
@@ -68,6 +69,7 @@ export const GET = async (request: NextRequest, { params }: Props) => {
         exampleAnswer: true,
         content: true,
         template: true,
+        createdAt: true,
         lesson: {
           select: {
             id: true,
@@ -113,8 +115,10 @@ export const GET = async (request: NextRequest, { params }: Props) => {
     const nextQuestion = await prisma.question.findFirst({
       where: {
         lessonId: question.lesson.id,
-        id: {
-          gt: question.id,
+        userQuestions: {
+          none: {
+            userId: currentUser?.id,
+          },
         },
       },
       select: {
