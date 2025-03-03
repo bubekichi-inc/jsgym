@@ -1,8 +1,11 @@
+"use client";
+
 import { EditorTheme } from "@prisma/client";
 import Image from "next/image";
 import React, { useMemo } from "react";
 import { EditorSettingsDropdown } from "./EditorSettingsDropdown";
 import { useEditorSetting } from "@/app/(member)/_hooks/useEditorSetting";
+import { useMe } from "@/app/(member)/_hooks/useMe";
 
 const Tab: React.FC = () => {
   const { data } = useEditorSetting();
@@ -43,6 +46,7 @@ const Tab: React.FC = () => {
 
 export const Tabs: React.FC = () => {
   const { data } = useEditorSetting();
+  const { data: me } = useMe();
 
   const headerClass = useMemo(
     () =>
@@ -61,7 +65,7 @@ export const Tabs: React.FC = () => {
       <ul className="h-full">
         <Tab />
       </ul>
-      <EditorSettingsDropdown />
+      {me && <EditorSettingsDropdown />}
     </header>
   );
 };

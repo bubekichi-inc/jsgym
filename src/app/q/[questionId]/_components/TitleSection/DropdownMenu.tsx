@@ -8,6 +8,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { useParams } from "next/navigation";
 import { toast } from "react-toastify";
 import { useMessages } from "../../_hooks/useMessages";
+import { useMe } from "@/app/(member)/_hooks/useMe";
 import { useQuestion } from "@/app/_hooks/useQuestion";
 import { api } from "@/app/_utils/api";
 
@@ -24,6 +25,7 @@ export const DropdownMenu: React.FC<Props> = ({ onShowAnswer }) => {
   const { mutate: mutateMessages } = useMessages({
     questionId,
   });
+  const { data: me } = useMe();
 
   const handleClickRset = async () => {
     if (!confirm("解答とレビュー履歴が削除されます。宜しいですか？")) return;
@@ -59,16 +61,18 @@ export const DropdownMenu: React.FC<Props> = ({ onShowAnswer }) => {
               答えを見る
             </button>
           </MenuItem>
-          <MenuItem>
-            <button
-              className="group flex w-full items-center gap-3 rounded-lg p-3 font-bold text-red-500 data-[focus]:bg-gray-100"
-              type="button"
-              onClick={handleClickRset}
-            >
-              <FontAwesomeIcon icon={faRefresh} />
-              解答をリセット
-            </button>
-          </MenuItem>
+          {me && (
+            <MenuItem>
+              <button
+                className="group flex w-full items-center gap-3 rounded-lg p-3 font-bold text-red-500 data-[focus]:bg-gray-100"
+                type="button"
+                onClick={handleClickRset}
+              >
+                <FontAwesomeIcon icon={faRefresh} />
+                解答をリセット
+              </button>
+            </MenuItem>
+          )}
         </MenuItems>
       </Menu>
     </div>
