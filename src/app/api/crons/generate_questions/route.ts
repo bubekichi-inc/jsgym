@@ -82,7 +82,7 @@ export const GET = async () => {
     const slack = new SlackService();
     await slack.postMessage({
       channel: "jg-gym",
-      message: `JS Gymに問題が追加されました！\n\n${question.title}\n\nhttps://jsgym.shiftb.dev/blog/${question.id}`,
+      message: `JS Gymに問題が追加されました！\n\n${question.title}\n\nhttps://jsgym.shiftb.dev/q/${question.id}`,
     });
 
     return NextResponse.json({ message: "success." }, { status: 200 });
