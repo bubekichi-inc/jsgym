@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { useMessages } from "../../../_hooks/useMessages";
 import { useRewardApprove } from "../../../_hooks/useRewardApprove";
 import { DropdownMenu } from "./DropdownMenu";
+import { useMe } from "@/app/(member)/_hooks/useMe";
 import { useQuestion } from "@/app/_hooks/useQuestion";
 import { api } from "@/app/_utils/api";
 import { CodeReviewRequest } from "@/app/api/questions/[questionId]/code_review/_types/CodeReview";
@@ -29,6 +30,7 @@ export const ToolBar: React.FC<Props> = ({
   touched,
   onReset,
 }) => {
+  const { data: me } = useMe();
   const { reward } = useRewardApprove();
   const params = useParams();
   const questionId = params.questionId as string;
@@ -107,7 +109,7 @@ export const ToolBar: React.FC<Props> = ({
   const isPassed =
     questionData?.userQuestion?.status === UserQuestionStatus.PASSED;
   const submitButtonDisabled =
-    reviewBusy || isValidatingMessages || !touched || isPassed;
+    reviewBusy || isValidatingMessages || !touched || isPassed || !me;
 
   return (
     <div className="absolute bottom-4 right-4 flex items-center gap-4 rounded-full border border-gray-700 bg-black px-4 py-3 text-white">
