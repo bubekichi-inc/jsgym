@@ -1,6 +1,6 @@
-export function Logo({ className }: { className?: string }) {
+export function Logo() {
   return (
-    <div className={`flex items-center gap-2 ${className}`}>
+    <div className={`flex items-center gap-2`}>
       <div className="flex items-center justify-center rounded-md bg-yellow-400 p-1">
         <svg
           className="size-5 text-gray-900"
