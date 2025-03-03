@@ -88,15 +88,48 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
           </div>
         )}
       </div>
-      {data?.nextQuestion && codeReview.result === "APPROVED" && (
-        <div className="flex justify-end">
-          <Link
-            href={`/q/${data.nextQuestion.id}`}
-            className="flex items-center gap-1 rounded border border-blue-500 px-3 py-1 text-sm font-bold text-blue-500 duration-150 hover:bg-blue-50"
-          >
-            <span>次の問題へ進む</span>
-            <FontAwesomeIcon icon={faArrowRight} className="size-3" />
-          </Link>
+      {codeReview.result === "APPROVED" && (
+        <div className="flex items-center justify-end gap-8">
+          <div className="flex items-center gap-4">
+            <span className="text-xs font-bold text-orange-500">
+              成果をシェアしよう！
+            </span>
+            <a
+              href={`https://twitter.com/intent/tweet?text=JS Gymで問題をクリアしました！%0a%0a${data?.question.title}%0a%0a${location.origin}/q/${questionId}`}
+              target="_blank"
+              className=""
+            >
+              <Image
+                src="/images/x_logo.svg"
+                height={50}
+                width={50}
+                alt="x"
+                className="size-5"
+              />
+            </a>
+            <a
+              href={`https://www.threads.net/intent/post?text=JS Gymで問題をクリアしました！%0a%0a${data?.question.title}%0a%0a${location.origin}/q/${questionId}`}
+              target="_blank"
+              className=""
+            >
+              <Image
+                src="/images/threads_logo.svg"
+                height={50}
+                width={50}
+                alt="x"
+                className="size-6"
+              />
+            </a>
+          </div>
+          {data?.nextQuestion && (
+            <Link
+              href={`/q/${data.nextQuestion.id}`}
+              className="flex items-center gap-1 rounded border border-blue-500 px-3 py-1 text-sm font-bold text-blue-500 duration-150 hover:bg-blue-50"
+            >
+              <span>次の問題へ進む</span>
+              <FontAwesomeIcon icon={faArrowRight} className="size-3" />
+            </Link>
+          )}
         </div>
       )}
     </div>
