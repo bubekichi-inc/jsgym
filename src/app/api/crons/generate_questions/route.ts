@@ -38,7 +38,16 @@ const getLessonId = (level: QuestionLevel) => {
   }
 };
 
-export const dynamic = "force-dynamic";
+const getLevelName = (lessonId: number) => {
+  if (lessonId === 1) {
+    return "初級";
+  } else if (lessonId === 2) {
+    return "中級";
+  } else {
+    return "上級";
+  }
+};
+
 export const maxDuration = 30;
 
 export const GET = async () => {
@@ -82,7 +91,11 @@ export const GET = async () => {
     const slack = new SlackService();
     await slack.postMessage({
       channel: "js-gym",
-      message: `JS Gymに問題が追加されました！\n\n${question.title}\n\nhttps://jsgym.shiftb.dev/q/${question.id}`,
+      message: `JS Gymに問題が追加されました！\n\n${
+        question.title
+      }(${getLevelName(question.lessonId)})\n\nhttps://jsgym.shiftb.dev/q/${
+        question.id
+      }`,
     });
 
     return NextResponse.json({ message: "success." }, { status: 200 });
