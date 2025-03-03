@@ -1,5 +1,6 @@
 import { faExternalLink } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import { Suspense } from "react";
@@ -19,6 +20,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const gaId = process.env.GA_ID;
+
   return (
     <html lang="ja">
       <body
@@ -46,6 +49,7 @@ export default function RootLayout({
           <FontAwesomeIcon icon={faExternalLink} className="ml-2 size-4" />
         </a>
       </body>
+      {gaId && <GoogleAnalytics gaId={gaId} />}
     </html>
   );
 }
