@@ -6,13 +6,14 @@ import "./globals.css";
 import { Suspense } from "react";
 import { ToastContainer } from "react-toastify";
 import { Header } from "./_components/Header";
+import { buildMetaData } from "./_utils/metadata";
 
 const notSansJp = Noto_Sans_JP({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetaData({
   title: "JS Gym",
-  description: "JS Gymは、JavaScriptの学習をサポートするサービスです。",
-};
+  path: "/",
+});
 
 export default function RootLayout({
   children,
