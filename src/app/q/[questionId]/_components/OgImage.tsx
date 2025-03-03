@@ -57,23 +57,21 @@ export const OgImage: React.FC<Props> = ({
           tw="absolute inseet-0 object-contain w-screen"
         />
         <div tw="flex flex-col gap-4 items-start">
-          <span
-            tw={`text-[48px] font-[700] px-8 rounded-full py-2 mb-4 text-white ${
-              courseStyleMap[courseId as keyof typeof courseStyleMap]
-            }`}
-          >
-            {courseMap[courseId as keyof typeof courseMap]}{" "}
-            {levelsMap[lessonId as keyof typeof levelsMap]}
-          </span>
-          <p tw="text-[64px] font-[700]">{title}</p>
-          <p tw="text-[32px] font-[400]">{content}</p>
-        </div>
-        <div tw="flex items-end justify-between pb-8">
-          <div tw="flex items-center">
-            <div tw={`flex items-center gap-2`}>
-              <span tw="text-[40px] font-[700]">JS Gym</span>
+          <div tw="flex items-center justify-between w-full">
+            <div tw="flex items-center">
+              <div tw="text-[56px] mr-8">{courseMap[courseId as keyof typeof courseMap]}</div>
+              <div
+                tw={`text-[48px] font-[700] px-8 rounded-full py-2 mb-4 text-white ${
+                  courseStyleMap[courseId as keyof typeof courseStyleMap]
+                }`}
+              >
+                {levelsMap[lessonId as keyof typeof levelsMap]}
+              </div>
             </div>
+            <span tw="text-[40px] font-[700] text-gray-500">JS Gym</span>
           </div>
+          <p tw="text-[64px] font-[700]">{title}</p>
+          <p tw="text-[32px] font-[400] text-gray-500">{content}</p>
         </div>
       </div>
     </div>
