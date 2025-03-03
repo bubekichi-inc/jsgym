@@ -6,15 +6,14 @@ import { QuestionResponse } from "@/app/api/questions/[questionId]/route";
 
 export const runtime = "edge";
 
-export const alt = "shiftb blog post";
+export const alt = "js gym question";
 export const size = {
   width: 1200,
   height: 630,
 };
 
 export const metadata = {
-  title: "ShiftB受講生ブログ",
-  path: "/blog",
+  title: "JS Gym",
   robots: {
     index: false,
   },
@@ -47,7 +46,9 @@ export default async function Image({
   const fontData = await fetch(
     `https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&text=${encodeURIComponent(
       getUniqueChars(
-        data.question.title + data.question.content + "JS Gym 初級 中級 上級 JavaScript"
+        data.question.title +
+          data.question.content +
+          "JS Gym 初級 中級 上級 JavaScript"
       )
     )}`
   ).then((res) => res.text());
