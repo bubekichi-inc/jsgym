@@ -14,8 +14,14 @@ export const size = {
 
 export const metadata = {
   title: "JS Gym",
+  description: "JS Gym",
   robots: {
     index: false,
+  },
+  twitter: {
+    title: "JS Gym",
+    description: "JS Gym",
+    card: "summary_large_image",
   },
 };
 
