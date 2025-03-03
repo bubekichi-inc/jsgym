@@ -2,12 +2,13 @@ import { faPaperPlane, faPlay } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CodeReviewResult, Sender, UserQuestionStatus } from "@prisma/client";
 import { useParams } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { useMessages } from "../../../_hooks/useMessages";
 import { useRewardApprove } from "../../../_hooks/useRewardApprove";
 import { DropdownMenu } from "./DropdownMenu";
 import { useMe } from "@/app/(member)/_hooks/useMe";
+import { SinginModal } from "@/app/_components/SinginModal";
 import { useQuestion } from "@/app/_hooks/useQuestion";
 import { api } from "@/app/_utils/api";
 import { CodeReviewRequest } from "@/app/api/questions/[questionId]/code_review/_types/CodeReview";
@@ -30,6 +31,7 @@ export const ToolBar: React.FC<Props> = ({
   touched,
   onReset,
 }) => {
+  const [showSinginModal, setShowSinginModal] = useState(false);
   const { data: me } = useMe();
   const { reward } = useRewardApprove();
   const params = useParams();
@@ -86,6 +88,11 @@ export const ToolBar: React.FC<Props> = ({
   };
 
   const review = async () => {
+    if (!me) {
+      setShowSinginModal(true);
+      return;
+    }
+
     try {
       await optimisticPushMessage();
       setReviewBusy(true);
@@ -109,36 +116,43 @@ export const ToolBar: React.FC<Props> = ({
   const isPassed =
     questionData?.userQuestion?.status === UserQuestionStatus.PASSED;
   const submitButtonDisabled =
-    reviewBusy || isValidatingMessages || !touched || isPassed || !me;
+    reviewBusy || isValidatingMessages || !touched || isPassed;
 
   return (
-    <div className="absolute bottom-4 right-4 flex items-center gap-4 rounded-full border border-gray-700 bg-black px-4 py-3 text-white">
-      <button
-        type="button"
-        onClick={onExecuteCode}
-        className="flex items-center gap-2 rounded-full bg-gray-400 px-4 py-[10px] text-sm font-bold text-textMain"
-      >
-        <span>コードを実行</span>
-        <FontAwesomeIcon icon={faPlay} className="size-3" />
-      </button>
-      <button
-        type="button"
-        onClick={review}
-        className={`flex items-center gap-2 rounded-full px-4 py-[10px] text-sm font-bold duration-300 ${
-          submitButtonDisabled
-            ? "cursor-not-allowed bg-blue-300"
-            : "bg-blue-500"
-        }`}
-        disabled={submitButtonDisabled}
-      >
-        <span>提出してレビューを受ける</span>
-        <FontAwesomeIcon icon={faPaperPlane} className="size-3" />
-      </button>
-      <DropdownMenu
-        onSaveDraft={saveDraft}
-        onReset={onReset}
-        reviewBusy={reviewBusy}
+    <>
+      <div className="absolute bottom-4 right-4 flex items-center gap-4 rounded-full border border-gray-700 bg-black px-4 py-3 text-white">
+        <button
+          type="button"
+          onClick={onExecuteCode}
+          className="flex items-center gap-2 rounded-full bg-gray-400 px-4 py-[10px] text-sm font-bold text-textMain"
+        >
+          <span>コードを実行</span>
+          <FontAwesomeIcon icon={faPlay} className="size-3" />
+        </button>
+        <button
+          type="button"
+          onClick={review}
+          className={`flex items-center gap-2 rounded-full px-4 py-[10px] text-sm font-bold duration-300 ${
+            submitButtonDisabled
+              ? "cursor-not-allowed bg-blue-300"
+              : "bg-blue-500"
+          }`}
+          disabled={submitButtonDisabled}
+        >
+          <span>提出してレビューを受ける</span>
+          <FontAwesomeIcon icon={faPaperPlane} className="size-3" />
+        </button>
+        <DropdownMenu
+          onSaveDraft={saveDraft}
+          onReset={onReset}
+          reviewBusy={reviewBusy}
+        />
+      </div>
+
+      <SinginModal
+        open={showSinginModal}
+        onClose={() => setShowSinginModal(false)}
       />
-    </div>
+    </>
   );
 };
