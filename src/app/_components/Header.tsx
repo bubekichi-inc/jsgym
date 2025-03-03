@@ -51,12 +51,12 @@ export const Header: React.FC = () => {
 
   return (
     <>
-      <header className="fixed top-0 z-10 flex h-[48px] w-full items-center justify-between bg-white/50 p-6 shadow-sm backdrop-blur-sm">
-        <div className="flex items-center gap-4">
+      <header className="fixed top-0 z-10 flex h-[48px] w-full items-center justify-between bg-white/50 p-4 shadow-sm backdrop-blur-sm md:p-6">
+        <div className="flex items-center gap-2 md:gap-4">
           <Link className="font-bold" href={data ? "/q" : "/"}>
             <Logo />
           </Link>
-          <span className="rounded-full bg-green-600 px-3 pb-[5px] pt-1 text-sm font-bold text-white">
+          <span className="rounded-full bg-green-600 px-3 pb-[5px] pt-1 text-xs font-bold text-white md:text-sm">
             β版
           </span>
         </div>
