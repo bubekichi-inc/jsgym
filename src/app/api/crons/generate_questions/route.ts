@@ -6,6 +6,7 @@ import {
   AIQuestionGenerateService,
   QuestionLevel,
 } from "@/app/_serevices/AIQuestionGenerateService";
+import { SlackService } from "@/app/_serevices/SlackService";
 import { buildPrisma } from "@/app/_utils/prisma";
 
 /**
@@ -77,6 +78,12 @@ export const GET = async () => {
         });
       })
     );
+
+    const slack = new SlackService();
+    await slack.postMessage({
+      channel: "jg-gym",
+      message: `JS Gymに問題が追加されました！\n\n${question.title}\n\nhttps://jsgym.shiftb.dev/blog/${question.id}`,
+    });
 
     return NextResponse.json({ message: "success." }, { status: 200 });
   } catch (e) {

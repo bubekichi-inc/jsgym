@@ -17,6 +17,7 @@
     "@monaco-editor/react": "^4.6.0",
     "@next/third-parties": "^15.2.0",
     "@prisma/client": "^6.0.1",
+    "@slack/web-api": "^7.8.0",
     "@supabase/supabase-js": "^2.47.2",
     "@types/react-modal": "^3.16.3",
     "dayjs": "^1.11.13",
