@@ -20,16 +20,22 @@ export const OgImage: React.FC<Props> = ({
     3: "上級",
   };
 
-  const levelsStyleMap = {
-    1: "bg-blue-400",
-    2: "bg-yellow-400",
-    3: "bg-red-400",
-  };
+  // const levelsStyleMap = {
+  //   1: "bg-yellow-600",
+  //   2: "bg-yellow-600",
+  //   3: "bg-yellow-600",
+  // };
 
   const courseMap = {
     1: "JavaScript",
     // 2: "TypeScript",
     // 3: "React",
+  };
+
+  const courseStyleMap = {
+    1: "bg-yellow-600",
+    // 2: "bg-blue-600",
+    // 3: "bg-red-600",
   };
 
   return (
@@ -52,8 +58,8 @@ export const OgImage: React.FC<Props> = ({
         />
         <div tw="flex flex-col gap-4 items-start">
           <span
-            tw={`text-[32px] font-[700] px-8 rounded-full py-2 ${
-              levelsStyleMap[lessonId as keyof typeof levelsMap]
+            tw={`text-[48px] font-[700] px-8 rounded-full py-2 mb-4 text-white ${
+              courseStyleMap[courseId as keyof typeof courseStyleMap]
             }`}
           >
             {courseMap[courseId as keyof typeof courseMap]}{" "}
@@ -65,7 +71,7 @@ export const OgImage: React.FC<Props> = ({
         <div tw="flex items-end justify-between pb-8">
           <div tw="flex items-center">
             <div tw={`flex items-center gap-2`}>
-              <span tw="text-[60px] font-[700]">JS Gym</span>
+              <span tw="text-[40px] font-[700]">JS Gym</span>
             </div>
           </div>
         </div>
