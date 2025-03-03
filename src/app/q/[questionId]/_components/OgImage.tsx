@@ -21,8 +21,8 @@ export const OgImage: React.FC<Props> = ({
   };
 
   const levelsStyleMap = {
-    1: "bg-yellow-400",
-    2: "bg-green-400",
+    1: "bg-blue-400",
+    2: "bg-yellow-400",
     3: "bg-red-400",
   };
 
