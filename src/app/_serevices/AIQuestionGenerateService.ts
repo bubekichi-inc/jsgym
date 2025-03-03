@@ -3,6 +3,7 @@ import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 import { z } from "zod";
 import { OPENAI_MODEL } from "../_constants/openAI";
+import { buildPrisma } from "../_utils/prisma";
 
 type GenerateQuestionJsonResponse = {
   title: string;
@@ -36,9 +37,11 @@ export class AIQuestionGenerateService {
   public static buildPrompt({
     course,
     level,
+    titleList,
   }: {
     course: NewType;
     level: QuestionLevel;
+    titleList: string[];
   }) {
     return `
 # 概要
@@ -109,7 +112,8 @@ ${level}
   }
 
 # 補足
-・説明は、すべて日本語でお願いします。`;
+・説明は、すべて日本語でお願いします。
+・${titleList.join("\n")}と、内容が被らないようにしてください。`;
   }
 
   public static async generateQuestion({
@@ -119,12 +123,25 @@ ${level}
     course: CourseType;
     level: QuestionLevel;
   }): Promise<GenerateQuestionJsonResponse | null> {
+    const prisma = await buildPrisma();
+    const questions = await prisma.question.findMany({
+      select: {
+        title: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 100,
+    });
+
+    const titleList = questions.map((question) => question.title);
+
     const response = await this.openai.beta.chat.completions.parse({
       model: OPENAI_MODEL,
       messages: [
         {
           role: "user",
-          content: this.buildPrompt({ course, level }),
+          content: this.buildPrompt({ course, level, titleList }),
         },
       ],
       temperature: 1,
