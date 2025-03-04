@@ -71,6 +71,6 @@ export const POST = async (request: NextRequest) => {
       { status: 200 }
     );
   } catch (e) {
-    return buildError(e);
+    return await buildError(e);
   }
 };

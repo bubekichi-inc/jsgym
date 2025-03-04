@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
+import { SlackService } from "@/app/_serevices/SlackService";
 import { StripeCheckoutError } from "@/app/api/_utils/StripeCheckoutError";
 
-export const buildError = (e: unknown) => {
+export const buildError = async (e: unknown) => {
   if (e instanceof StripeCheckoutError) {
     // エラーログに UserId と StripePaymentId を含める
     const msg =
@@ -21,6 +22,11 @@ export const buildError = (e: unknown) => {
 
   if (e instanceof Error) {
     console.error(e.message);
+    const slack = new SlackService();
+    await slack.postMessage({
+      channel: "js-gym通知",
+      message: `エラー発生: ${e.message}`,
+    });
 
     if (e.message === "Unauthorized") {
       return NextResponse.json({ error: e.message }, { status: 401 });

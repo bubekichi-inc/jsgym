@@ -100,7 +100,7 @@ export const GET = async (request: NextRequest, { params }: Props) => {
       { status: 200 }
     );
   } catch (e) {
-    return buildError(e);
+    return await buildError(e);
   }
 };
 
@@ -124,7 +124,8 @@ export const POST = async (request: NextRequest, { params }: Props) => {
       },
     });
 
-    if (!userQuestion) return buildError(new Error("UserQuestion not found"));
+    if (!userQuestion)
+      return await buildError(new Error("UserQuestion not found"));
 
     const messageHistory: Message[] = await prisma.message.findMany({
       where: {
@@ -202,6 +203,6 @@ export const POST = async (request: NextRequest, { params }: Props) => {
       { status: 200 }
     );
   } catch (e) {
-    return buildError(e);
+    return await buildError(e);
   }
 };

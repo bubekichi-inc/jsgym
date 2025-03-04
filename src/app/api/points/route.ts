@@ -16,6 +16,6 @@ export const GET = async (request: NextRequest) => {
     const points = await pointService.getPoints();
     return NextResponse.json<PointsResponse>({ points }, { status: 200 });
   } catch (e) {
-    return buildError(e);
+    return await buildError(e);
   }
 };

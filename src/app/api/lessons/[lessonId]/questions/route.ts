@@ -59,6 +59,6 @@ export const GET = async (request: NextRequest, { params }: Props) => {
       { status: 200 }
     );
   } catch (e) {
-    return buildError(e);
+    return await buildError(e);
   }
 };

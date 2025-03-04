@@ -11,6 +11,6 @@ export const GET = async (request: NextRequest) => {
     const courses = await prisma.course.findMany({});
     return NextResponse.json<CoursesResponse>({ courses }, { status: 200 });
   } catch (e) {
-    return buildError(e);
+    return await buildError(e);
   }
 };

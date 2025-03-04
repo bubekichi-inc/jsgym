@@ -31,7 +31,7 @@ export const GET = async (request: NextRequest) => {
 
     return NextResponse.json<UserProfileResponse>(currentUser, { status: 200 });
   } catch (e) {
-    return buildError(e);
+    return await buildError(e);
   }
 };
 
@@ -69,6 +69,6 @@ export const PUT = async (request: NextRequest) => {
 
     return NextResponse.json({ message: "success" }, { status: 200 });
   } catch (e) {
-    return buildError(e);
+    return await buildError(e);
   }
 };

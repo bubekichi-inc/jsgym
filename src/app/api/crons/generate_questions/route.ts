@@ -98,6 +98,6 @@ export const GET = async () => {
 
     return NextResponse.json({ message: "success." }, { status: 200 });
   } catch (e) {
-    return buildError(e);
+    return await buildError(e);
   }
 };

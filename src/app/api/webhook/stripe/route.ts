@@ -91,6 +91,6 @@ export const POST = async (request: NextRequest) => {
     }
     return NextResponse.json({ received: true }, { status: 200 });
   } catch (e) {
-    return buildError(e);
+    return await buildError(e);
   }
 };

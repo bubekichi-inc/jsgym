@@ -33,6 +33,6 @@ export const POST = async (request: NextRequest, { params }: Props) => {
 
     return NextResponse.json<Draft>({ answer: "success!" }, { status: 200 });
   } catch (e) {
-    return buildError(e);
+    return await buildError(e);
   }
 };
