@@ -21,6 +21,7 @@ interface Props {
   setReviewBusy: (busy: boolean) => void;
   touched: boolean;
   onReset: () => void;
+  onReviewComplete: () => void;
 }
 
 export const ToolBar: React.FC<Props> = ({
@@ -30,6 +31,7 @@ export const ToolBar: React.FC<Props> = ({
   setReviewBusy,
   touched,
   onReset,
+  onReviewComplete,
 }) => {
   const [showSinginModal, setShowSinginModal] = useState(false);
   const { data: me } = useMe();
@@ -95,6 +97,7 @@ export const ToolBar: React.FC<Props> = ({
 
     try {
       await optimisticPushMessage();
+      onExecuteCode();
       setReviewBusy(true);
       const { result } = await api.post<
         CodeReviewRequest,
@@ -102,6 +105,8 @@ export const ToolBar: React.FC<Props> = ({
       >(`/api/questions/${questionId}/code_review`, {
         answer,
       });
+
+      onReviewComplete();
 
       await Promise.all([mutateQuestion(), mutateMessages()]);
 
@@ -120,26 +125,26 @@ export const ToolBar: React.FC<Props> = ({
 
   return (
     <>
-      <div className="absolute bottom-4 right-4 flex items-center gap-4 rounded-full border border-gray-700 bg-black px-4 py-3 text-white">
+      <div className="absolute bottom-2 right-2 flex items-center gap-4 rounded-full border border-gray-700 bg-black px-4 py-2 text-white md:bottom-4 md:right-4 md:py-3">
         <button
           type="button"
           onClick={onExecuteCode}
-          className="flex items-center gap-2 rounded-full bg-gray-400 px-4 py-[10px] text-sm font-bold text-textMain"
+          className="flex items-center gap-2 whitespace-nowrap rounded-full bg-gray-400 px-4 py-[10px] text-xs font-bold text-textMain md:text-sm"
         >
-          <span>コードを実行</span>
+          <span className="hidden md:block">コードを実行</span>
           <FontAwesomeIcon icon={faPlay} className="size-3" />
         </button>
         <button
           type="button"
           onClick={review}
-          className={`flex items-center gap-2 rounded-full px-4 py-[10px] text-sm font-bold duration-300 ${
+          className={`flex items-center gap-2 rounded-full px-4 py-[10px] text-xs font-bold duration-300 md:text-sm ${
             submitButtonDisabled
               ? "cursor-not-allowed bg-blue-300"
               : "bg-blue-500"
           }`}
           disabled={submitButtonDisabled}
         >
-          <span>提出してレビューを受ける</span>
+          <span className="hidden md:block">提出してレビューを受ける</span>
           <FontAwesomeIcon icon={faPaperPlane} className="size-3" />
         </button>
         <DropdownMenu

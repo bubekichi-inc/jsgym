@@ -89,7 +89,7 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
         )}
       </div>
       {codeReview.result === "APPROVED" && (
-        <div className="flex items-center justify-end gap-8">
+        <div className="flex flex-col items-end justify-end gap-4 md:flex-row md:items-center md:gap-8">
           <div className="flex items-center gap-4">
             <span className="text-xs font-bold text-orange-500">
               成果をシェアしよう！
@@ -121,9 +121,9 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
               />
             </a>
           </div>
-          {data?.nextQuestion && (
+          {!data?.nextQuestion && (
             <Link
-              href={`/q/${data.nextQuestion.id}`}
+              href={`/q/${data?.nextQuestion?.id}`}
               className="flex items-center gap-1 rounded border border-blue-500 px-3 py-1 text-sm font-bold text-blue-500 duration-150 hover:bg-blue-50"
             >
               <span>次の問題へ進む</span>

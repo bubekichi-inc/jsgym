@@ -24,7 +24,7 @@ export const TitleSection: React.FC = () => {
   return (
     <>
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+        <div className="items-start space-y-2 md:flex md:items-center md:gap-4 md:space-y-0">
           <p className="text-sm text-gray-600">
             問題{" "}
             {questionNumber(
@@ -33,7 +33,9 @@ export const TitleSection: React.FC = () => {
               data.question.id
             )}
           </p>
-          <h1 className="text-2xl font-bold">{data.question.title}</h1>
+          <h1 className="text-xl font-bold md:text-2xl">
+            {data.question.title}
+          </h1>
           <StatusBadge status={data.userQuestion?.status || null} />
         </div>
         <DropdownMenu onShowAnswer={() => setShowAnswerModal(true)} />

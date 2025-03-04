@@ -9,15 +9,22 @@ import { Terminal } from "./Terminal";
 import { ToolBar } from "./ToolBar";
 import { useEditorSetting } from "@/app/(member)/_hooks/useEditorSetting";
 import { useCodeExecutor } from "@/app/_hooks/useCodeExecutor";
+import { useDevice } from "@/app/_hooks/useDevice";
 import { useQuestion } from "@/app/_hooks/useQuestion";
 import { language } from "@/app/_utils/language";
 
 interface Props {
   reviewBusy: boolean;
   setReviewBusy: (busy: boolean) => void;
+  onReviewComplete: () => void;
 }
 
-export const CodeEditor: React.FC<Props> = ({ reviewBusy, setReviewBusy }) => {
+export const CodeEditor: React.FC<Props> = ({
+  reviewBusy,
+  setReviewBusy,
+  onReviewComplete,
+}) => {
+  const { isSp } = useDevice();
   const params = useParams();
   const { data: editorSettingData } = useEditorSetting();
   const questionId = params.questionId as string;
@@ -28,6 +35,13 @@ export const CodeEditor: React.FC<Props> = ({ reviewBusy, setReviewBusy }) => {
   const [touched, setTouched] = useState(false);
 
   const { iframeRef, executeCode, executionResult } = useCodeExecutor();
+
+  const editorHeight = useMemo(() => {
+    if (isSp) {
+      return "calc(60vh)";
+    }
+    return "calc(100vh - 48px - 280px - 36px)";
+  }, [isSp]);
 
   const theme = useMemo(() => {
     switch (editorSettingData?.editorSetting.editorTheme) {
@@ -77,7 +91,7 @@ export const CodeEditor: React.FC<Props> = ({ reviewBusy, setReviewBusy }) => {
         <Tabs />
         <Editor
           className="bg-editorDark"
-          height="calc(100vh - 48px - 280px - 36px)"
+          height={editorHeight}
           defaultLanguage={language(data.question.lesson.course.name)}
           value={value}
           onChange={(value) => value && setValue(value)}
@@ -97,6 +111,7 @@ export const CodeEditor: React.FC<Props> = ({ reviewBusy, setReviewBusy }) => {
           setReviewBusy={setReviewBusy}
           touched={touched}
           onReset={reset}
+          onReviewComplete={onReviewComplete}
         />
       </div>
       <Terminal executionResult={executionResult} iframeRef={iframeRef} />
