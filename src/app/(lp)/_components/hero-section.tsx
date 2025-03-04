@@ -23,7 +23,7 @@ export function HeroSection() {
             </div>
             <div className="flex flex-col gap-2 min-[400px]:flex-row">
               <button
-                className="inline-flex items-center justify-center rounded-md bg-yellow-400 p-4 py-2 text-base font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 md:px-6 md:py-3 md:text-2xl"
+                className="inline-flex items-center justify-center rounded-md bg-yellow-400 p-4 py-2 text-base font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 md:px-5 md:py-2 md:text-lg"
                 onClick={() => setShowLoginDialog(true)}
               >
                 無料ではじめる
