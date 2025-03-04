@@ -132,7 +132,7 @@ export const Questions: React.FC<Props> = ({ limit }) => {
                               ]
                             }
                           </span>
-                          {problem.userQuestions && (
+                          {problem.userQuestions?.[0] && (
                             <StatusBadge
                               status={problem.userQuestions[0].status}
                             />
