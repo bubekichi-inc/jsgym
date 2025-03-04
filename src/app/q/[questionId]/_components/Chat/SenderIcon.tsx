@@ -16,7 +16,14 @@ export const SenderIcon: React.FC<Props> = ({ sender }) => {
     return <div className={`${classNames} bg-blue-500`} />;
   }
 
-  if (!data) return <div className={`${classNames} bg-gray-200`} />;
+  if (!data?.iconUrl)
+    return (
+      <div
+        className={`${classNames} flex items-center justify-center bg-gray-300 pb-1 text-sm`}
+      >
+        {data?.name?.slice(0, 1)}
+      </div>
+    );
 
   if (!data.iconUrl) return <div className={`${classNames} bg-gray-400`} />;
 
