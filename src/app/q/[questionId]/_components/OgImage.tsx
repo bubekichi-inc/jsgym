@@ -59,7 +59,7 @@ export const OgImage: React.FC<Props> = ({
         <div tw="flex flex-col gap-4 items-start">
           <div tw="flex items-center justify-between w-full">
             <div tw="flex items-center">
-              <div tw="text-[56px] mr-8">
+              <div tw="text-[56px] mr-8 pb-4">
                 {courseMap[courseId as keyof typeof courseMap]}
               </div>
               <div
