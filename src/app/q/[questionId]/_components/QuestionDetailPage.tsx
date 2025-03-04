@@ -19,7 +19,7 @@ export const QuestionDetailPage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col pt-[48px] md:pt-0">
+    <div className="flex flex-col pt-[44px] md:pt-0">
       <SpTab activeTab={activeTab} handleTabChange={handleTabChange} />
 
       <div className="flex w-full flex-col md:flex-row md:justify-center">

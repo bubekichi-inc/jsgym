@@ -7,27 +7,35 @@ interface Props {
 
 export const SpTab: React.FC<Props> = ({ activeTab, handleTabChange }) => {
   const getTabButtonClass = (tabType: "question" | "editor") => {
-    return `w-1/2 border-b-2 py-3 text-center duration-150 ${
-      activeTab === tabType
-        ? "border-blue-500 font-bold text-blue-500"
-        : "border-transparent text-gray-500"
+    return `w-1/2 py-3 text-center duration-150 relative ${
+      activeTab === tabType ? "font-bold text-blue-500" : "text-gray-500"
     }`;
   };
 
   return (
     <div className="fixed top-[48px] z-[99] flex w-full bg-white text-sm md:hidden">
-      <button
-        className={getTabButtonClass("question")}
-        onClick={() => handleTabChange("question")}
-      >
-        問題・レビュー
-      </button>
-      <button
-        className={getTabButtonClass("editor")}
-        onClick={() => handleTabChange("editor")}
-      >
-        エディタ
-      </button>
+      <div className="relative w-full">
+        <div
+          className="absolute bottom-0 h-[3px] w-1/2 rounded-full bg-blue-500 transition-transform duration-300 ease-in-out"
+          style={{
+            transform: `translateX(${activeTab === "editor" ? "100%" : "0"})`,
+          }}
+        />
+        <div className="flex">
+          <button
+            className={getTabButtonClass("question")}
+            onClick={() => handleTabChange("question")}
+          >
+            問題・レビュー
+          </button>
+          <button
+            className={getTabButtonClass("editor")}
+            onClick={() => handleTabChange("editor")}
+          >
+            エディタ
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
