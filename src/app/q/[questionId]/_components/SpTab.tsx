@@ -7,8 +7,8 @@ interface Props {
 
 export const SpTab: React.FC<Props> = ({ activeTab, handleTabChange }) => {
   const getTabButtonClass = (tabType: "question" | "editor") => {
-    return `w-1/2 py-3 text-center duration-150 relative ${
-      activeTab === tabType ? "font-bold text-blue-500" : "text-gray-500"
+    return `w-1/2 py-3 text-center duration-150 relative font-bold ${
+      activeTab === tabType ? "text-textMain" : "text-gray-400"
     }`;
   };
 
@@ -16,7 +16,7 @@ export const SpTab: React.FC<Props> = ({ activeTab, handleTabChange }) => {
     <div className="fixed top-[48px] z-[99] flex w-full bg-white text-sm md:hidden">
       <div className="relative w-full">
         <div
-          className="absolute bottom-0 h-[3px] w-1/2 rounded-full bg-blue-500 transition-transform duration-300 ease-in-out"
+          className="absolute bottom-0 h-[3px] w-1/2 rounded-full bg-textMain transition-transform duration-300 ease-in-out"
           style={{
             transform: `translateX(${activeTab === "editor" ? "100%" : "0"})`,
           }}
