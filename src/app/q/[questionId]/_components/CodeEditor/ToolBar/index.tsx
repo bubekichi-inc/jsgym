@@ -96,6 +96,7 @@ export const ToolBar: React.FC<Props> = ({
 
   const review = async () => {
     if (!me) {
+      console.log("redirectQid", _redirectQid);
       setRedirectQid(questionId);
       setShowSinginModal(true);
       return;
