@@ -2,9 +2,10 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useMe } from "@/app/(member)/_hooks/useMe";
+import { useLocalStorage } from "@/app/_hooks/useLocalStorage";
 import { api } from "@/app/_utils/api";
 import { GoogleRequest } from "@/app/api/oauth/google/_types/GoogleRequest";
-import { useLocalStorage } from "@/app/_hooks/useLocalStorage";
+
 export default function OAuthCallback() {
   const router = useRouter();
   const [accessToken, setAccessToken] = useState<string | null>(null);
