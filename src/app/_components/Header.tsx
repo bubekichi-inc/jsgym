@@ -1,44 +1,19 @@
 "use client";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { Logo } from "../(lp)/_components/logo";
 import { useMe } from "../(member)/_hooks/useMe";
 import { signIn } from "../_utils/auth";
-import { supabase } from "../_utils/supabase";
-import { Button } from "./Button";
+import { UserDropdownMenu } from "./UserDropdownMenu";
 
 export const Header: React.FC = () => {
   const params = useParams();
   const questionId = params.questionId;
-  const { data, isLoading, mutate } = useMe();
-  const { replace } = useRouter();
-  const logout = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw new Error(error.message);
-      mutate();
-      replace("/");
-    } catch (e) {
-      alert(`ログアウトに失敗しました:${e}`);
-      console.error(e);
-    }
-  };
+  const { data, isLoading } = useMe();
 
   const rightContent = () => {
     if (isLoading) return <div className=""></div>;
-    if (data)
-      return (
-        <div className="flex items-center gap-4">
-          <Link href="/settings/profile">
-            <Button type="button" variant="text-black">
-              設定
-            </Button>
-          </Link>
-          <Button type="button" onClick={logout} variant="text-black">
-            ログアウト
-          </Button>
-        </div>
-      );
+    if (data) return <UserDropdownMenu />;
     return (
       <button
         onClick={() => signIn({ redirectQid: questionId as string })}
