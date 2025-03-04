@@ -25,9 +25,7 @@ export default function OAuthCallback() {
     const postUser = async () => {
       if (!accessToken) {
         await mutate();
-        router.replace(
-          redirectQid === "undefined" ? "/q" : `/q/${redirectQid}`
-        );
+        router.replace(redirectQid ? `/q/${redirectQid}` : "/q");
         return;
       }
 
@@ -36,9 +34,8 @@ export default function OAuthCallback() {
           "/api/oauth/google",
           { accessToken }
         );
-        router.replace(
-          redirectQid === "undefined" ? "/q" : `/q/${redirectQid}`
-        );
+        await mutate();
+        router.replace(redirectQid ? `/q/${redirectQid}` : "/q");
         setRedirectQid(null);
       } catch (e) {
         console.error("ユーザー情報の登録に失敗:", e);
