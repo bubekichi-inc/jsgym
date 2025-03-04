@@ -13,7 +13,7 @@ export function HeroSection() {
           <div className="flex flex-col justify-center space-y-4 md:space-y-6 lg:w-1/2">
             <div className="space-y-4">
               <h1 className="space-y-1 whitespace-nowrap text-3xl font-bold sm:text-4xl md:space-y-3 md:text-5xl">
-                <div className="">JavaScript開発の</div>
+                <div className="">JavaScriptの</div>
                 <div className="">自走力を鍛える</div>
                 <div className="">トレーニングジム</div>
               </h1>
