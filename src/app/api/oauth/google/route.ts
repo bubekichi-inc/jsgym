@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleRequest } from "./_types/GoogleRequest";
+import { SlackService } from "@/app/_serevices/SlackService";
 import { buildPrisma } from "@/app/_utils/prisma";
 import { stripe } from "@/app/_utils/stripe";
 import { supabase } from "@/app/_utils/supabase";
@@ -60,6 +61,15 @@ export const POST = async (request: NextRequest) => {
         app_user_id: newUser.id,
         supabase_user_id: newUser.supabaseUserId,
       },
+    });
+
+    const slack = new SlackService();
+    await slack.postMessage({
+      channel: "js-gym通知",
+      message: `新規ユーザー登録
+name: ${name}
+email: ${email}
+avatarUrl: ${avatarUrl}`,
     });
 
     return NextResponse.json(
