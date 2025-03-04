@@ -26,13 +26,11 @@ export const generateMetadata = async ({
       siteName: "JS Gym",
       locale: "ja_JP",
       type: "website",
-      // images: article.thumbnailImageUrl || "",
     },
     twitter: {
       title: title + "｜JS Gym",
       description: content,
       card: "summary_large_image",
-      // images: article.thumbnailImageUrl || "",
     },
   };
 };
