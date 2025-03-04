@@ -7,7 +7,7 @@ interface Props {
 
 export const SpTab: React.FC<Props> = ({ activeTab, handleTabChange }) => {
   return (
-    <div className="flex w-full border-b text-sm md:hidden">
+    <div className="fixed top-[48px] z-[99] flex w-full border-b bg-white text-sm md:hidden">
       <button
         className={`w-1/2 border-b-2 py-3 text-center duration-150 ${
           activeTab === "question"
