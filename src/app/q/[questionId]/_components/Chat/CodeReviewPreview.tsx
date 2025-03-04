@@ -43,9 +43,29 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
     }
   }, [codeReview.result]);
 
+  const courseNameMap = {
+    1: "JavaScript",
+  };
+
+  const lessonNameMap = {
+    1: "初級",
+    2: "中級",
+    3: "上級",
+  };
+
   const params = useParams();
   const questionId = params.questionId as string;
   const { data } = useQuestion({ questionId });
+
+  const shareText = useMemo(() => {
+    return `JS Gymで問題をクリアしました！%0a%0a${
+      courseNameMap[
+        data?.question.lesson.course.id as keyof typeof courseNameMap
+      ]
+    }${
+      lessonNameMap[data?.question.lesson.id as keyof typeof lessonNameMap]
+    }%0a${data?.question.title}%0a%0a${location.origin}/q/${questionId}`;
+  }, [courseNameMap, data, lessonNameMap, questionId]);
 
   return (
     <div className="space-y-4 rounded bg-white p-4">
@@ -95,7 +115,7 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
               成果をシェアしよう！
             </span>
             <a
-              href={`https://twitter.com/intent/tweet?text=JS Gymで問題をクリアしました！%0a%0a${data?.question.title}%0a%0a${location.origin}/q/${questionId}`}
+              href={`https://twitter.com/intent/tweet?text=JS ${shareText}`}
               target="_blank"
               className=""
             >
@@ -108,7 +128,7 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
               />
             </a>
             <a
-              href={`https://www.threads.net/intent/post?text=JS Gymで問題をクリアしました！%0a%0a${data?.question.title}%0a%0a${location.origin}/q/${questionId}`}
+              href={`https://www.threads.net/intent/post?text=JS ${shareText}`}
               target="_blank"
               className=""
             >
