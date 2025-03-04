@@ -27,7 +27,7 @@ export const UserDropdownMenu: React.FC = () => {
 
   return (
     <Menu>
-      <MenuButton className="relative size-8 overflow-hidden rounded-full border">
+      <MenuButton className="relative size-8 select-none overflow-hidden rounded-full border">
         {data.iconUrl ? (
           <Image
             src={data.iconUrl}
@@ -44,7 +44,7 @@ export const UserDropdownMenu: React.FC = () => {
       <MenuItems
         transition
         anchor={{ to: "bottom end", gap: "4px" }}
-        className="z-[999] w-[140px] origin-top-right rounded-xl border border-gray-100 bg-white p-1 text-sm shadow-popup transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-50 data-[closed]:opacity-0"
+        className="z-[999] w-[140px] origin-top-right rounded-xl border border-gray-100 bg-white p-1 text-sm shadow-md transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-50 data-[closed]:opacity-0"
       >
         <MenuItem>
           <button
