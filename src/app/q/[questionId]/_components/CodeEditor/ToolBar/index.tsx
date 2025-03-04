@@ -13,6 +13,7 @@ import { useQuestion } from "@/app/_hooks/useQuestion";
 import { api } from "@/app/_utils/api";
 import { CodeReviewRequest } from "@/app/api/questions/[questionId]/code_review/_types/CodeReview";
 import { Draft } from "@/app/api/questions/_types/Draft";
+import { useLocalStorage } from "@/app/_hooks/useLocalStorage";
 
 interface Props {
   answer: string;
@@ -33,6 +34,10 @@ export const ToolBar: React.FC<Props> = ({
   onReset,
   onReviewComplete,
 }) => {
+  const [_redirectQid, setRedirectQid] = useLocalStorage<string | null>(
+    "redirectQid",
+    null
+  );
   const [showSinginModal, setShowSinginModal] = useState(false);
   const { data: me } = useMe();
   const { reward } = useRewardApprove();
@@ -91,6 +96,7 @@ export const ToolBar: React.FC<Props> = ({
 
   const review = async () => {
     if (!me) {
+      setRedirectQid(questionId);
       setShowSinginModal(true);
       return;
     }
