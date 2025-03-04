@@ -32,7 +32,7 @@ export const Header: React.FC = () => {
   return (
     <>
       <header className="fixed top-0 z-10 w-full bg-white/50 shadow-sm backdrop-blur-sm">
-        <div className="mx-auto flex h-[48px] w-full max-w-[1800px] items-center justify-between p-4 md:p-6">
+        <div className="mx-auto flex h-[48px] w-full items-center justify-between p-4 md:p-6">
           <div className="flex items-center gap-2 md:gap-4">
             <Link className="font-bold" href={data ? "/q" : "/"}>
               <Logo />
