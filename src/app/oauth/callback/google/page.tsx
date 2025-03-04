@@ -1,6 +1,7 @@
 "use client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useMe } from "@/app/(member)/_hooks/useMe";
 import { api } from "@/app/_utils/api";
 import { GoogleRequest } from "@/app/api/oauth/google/_types/GoogleRequest";
 export default function OAuthCallback() {
@@ -8,6 +9,7 @@ export default function OAuthCallback() {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const searchParams = useSearchParams();
   const redirectQid = searchParams.get("redirect_qid");
+  const { mutate } = useMe();
 
   useEffect(() => {
     const hash = window.location.hash.substring(1);
@@ -19,6 +21,7 @@ export default function OAuthCallback() {
   useEffect(() => {
     const postUser = async () => {
       if (!accessToken) {
+        await mutate();
         router.replace(
           redirectQid === "undefined" ? "/q" : `/q/${redirectQid}`
         );
