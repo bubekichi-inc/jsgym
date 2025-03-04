@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useMe } from "@/app/(member)/_hooks/useMe";
-import { useLocalStorage } from "@/app/_hooks/useLocalStorage";
+import { useQuestionDetailRedirect } from "@/app/_hooks/useQuestionDetailRedirect";
 import { api } from "@/app/_utils/api";
 import { GoogleRequest } from "@/app/api/oauth/google/_types/GoogleRequest";
 
@@ -10,10 +10,7 @@ export default function OAuthCallback() {
   const router = useRouter();
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const { mutate } = useMe();
-  const [redirectQid, setRedirectQid] = useLocalStorage<string | null>(
-    "redirectQid",
-    null
-  );
+  const { redirectQid, reset } = useQuestionDetailRedirect();
 
   useEffect(() => {
     const hash = window.location.hash.substring(1);
@@ -37,7 +34,7 @@ export default function OAuthCallback() {
         );
         await mutate();
         router.replace(redirectQid ? `/q/${redirectQid}` : "/q");
-        setRedirectQid(null);
+        reset();
       } catch (e) {
         console.error("ユーザー情報の登録に失敗:", e);
       }

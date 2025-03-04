@@ -31,7 +31,7 @@ export const SinginModal: React.FC<Props> = ({ open, onClose }) => {
         <div className="flex justify-center py-4">
           <button
             className="inline-flex w-full items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-3 text-sm font-medium transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
-            onClick={() => signIn({})}
+            onClick={() => signIn()}
           >
             <svg
               className="mr-2 size-4"

@@ -1,15 +1,11 @@
 import { supabase } from "./supabase";
 
-interface Props {
-  redirectQid?: string;
-}
-
-export const signIn = async ({ redirectQid }: Props) => {
+export const signIn = async () => {
   try {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${process.env.NEXT_PUBLIC_APP_BASE_URL}/oauth/callback/google?redirect_qid=${redirectQid}`,
+        redirectTo: `${process.env.NEXT_PUBLIC_APP_BASE_URL}/oauth/callback/google`,
       },
     });
     if (error) throw new Error(error.message);

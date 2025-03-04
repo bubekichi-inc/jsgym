@@ -9,8 +9,8 @@ import { useRewardApprove } from "../../../_hooks/useRewardApprove";
 import { DropdownMenu } from "./DropdownMenu";
 import { useMe } from "@/app/(member)/_hooks/useMe";
 import { SinginModal } from "@/app/_components/SinginModal";
-import { useLocalStorage } from "@/app/_hooks/useLocalStorage";
 import { useQuestion } from "@/app/_hooks/useQuestion";
+import { useQuestionDetailRedirect } from "@/app/_hooks/useQuestionDetailRedirect";
 import { api } from "@/app/_utils/api";
 import { CodeReviewRequest } from "@/app/api/questions/[questionId]/code_review/_types/CodeReview";
 import { Draft } from "@/app/api/questions/_types/Draft";
@@ -34,10 +34,7 @@ export const ToolBar: React.FC<Props> = ({
   onReset,
   onReviewComplete,
 }) => {
-  const [_redirectQid, setRedirectQid] = useLocalStorage<string | null>(
-    "redirectQid",
-    null
-  );
+  const { setRedirectQid } = useQuestionDetailRedirect();
   const [showSinginModal, setShowSinginModal] = useState(false);
   const { data: me } = useMe();
   const { reward } = useRewardApprove();
@@ -96,7 +93,6 @@ export const ToolBar: React.FC<Props> = ({
 
   const review = async () => {
     if (!me) {
-      console.log("redirectQid", _redirectQid);
       setRedirectQid(questionId);
       setShowSinginModal(true);
       return;
