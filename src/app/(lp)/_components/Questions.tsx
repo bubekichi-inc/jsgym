@@ -53,7 +53,7 @@ export const Questions: React.FC<Props> = ({ limit }) => {
               新しい問題
             </h2>
             <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-              毎日9つの新しい問題が追加されます。自分のレベルに合わせて挑戦してみましょう。
+              毎日新しい問題が追加されます。自分のレベルに合わせて挑戦してみましょう。
             </p>
           </div>
         </div>
