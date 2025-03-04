@@ -18,7 +18,13 @@ export default function OAuthCallback() {
 
   useEffect(() => {
     const postUser = async () => {
-      if (!accessToken) return;
+      if (!accessToken) {
+        router.replace(
+          redirectQid === "undefined" ? "/q" : `/q/${redirectQid}`
+        );
+        return;
+      }
+
       try {
         await api.post<GoogleRequest, { message: string }>(
           "/api/oauth/google",
