@@ -21,11 +21,18 @@ export const TitleSection: React.FC = () => {
 
   if (!data) return <Skeleton height={36} />;
 
+  const levelMap = {
+    1: "初級",
+    2: "中級",
+    3: "上級",
+  };
+
   return (
     <>
       <div className="flex items-center justify-between">
         <div className="items-start space-y-2 md:flex md:items-center md:gap-4 md:space-y-0">
           <p className="text-sm text-gray-600">
+            {levelMap[data.question.lesson.id as keyof typeof levelMap]}
             問題{" "}
             {questionNumber(
               data.question.lesson.course.name,
