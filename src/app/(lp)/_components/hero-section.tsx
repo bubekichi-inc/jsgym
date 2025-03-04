@@ -7,7 +7,7 @@ export function HeroSection() {
   const [showLoginDialog, setShowLoginDialog] = useState(false);
 
   return (
-    <section className="py-20 md:py-28">
+    <section className="mx-auto max-w-screen-xl py-20 md:py-28">
       <div className="container mx-auto px-4 md:px-6">
         <div className="items-center justify-center gap-10 space-y-6 lg:flex">
           <div className="flex flex-col justify-center space-y-4 lg:w-1/2">

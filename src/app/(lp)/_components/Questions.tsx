@@ -45,7 +45,7 @@ export const Questions: React.FC<Props> = ({ limit }) => {
       : problems.filter((problem) => problem.lesson.id === levelMap[activeTab]);
 
   return (
-    <section className="bg-gray-100/50 py-12 ">
+    <section className="mx-auto max-w-screen-xl bg-gray-100/50 py-12">
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
           <div className="space-y-2">
