@@ -1,9 +1,11 @@
 "use client";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const MIN_WIDTH = 768;
 
 export const useDevice = () => {
+  const pahtname = usePathname();
   const [isSp, setIsSp] = useState<boolean | undefined>(undefined);
 
   useEffect(() => {
@@ -12,7 +14,7 @@ export const useDevice = () => {
       /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
 
     setIsSp(mobileRegex.test(userAgent) || window.innerWidth < MIN_WIDTH);
-  }, []);
+  }, [pahtname]);
 
   return { isSp };
 };
