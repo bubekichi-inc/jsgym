@@ -1,6 +1,8 @@
+import { UserQuestionStatus } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-import { buildError } from "../../_utils/buildError";
+import { buildError } from "../_utils/buildError";
 import { buildPrisma } from "@/app/_utils/prisma";
+import { supabase } from "@/app/_utils/supabase";
 
 export const dynamic = "force-dynamic";
 
@@ -22,12 +24,38 @@ export type Question = {
       name: string;
     };
   };
+  userQuestions: {
+    status: UserQuestionStatus;
+  }[];
 };
 
 export const GET = async (request: NextRequest) => {
   const prisma = await buildPrisma();
 
   const limit = Number(request.nextUrl.searchParams.get("limit"));
+
+  const token = request.headers.get("Authorization") ?? "";
+  const { data } = await supabase.auth.getUser(token);
+  const currentUser = data.user
+    ? await prisma.user.findUnique({
+        where: {
+          supabaseUserId: data.user.id,
+        },
+      })
+    : null;
+
+  const userQuestionsQuery = currentUser
+    ? {
+        userQuestions: {
+          where: {
+            userId: currentUser.id,
+          },
+          select: {
+            status: true,
+          },
+        },
+      }
+    : {};
 
   try {
     const questions = await prisma.question.findMany({
@@ -57,6 +85,7 @@ export const GET = async (request: NextRequest) => {
             },
           },
         },
+        ...userQuestionsQuery,
       },
     });
 

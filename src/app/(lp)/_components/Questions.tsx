@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { useFetch } from "@/app/_hooks/useFetch";
 import { QuestionLevel } from "@/app/_serevices/AIQuestionGenerateService";
-import { Question } from "@/app/api/public/questions/route";
+import { Question } from "@/app/api/questions/route";
+import { StatusBadge } from "@/app/q/[questionId]/_components/StatusBadge";
 
 interface Props {
   limit: number;
@@ -14,7 +15,7 @@ interface Props {
 export const Questions: React.FC<Props> = ({ limit }) => {
   const [activeTab, setActiveTab] = useState<QuestionLevel | "ALL">("ALL");
   const { data } = useFetch<{ questions: Question[] }>(
-    `/api/public/questions/?limit=${limit}`
+    `/api/questions/?limit=${limit}`
   );
 
   const problems = data?.questions ?? [];
@@ -110,28 +111,35 @@ export const Questions: React.FC<Props> = ({ limit }) => {
                     key={problem.id}
                     className="flex h-full flex-col rounded-lg border bg-white p-6 shadow-sm"
                   >
-                    <div className="pb-4">
-                      <p className="mb-1 text-sm text-gray-600">
-                        {dayjs(problem.createdAt).format("YYYY/MM/DD_HH:mm")}
-                      </p>
-                      <div className="flex items-start justify-between">
-                        <h3 className="text-xl font-bold">{problem.title}</h3>
-                        <span
-                          className={`inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 ${
-                            problem.lesson.id === levelMap["EASY"]
-                              ? "border-transparent bg-blue-500 text-white"
-                              : problem.lesson.id === levelMap["MEDIUM"]
-                              ? "border-transparent bg-yellow-500 text-white"
-                              : "border-transparent bg-red-500 text-white"
-                          }`}
-                        >
-                          {
-                            levelMapReverse[
-                              problem.lesson.id.toString() as keyof typeof levelMapReverse
-                            ]
-                          }
-                        </span>
+                    <div className="space-y-2 pb-4">
+                      <div className="flex items-center justify-between">
+                        <p className="mb-1 text-sm text-gray-600">
+                          {dayjs(problem.createdAt).format("YYYY/MM/DD_HH:mm")}
+                        </p>
+                        <div className="flex gap-2">
+                          <span
+                            className={`inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-sm font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 ${
+                              problem.lesson.id === levelMap["EASY"]
+                                ? "border-transparent bg-blue-500 text-white"
+                                : problem.lesson.id === levelMap["MEDIUM"]
+                                ? "border-transparent bg-yellow-500 text-white"
+                                : "border-transparent bg-red-500 text-white"
+                            }`}
+                          >
+                            {
+                              levelMapReverse[
+                                problem.lesson.id.toString() as keyof typeof levelMapReverse
+                              ]
+                            }
+                          </span>
+                          {problem.userQuestions && (
+                            <StatusBadge
+                              status={problem.userQuestions[0].status}
+                            />
+                          )}
+                        </div>
                       </div>
+                      <h3 className="text-xl font-bold">{problem.title}</h3>
                       <p className="line-clamp-2 text-gray-500">
                         {problem.content}
                       </p>
