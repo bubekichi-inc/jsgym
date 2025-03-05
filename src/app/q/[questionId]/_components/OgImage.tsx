@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import React from "react";
-import { courseTextMap, levelsStyleMap, lessonTextMap } from "@/app/_constants";
+import { courseTextMap, lessonStyleMap, lessonTextMap } from "@/app/_constants";
 
 interface Props {
   title: string;
@@ -41,7 +41,7 @@ export const OgImage: React.FC<Props> = ({
               </div>
               <div
                 tw={`text-[48px] font-[700] px-8 rounded-full py-2 mb-4 text-white ${
-                  levelsStyleMap[lessonId as keyof typeof levelsStyleMap]
+                  lessonStyleMap[lessonId as keyof typeof lessonStyleMap]
                 }`}
               >
                 {lessonTextMap[lessonId as keyof typeof lessonTextMap]}

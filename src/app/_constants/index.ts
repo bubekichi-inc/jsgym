@@ -12,7 +12,7 @@ export const lessonLevelMap = {
   HARD: 3,
 };
 
-export const levelsStyleMap = {
+export const lessonStyleMap = {
   1: "bg-blue-600",
   2: "bg-yellow-600",
   3: "bg-red-600",
