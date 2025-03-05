@@ -12,25 +12,9 @@ export const SinginModal: React.FC<Props> = ({ open, onClose }) => {
 
   if (!open) return null;
 
-  const openInExternalBrowser = () => {
-    const url = window.location.href;
-    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-      // iOSの場合はそのままリダイレクト
-      window.location.href = url;
-    } else if (/Android/i.test(navigator.userAgent)) {
-      // Androidでは intent スキームを使う
-      window.location.href = `intent://${url.replace(
-        /^https?:\/\//,
-        ""
-      )}#Intent;scheme=https;package=com.android.chrome;end;`;
-    } else {
-      window.open(url, "_blank");
-    }
-  };
-
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4"
+      className="fixed inset-0 z-[99] flex items-center justify-center bg-black/50 px-4"
       onClick={onClose}
     >
       <div
@@ -51,14 +35,7 @@ export const SinginModal: React.FC<Props> = ({ open, onClose }) => {
         </div>
 
         <div className="flex justify-center py-4">
-          {isInstagramBrowser() ? (
-            <button
-              className="inline-flex w-full items-center justify-center rounded-md border border-blue-600 bg-blue-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
-              onClick={openInExternalBrowser}
-            >
-              外部ブラウザで開く
-            </button>
-          ) : (
+          {!isInstagramBrowser() && (
             <button
               className="inline-flex w-full items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-3 text-sm font-medium transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
               onClick={() => signIn()}
