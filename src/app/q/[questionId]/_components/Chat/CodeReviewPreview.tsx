@@ -7,6 +7,7 @@ import { useParams } from "next/navigation";
 import React, { useMemo } from "react";
 import { CommentLevelBadge } from "./CommentLevelBadge";
 import { MarkdownWrapper } from "@/app/_components/MarkdownWrapper";
+import { courseTextMap, lessonTextMap } from "@/app/_constants";
 import { useQuestion } from "@/app/_hooks/useQuestion";
 
 interface Props {
@@ -48,21 +49,12 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
   const { data } = useQuestion({ questionId });
 
   const shareText = useMemo(() => {
-    const courseNameMap = {
-      1: "JavaScript",
-    };
-
-    const lessonNameMap = {
-      1: "初級",
-      2: "中級",
-      3: "上級",
-    };
     return `JS Gymで問題をクリアしました！%0a%0a${
-      courseNameMap[
-        data?.question.lesson.course.id as keyof typeof courseNameMap
+      courseTextMap[
+        data?.question.lesson.course.id as keyof typeof courseTextMap
       ]
     }${
-      lessonNameMap[data?.question.lesson.id as keyof typeof lessonNameMap]
+      lessonTextMap[data?.question.lesson.id as keyof typeof lessonTextMap]
     }%0a${data?.question.title}%0a%0a${location.origin}/q/${questionId}`;
   }, [data, questionId]);
 

@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import React from "react";
+import { courseTextMap, levelsStyleMap, lessonTextMap } from "@/app/_constants";
 
 interface Props {
   title: string;
@@ -14,30 +15,6 @@ export const OgImage: React.FC<Props> = ({
   lessonId,
   courseId,
 }: Props) => {
-  const levelsMap = {
-    1: "初級",
-    2: "中級",
-    3: "上級",
-  };
-
-  const levelsStyleMap = {
-    1: "bg-blue-600",
-    2: "bg-yellow-600",
-    3: "bg-red-600",
-  };
-
-  const courseMap = {
-    1: "JavaScript",
-    // 2: "TypeScript",
-    // 3: "React",
-  };
-
-  // const courseStyleMap = {
-  //   1: "bg-yellow-600",
-  //   // 2: "bg-blue-600",
-  //   // 3: "bg-red-600",
-  // };
-
   return (
     <div
       style={{
@@ -60,14 +37,14 @@ export const OgImage: React.FC<Props> = ({
           <div tw="flex items-center justify-between w-full">
             <div tw="flex items-center">
               <div tw="text-[56px] mr-8 pb-4">
-                {courseMap[courseId as keyof typeof courseMap]}
+                {courseTextMap[courseId as keyof typeof courseTextMap]}
               </div>
               <div
                 tw={`text-[48px] font-[700] px-8 rounded-full py-2 mb-4 text-white ${
                   levelsStyleMap[lessonId as keyof typeof levelsStyleMap]
                 }`}
               >
-                {levelsMap[lessonId as keyof typeof levelsMap]}
+                {lessonTextMap[lessonId as keyof typeof lessonTextMap]}
               </div>
             </div>
             <span tw="text-[40px] font-[700] text-gray-500">JS Gym</span>

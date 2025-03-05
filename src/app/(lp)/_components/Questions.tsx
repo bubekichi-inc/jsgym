@@ -3,6 +3,11 @@
 import dayjs from "dayjs";
 import Link from "next/link";
 import { useState } from "react";
+import {
+  lessonLevelMap,
+  lessonTextMap,
+  questionTagTextMap,
+} from "@/app/_constants";
 import { useFetch } from "@/app/_hooks/useFetch";
 import { QuestionLevel } from "@/app/_serevices/AIQuestionGenerateService";
 import { Question } from "@/app/api/questions/route";
@@ -20,30 +25,12 @@ export const Questions: React.FC<Props> = ({ limit }) => {
 
   const problems = data?.questions ?? [];
 
-  const levelMap = {
-    EASY: 1,
-    MEDIUM: 2,
-    HARD: 3,
-  };
-
-  const levelMapReverse = {
-    "1": "初級",
-    "2": "中級",
-    "3": "上級",
-  };
-
-  const tagMap = {
-    VALUE: "値",
-    ARRAY: "配列",
-    OBJECT: "オブジェクト",
-    FUNCTION: "関数",
-    CLASS: "クラス",
-  };
-
   const filteredProblems =
     activeTab === "ALL"
       ? problems
-      : problems.filter((problem) => problem.lesson.id === levelMap[activeTab]);
+      : problems.filter(
+          (problem) => problem.lesson.id === lessonLevelMap[activeTab]
+        );
 
   return (
     <section className="mx-auto max-w-screen-xl bg-gray-100/50 py-12">
@@ -119,16 +106,16 @@ export const Questions: React.FC<Props> = ({ limit }) => {
                         <div className="flex gap-2">
                           <span
                             className={`inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-sm font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 ${
-                              problem.lesson.id === levelMap["EASY"]
+                              problem.lesson.id === lessonLevelMap["EASY"]
                                 ? "border-transparent bg-blue-500 text-white"
-                                : problem.lesson.id === levelMap["MEDIUM"]
+                                : problem.lesson.id === lessonLevelMap["MEDIUM"]
                                 ? "border-transparent bg-yellow-500 text-white"
                                 : "border-transparent bg-red-500 text-white"
                             }`}
                           >
                             {
-                              levelMapReverse[
-                                problem.lesson.id.toString() as keyof typeof levelMapReverse
+                              lessonTextMap[
+                                problem.lesson.id as keyof typeof lessonTextMap
                               ]
                             }
                           </span>
@@ -151,7 +138,11 @@ export const Questions: React.FC<Props> = ({ limit }) => {
                             key={q.tag.name}
                             className="inline-flex items-center rounded-md border border-gray-200 px-2.5 py-0.5 text-xs font-semibold text-gray-800 transition-colors"
                           >
-                            {tagMap[q.tag.name as keyof typeof tagMap]}
+                            {
+                              questionTagTextMap[
+                                q.tag.name as keyof typeof questionTagTextMap
+                              ]
+                            }
                           </span>
                         ))}
                       </div>
