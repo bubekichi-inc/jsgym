@@ -27,7 +27,7 @@ export const TitleSection: React.FC = () => {
         <div className="items-start space-y-2 md:flex md:items-center md:gap-4 md:space-y-0">
           <p className="flex items-center gap-2">
             <span
-              className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-bold text-white ${
+              className={`whitespace-nowrap rounded-full px-2 py-1 text-xs font-bold text-white ${
                 lessonStyleMap[
                   data.question.lesson.id as keyof typeof lessonTextMap
                 ]
