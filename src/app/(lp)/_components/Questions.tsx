@@ -100,9 +100,23 @@ export const Questions: React.FC<Props> = ({ limit }) => {
                   >
                     <div className="space-y-2 pb-4">
                       <div className="flex items-center justify-between">
-                        <p className="mb-1 text-sm text-gray-600">
-                          {dayjs(problem.createdAt).format("YYYY/MM/DD_HH:mm")}
-                        </p>
+                        <div className="mb-1 text-sm">
+                          <span className="text-gray-600">
+                            {dayjs(problem.createdAt).format(
+                              "YYYY/MM/DD_HH:mm"
+                            )}
+                          </span>
+                          <span>
+                            {dayjs(problem.createdAt).isSame(
+                              dayjs(),
+                              "day"
+                            ) && (
+                              <span className="ml-2 inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-sm font-bold text-green-800">
+                                NEW
+                              </span>
+                            )}
+                          </span>
+                        </div>
                         <div className="flex gap-2">
                           <span
                             className={`inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-sm font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 ${
