@@ -1,16 +1,18 @@
 "use client";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useState } from "react";
 import { Logo } from "../(lp)/_components/logo";
 import { useMe } from "../(member)/_hooks/useMe";
 import { useQuestionDetailRedirect } from "../_hooks/useQuestionDetailRedirect";
-import { signIn } from "../_utils/auth";
+import { SinginModal } from "./SinginModal";
 import { UserDropdownMenu } from "./UserDropdownMenu";
 
 export const Header: React.FC = () => {
   const params = useParams();
   const questionId = params.questionId;
   const { data, isLoading } = useMe();
+  const [open, setOpen] = useState(false);
   const { setRedirectQid } = useQuestionDetailRedirect();
 
   const rightContent = () => {
@@ -20,7 +22,7 @@ export const Header: React.FC = () => {
       <button
         onClick={() => {
           if (questionId) setRedirectQid(questionId as string);
-          signIn();
+          setOpen(true);
         }}
         className="inline-flex h-8 items-center justify-center rounded-md bg-yellow-400 px-4 py-2 text-sm font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
       >
@@ -45,6 +47,8 @@ export const Header: React.FC = () => {
           {rightContent()}
         </div>
       </header>
+
+      <SinginModal open={open} onClose={() => setOpen(false)} />
     </>
   );
 };
