@@ -61,7 +61,7 @@ export const GET = async (request: NextRequest) => {
     const questions = await prisma.question.findMany({
       take: limit,
       orderBy: {
-        id: "desc",
+        createdAt: "desc",
       },
       select: {
         id: true,
