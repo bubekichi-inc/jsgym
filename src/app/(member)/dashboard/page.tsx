@@ -8,11 +8,7 @@ import {
   faChartLine,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  UserQuestionStatus,
-  CodeReviewResult,
-  CourseType,
-} from "@prisma/client";
+import { UserQuestionStatus, CourseType } from "@prisma/client";
 import React, { useState } from "react";
 import { Modal } from "@/app/_components/Modal";
 import { useFetch } from "@/app/_hooks/useFetch";
@@ -170,13 +166,13 @@ export default function Dashboard() {
     }
   }
 
-  function getReviewResultIcon(result: CodeReviewResult) {
+  function getReviewResultIcon(result: UserQuestionStatus) {
     switch (result) {
-      case CodeReviewResult.APPROVED:
+      case UserQuestionStatus.PASSED:
         return (
           <FontAwesomeIcon icon={faCheckCircle} className="text-green-500" />
         );
-      case CodeReviewResult.REJECTED:
+      case UserQuestionStatus.REVISION_REQUIRED:
         return (
           <FontAwesomeIcon icon={faTimesCircle} className="text-red-500" />
         );
@@ -339,9 +335,10 @@ export default function Dashboard() {
                     </td>
                     <td className="whitespace-nowrap px-6 py-4">
                       <div className="flex items-center">
-                        {getReviewResultIcon(review.result)}
+                        {getReviewResultIcon(review.userQuestion.status)}
                         <span className="ml-2">
-                          {review.result === CodeReviewResult.APPROVED
+                          {review.userQuestion.status ===
+                          UserQuestionStatus.PASSED
                             ? "合格"
                             : "修正が必要"}
                         </span>

@@ -1,4 +1,8 @@
-import { UserQuestionStatus, CodeReviewResult, CourseType } from "@prisma/client";
+import {
+  UserQuestionStatus,
+  CodeReviewResult,
+  CourseType,
+} from "@prisma/client";
 
 export interface Question {
   id: string;
@@ -71,6 +75,7 @@ export interface CodeReview {
   comments: CodeReviewComment[];
   userQuestion: {
     id: string;
+    status: UserQuestionStatus;
     question: {
       id: string;
       title: string;
