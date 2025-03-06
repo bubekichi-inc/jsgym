@@ -15,90 +15,7 @@ import {
 } from "@prisma/client";
 import React from "react";
 import { useFetch } from "@/app/_hooks/useFetch";
-
-interface Question {
-  id: string;
-  title: string;
-  content: string;
-  example: string | null;
-  template: string;
-  exampleAnswer: string;
-  lessonId: number;
-  questions: {
-    tag: {
-      id: number;
-      name: string;
-    };
-  }[];
-  lesson: {
-    id: number;
-    name: string;
-    courseId: number;
-    course: {
-      id: number;
-      name: CourseType;
-    };
-  };
-}
-
-interface UserQuestion {
-  id: string;
-  userId: string;
-  status: UserQuestionStatus;
-  questionId: string;
-  createdAt: string;
-  updatedAt: string;
-  question: Question;
-}
-
-interface Lesson {
-  id: number;
-  name: string;
-  courseId: number;
-  questions: {
-    id: string;
-    title: string;
-    userQuestions: {
-      id: string;
-      status: UserQuestionStatus;
-    }[];
-  }[];
-}
-
-interface Course {
-  id: number;
-  name: CourseType;
-  lessons: Lesson[];
-}
-
-interface CodeReviewComment {
-  id: string;
-  codeReviewId: string;
-  targetCode: string;
-  message: string;
-  level: string | null;
-}
-
-interface CodeReview {
-  id: string;
-  overview: string;
-  result: CodeReviewResult;
-  createdAt: string;
-  comments: CodeReviewComment[];
-  userQuestion: {
-    id: string;
-    question: {
-      id: string;
-      title: string;
-    };
-  };
-}
-
-interface DashboardData {
-  userQuestions: UserQuestion[];
-  courseProgress: Course[];
-  recentCodeReviews: CodeReview[];
-}
+import { DashboardData, Course, Lesson } from "@/app/api/_types/DashboardTypes";
 
 export default function Dashboard() {
   const { data, error, isLoading } = useFetch<DashboardData>("/api/dashboard");
@@ -265,7 +182,7 @@ export default function Dashboard() {
       <div className="mb-8">
         <div className="mb-4 flex items-center">
           <FontAwesomeIcon icon={faChartLine} className="mr-2 text-blue-500" />
-          <h2 className="text-2xl font-bold">コース別進捗状況</h2>
+          <h2 className="text-2xl font-bold">進捗状況</h2>
         </div>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {courseStats.map((course) => (
