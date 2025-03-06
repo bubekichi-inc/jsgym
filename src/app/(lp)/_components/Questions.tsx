@@ -7,11 +7,12 @@ import {
   lessonLevelMap,
   lessonTextMap,
   questionTagTextMap,
+  userQuestionColorMap,
+  userQuestionTextMap,
 } from "@/app/_constants";
 import { useFetch } from "@/app/_hooks/useFetch";
 import { QuestionLevel } from "@/app/_serevices/AIQuestionGenerateService";
 import { Question } from "@/app/api/questions/route";
-import { StatusBadge } from "@/app/q/[questionId]/_components/StatusBadge";
 
 interface Props {
   limit: number;
@@ -96,7 +97,7 @@ export const Questions: React.FC<Props> = ({ limit }) => {
                 {filteredProblems.map((problem) => (
                   <div
                     key={problem.id}
-                    className="flex h-full flex-col rounded-lg border bg-white p-6 shadow-sm"
+                    className="relative flex h-full flex-col rounded-lg border bg-white p-6 py-8 shadow-sm"
                   >
                     <div className="space-y-2 pb-4">
                       <div className="flex items-center justify-between">
@@ -111,7 +112,7 @@ export const Questions: React.FC<Props> = ({ limit }) => {
                               dayjs(),
                               "day"
                             ) && (
-                              <span className="ml-2 inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-sm font-bold text-green-800">
+                              <span className="ml-2 inline-flex items-center rounded-full text-base font-bold text-red-600">
                                 NEW
                               </span>
                             )}
@@ -133,11 +134,6 @@ export const Questions: React.FC<Props> = ({ limit }) => {
                               ]
                             }
                           </span>
-                          {problem.userQuestions?.[0] && (
-                            <StatusBadge
-                              status={problem.userQuestions[0].status}
-                            />
-                          )}
                         </div>
                       </div>
                       <h3 className="text-xl font-bold">{problem.title}</h3>
@@ -169,6 +165,17 @@ export const Questions: React.FC<Props> = ({ limit }) => {
                         問題に挑戦する
                       </Link>
                     </div>
+                    {problem.userQuestions?.[0] && (
+                      <div
+                        className={`absolute left-0 top-0 rounded-br-lg rounded-tl-lg px-2 py-1 text-sm text-white ${
+                          userQuestionColorMap[
+                            problem.userQuestions?.[0].status
+                          ]
+                        }`}
+                      >
+                        {userQuestionTextMap[problem.userQuestions?.[0].status]}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
