@@ -46,7 +46,7 @@ export class AIQuestionGenerateService {
     return `
 # 概要
 ${course}の問題を作成してください。
-これから、JavaScriptを自走して描けるようになるための問題です。
+これから、JavaScriptを自走して書けるようになるための問題です。
 アプリケーションのユーザーが、その問題を解いて、提出して、判定を得ることで、学習を進めることができます。
 
 # 問題のレベル
