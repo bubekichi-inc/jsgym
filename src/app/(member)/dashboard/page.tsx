@@ -276,9 +276,6 @@ export default function Dashboard() {
                     結果
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                    コメント数
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                     日付
                   </th>
                 </tr>
@@ -303,9 +300,6 @@ export default function Dashboard() {
                             : "修正が必要"}
                         </span>
                       </div>
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4">
-                      {review.comments.length}
                     </td>
                     <td className="whitespace-nowrap px-6 py-4">
                       {formatDate(review.createdAt)}
