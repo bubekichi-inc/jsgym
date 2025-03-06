@@ -275,10 +275,12 @@ export default function Dashboard() {
                 ></div>
               </div>
               <div className="mt-4">
-                <h4 className="text-lg font-semibold">レッスン別進捗状況</h4>
+                <h4 className="text-lg font-semibold">レベル別進捗状況</h4>
                 {course.lessonStats.map((lesson) => (
                   <div key={lesson.lessonId} className="mt-2">
-                    <h5 className="text-md font-medium">{lesson.lessonName}</h5>
+                    <h5 className="text-base font-medium">
+                      {lesson.lessonName}
+                    </h5>
                     <div className="mb-2 flex justify-between">
                       <span>進捗率: {lesson.lessonProgressPercentage}%</span>
                       <span>
