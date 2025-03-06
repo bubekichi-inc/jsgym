@@ -13,12 +13,17 @@ import {
   CodeReviewResult,
   CourseType,
 } from "@prisma/client";
-import React from "react";
+import React, { useState } from "react";
+import { Modal } from "@/app/_components/Modal";
 import { useFetch } from "@/app/_hooks/useFetch";
 import { DashboardData, Course, Lesson } from "@/app/api/_types/DashboardTypes";
 
 export default function Dashboard() {
   const { data, error, isLoading } = useFetch<DashboardData>("/api/dashboard");
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedStatus, setSelectedStatus] =
+    useState<UserQuestionStatus | null>(null);
 
   if (isLoading) {
     return (
@@ -59,6 +64,33 @@ export default function Dashboard() {
       (q) => q.status === UserQuestionStatus.DRAFT
     ).length,
   };
+
+  const openModal = (status: UserQuestionStatus) => {
+    setSelectedStatus(status);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setSelectedStatus(null);
+  };
+
+  const getStatusTitle = (status: UserQuestionStatus) => {
+    switch (status) {
+      case UserQuestionStatus.PASSED:
+        return "合格した問題";
+      case UserQuestionStatus.REVISION_REQUIRED:
+        return "修正が必要な問題";
+      case UserQuestionStatus.DRAFT:
+        return "下書き中の問題";
+      default:
+        return "";
+    }
+  };
+
+  const filteredQuestions = userQuestions.filter(
+    (q) => q.status === selectedStatus
+  );
 
   // コース別の進捗率を計算
   const courseStats = courseProgress.map((course: Course) => {
@@ -167,7 +199,10 @@ export default function Dashboard() {
       <h1 className="mb-8 text-3xl font-bold">学習ダッシュボード</h1>
 
       <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-lg bg-white p-6 shadow-md">
+        <div
+          className="cursor-pointer rounded-lg bg-white p-6 shadow-md"
+          onClick={() => openModal(UserQuestionStatus.PASSED)}
+        >
           <div className="mb-2 flex items-center">
             <FontAwesomeIcon
               icon={faCheckCircle}
@@ -180,7 +215,10 @@ export default function Dashboard() {
           </p>
         </div>
 
-        <div className="rounded-lg bg-white p-6 shadow-md">
+        <div
+          className="cursor-pointer rounded-lg bg-white p-6 shadow-md"
+          onClick={() => openModal(UserQuestionStatus.REVISION_REQUIRED)}
+        >
           <div className="mb-2 flex items-center">
             <FontAwesomeIcon
               icon={faTimesCircle}
@@ -193,7 +231,10 @@ export default function Dashboard() {
           </p>
         </div>
 
-        <div className="rounded-lg bg-white p-6 shadow-md">
+        <div
+          className="cursor-pointer rounded-lg bg-white p-6 shadow-md"
+          onClick={() => openModal(UserQuestionStatus.DRAFT)}
+        >
           <div className="mb-2 flex items-center">
             <FontAwesomeIcon
               icon={faPencilAlt}
@@ -315,6 +356,27 @@ export default function Dashboard() {
           </div>
         )}
       </div>
+
+      <Modal isOpen={modalOpen} onClose={closeModal}>
+        <h2 className="mb-4 text-xl font-bold">
+          {getStatusTitle(selectedStatus!)}
+        </h2>
+        <ul className="grid grid-cols-1 gap-4">
+          {filteredQuestions.map((question) => (
+            <li
+              key={question.id}
+              className="rounded-lg bg-gray-100 p-4 shadow-md transition duration-200 hover:bg-gray-200"
+            >
+              <a
+                href={`/q/${question.question.id}`}
+                className="text-blue-500 hover:underline"
+              >
+                {question.question.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </Modal>
     </div>
   );
 }
