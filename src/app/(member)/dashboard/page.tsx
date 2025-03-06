@@ -90,12 +90,40 @@ export default function Dashboard() {
         ? Math.round((completedQuestions / totalQuestions) * 100)
         : 0;
 
+    const lessonStats = course.lessons.map((lesson: Lesson) => {
+      const lessonTotalQuestions = lesson.questions.length;
+      const lessonCompletedQuestions = lesson.questions.reduce(
+        (sum: number, question) =>
+          sum +
+          (question.userQuestions.some(
+            (uq) => uq.status === UserQuestionStatus.PASSED
+          )
+            ? 1
+            : 0),
+        0
+      );
+
+      const lessonProgressPercentage =
+        lessonTotalQuestions > 0
+          ? Math.round((lessonCompletedQuestions / lessonTotalQuestions) * 100)
+          : 0;
+
+      return {
+        lessonId: lesson.id,
+        lessonName: lesson.name,
+        lessonTotalQuestions,
+        lessonCompletedQuestions,
+        lessonProgressPercentage,
+      };
+    });
+
     return {
       courseId: course.id,
       courseName: getCourseDisplayName(course.name),
       totalQuestions,
       completedQuestions,
       progressPercentage,
+      lessonStats,
     };
   });
 
@@ -204,6 +232,27 @@ export default function Dashboard() {
                   className="h-full rounded-full bg-blue-500"
                   style={{ width: `${course.progressPercentage}%` }}
                 ></div>
+              </div>
+              <div className="mt-4">
+                <h4 className="text-lg font-semibold">レッスン別進捗状況</h4>
+                {course.lessonStats.map((lesson) => (
+                  <div key={lesson.lessonId} className="mt-2">
+                    <h5 className="text-md font-medium">{lesson.lessonName}</h5>
+                    <div className="mb-2 flex justify-between">
+                      <span>進捗率: {lesson.lessonProgressPercentage}%</span>
+                      <span>
+                        {lesson.lessonCompletedQuestions} /{" "}
+                        {lesson.lessonTotalQuestions} 問題
+                      </span>
+                    </div>
+                    <div className="h-3 w-full overflow-hidden rounded-full bg-gray-200">
+                      <div
+                        className="h-full rounded-full bg-green-500"
+                        style={{ width: `${lesson.lessonProgressPercentage}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           ))}
