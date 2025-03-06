@@ -41,7 +41,7 @@ export default function RootLayout({
           toastStyle={{ background: "#0E77B8" }}
         />
         <a
-          href="https://docs.google.com/spreadsheets/d/1tNUMeAZxxfQEe4PFOD8v-jlzeWHNCOke_-jM2GnLEPI/edit?usp=sharing"
+          href="https://docs.google.com/forms/d/e/1FAIpQLSeLy-YzsFnzUVdX-g5U3v4dLtN2QilTAZlvWjjzxW5rsYf_hg/viewform?usp=header"
           target="_blank"
           className="fixed bottom-10 right-10 hidden items-center rounded-lg bg-blue-500 px-4 py-3 text-sm font-bold text-white lg:flex"
         >
