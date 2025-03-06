@@ -106,7 +106,7 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
               成果をシェアしよう！
             </span>
             <a
-              href={`https://twitter.com/intent/tweet?text=JS ${shareText}`}
+              href={`https://twitter.com/intent/tweet?text=${shareText}`}
               target="_blank"
               className=""
             >
@@ -119,7 +119,7 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
               />
             </a>
             <a
-              href={`https://www.threads.net/intent/post?text=JS ${shareText}`}
+              href={`https://www.threads.net/intent/post?text=${shareText}`}
               target="_blank"
               className=""
             >
