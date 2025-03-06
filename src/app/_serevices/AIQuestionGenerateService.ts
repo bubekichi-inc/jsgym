@@ -137,8 +137,6 @@ ${titleList.join("\n")}`;
 
     const titleList = questions.map((question) => `  - ${question.title}`);
 
-    console.log(this.buildPrompt({ course, level, titleList }));
-
     const response = await this.openai.beta.chat.completions.parse({
       model: OPENAI_MODEL,
       messages: [
