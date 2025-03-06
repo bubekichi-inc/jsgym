@@ -10,12 +10,17 @@ import { LogObj } from "@/app/_hooks/useCodeExecutor";
 interface Props {
   iframeRef: RefObject<HTMLIFrameElement | null>;
   executionResult: LogObj[];
+  onClear: () => void;
 }
 
-export const Terminal: React.FC<Props> = ({ executionResult, iframeRef }) => {
+export const Terminal: React.FC<Props> = ({
+  executionResult,
+  iframeRef,
+  onClear,
+}) => {
   return (
     <div className="border-t border-gray-700">
-      <Header />
+      <Header onClear={onClear} />
       <div className="h-[240px] overflow-y-scroll bg-black">
         <div className="px-4 text-white">
           {executionResult.map((item, index) => {

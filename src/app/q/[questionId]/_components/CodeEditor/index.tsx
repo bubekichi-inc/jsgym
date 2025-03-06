@@ -34,7 +34,8 @@ export const CodeEditor: React.FC<Props> = ({
   const [value, setValue] = useState("");
   const [touched, setTouched] = useState(false);
 
-  const { iframeRef, executeCode, executionResult } = useCodeExecutor();
+  const { iframeRef, executeCode, executionResult, resetLogs } =
+    useCodeExecutor();
 
   const editorHeight = useMemo(() => {
     if (isSp) {
@@ -114,7 +115,11 @@ export const CodeEditor: React.FC<Props> = ({
           onReviewComplete={onReviewComplete}
         />
       </div>
-      <Terminal executionResult={executionResult} iframeRef={iframeRef} />
+      <Terminal
+        executionResult={executionResult}
+        iframeRef={iframeRef}
+        onClear={resetLogs}
+      />
     </div>
   );
 };
