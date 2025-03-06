@@ -1,4 +1,8 @@
-import { faCog, faSignOut } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCog,
+  faDashboard,
+  faSignOut,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import Image from "next/image";
@@ -44,8 +48,18 @@ export const UserDropdownMenu: React.FC = () => {
       <MenuItems
         transition
         anchor={{ to: "bottom end", gap: "4px" }}
-        className="z-[999] w-[140px] origin-top-right rounded-xl border border-gray-100 bg-white p-1 text-sm shadow-md transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-50 data-[closed]:opacity-0"
+        className="z-[999] w-[170px] origin-top-right rounded-xl border border-gray-100 bg-white p-1 text-sm shadow-md transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-50 data-[closed]:opacity-0"
       >
+        <MenuItem>
+          <button
+            className="group flex w-full items-center gap-3 rounded-lg p-3 font-bold data-[focus]:bg-gray-100"
+            type="button"
+            onClick={() => push("/dashboard")}
+          >
+            <FontAwesomeIcon icon={faDashboard} />
+            ダッシュボード
+          </button>
+        </MenuItem>
         <MenuItem>
           <button
             className="group flex w-full items-center gap-3 rounded-lg p-3 font-bold data-[focus]:bg-gray-100"
