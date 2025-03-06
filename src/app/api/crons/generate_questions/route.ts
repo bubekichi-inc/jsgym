@@ -50,43 +50,49 @@ const getLevelName = (lessonId: number) => {
 
 export const maxDuration = 30;
 
+const generage = async () => {
+  const response = await AIQuestionGenerateService.generateQuestion({
+    course: CourseType.JAVA_SCRIPT,
+    level: getRandomDifficulty(),
+  });
+
+  if (!response) throw new Error("Failed to generate question.");
+
+  const prisma = await buildPrisma();
+
+  const allTags = await prisma.questionTag.findMany();
+
+  const question = await prisma.question.create({
+    data: {
+      id: nanoid(10),
+      content: response.content,
+      template: response.template,
+      title: response.title,
+      example: response.inputOutputExample,
+      exampleAnswer: response.exampleAnswer,
+      lessonId: getLessonId(response.level),
+    },
+  });
+
+  await Promise.all(
+    response.tags.map(async (tag) => {
+      const tagId = allTags.find((t) => t.name === tag)?.id;
+      if (!tagId) return;
+      await prisma.questionTagRelation.create({
+        data: {
+          questionId: question.id,
+          tagId,
+        },
+      });
+    })
+  );
+
+  return question;
+};
+
 export const GET = async () => {
   try {
-    const response = await AIQuestionGenerateService.generateQuestion({
-      course: CourseType.JAVA_SCRIPT,
-      level: getRandomDifficulty(),
-    });
-
-    if (!response) throw new Error("Failed to generate question.");
-
-    const prisma = await buildPrisma();
-
-    const allTags = await prisma.questionTag.findMany();
-
-    const question = await prisma.question.create({
-      data: {
-        id: nanoid(10),
-        content: response.content,
-        template: response.template,
-        title: response.title,
-        example: response.inputOutputExample,
-        exampleAnswer: response.exampleAnswer,
-        lessonId: getLessonId(response.level),
-      },
-    });
-
-    await Promise.all(
-      response.tags.map(async (tag) => {
-        const tagId = allTags.find((t) => t.name === tag)?.id;
-        if (!tagId) return;
-        await prisma.questionTagRelation.create({
-          data: {
-            questionId: question.id,
-            tagId,
-          },
-        });
-      })
-    );
+    const question = await generage();
 
     const slack = new SlackService();
     await slack.postMessage({
