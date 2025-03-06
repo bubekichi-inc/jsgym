@@ -2,7 +2,7 @@ import { CourseType, QuestionTagValue } from "@prisma/client";
 import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 import { z } from "zod";
-import { OPENAI_MODEL } from "../_constants/openAI";
+import { GPT_4_5 } from "../_constants/openAI";
 import { buildPrisma } from "../_utils/prisma";
 
 type GenerateQuestionJsonResponse = {
@@ -138,7 +138,7 @@ ${titleList.join("\n")}`;
     const titleList = questions.map((question) => `  - ${question.title}`);
 
     const response = await this.openai.beta.chat.completions.parse({
-      model: OPENAI_MODEL,
+      model: GPT_4_5,
       messages: [
         {
           role: "user",
