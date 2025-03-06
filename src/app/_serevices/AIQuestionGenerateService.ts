@@ -113,7 +113,8 @@ ${level}
 
 # 補足
 ・説明は、すべて日本語でお願いします。
-・${titleList.join("\n")}と、内容が被らないようにしてください。`;
+・以下の問題タイトルとは全く別ジャンルの問題を作ってください。
+${titleList.join("\n")}`;
   }
 
   public static async generateQuestion({
@@ -134,7 +135,9 @@ ${level}
       take: 100,
     });
 
-    const titleList = questions.map((question) => question.title);
+    const titleList = questions.map((question) => `  - ${question.title}`);
+
+    console.log(this.buildPrompt({ course, level, titleList }));
 
     const response = await this.openai.beta.chat.completions.parse({
       model: OPENAI_MODEL,
