@@ -97,7 +97,7 @@ export async function GET(request: NextRequest) {
         orderBy: {
           createdAt: "desc",
         },
-        take: 5,
+        take: 10,
       })
       .then((reviews) =>
         reviews.map((r) => ({
