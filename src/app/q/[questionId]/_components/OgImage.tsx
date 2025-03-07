@@ -54,13 +54,15 @@ export const OgImage: React.FC<Props> = ({
                 {lessonTextMap[lessonId as keyof typeof lessonTextMap]}
               </div>
             </div>
-            <img
-              src={`https://jsgym.shiftb.dev${reviewer.profileImageUrl}`}
-              alt="reviewer"
-              tw="rounded-full size-[80px] block"
-              width={80}
-              height={80}
-            />
+            <div tw="rounded-full fixed inset-0 flex items-center justify-center relative">
+              <img
+                src={`https://jsgym.shiftb.dev${reviewer.profileImageUrl}`}
+                alt="reviewer"
+                tw="w-full h-full rounded-full"
+                width={100}
+                height={100}
+              />
+            </div>
           </div>
           <p tw="text-[64px] font-[700]">{title}</p>
           <p tw="text-[32px] font-[400] text-gray-500">{content}</p>
