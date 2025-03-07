@@ -22,7 +22,7 @@ export const ReviewerModal: React.FC<Props> = ({ isOpen, onClose }) => {
   const { name, bio, profileImageUrl } = data.question.reviewer;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} maxWidth="450px">
       <div className="flex flex-col space-y-4 ">
         <div className="flex items-center justify-start gap-4">
           <Image
