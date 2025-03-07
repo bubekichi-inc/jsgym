@@ -19,7 +19,7 @@ export const AIBusy: React.FC<Props> = ({ mode }) => {
 
   return (
     <div className="flex gap-3">
-      <SenderIcon sender="SYSTEM" />
+      <SenderIcon sender="SYSTEM" reviewer={null} />
       <div
         className={`w-full animate-pulse rounded bg-gradient-to-r from-blue-300 to-purple-300 p-4 text-sm font-bold text-blue-500 ${height}`}
       >
