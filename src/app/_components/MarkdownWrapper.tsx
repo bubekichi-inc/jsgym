@@ -11,6 +11,42 @@ export const MarkdownWrapper: React.FC<Props> = ({ children }) => {
   return (
     <ReactMarkdown
       components={{
+        h1: ({ children }) => (
+          <h1
+            style={{
+              fontSize: "1.2rem",
+              fontWeight: "bold",
+              margin: "1rem 0",
+            }}
+          >
+            {children}
+          </h1>
+        ),
+        h2: ({ children }) => (
+          <h2
+            style={{
+              fontSize: "1rem",
+              fontWeight: "bold",
+              margin: "1rem 0",
+            }}
+          >
+            {children}
+          </h2>
+        ),
+        ul: ({ children }) => (
+          <ul
+            style={{
+              listStyle: "disc",
+              paddingLeft: "1.5rem",
+              margin: "1rem 0",
+            }}
+          >
+            {children}
+          </ul>
+        ),
+        li: ({ children }) => (
+          <li style={{ margin: "0.5rem 0" }}>{children}</li>
+        ),
         code({ node, className, children: codeChildren, ...props }) {
           const isInline =
             node?.tagName === "code" && node?.children[0].position;
