@@ -161,14 +161,24 @@ export const Questions: React.FC<Props> = ({ limit }) => {
                         </div>
                       </div>
                       {question.reviewer && (
-                        <div className="flex size-10 items-center justify-center overflow-hidden rounded-full">
-                          <Image
-                            src={question.reviewer.profileImageUrl}
-                            alt="reviewer"
-                            width={80}
-                            height={80}
-                            className="size-full object-cover"
-                          />
+                        <div className="group relative">
+                          <div className="flex size-10 items-center justify-center overflow-hidden rounded-full">
+                            <Image
+                              src={question.reviewer.profileImageUrl}
+                              alt="reviewer"
+                              width={80}
+                              height={80}
+                              className="size-full object-cover"
+                            />
+                          </div>
+                          <div className="invisible absolute -right-4 bottom-full z-10 mb-2 w-[320px] rounded-lg bg-gray-900 p-2 text-sm text-white opacity-0 transition-all group-hover:visible group-hover:opacity-100">
+                            <p className="font-bold">
+                              {question.reviewer.name}
+                            </p>
+                            <p className="mt-1 whitespace-pre-line text-xs text-gray-300">
+                              {question.reviewer.bio}
+                            </p>
+                          </div>
                         </div>
                       )}
                     </div>
