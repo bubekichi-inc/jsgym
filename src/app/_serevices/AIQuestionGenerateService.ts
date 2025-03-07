@@ -3,6 +3,7 @@ import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 import { z } from "zod";
 import { GPT_4_5 } from "../_constants/openAI";
+import { buildReviewerSettingPrompt } from "../_utils/buildReviewerSettingPrompt";
 import { buildPrisma } from "../_utils/prisma";
 
 type GenerateQuestionJsonResponse = {
@@ -117,17 +118,6 @@ ${level}
 ${titleList.join("\n")}`;
   }
 
-  public static buildReviewerSettingPrompt({
-    reviewer,
-  }: {
-    reviewer: Reviewer;
-  }) {
-    return `あなたはJavaScriptの講師です。下記の講師の設定になりきって、問題文を作成してください。敬語かタメ口も、キャラに合わせてください。
-# 講師の設定
-- 名前: ${reviewer.name}
-- プロフィール: ${reviewer.bio} ${reviewer.hiddenProfile}`;
-  }
-
   public static async generateQuestion({
     course,
     level,
@@ -155,7 +145,7 @@ ${titleList.join("\n")}`;
       messages: [
         {
           role: "developer",
-          content: this.buildReviewerSettingPrompt({ reviewer }),
+          content: buildReviewerSettingPrompt({ reviewer }),
         },
         {
           role: "user",

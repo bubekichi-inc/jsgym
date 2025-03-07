@@ -1,9 +1,10 @@
-import { Question } from "@prisma/client";
+import { Question, Reviewer } from "@prisma/client";
 import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { z } from "zod";
 import { GPT_4O_MINI } from "../_constants/openAI";
+import { buildReviewerSettingPrompt } from "../_utils/buildReviewerSettingPrompt";
 import { AIReviewJsonResponse } from "../api/questions/[questionId]/code_review/_types/CodeReview";
 import { Message } from "../api/questions/[questionId]/messages/route";
 
@@ -84,13 +85,19 @@ ${question.exampleAnswer}
   public static async getCodeReview({
     question,
     answer,
+    reviewer,
   }: {
     question: Question;
     answer: string;
+    reviewer: Reviewer | null;
   }): Promise<AIReviewJsonResponse | null> {
     const response = await this.openai.beta.chat.completions.parse({
       model: GPT_4O_MINI,
       messages: [
+        {
+          role: "developer",
+          content: buildReviewerSettingPrompt({ reviewer }),
+        },
         {
           role: "user",
           content: this.buildPrompt({ question, answer }),

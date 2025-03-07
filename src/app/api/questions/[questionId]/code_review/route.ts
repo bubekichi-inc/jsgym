@@ -26,6 +26,7 @@ export const POST = async (request: NextRequest, { params }: Props) => {
       },
       include: {
         lesson: true,
+        reviewer: true,
       },
     });
 
@@ -34,6 +35,7 @@ export const POST = async (request: NextRequest, { params }: Props) => {
     const res = await AIReviewService.getCodeReview({
       question,
       answer,
+      reviewer: question.reviewer,
     });
 
     if (!res) throw new Error("レビュー中にエラーが発生しました");
