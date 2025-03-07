@@ -60,10 +60,10 @@ model Question {
   createdAt     DateTime              @default(now()) @map("created_at")
   updatedAt     DateTime              @updatedAt @map("updated_at")
   id            String                @id
-  reviewerId    Int?                  @map("reviewer_id")
+  reviewerId    Int                   @map("reviewer_id")
   questions     QuestionTagRelation[]
   lesson        Lesson                @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-  reviewer      Reviewer?             @relation(fields: [reviewerId], references: [id])
+  reviewer      Reviewer              @relation(fields: [reviewerId], references: [id])
   userQuestions UserQuestion[]
 
   @@map("questions")
