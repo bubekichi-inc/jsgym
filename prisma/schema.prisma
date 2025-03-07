@@ -189,6 +189,7 @@ model Reviewer {
   createdAt       DateTime   @default(now()) @map("created_at")
   updatedAt       DateTime   @updatedAt @map("updated_at")
   id              Int        @id @default(autoincrement())
+  hiddenProfile   String     @map("hidden_profile")
   messages        Message[]
   questions       Question[]
   user            User?      @relation(fields: [userId], references: [id])
