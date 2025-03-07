@@ -51,6 +51,7 @@ export const Question: React.FC = () => {
       <ReviewerModal
         isOpen={showReviewerModal}
         onClose={() => setShowReviewerModal(false)}
+        reviewer={data.question.reviewer}
       />
     </>
   );

@@ -1,25 +1,31 @@
 "use client";
 
 import Image from "next/image";
-import { useParams } from "next/navigation";
 import React from "react";
 import { MarkdownWrapper } from "@/app/_components/MarkdownWrapper";
 import { Modal } from "@/app/_components/Modal";
-import { useQuestion } from "@/app/_hooks/useQuestion";
+
+type Reviewer = {
+  id: number;
+  name: string;
+  bio: string;
+  profileImageUrl: string;
+};
 
 interface Props {
+  reviewer: Reviewer | null;
   isOpen: boolean;
   onClose: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
-export const ReviewerModal: React.FC<Props> = ({ isOpen, onClose }) => {
-  const params = useParams();
-  const questionId = params.questionId as string;
-  const { data } = useQuestion({ questionId });
+export const ReviewerModal: React.FC<Props> = ({
+  reviewer,
+  isOpen,
+  onClose,
+}) => {
+  if (!reviewer) return null;
 
-  if (!data || !data.question.reviewer) return null;
-
-  const { name, bio, profileImageUrl } = data.question.reviewer;
+  const { name, bio, profileImageUrl } = reviewer;
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} maxWidth="">
