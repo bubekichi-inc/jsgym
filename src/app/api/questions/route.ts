@@ -11,6 +11,12 @@ export type Question = {
   title: string;
   createdAt: Date;
   content: string;
+  reviewer: {
+    id: number;
+    bio: string;
+    name: string;
+    profileImageUrl: string;
+  } | null;
   questions: {
     tag: {
       name: string;
@@ -83,6 +89,14 @@ export const GET = async (request: NextRequest) => {
                 name: true,
               },
             },
+          },
+        },
+        reviewer: {
+          select: {
+            id: true,
+            name: true,
+            bio: true,
+            profileImageUrl: true,
           },
         },
         ...userQuestionsQuery,

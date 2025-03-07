@@ -1,6 +1,7 @@
 "use client";
 
 import dayjs from "dayjs";
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import {
@@ -24,13 +25,13 @@ export const Questions: React.FC<Props> = ({ limit }) => {
     `/api/questions/?limit=${limit}`
   );
 
-  const problems = data?.questions ?? [];
+  const questions = data?.questions ?? [];
 
-  const filteredProblems =
+  const filteredQuestions =
     activeTab === "ALL"
-      ? problems
-      : problems.filter(
-          (problem) => problem.lesson.id === lessonLevelMap[activeTab]
+      ? questions
+      : questions.filter(
+          (question) => question.lesson.id === lessonLevelMap[activeTab]
         );
 
   return (
@@ -94,21 +95,21 @@ export const Questions: React.FC<Props> = ({ limit }) => {
             </div>
             <div className="mt-0">
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {filteredProblems.map((problem) => (
+                {filteredQuestions.map((question) => (
                   <div
-                    key={problem.id}
+                    key={question.id}
                     className="relative flex h-full flex-col rounded-lg border bg-white p-6 py-8 shadow-sm"
                   >
                     <div className="space-y-2 pb-4">
                       <div className="flex items-center justify-between">
                         <div className="mb-1 text-sm">
                           <span className="text-gray-600">
-                            {dayjs(problem.createdAt).format(
+                            {dayjs(question.createdAt).format(
                               "YYYY/MM/DD_HH:mm"
                             )}
                           </span>
                           <span>
-                            {dayjs(problem.createdAt).isSame(
+                            {dayjs(question.createdAt).isSame(
                               dayjs(),
                               "day"
                             ) && (
@@ -121,59 +122,77 @@ export const Questions: React.FC<Props> = ({ limit }) => {
                         <div className="flex gap-2">
                           <span
                             className={`inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-sm font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 ${
-                              problem.lesson.id === lessonLevelMap["EASY"]
+                              question.lesson.id === lessonLevelMap["EASY"]
                                 ? "border-transparent bg-blue-500 text-white"
-                                : problem.lesson.id === lessonLevelMap["MEDIUM"]
+                                : question.lesson.id ===
+                                  lessonLevelMap["MEDIUM"]
                                 ? "border-transparent bg-yellow-500 text-white"
                                 : "border-transparent bg-red-500 text-white"
                             }`}
                           >
                             {
                               lessonTextMap[
-                                problem.lesson.id as keyof typeof lessonTextMap
+                                question.lesson.id as keyof typeof lessonTextMap
                               ]
                             }
                           </span>
                         </div>
                       </div>
-                      <h3 className="text-xl font-bold">{problem.title}</h3>
+                      <h3 className="text-xl font-bold">{question.title}</h3>
                       <p className="line-clamp-2 text-gray-500">
-                        {problem.content}
+                        {question.content}
                       </p>
                     </div>
-                    <div className="grow">
-                      <div className="flex flex-wrap gap-2">
-                        {problem.questions.map((q) => (
-                          <span
-                            key={q.tag.name}
-                            className="inline-flex items-center rounded-md border border-gray-200 px-2.5 py-0.5 text-xs font-semibold text-gray-800 transition-colors"
-                          >
-                            {
-                              questionTagTextMap[
-                                q.tag.name as keyof typeof questionTagTextMap
-                              ]
-                            }
-                          </span>
-                        ))}
+                    <div className="flex items-center justify-between">
+                      <div className="grow">
+                        <div className="flex flex-wrap gap-2">
+                          {question.questions.map((q) => (
+                            <span
+                              key={q.tag.name}
+                              className="inline-flex items-center rounded-md border border-gray-200 px-2.5 py-0.5 text-xs font-semibold text-gray-800 transition-colors"
+                            >
+                              {
+                                questionTagTextMap[
+                                  q.tag.name as keyof typeof questionTagTextMap
+                                ]
+                              }
+                            </span>
+                          ))}
+                        </div>
                       </div>
+                      {question.reviewer && (
+                        <div className="flex size-10 items-center justify-center overflow-hidden rounded-full">
+                          <Image
+                            src={question.reviewer.profileImageUrl}
+                            alt="reviewer"
+                            width={80}
+                            height={80}
+                            className="size-full object-cover"
+                          />
+                        </div>
+                      )}
                     </div>
                     <div className="pt-4">
                       <Link
-                        href={`/q/${problem.id}`}
+                        href={`/q/${question.id}`}
                         className="inline-flex w-full items-center justify-center rounded-md bg-black px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
                       >
                         問題に挑戦する
                       </Link>
                     </div>
-                    {problem.userQuestions?.[0] && (
+                    {question.userQuestions?.[0] && (
                       <div
                         className={`absolute left-0 top-0 rounded-br-lg rounded-tl-lg px-2 py-1 text-sm text-white ${
                           userQuestionColorMap[
-                            problem.userQuestions?.[0].status
+                            question.userQuestions?.[0].status
                           ]
                         }`}
                       >
-                        {userQuestionTextMap[problem.userQuestions?.[0].status]}
+                        {
+                          userQuestionTextMap[
+                            question.userQuestions?.[0].status
+                          ]
+                        }
                       </div>
                     )}
                   </div>
