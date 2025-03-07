@@ -89,6 +89,7 @@ export const POST = async (request: NextRequest, { params }: Props) => {
           message: "",
           sender: Sender.SYSTEM,
           userQuestionId: userQuestion.id,
+          reviewerId: question.reviewer?.id,
           codeReview: {
             create: {
               userQuestionId: userQuestion.id,
