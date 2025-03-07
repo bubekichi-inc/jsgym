@@ -172,9 +172,14 @@ export const Questions: React.FC<Props> = ({ limit }) => {
                             />
                           </div>
                           <div className="invisible absolute -right-4 bottom-full z-10 mb-2 w-[320px] rounded-lg bg-gray-900 p-2 text-sm text-white opacity-0 transition-all group-hover:visible group-hover:opacity-100">
-                            <p className="font-bold">
-                              {question.reviewer.name}
-                            </p>
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs text-gray-300">
+                                レビュワー
+                              </span>
+                              <p className="font-bold">
+                                {question.reviewer.name}
+                              </p>
+                            </div>
                             <p className="mt-1 whitespace-pre-line text-xs text-gray-300">
                               {question.reviewer.bio}
                             </p>
