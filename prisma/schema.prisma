@@ -27,7 +27,7 @@ model User {
   newInfoEnabled       Boolean            @default(true) @map("new_info_enabled")
   usefulInfoEnabled    Boolean            @default(true) @map("useful_info_enabled")
   reminderEnabled      Boolean            @default(true) @map("reminder_enabled")
-  ImportantInfoEnabled Boolean            @default(true) @map("important_info_enabled")
+  importantInfoEnabled Boolean            @default(true) @map("important_info_enabled")
 
   @@map("users")
 }
