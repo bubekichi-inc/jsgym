@@ -35,6 +35,12 @@ export type Message = {
       level: CodeReviewCommentLevel | null;
     }[];
   } | null;
+  reviewer: {
+    id: number;
+    name: string;
+    bio: string;
+    profileImageUrl: string;
+  } | null;
   answer: {
     id: string;
     answer: string;
@@ -70,6 +76,14 @@ export const GET = async (request: NextRequest, { params }: Props) => {
             message: true,
             sender: true,
             createdAt: true,
+            reviewer: {
+              select: {
+                id: true,
+                name: true,
+                bio: true,
+                profileImageUrl: true,
+              },
+            },
             codeReview: {
               select: {
                 id: true,
@@ -122,6 +136,14 @@ export const POST = async (request: NextRequest, { params }: Props) => {
           questionId,
         },
       },
+      select: {
+        id: true,
+        question: {
+          select: {
+            reviewer: true,
+          },
+        },
+      },
     });
 
     if (!userQuestion)
@@ -139,6 +161,14 @@ export const POST = async (request: NextRequest, { params }: Props) => {
         message: true,
         sender: true,
         createdAt: true,
+        reviewer: {
+          select: {
+            id: true,
+            name: true,
+            bio: true,
+            profileImageUrl: true,
+          },
+        },
         codeReview: {
           select: {
             id: true,
@@ -178,6 +208,7 @@ export const POST = async (request: NextRequest, { params }: Props) => {
 
     const systemMessageContent = await AIReviewService.getChatResponse({
       openAIMessages,
+      reviewer: userQuestion.question.reviewer,
     });
 
     await prisma.message.create({
@@ -193,6 +224,7 @@ export const POST = async (request: NextRequest, { params }: Props) => {
         message: systemMessageContent,
         sender: Sender.SYSTEM,
         userQuestionId: userQuestion.id,
+        reviewerId: userQuestion.question.reviewer?.id,
       },
     });
 

@@ -24,6 +24,9 @@ export class AIReviewService {
       })
     ),
   });
+  private static Chat = z.object({
+    message: z.string(),
+  });
 
   public static buildPrompt({
     question,
@@ -118,18 +121,20 @@ ${question.exampleAnswer}
 
   public static async getChatResponse({
     openAIMessages,
+    reviewer,
   }: {
     openAIMessages: ChatCompletionMessageParam[];
+    reviewer: Reviewer | null;
   }) {
     const messages: ChatCompletionMessageParam[] = [
       {
-        role: "system",
-        content: "JSON形式で返さないでください。",
+        role: "developer",
+        content: buildReviewerSettingPrompt({ reviewer }),
       },
       ...openAIMessages,
     ];
 
-    const response = await this.openai.chat.completions.create({
+    const response = await this.openai.beta.chat.completions.parse({
       model: GPT_4O_MINI,
       messages,
       temperature: 1,
@@ -137,8 +142,9 @@ ${question.exampleAnswer}
       top_p: 1,
       frequency_penalty: 0,
       presence_penalty: 0,
+      response_format: zodResponseFormat(this.Chat, "event"),
     });
 
-    return response.choices[0]?.message?.content || "";
+    return response.choices[0].message.parsed?.message || "";
   }
 }
