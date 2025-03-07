@@ -64,6 +64,7 @@ export default async function Image({
         content={data.question.content}
         lessonId={data.question.lesson.id}
         courseId={data.question.lesson.course.id}
+        reviewer={data.question.reviewer}
       />
     ),
     {
