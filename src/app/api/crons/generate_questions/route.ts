@@ -51,14 +51,18 @@ const getLevelName = (lessonId: number) => {
 export const maxDuration = 30;
 
 const generage = async () => {
+  const prisma = await buildPrisma();
+  const reviewes = await prisma.reviewer.findMany();
+  // ランダムにレビュワーを選択
+  const reviewer = reviewes[Math.floor(Math.random() * reviewes.length)];
+
   const response = await AIQuestionGenerateService.generateQuestion({
     course: CourseType.JAVA_SCRIPT,
     level: getRandomDifficulty(),
+    reviewer,
   });
 
   if (!response) throw new Error("Failed to generate question.");
-
-  const prisma = await buildPrisma();
 
   const allTags = await prisma.questionTag.findMany();
 
@@ -71,6 +75,7 @@ const generage = async () => {
       example: response.inputOutputExample,
       exampleAnswer: response.exampleAnswer,
       lessonId: getLessonId(response.level),
+      reviewerId: reviewer.id,
     },
   });
 
