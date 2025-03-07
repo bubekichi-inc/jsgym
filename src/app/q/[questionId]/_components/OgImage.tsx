@@ -56,8 +56,10 @@ export const OgImage: React.FC<Props> = ({
             </div>
             <img
               src={`https://jsgym.shiftb.dev${reviewer.profileImageUrl}`}
-              alt=""
-              tw="w-[80px] h-[80px] rounded-full"
+              alt="reviewer"
+              tw="rounded-full size-[80px] block"
+              width={80}
+              height={80}
             />
           </div>
           <p tw="text-[64px] font-[700]">{title}</p>
