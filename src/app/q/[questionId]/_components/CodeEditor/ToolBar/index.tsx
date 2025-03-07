@@ -68,6 +68,7 @@ export const ToolBar: React.FC<Props> = ({
               answer: "",
               createdAt: new Date(),
             },
+            reviewer: null,
           },
         ],
       },
