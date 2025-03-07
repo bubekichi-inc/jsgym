@@ -110,7 +110,7 @@ export const POST = async (request: NextRequest, { params }: Props) => {
     const slack = new SlackService();
     await slack.postMessage({
       channel: "js-gym通知",
-      message: `コードレビューが完了しました\n\n[${question.lesson.name}] ${question.title}\n\n問題文:\n${question.content}\n\n回答内容:\n${answer}\n\n結果: ${result}\n\nhttps://jsgym.shiftb.dev/q/${question.id}`,
+      message: `コードレビューが完了しました\n\n[${question.lesson.name}] ${question.title}\n\n問題文:\n${question.content}\n\n回答内容:\n${answer}\n\n結果: ${result}\nコメント: ${overview}\n\nhttps://jsgym.shiftb.dev/q/${question.id}`,
     });
 
     return NextResponse.json(
