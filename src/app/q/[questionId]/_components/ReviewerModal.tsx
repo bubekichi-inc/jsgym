@@ -29,7 +29,7 @@ export const ReviewerModal: React.FC<Props> = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} maxWidth="">
-      <div className="relative flex flex-col gap-4 md:flex-row md:items-start">
+      <div className="relative flex flex-col gap-4 md:flex-row md:items-start md:gap-6">
         <div className="md:w-1/2">
           <Image
             src={profileImageUrl}
