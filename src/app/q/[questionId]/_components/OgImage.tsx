@@ -11,7 +11,7 @@ interface Props {
     name: string;
     bio: string;
     profileImageUrl: string;
-  } | null;
+  };
 }
 
 export const OgImage: React.FC<Props> = ({
@@ -54,13 +54,11 @@ export const OgImage: React.FC<Props> = ({
                 {lessonTextMap[lessonId as keyof typeof lessonTextMap]}
               </div>
             </div>
-            {reviewer && (
-              <img
-                src={`https://jsgym.shiftb.dev${reviewer.profileImageUrl}`}
-                alt=""
-                tw="w-[80px] h-[80px] rounded-full"
-              />
-            )}
+            <img
+              src={`https://jsgym.shiftb.dev${reviewer.profileImageUrl}`}
+              alt=""
+              tw="w-[80px] h-[80px] rounded-full"
+            />
           </div>
           <p tw="text-[64px] font-[700]">{title}</p>
           <p tw="text-[32px] font-[400] text-gray-500">{content}</p>

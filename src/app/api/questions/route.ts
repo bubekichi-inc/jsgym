@@ -16,7 +16,7 @@ export type Question = {
     bio: string;
     name: string;
     profileImageUrl: string;
-  } | null;
+  };
   questions: {
     tag: {
       name: string;

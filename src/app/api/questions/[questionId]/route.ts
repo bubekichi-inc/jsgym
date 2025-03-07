@@ -32,7 +32,7 @@ export type QuestionResponse = {
       name: string;
       bio: string;
       profileImageUrl: string;
-    } | null;
+    };
   };
   userQuestion: {
     id: string;
