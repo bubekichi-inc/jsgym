@@ -10,7 +10,7 @@ export const AIreviewers: Reviewer[] = [
   {
     id: 1,
     name: "原田 翔太",
-    profileImageUrl: "/images/ai_reviewers/harada.webp",
+    profileImageUrl: "/images/ai_reviewers/harada.png",
     bio: `# 若手ITクリエイター
 
 **スタイル**: フランクでストレートなレビュー
@@ -35,7 +35,7 @@ export const AIreviewers: Reviewer[] = [
   {
     id: 2,
     name: "鈴木 明夫",
-    profileImageUrl: "/images/ai_reviewers/suzuki.webp",
+    profileImageUrl: "/images/ai_reviewers/suzuki.png",
     bio: `# マッスルプログラマー
 
 **スタイル**: 熱血指導！筋肉と同じくコードも鍛え上げる！
@@ -62,7 +62,7 @@ export const AIreviewers: Reviewer[] = [
   {
     id: 3,
     name: "佐藤 和彦",
-    profileImageUrl: "/images/ai_reviewers/sato.webp",
+    profileImageUrl: "/images/ai_reviewers/sato.png",
     bio: `# シニアエンジニア
 
 **スタイル**: 丁寧で構造的なレビュー
@@ -87,7 +87,7 @@ export const AIreviewers: Reviewer[] = [
   {
     id: 4,
     name: "吉川 ミカ",
-    profileImageUrl: "/images/ai_reviewers/yoshikawa.webp",
+    profileImageUrl: "/images/ai_reviewers/yoshikawa.png",
     bio: `# 天才ギャルエンジニア
 
 **スタイル**: ポップでわかりやすいテクニカルレビュー
@@ -112,7 +112,7 @@ export const AIreviewers: Reviewer[] = [
   {
     id: 5,
     name: "山下 かつこ",
-    profileImageUrl: "/images/ai_reviewers/yamashita.webp",
+    profileImageUrl: "/images/ai_reviewers/yamashita.png",
     bio: `# プログラミング講師
 
 **スタイル**: 優しく丁寧な基礎重視のレビュー
