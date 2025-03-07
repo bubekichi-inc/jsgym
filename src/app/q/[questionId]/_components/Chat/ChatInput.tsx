@@ -38,6 +38,7 @@ export const ChatInput: React.FC<Props> = ({ chatBusy, setChatBusy }) => {
             codeReview: null,
             createdAt: new Date(),
             answer: null,
+            reviewer: null,
           },
         ],
       },
