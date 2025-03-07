@@ -27,6 +27,12 @@ export type QuestionResponse = {
         name: CourseType;
       };
     };
+    reviewer: {
+      id: number;
+      name: string;
+      bio: string;
+      profileImageUrl: string;
+    } | null;
   };
   userQuestion: {
     id: string;
@@ -80,6 +86,14 @@ export const GET = async (request: NextRequest, { params }: Props) => {
                 name: true,
               },
             },
+          },
+        },
+        reviewer: {
+          select: {
+            id: true,
+            name: true,
+            bio: true,
+            profileImageUrl: true,
           },
         },
       },

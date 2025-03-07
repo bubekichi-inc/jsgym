@@ -183,8 +183,8 @@ model PointTransaction {
 
 model Reviewer {
   name            String
-  profileImageUrl String?    @map("profile_image_url")
-  bio             String?
+  profileImageUrl String     @map("profile_image_url")
+  bio             String
   userId          String?    @unique @map("user_id") @db.Uuid
   createdAt       DateTime   @default(now()) @map("created_at")
   updatedAt       DateTime   @updatedAt @map("updated_at")
