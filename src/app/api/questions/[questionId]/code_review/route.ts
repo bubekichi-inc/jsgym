@@ -45,70 +45,72 @@ export const POST = async (request: NextRequest, { params }: Props) => {
         ? UserQuestionStatus.PASSED
         : UserQuestionStatus.REVISION_REQUIRED;
 
-    const userQuestionData = await prisma.userQuestion.upsert({
-      where: {
-        userId_questionId: {
-          userId: userId,
-          questionId,
+    await prisma.$transaction(async (tx) => {
+      const userQuestion = await tx.userQuestion.upsert({
+        where: {
+          userId_questionId: {
+            userId: userId,
+            questionId,
+          },
         },
-      },
-      update: {
-        status,
-      },
-      create: {
-        questionId,
-        status,
-        userId,
-      },
-    });
+        update: {
+          status,
+        },
+        create: {
+          questionId,
+          status,
+          userId,
+        },
+      });
 
-    const userMessage = await prisma.message.create({
-      data: {
-        message: AIReviewService.buildPrompt({
-          question: question,
+      const userMessage = await tx.message.create({
+        data: {
+          message: AIReviewService.buildPrompt({
+            question: question,
+            answer,
+          }),
+          sender: Sender.USER,
+          userQuestionId: userQuestion.id,
+        },
+      });
+
+      await tx.answer.create({
+        data: {
+          userQuestionId: userQuestion.id,
+          messageId: userMessage.id,
           answer,
-        }),
-        sender: Sender.USER,
-        userQuestionId: userQuestionData.id,
-      },
-    });
+        },
+      });
 
-    await prisma.answer.create({
-      data: {
-        userQuestionId: userQuestionData.id,
-        messageId: userMessage.id,
-        answer,
-      },
-    });
-
-    await prisma.message.create({
-      data: {
-        message: "",
-        sender: Sender.SYSTEM,
-        userQuestionId: userQuestionData.id,
-        codeReview: {
-          create: {
-            userQuestionId: userQuestionData.id,
-            overview,
-            result,
-            comments: {
-              createMany: {
-                data: comments.map(({ targetCode, message, level }) => ({
-                  targetCode,
-                  message,
-                  level,
-                })),
+      await tx.message.create({
+        data: {
+          message: "",
+          sender: Sender.SYSTEM,
+          userQuestionId: userQuestion.id,
+          codeReview: {
+            create: {
+              userQuestionId: userQuestion.id,
+              overview,
+              result,
+              comments: {
+                createMany: {
+                  data: comments.map(({ targetCode, message, level }) => ({
+                    targetCode,
+                    message,
+                    level,
+                  })),
+                },
               },
             },
           },
         },
-      },
+      });
     });
 
     const slack = new SlackService();
     await slack.postMessage({
       channel: "js-gym通知",
-      message: `コードレビューが完了しました\n\n[${question.lesson.name}] ${question.title}\n\n問題文:\n${question.content}\n\n回答内容:\n${answer}\n\n結果: ${result}\n\nhttps://jsgym.shiftb.dev/q/${question.id}`,
+      message: `コードレビューが完了しました\n\n[${question.lesson.name}] ${question.title}\n\n問題文:\n${question.content}\n\n回答内容:\n${answer}\n\n結果: ${result}\nコメント: ${overview}\n\nhttps://jsgym.shiftb.dev/q/${question.id}`,
     });
 
     return NextResponse.json(
