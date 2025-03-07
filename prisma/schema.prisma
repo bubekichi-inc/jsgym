@@ -22,6 +22,7 @@ model User {
   editorFontSize    EditorFontSize     @default(MEDIUM) @map("editor_font_size")
   editorTheme       EditorTheme        @default(DARK) @map("editor_theme")
   pointTransactions PointTransaction[]
+  reviewer          Reviewer?
   userQuestions     UserQuestion[]
 
   @@map("users")
@@ -59,8 +60,10 @@ model Question {
   createdAt     DateTime              @default(now()) @map("created_at")
   updatedAt     DateTime              @updatedAt @map("updated_at")
   id            String                @id
+  reviewerId    Int?                  @map("reviewer_id")
   questions     QuestionTagRelation[]
   lesson        Lesson                @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  reviewer      Reviewer?             @relation(fields: [reviewerId], references: [id])
   userQuestions UserQuestion[]
 
   @@map("questions")
@@ -123,8 +126,10 @@ model Message {
   createdAt        DateTime          @default(now()) @map("created_at")
   updatedAt        DateTime          @updatedAt @map("updated_at")
   userQuestionId   String            @map("user_id") @db.Uuid
+  reviewerId       Int?              @map("reviewer_id")
   answer           Answer?
   codeReview       CodeReview?
+  reviewer         Reviewer?         @relation(fields: [reviewerId], references: [id])
   userQuestion     UserQuestion      @relation(fields: [userQuestionId], references: [id], onDelete: Cascade)
   pointTransaction PointTransaction?
 
@@ -174,6 +179,21 @@ model PointTransaction {
 
   @@index([stripePaymentId], map: "stripe_payment_id")
   @@map("point_transactions")
+}
+
+model Reviewer {
+  name            String
+  profileImageUrl String?    @map("profile_image_url")
+  bio             String?
+  userId          String?    @unique @map("user_id") @db.Uuid
+  createdAt       DateTime   @default(now()) @map("created_at")
+  updatedAt       DateTime   @updatedAt @map("updated_at")
+  id              Int        @id @default(autoincrement())
+  messages        Message[]
+  questions       Question[]
+  user            User?      @relation(fields: [userId], references: [id])
+
+  @@map("reviewers")
 }
 
 enum QuestionTagValue {

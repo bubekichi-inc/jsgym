@@ -1,5 +1,6 @@
 import { CourseType } from "@prisma/client";
 import { buildPrisma } from "../src/app/_utils/prisma";
+import { AIreviewers, Reviewer } from "./data/aiReviewers";
 import { courses, lessons } from "./data/javascriptCourse";
 import { QuestionTag, questionTags } from "./data/questionTags";
 
@@ -51,17 +52,17 @@ const seedData = async () => {
     );
   };
 
-  // const upsertQuestions = async (questions: Question[]) => {
-  //   await Promise.all(
-  //     questions.map((question) =>
-  //       prisma.question.upsert({
-  //         where: { id: question.id },
-  //         create: question,
-  //         update: question,
-  //       })
-  //     )
-  //   );
-  // };
+  const upsertReviewers = async (reviewers: Reviewer[]) => {
+    await Promise.all(
+      reviewers.map((reviewer) =>
+        prisma.reviewer.upsert({
+          where: { id: reviewer.id },
+          create: reviewer,
+          update: reviewer,
+        })
+      )
+    );
+  };
 
   const upsertQuestionTags = async (questionTags: QuestionTag[]) => {
     await Promise.all(
@@ -78,6 +79,7 @@ const seedData = async () => {
   try {
     await upsertCourses(courses);
     await upsertLessons(lessons);
+    await upsertReviewers(AIreviewers);
     // await upsertQuestions(questions);
     await upsertQuestionTags(questionTags);
   } catch (error) {
