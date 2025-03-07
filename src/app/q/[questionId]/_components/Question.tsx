@@ -21,7 +21,7 @@ export const Question: React.FC = () => {
     <>
       <div className="space-y-6 rounded-lg bg-white p-4">
         <div className="space-y-2">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             {data.question.reviewer && (
               <button onClick={() => setShowReviewerModal(true)}>
                 <Image
