@@ -22,20 +22,25 @@ export const ReviewerModal: React.FC<Props> = ({ isOpen, onClose }) => {
   const { name, bio, profileImageUrl } = data.question.reviewer;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} maxWidth="450px">
-      <div className="flex flex-col space-y-4 ">
-        <div className="flex items-center justify-start gap-4">
+    <Modal isOpen={isOpen} onClose={onClose} maxWidth="">
+      <div className="relative flex flex-col gap-4 md:flex-row md:items-start">
+        <div className="md:w-1/2">
           <Image
             src={profileImageUrl}
             alt={name}
-            width={160}
-            height={160}
-            className="rounded-full"
+            width={500}
+            height={500}
+            className="size-full object-cover"
           />
-          <h2 className="text-xl font-bold">{name}</h2>
         </div>
-        <div className="text-left">
-          <MarkdownWrapper>{bio}</MarkdownWrapper>
+        <div className="space-y-4 md:w-1/2">
+          <div className="flex items-center gap-2">
+            <div className="text-sm text-gray-500">レビュワー</div>
+            <h2 className="text-xl font-bold">{name}</h2>
+          </div>
+          <div className="text-left">
+            <MarkdownWrapper>{bio}</MarkdownWrapper>
+          </div>
         </div>
       </div>
     </Modal>

@@ -26,7 +26,7 @@ export const Modal: FC<Props> = ({
       contentLabel="Modal"
       closeTimeoutMS={300}
       ariaHideApp={false}
-      className={`relative z-[99] w-full ${width} rounded-2xl bg-white p-4 md:p-8`}
+      className={`relative z-[99] w-full ${width} max-h-[90vh] overflow-auto rounded-2xl bg-white p-4 pt-8 md:p-8`}
       overlayClassName="fixed inset-0 bg-black/30 backdrop-blur-[2px] flex items-center justify-center z-[99] duration-300 px-2 md:px-4"
     >
       <div className="overflow-auto">
