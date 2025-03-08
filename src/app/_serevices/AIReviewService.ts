@@ -73,6 +73,12 @@ ${question.title}
 # 問題文
 ${question.content}
 
+# 入力例
+${question.inputCode}
+
+# 出力例
+${question.outputCode}
+
 # ユーザーの解答
 ${answer}
 
