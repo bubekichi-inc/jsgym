@@ -1,3 +1,5 @@
+"use client";
+
 import DOMPurify from "dompurify";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -24,7 +26,9 @@ export const useCodeExecutor = () => {
         addLog(type, messages);
       }
     };
+
     window.addEventListener("message", handleMessage);
+
     return () => {
       window.removeEventListener("message", handleMessage);
     };
