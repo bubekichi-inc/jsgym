@@ -7,24 +7,24 @@ import { buildPrisma } from "@/app/_utils/prisma";
 // 通知設定取得用のAPI
 export const GET = async (request: NextRequest) => {
   const prisma = await buildPrisma();
-  const currentUser = await getCurrentUser({ request });
-
+  
   try {
+    const currentUser = await getCurrentUser({ request });
     const notificationSettings = await prisma.user.findUnique({
       where: {
         id: currentUser.id,
       },
       select: {
         receiveNewQuestionNotification: true,
-        receiveReminderNotification: true,
         receiveUsefulInfoNotification: true,
+        receiveReminderNotification: true,
       },
     });
 
     if (!notificationSettings)
       return NextResponse.json(
         { error : "通知設定の取得に失敗しました"},
-        { status: 404}
+        { status: 404 }
       );
 
     return NextResponse.json<Notification>(notificationSettings, {
@@ -38,14 +38,14 @@ export const GET = async (request: NextRequest) => {
 // 通知設定更新用のAPI
 export const PUT = async (request: NextRequest) => {
   const prisma = await buildPrisma();
-  const currentUser = await getCurrentUser({ request });
-
+  
   try {
+    const currentUser = await getCurrentUser({ request });
     const body = await request.json(); 
     const { 
       receiveNewQuestionNotification, 
+      receiveUsefulInfoNotification,
       receiveReminderNotification,
-      receiveUsefulInfoNotification
     } : Notification = body;
 
     const updateSettings = await prisma.user.update({
@@ -54,13 +54,13 @@ export const PUT = async (request: NextRequest) => {
       },
       data: {
         receiveNewQuestionNotification,
-        receiveReminderNotification,
         receiveUsefulInfoNotification,
+        receiveReminderNotification,
       },
       select: {
         receiveNewQuestionNotification: true,
-        receiveReminderNotification: true,
         receiveUsefulInfoNotification: true,
+        receiveReminderNotification: true,
       }
     });
 
