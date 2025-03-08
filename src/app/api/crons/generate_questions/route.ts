@@ -116,6 +116,7 @@ export const GET = async () => {
     await slack.postMessage({
       channel: "js-gym",
       message: `JS Gymに問題が追加されました！
+
 ${question1Text}
 ${question2Text}
 ${question3Text}`,
