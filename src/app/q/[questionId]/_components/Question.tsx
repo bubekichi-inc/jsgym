@@ -34,7 +34,7 @@ export const Question: React.FC = () => {
   return (
     <>
       <div className="space-y-6 rounded-lg bg-white p-4">
-        <div className="space-y-2">
+        <div className="space-y-2 md:space-y-3">
           <div className="flex items-center gap-3">
             {data.question.reviewer && (
               <button onClick={() => setShowReviewerModal(true)}>
@@ -49,7 +49,7 @@ export const Question: React.FC = () => {
             )}
             <p className="font-bold">お題</p>
           </div>
-          <div className="whitespace-pre-wrap break-words text-sm">
+          <div className="whitespace-pre-wrap break-words text-sm md:text-base">
             {data.question.content}
           </div>
         </div>
