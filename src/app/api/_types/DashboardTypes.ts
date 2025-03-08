@@ -8,7 +8,8 @@ export interface Question {
   id: string;
   title: string;
   content: string;
-  example: string | null;
+  inputCode: string;
+  outputCode: string;
   template: string;
   exampleAnswer: string;
   lessonId: number;
