@@ -17,14 +17,14 @@ type GenerateQuestionJsonResponse = {
   tags: QuestionTagValue[];
 };
 
-export type QuestionLevel = "EASY" | "MEDIUM" | "HARD";
+export type QuestionLevel = "BASIC" | "ADVANCED" | "REAL_WORLD";
 
 type NewType = CourseType;
 
 export class AIQuestionGenerateService {
   private static readonly Lesson1Example = `
 # 問題のレベル
-EASY
+BASIC
 
 # 問題の特徴
 * 1つのメソッドや短いコードで完結する基本的な問題
@@ -49,7 +49,7 @@ EASY
 
   private static readonly Lesson2Example = `
 # 問題のレベル
-MEDIUM
+ADVANCED
 
 # 問題の特徴
 * 配列の操作やオブジェクトの操作などが複合的に組み合わさった問題
@@ -75,7 +75,7 @@ MEDIUM
 
   private static readonly Lesson3Example = `
 # 問題のレベル
-HARD
+REAL_WORLD
 
 # 問題の特徴
 * 問題が発生したストーリーがある（実際の用途を想像したいので）
@@ -212,7 +212,7 @@ HARD
     outputCode: z.string(),
     template: z.string(),
     content: z.string(),
-    level: z.enum(["EASY", "MEDIUM", "HARD"]),
+    level: z.enum(["BASIC", "ADVANCED", "REAL_WORLD"]),
     exampleAnswer: z.string(),
     tags: z.array(z.enum(["VALUE", "ARRAY", "OBJECT", "FUNCTION", "CLASS"])),
   });
