@@ -65,7 +65,7 @@ export const Question: React.FC = () => {
                 <FontAwesomeIcon icon={faCopy} className="mr-1" />
               </button>
             </div>
-            <div className="whitespace-pre-wrap break-words text-xs">
+            <div className="whitespace-pre-wrap break-words rounded bg-editorDark px-3 py-2 text-xs font-semibold text-white">
               {data.question.inputCode}
             </div>
           </div>
@@ -79,7 +79,7 @@ export const Question: React.FC = () => {
                 <FontAwesomeIcon icon={faCopy} className="mr-1" />
               </button>
             </div>
-            <div className="whitespace-pre-wrap break-words text-xs">
+            <div className="whitespace-pre-wrap break-words rounded bg-editorDark px-3 py-2 text-xs font-semibold text-white">
               {data.question.outputCode}
             </div>
           </div>
