@@ -41,7 +41,7 @@ BASIC
                     const number = 2;
                     console.log(double(number)); // 4",
     tags: ["FUNCTION"],
-    level: "EASY",
+    level: "BASIC",
     inputCode: "2",
     outputCode: "4",
   }
@@ -67,7 +67,7 @@ ADVANCED
                     const people = [{ name: '太郎', age: 20 }, { name: '次郎', age: 30 }, { name: '三郎', age: 40 }];
                     console.log(findByAge(people, 30)); // { name: '次郎', age: 30 }",
     tags: ["FUNCTION", "OBJECT"],
-    level: "MEDIUM",
+    level: "ADVANCED",
     inputCode: "第一引数: [{ name: '太郎', age: 20 }, { name: '次郎', age: 30 }, { name: '三郎', age: 40 }], 第二引数: 30",
     outputCode: "{ name: '次郎', age: 30 }",
   }
@@ -92,7 +92,7 @@ REAL_WORLD
     example: "入力: イベントログの配列, 出力: 分析結果オブジェクト（イベントタイプ別カウント、時間帯別分布、ユーザーパターン、商品インタラクション）",
     exampleAnswer: "/**\n * イベントログを処理して分析データを生成する関数\n * @param {Array} eventLogs - 生のイベントログデータ\n * @returns {Promise<Object>} 分析結果を含むオブジェクト\n */\nfunction processEventLogs(eventLogs) {\n  // メモ化（キャッシュ）のための仕組み\n  const cache = new Map();\n  const cacheKey = JSON.stringify(eventLogs.map(log => log.id).sort());\n  \n  // キャッシュチェック\n  if (cache.has(cacheKey)) {\n    return Promise.resolve(cache.get(cacheKey));\n  }\n  \n  return new Promise((resolve, reject) => {\n    try {\n      // 1. イベントを時系列でソート\n      const sortedLogs = [...eventLogs].sort((a, b) => \n        new Date(a.timestamp) - new Date(b.timestamp)\n      );\n      \n      // 2. イベントタイプごとのカウントを計算\n      const eventsByType = sortedLogs.reduce((acc, log) => {\n        acc[log.type] = (acc[log.type] || 0) + 1;\n        return acc;\n      }, {});\n      \n      // 3. 時間帯別の分布を計算\n      const timeDistribution = sortedLogs.reduce((acc, log) => {\n        const hour = new Date(log.timestamp).getUTCHours();\n        \n        if (hour >= 6 && hour < 12) {\n          acc.morning = (acc.morning || 0) + 1;\n        } else if (hour >= 12 && hour < 18) {\n          acc.afternoon = (acc.afternoon || 0) + 1;\n        } else {\n          acc.evening = (acc.evening || 0) + 1;\n        }\n        \n        return acc;\n      }, { morning: 0, afternoon: 0, evening: 0 });\n      \n      // 4. ユーザーごとの行動パターンを抽出\n      const userLogs = {};\n      sortedLogs.forEach(log => {\n        if (!userLogs[log.userId]) {\n          userLogs[log.userId] = [];\n        }\n        userLogs[log.userId].push(log);\n      });\n      \n      const userPatterns = {};\n      Object.entries(userLogs).forEach(([userId, logs]) => {\n        const sequence = logs.map(log => log.type);\n        \n        // イベントタイプの出現回数をカウント\n        const typeCounts = sequence.reduce((acc, type) => {\n          acc[type] = (acc[type] || 0) + 1;\n          return acc;\n        }, {});\n        \n        // 最も頻繁に発生したイベントを特定\n        const mostFrequent = Object.entries(typeCounts)\n          .sort((a, b) => b[1] - a[1])[0][0];\n        \n        // コンバージョンパスを確認（ページ閲覧からカート追加まで）\n        const hasPageView = sequence.includes('pageView');\n        const hasAddToCart = sequence.includes('addToCart');\n        const conversionPath = hasPageView && hasAddToCart;\n        \n        userPatterns[userId] = {\n          sequence: [...new Set(sequence)], // 重複を除去\n          mostFrequent,\n          conversionPath\n        };\n      });\n      \n      // 5. 商品ごとのインタラクション回数を計算\n      const productInteractions = sortedLogs.reduce((acc, log) => {\n        if (log.productId) {\n          acc[log.productId] = (acc[log.productId] || 0) + 1;\n        }\n        return acc;\n      }, {});\n      \n      // 6. 結果オブジェクトを作成\n      const result = {\n        eventsByType,\n        timeDistribution,\n        userPatterns,\n        productInteractions\n      };\n      \n      // キャッシュに結果を保存\n      cache.set(cacheKey, result);\n      \n      // 結果を返す\n      resolve(result);\n      \n    } catch (error) {\n      reject(error);\n    }\n  });\n}\n\n// テスト用のイベントログデータ\nconst eventLogs = [\n  { \n    id: 'e001', \n    userId: 'user123', \n    type: 'pageView', \n    page: 'home', \n    timestamp: '2023-10-15T08:30:00Z'\n  },\n  { \n    id: 'e002', \n    userId: 'user123', \n    type: 'click', \n    element: 'product-card', \n    productId: 'prod456', \n    timestamp: '2023-10-15T08:32:00Z'\n  },\n  // 他のイベントログ...\n];\n\n// 実行\nprocessEventLogs(eventLogs).then(result => {\n  console.log('分析結果:', result);\n});",
     tags: ["FUNCTION", "OBJECT"],
-    level: "HARD",
+    level: "REAL_WORLD",
     inputCode: "const eventLogs = [
       {
         id: 'e001',

@@ -9,28 +9,28 @@ import {
 import { buildPrisma } from "@/app/_utils/prisma";
 
 /**
- * 難易度を "EASY", "MEDIUM", "HARD" の比率 5:3:2 で返す関数
- * @returns {("EASY"|"MEDIUM"|"HARD")} ランダムに選ばれた難易度
+ * 難易度を "BASIC", "ADVANCED", "REAL_WORLD" の比率 5:3:2 で返す関数
+ * @returns {("BASIC"|"ADVANCED"|"REAL_WORLD")} ランダムに選ばれた難易度
  */
 const getRandomDifficulty = (): QuestionLevel => {
-  const easyRate = 0.5;
-  const normalRate = 0.3;
+  const basicRate = 0.5;
+  const advancedRate = 0.3;
 
   const random = Math.random();
 
-  if (random < easyRate) {
-    return "EASY";
-  } else if (random < easyRate + normalRate) {
-    return "MEDIUM";
+  if (random < basicRate) {
+    return "BASIC";
+  } else if (random < basicRate + advancedRate) {
+    return "ADVANCED";
   } else {
-    return "HARD";
+    return "REAL_WORLD";
   }
 };
 
 const getLessonId = (level: QuestionLevel) => {
-  if (level === "EASY") {
+  if (level === "BASIC") {
     return 1;
-  } else if (level === "MEDIUM") {
+  } else if (level === "ADVANCED") {
     return 2;
   } else {
     return 3;

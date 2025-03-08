@@ -7,9 +7,9 @@ export const lessonTextMap = {
 };
 
 export const lessonLevelMap = {
-  EASY: 1,
-  MEDIUM: 2,
-  HARD: 3,
+  BASIC: 1,
+  ADVANCED: 2,
+  REAL_WORLD: 3,
 };
 
 export const lessonStyleMap = {

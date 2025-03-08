@@ -63,31 +63,31 @@ export const Questions: React.FC<Props> = ({ limit }) => {
                 </button>
                 <button
                   className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
-                    activeTab === "EASY"
+                    activeTab === "BASIC"
                       ? "bg-white text-gray-950 shadow-sm"
                       : ""
                   }`}
-                  onClick={() => setActiveTab("EASY")}
+                  onClick={() => setActiveTab("BASIC")}
                 >
                   初級
                 </button>
                 <button
                   className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
-                    activeTab === "MEDIUM"
+                    activeTab === "ADVANCED"
                       ? "bg-white text-gray-950 shadow-sm"
                       : ""
                   }`}
-                  onClick={() => setActiveTab("MEDIUM")}
+                  onClick={() => setActiveTab("ADVANCED")}
                 >
                   中級
                 </button>
                 <button
                   className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
-                    activeTab === "HARD"
+                    activeTab === "REAL_WORLD"
                       ? "bg-white text-gray-950 shadow-sm"
                       : ""
                   }`}
-                  onClick={() => setActiveTab("HARD")}
+                  onClick={() => setActiveTab("REAL_WORLD")}
                 >
                   実務模擬
                 </button>
@@ -122,10 +122,10 @@ export const Questions: React.FC<Props> = ({ limit }) => {
                         <div className="flex gap-2">
                           <span
                             className={`inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-sm font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 ${
-                              question.lesson.id === lessonLevelMap["EASY"]
+                              question.lesson.id === lessonLevelMap["BASIC"]
                                 ? "border-transparent bg-blue-500 text-white"
                                 : question.lesson.id ===
-                                  lessonLevelMap["MEDIUM"]
+                                  lessonLevelMap["ADVANCED"]
                                 ? "border-transparent bg-yellow-500 text-white"
                                 : "border-transparent bg-red-500 text-white"
                             }`}
