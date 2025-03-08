@@ -14,7 +14,8 @@ export type QuestionResponse = {
   question: {
     id: string;
     title: string;
-    example: string | null;
+    inputCode: string;
+    outputCode: string;
     exampleAnswer: string;
     content: string;
     template: string;
@@ -71,7 +72,8 @@ export const GET = async (request: NextRequest, { params }: Props) => {
       select: {
         id: true,
         title: true,
-        example: true,
+        inputCode: true,
+        outputCode: true,
         exampleAnswer: true,
         content: true,
         template: true,

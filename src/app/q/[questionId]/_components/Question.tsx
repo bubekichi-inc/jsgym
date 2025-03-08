@@ -41,9 +41,13 @@ export const Question: React.FC = () => {
         </div>
 
         <div className="space-y-1 rounded-lg bg-orange-50 p-3">
-          <p className="text-xs font-bold">入出力例</p>
+          <p className="text-xs font-bold">入力例</p>
           <div className="whitespace-pre-wrap break-words text-xs">
-            {data.question.example}
+            {data.question.inputCode}
+          </div>
+          <p className="text-xs font-bold">出力例</p>
+          <div className="whitespace-pre-wrap break-words text-xs">
+            {data.question.outputCode}
           </div>
         </div>
       </div>

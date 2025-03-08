@@ -52,7 +52,6 @@ model Lesson {
 
 model Question {
   title         String
-  example       String?
   content       String
   lessonId      Int                   @map("lesson_id")
   template      String
@@ -61,6 +60,8 @@ model Question {
   updatedAt     DateTime              @updatedAt @map("updated_at")
   id            String                @id
   reviewerId    Int                   @map("reviewer_id")
+  inputCode     String
+  outputCode    String
   questions     QuestionTagRelation[]
   lesson        Lesson                @relation(fields: [lessonId], references: [id], onDelete: Cascade)
   reviewer      Reviewer              @relation(fields: [reviewerId], references: [id])

@@ -1,9 +1,9 @@
 import { UserQuestionStatus } from "@prisma/client";
 
 export const lessonTextMap = {
-  1: "初級",
-  2: "中級",
-  3: "上級",
+  1: "基礎",
+  2: "応用",
+  3: "実務模擬",
 };
 
 export const lessonLevelMap = {
