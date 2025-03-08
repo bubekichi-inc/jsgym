@@ -48,6 +48,10 @@ export type QuestionResponse = {
   nextQuestion: {
     id: string;
     title: string;
+    lesson: {
+      id: number;
+      name: string;
+    };
   } | null;
 };
 
@@ -140,6 +144,12 @@ export const GET = async (request: NextRequest, { params }: Props) => {
       select: {
         id: true,
         title: true,
+        lesson: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
       orderBy: {
         id: "asc",

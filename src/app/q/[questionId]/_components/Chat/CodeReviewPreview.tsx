@@ -1,4 +1,4 @@
-import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CodeReviewCommentLevel, CodeReviewResult } from "@prisma/client";
 import Image from "next/image";
@@ -100,47 +100,57 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
         )}
       </div>
       {codeReview.result === "APPROVED" && (
-        <div className="flex flex-col items-end justify-end gap-4 md:flex-row md:items-center md:gap-8">
-          <div className="flex items-center gap-4">
-            <span className="text-xs font-bold text-orange-500">
-              成果をシェアしよう！
-            </span>
-            <a
-              href={`https://twitter.com/intent/tweet?text=${shareText}`}
-              target="_blank"
-              className=""
-            >
-              <Image
-                src="/images/x_logo.svg"
-                height={50}
-                width={50}
-                alt="x"
-                className="size-5"
-              />
-            </a>
-            <a
-              href={`https://www.threads.net/intent/post?text=${shareText}`}
-              target="_blank"
-              className=""
-            >
-              <Image
-                src="/images/threads_logo.svg"
-                height={50}
-                width={50}
-                alt="x"
-                className="size-6"
-              />
-            </a>
+        <div className="flex items-end justify-end">
+          <div className="flex flex-col items-end gap-4">
+            <div className="flex items-center gap-4">
+              <span className="text-xs font-bold text-orange-500">
+                成果をシェアしよう！
+              </span>
+              <a
+                href={`https://twitter.com/intent/tweet?text=${shareText}`}
+                target="_blank"
+                className=""
+              >
+                <Image
+                  src="/images/x_logo.svg"
+                  height={50}
+                  width={50}
+                  alt="x"
+                  className="size-5"
+                />
+              </a>
+              <a
+                href={`https://www.threads.net/intent/post?text=${shareText}`}
+                target="_blank"
+                className=""
+              >
+                <Image
+                  src="/images/threads_logo.svg"
+                  height={50}
+                  width={50}
+                  alt="x"
+                  className="size-6"
+                />
+              </a>
+            </div>
+            <div className="flex items-center">
+              <Link
+                href={`/q`}
+                className="flex items-center gap-1 px-3 py-1 text-sm text-gray-600 duration-150 hover:underline"
+              >
+                問題一覧に戻る
+              </Link>
+              {data?.nextQuestion && (
+                <Link
+                  href={`/q/${data.nextQuestion.id}`}
+                  className="flex items-center gap-2 rounded border border-blue-500 bg-white px-3 py-2 text-sm font-bold text-blue-500 duration-150 hover:bg-blue-50"
+                >
+                  <span>次の{data.nextQuestion.lesson.name}問題へ</span>
+                  <FontAwesomeIcon icon={faChevronRight} className="size-3" />
+                </Link>
+              )}
+            </div>
           </div>
-          {data?.nextQuestion && (
-            <Link
-              href={`/q/${data.nextQuestion.id}`}
-              className="flex items-center gap-1 rounded border border-blue-500 px-3 py-1 text-sm font-bold text-blue-500 duration-150 hover:bg-blue-50"
-            >
-              <span>次の問題へ進む</span>
-              <FontAwesomeIcon icon={faArrowRight} className="size-3" />
-            </Link>
-          )}
         </div>
       )}
     </div>
