@@ -232,9 +232,9 @@ ${course}の問題を作成してください。
 これから、JavaScriptを自走して書けるようになるための問題です。
 アプリケーションのユーザーが、その問題を解いて、提出して、判定を得ることで、学習を進めることができます。
 
-${level === "EASY" && this.Lesson1Example}
-${level === "MEDIUM" && this.Lesson2Example}
-${level === "HARD" && this.Lesson3Example}
+${level === "BASIC" && this.Lesson1Example}
+${level === "ADVANCED" && this.Lesson2Example}
+${level === "REAL_WORLD" && this.Lesson3Example}
 
 # 出力型の説明
 * title: 問題のタイトル
