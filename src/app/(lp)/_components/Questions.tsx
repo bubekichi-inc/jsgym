@@ -69,7 +69,7 @@ export const Questions: React.FC<Props> = ({ limit }) => {
                   }`}
                   onClick={() => setActiveTab("BASIC")}
                 >
-                  初級
+                  基礎
                 </button>
                 <button
                   className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
@@ -79,7 +79,7 @@ export const Questions: React.FC<Props> = ({ limit }) => {
                   }`}
                   onClick={() => setActiveTab("ADVANCED")}
                 >
-                  中級
+                  応用
                 </button>
                 <button
                   className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
