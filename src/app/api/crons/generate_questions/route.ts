@@ -47,7 +47,7 @@ const getLessonId = (level: QuestionLevel) => {
 //   }
 // };
 
-export const maxDuration = 45;
+export const maxDuration = 60;
 
 const generage = async () => {
   const prisma = await buildPrisma();
