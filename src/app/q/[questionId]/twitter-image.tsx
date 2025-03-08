@@ -50,7 +50,7 @@ export default async function Image({
       getUniqueChars(
         data.question.title +
           data.question.content +
-          "JS Gym 初級 中級 上級 JavaScript"
+          "JS Gym 基礎 応用 実務模擬 JavaScript"
       )
     )}`
   ).then((res) => res.text());

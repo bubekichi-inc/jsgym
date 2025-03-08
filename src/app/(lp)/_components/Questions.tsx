@@ -89,7 +89,7 @@ export const Questions: React.FC<Props> = ({ limit }) => {
                   }`}
                   onClick={() => setActiveTab("HARD")}
                 >
-                  上級
+                  実務模擬
                 </button>
               </div>
             </div>

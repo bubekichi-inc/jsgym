@@ -39,11 +39,11 @@ const getLessonId = (level: QuestionLevel) => {
 
 // const getLevelName = (lessonId: number) => {
 //   if (lessonId === 1) {
-//     return "初級";
+//     return "基礎";
 //   } else if (lessonId === 2) {
-//     return "中級";
+//     return "応用";
 //   } else {
-//     return "上級";
+//     return "実務模擬";
 //   }
 // };
 
