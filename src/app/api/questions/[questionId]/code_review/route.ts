@@ -2,7 +2,6 @@ import { Sender, CodeReviewResult, UserQuestionStatus } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { CodeReviewRequest } from "./_types/CodeReview";
 import { AIReviewService } from "@/app/_serevices/AIReviewService";
-import { SlackService } from "@/app/_serevices/SlackService";
 import { buildPrisma } from "@/app/_utils/prisma";
 import { buildError } from "@/app/api/_utils/buildError";
 import { getCurrentUser } from "@/app/api/_utils/getCurrentUser";
@@ -110,11 +109,11 @@ export const POST = async (request: NextRequest, { params }: Props) => {
       });
     });
 
-    const slack = new SlackService();
-    await slack.postMessage({
-      channel: "js-gym通知",
-      message: `コードレビューが完了しました\n\n[${question.lesson.name}] ${question.title}\n\n問題文:\n${question.content}\n\n回答内容:\n${answer}\n\n結果: ${result}\nコメント: ${overview}\n\nhttps://jsgym.shiftb.dev/q/${question.id}`,
-    });
+    // const slack = new SlackService();
+    // await slack.postMessage({
+    //   channel: "js-gym通知",
+    //   message: `コードレビューが完了しました\n\n[${question.lesson.name}] ${question.title}\n\n問題文:\n${question.content}\n\n回答内容:\n${answer}\n\n結果: ${result}\nコメント: ${overview}\n\nhttps://jsgym.shiftb.dev/q/${question.id}`,
+    // });
 
     return NextResponse.json(
       {

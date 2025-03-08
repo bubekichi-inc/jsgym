@@ -6,7 +6,6 @@ import {
   AIQuestionGenerateService,
   QuestionLevel,
 } from "@/app/_serevices/AIQuestionGenerateService";
-import { SlackService } from "@/app/_serevices/SlackService";
 import { buildPrisma } from "@/app/_utils/prisma";
 
 /**
@@ -38,15 +37,15 @@ const getLessonId = (level: QuestionLevel) => {
   }
 };
 
-const getLevelName = (lessonId: number) => {
-  if (lessonId === 1) {
-    return "初級";
-  } else if (lessonId === 2) {
-    return "中級";
-  } else {
-    return "上級";
-  }
-};
+// const getLevelName = (lessonId: number) => {
+//   if (lessonId === 1) {
+//     return "初級";
+//   } else if (lessonId === 2) {
+//     return "中級";
+//   } else {
+//     return "上級";
+//   }
+// };
 
 export const maxDuration = 30;
 
@@ -97,15 +96,15 @@ const generage = async () => {
 
 export const GET = async () => {
   try {
-    const question = await generage();
+    await generage();
 
-    const slack = new SlackService();
-    await slack.postMessage({
-      channel: "js-gym",
-      message: `JS Gymに問題が追加されました！\n\n[${getLevelName(
-        question.lessonId
-      )}] ${question.title}\n\nhttps://jsgym.shiftb.dev/q/${question.id}`,
-    });
+    // const slack = new SlackService();
+    // await slack.postMessage({
+    //   channel: "js-gym",
+    //   message: `JS Gymに問題が追加されました！\n\n[${getLevelName(
+    //     question.lessonId
+    //   )}] ${question.title}\n\nhttps://jsgym.shiftb.dev/q/${question.id}`,
+    // });
 
     return NextResponse.json({ message: "success." }, { status: 200 });
   } catch (e) {
