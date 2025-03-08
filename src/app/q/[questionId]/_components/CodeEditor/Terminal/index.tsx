@@ -22,7 +22,7 @@ export const Terminal: React.FC<Props> = ({
     <div className="border-t border-gray-700">
       <Header onClear={onClear} />
       <div className="h-[240px] overflow-y-scroll bg-black">
-        <div className="px-4 text-white">
+        <div className="whitespace-pre-wrap break-words px-4 text-white">
           {executionResult.map((item, index) => {
             return (
               <div

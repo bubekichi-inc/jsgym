@@ -12,7 +12,22 @@ export const useCodeExecutor = () => {
   const [executionResult, setExecutionResult] = useState<LogObj[]>([]);
 
   const addLog = useCallback((type: LogType, message: string) => {
-    setExecutionResult((prevLogs) => [...prevLogs, { type, message }]);
+    // オブジェクトの配列など長い場合は整形して表示
+    const formattedMessage = typeof message === 'string' && message.length > 100
+      ? message.replace(/(\{|\[)(.*)(\}|\])/g, (match) => {
+          try {
+            const obj = JSON.parse(match);
+            return JSON.stringify(obj, null, 2);
+          } catch {
+            return match;
+          }
+        })
+      : message;
+
+    setExecutionResult((prevLogs) => [
+      ...prevLogs,
+      { type, message: formattedMessage }
+    ]);
   }, []);
 
   const resetLogs = () => {
