@@ -6,6 +6,7 @@ import {
   AIQuestionGenerateService,
   QuestionLevel,
 } from "@/app/_serevices/AIQuestionGenerateService";
+import { SlackService } from "@/app/_serevices/SlackService";
 import { buildPrisma } from "@/app/_utils/prisma";
 
 /**
@@ -37,17 +38,17 @@ const getLessonId = (level: QuestionLevel) => {
   }
 };
 
-// const getLevelName = (lessonId: number) => {
-//   if (lessonId === 1) {
-//     return "基礎";
-//   } else if (lessonId === 2) {
-//     return "応用";
-//   } else {
-//     return "実務模擬";
-//   }
-// };
+const getLevelName = (lessonId: number) => {
+  if (lessonId === 1) {
+    return "基礎";
+  } else if (lessonId === 2) {
+    return "応用";
+  } else {
+    return "実務模擬";
+  }
+};
 
-export const maxDuration = 60;
+export const maxDuration = 180;
 
 const generage = async () => {
   const prisma = await buildPrisma();
@@ -97,15 +98,28 @@ const generage = async () => {
 
 export const GET = async () => {
   try {
-    await generage();
+    const question1 = await generage();
+    const question2 = await generage();
+    const question3 = await generage();
 
-    // const slack = new SlackService();
-    // await slack.postMessage({
-    //   channel: "js-gym",
-    //   message: `JS Gymに問題が追加されました！\n\n[${getLevelName(
-    //     question.lessonId
-    //   )}] ${question.title}\n\nhttps://jsgym.shiftb.dev/q/${question.id}`,
-    // });
+    const question1Text = `[${getLevelName(question1.lessonId)}] ${
+      question1.title
+    }\nhttps://jsgym.shiftb.dev/q/${question1.id}\n\n`;
+    const question2Text = `[${getLevelName(question2.lessonId)}] ${
+      question2.title
+    }\nhttps://jsgym.shiftb.dev/q/${question2.id}\n\n`;
+    const question3Text = `[${getLevelName(question3.lessonId)}] ${
+      question3.title
+    }\nhttps://jsgym.shiftb.dev/q/${question3.id}\n\n`;
+
+    const slack = new SlackService();
+    await slack.postMessage({
+      channel: "js-gym",
+      message: `JS Gymに問題が追加されました！
+${question1Text}
+${question2Text}
+${question3Text}`,
+    });
 
     return NextResponse.json({ message: "success." }, { status: 200 });
   } catch (e) {
