@@ -1,3 +1,32 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Terminal HTML Content Styles */
+.terminal-html-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 8px 0;
+  font-family: monospace;
+  font-size: 14px;
+}
+
+.terminal-html-content th,
+.terminal-html-content td {
+  border: 1px solid #444;
+  padding: 6px 8px;
+  text-align: left;
+}
+
+.terminal-html-content th {
+  background-color: #333;
+  color: white;
+}
+
+.terminal-html-content tr:nth-child(even) {
+  background-color: #222;
+}
+
+.terminal-html-content tr:hover {
+  background-color: #2a2a2a;
+}

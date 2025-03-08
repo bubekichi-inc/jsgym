@@ -1,6 +1,9 @@
 import {
   faCircleExclamation,
   faTriangleExclamation,
+  faInfoCircle,
+  faTable,
+  faBug,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { RefObject } from "react";
@@ -18,6 +21,54 @@ export const Terminal: React.FC<Props> = ({
   iframeRef,
   onClear,
 }) => {
+  const getIcon = (type: string) => {
+    switch (type) {
+      case "warn":
+        return (
+          <FontAwesomeIcon
+            className="mr-2 text-yellow-400"
+            icon={faTriangleExclamation}
+          />
+        );
+      case "error":
+        return (
+          <FontAwesomeIcon
+            className="mr-2 text-red-500"
+            icon={faCircleExclamation}
+          />
+        );
+      case "info":
+        return (
+          <FontAwesomeIcon className="mr-2 text-blue-400" icon={faInfoCircle} />
+        );
+      case "table":
+        return (
+          <FontAwesomeIcon className="mr-2 text-gray-300" icon={faTable} />
+        );
+      case "debug":
+        return (
+          <FontAwesomeIcon className="mr-2 text-purple-400" icon={faBug} />
+        );
+      default:
+        return null;
+    }
+  };
+
+  const getTextColor = (type: string) => {
+    switch (type) {
+      case "warn":
+        return "text-yellow-400";
+      case "error":
+        return "text-red-500";
+      case "info":
+        return "text-blue-400";
+      case "debug":
+        return "text-purple-400";
+      default:
+        return "";
+    }
+  };
+
   return (
     <div className="border-t border-gray-700">
       <Header onClear={onClear} />
@@ -28,28 +79,20 @@ export const Terminal: React.FC<Props> = ({
               <div
                 key={index}
                 className={`${
-                  item.message.length > 100 && "whitespace-pre-wrap break-words"
-                } ${
-                  item.type === "warn"
-                    ? "text-yellow-400"
-                    : item.type === "error"
-                    ? "text-red-500"
-                    : ""
-                }`}
+                  !item.isHtml &&
+                  item.message.length > 100 &&
+                  "whitespace-pre-wrap break-words"
+                } ${getTextColor(item.type)}`}
               >
-                {item.type === "warn" && (
-                  <FontAwesomeIcon
-                    className="mr-2 text-yellow-400"
-                    icon={faTriangleExclamation}
+                {getIcon(item.type)}
+                {item.isHtml ? (
+                  <div
+                    dangerouslySetInnerHTML={{ __html: item.message }}
+                    className="terminal-html-content"
                   />
+                ) : (
+                  item.message
                 )}
-                {item.type === "error" && (
-                  <FontAwesomeIcon
-                    className="mr-2 text-red-500"
-                    icon={faCircleExclamation}
-                  />
-                )}
-                {item.message}
               </div>
             );
           })}
