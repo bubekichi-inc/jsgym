@@ -22,12 +22,14 @@ export const Terminal: React.FC<Props> = ({
     <div className="border-t border-gray-700">
       <Header onClear={onClear} />
       <div className="h-[240px] overflow-y-scroll bg-black">
-        <div className="whitespace-pre-wrap break-words px-4 text-white">
+        <div className="w-full px-4 text-white">
           {executionResult.map((item, index) => {
             return (
               <div
                 key={index}
                 className={`${
+                  item.message.length > 100 && "whitespace-pre-wrap break-words"
+                } ${
                   item.type === "warn"
                     ? "text-yellow-400"
                     : item.type === "error"
