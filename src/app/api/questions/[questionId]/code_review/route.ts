@@ -39,7 +39,7 @@ export const POST = async (request: NextRequest, { params }: Props) => {
 
     if (!res) throw new Error("レビュー中にエラーが発生しました");
 
-    const { result, overview, comments } = res;
+    const { result, score, overview, comments } = res;
 
     const status =
       result === CodeReviewResult.APPROVED
@@ -94,6 +94,7 @@ export const POST = async (request: NextRequest, { params }: Props) => {
               userQuestionId: userQuestion.id,
               overview,
               result,
+              score: parseInt(score, 10),
               comments: {
                 createMany: {
                   data: comments.map(({ targetCode, message, level }) => ({

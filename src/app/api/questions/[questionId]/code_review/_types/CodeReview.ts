@@ -4,6 +4,7 @@ export type AIReviewJsonResponse = {
   result: CodeReviewResult;
   overview: string;
   comments: CodeReviewComment[];
+  score: string;
 };
 
 type CodeReviewComment = {

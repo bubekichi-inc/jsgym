@@ -8,6 +8,33 @@ import { buildReviewerSettingPrompt } from "../_utils/buildReviewerSettingPrompt
 import { AIReviewJsonResponse } from "../api/questions/[questionId]/code_review/_types/CodeReview";
 import { Message } from "../api/questions/[questionId]/messages/route";
 
+export type Score =
+  | "0"
+  | "10"
+  | "20"
+  | "30"
+  | "40"
+  | "50"
+  | "60"
+  | "70"
+  | "80"
+  | "90"
+  | "100";
+
+const scores: [string, ...string[]] = [
+  "0",
+  "10",
+  "20",
+  "30",
+  "40",
+  "50",
+  "60",
+  "70",
+  "80",
+  "90",
+  "100",
+];
+
 export class AIReviewService {
   private static openai = new OpenAI({
     apiKey: process.env.OPENAI_SECRET_KEY,
@@ -15,6 +42,7 @@ export class AIReviewService {
 
   private static CodeReview = z.object({
     result: z.enum(["APPROVED", "REJECTED"]),
+    score: z.enum(scores),
     overview: z.string(),
     comments: z.array(
       z.object({

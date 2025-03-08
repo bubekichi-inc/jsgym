@@ -142,6 +142,7 @@ model CodeReview {
   messageId      String?             @unique @map("message_id") @db.Uuid
   overview       String
   result         CodeReviewResult
+  score          Int
   createdAt      DateTime            @default(now()) @map("created_at")
   updatedAt      DateTime            @updatedAt @map("updated_at")
   userQuestionId String              @map("user_id") @db.Uuid
