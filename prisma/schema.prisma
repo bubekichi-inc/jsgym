@@ -27,7 +27,6 @@ model User {
   receiveNewQuestionNotification    Boolean            @default(true) @map("receive_new_question_notification")
   receiveUsefulInfoNotification     Boolean            @default(true) @map("receive_useful_info_notification")
   receiveReminderNotification       Boolean            @default(true) @map("receive_reminder_notification")
-  receiveImportantInfoNotification  Boolean            @default(true) @map("receive_important_info_notification")
   
   @@map("users")
 }
