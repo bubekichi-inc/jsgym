@@ -2,15 +2,7 @@
   "crons": [
     {
       "path": "/api/crons/generate_questions",
-      "schedule": "0 20 * * *"
-    },
-    {
-      "path": "/api/crons/generate_questions",
-      "schedule": "0 2 * * *"
-    },
-    {
-      "path": "/api/crons/generate_questions",
-      "schedule": "0 8 * * *"
+      "schedule": "* * * * *"
     }
   ]
 }
