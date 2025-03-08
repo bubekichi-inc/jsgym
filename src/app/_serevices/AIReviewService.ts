@@ -79,11 +79,11 @@ ${question.inputCode}
 # 出力例
 ${question.outputCode}
 
-# ユーザーの解答
-${answer}
-
 # 模範解答例（参考程度）
 ${question.exampleAnswer}
+
+# ユーザーの解答
+${answer}
 
 # レビューの方針
 ・正しく動作すること
