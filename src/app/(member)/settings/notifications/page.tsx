@@ -23,9 +23,11 @@ const Page: React.FC = () => {
 
     try {
       await api.put<UpdateNotificationRequest, UpdateNotificationResponse>("/api/notifications", updatedData); 
-      mutate();     
+      mutate();
+      alert("通知設定を更新しました。");     
     } catch (e) {
       console.log("通知設定の更新に失敗:", e);
+      alert("通知設定の更新に失敗しました。");     
     }
   };
 
