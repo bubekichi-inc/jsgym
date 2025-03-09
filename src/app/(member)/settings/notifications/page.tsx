@@ -3,7 +3,7 @@
 import React from "react";
 import { useNotifications } from "./_hooks/useNotifications";
 import { api } from "@/app/_utils/api";
-import { NotificationRequest, NotificationResponse } from "@/app/api/notifications/_types/notification";
+import { UpdateNotificationRequest, UpdateNotificationResponse} from "@/app/api/notifications/_types/notification";
 
 type NotificationSettingKey =
   "receiveNewQuestionNotification"
@@ -11,17 +11,18 @@ type NotificationSettingKey =
   | "receiveUsefulInfoNotification"
 
 const Page: React.FC = () => {
-  const { error, data } = useNotifications();
+  const { error, data, mutate } = useNotifications();
   const handleChangeSetting = async(selectItem: NotificationSettingKey) => {
     if(!data) return;
 
-    const updatedData: NotificationRequest = {
+    const updatedData: UpdateNotificationRequest = {
       ...data,
       [selectItem]: !data[selectItem],
     }
 
     try {
-      await api.put<NotificationRequest, NotificationResponse>("/api/notifications", updatedData);      
+      await api.put<UpdateNotificationRequest, UpdateNotificationResponse>("/api/notifications", updatedData); 
+      mutate();     
     } catch (e) {
       console.log("通知設定の更新に失敗:", e);
     }

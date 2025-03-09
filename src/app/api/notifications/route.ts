@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { buildError } from "../_utils/buildError";
 import { getCurrentUser } from "../_utils/getCurrentUser";
-import { NotificationRequest, NotificationResponse } from "./_types/notification";
+import { FetchNotificationRequest, UpdateNotificationRequest, UpdateNotificationResponse } from "./_types/notification";
 import { buildPrisma } from "@/app/_utils/prisma";
 
 // 通知設定取得用のAPI
@@ -27,7 +27,7 @@ export const GET = async (request: NextRequest) => {
         { status: 404 }
       );
 
-    return NextResponse.json<NotificationResponse>(notificationSettings, {
+    return NextResponse.json<FetchNotificationRequest>(notificationSettings, {
       status: 200,
     });
   } catch (e) {
@@ -47,7 +47,7 @@ export const PUT = async (request: NextRequest) => {
       receiveNewQuestionNotification,
       receiveUsefulInfoNotification,
       receiveReminderNotification,
-    }: NotificationRequest = body;
+    }: UpdateNotificationRequest = body;
 
     const updateSettings = await prisma.user.update({
       where: {
@@ -71,7 +71,7 @@ export const PUT = async (request: NextRequest) => {
         { status: 404 }
       );
 
-    return NextResponse.json<NotificationResponse>(updateSettings, {
+    return NextResponse.json<UpdateNotificationResponse>(updateSettings, {
       status: 200,
     });
   } catch (e) {
