@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { CheckBox } from "./_components/checkBox";
 import { useNotifications } from "./_hooks/useNotifications";
 import { api } from "@/app/_utils/api";
 import { UpdateNotificationRequest, UpdateNotificationResponse} from "@/app/api/notifications/_types/notification";
@@ -34,58 +35,41 @@ const Page: React.FC = () => {
 
   return (
     <>
-      <div className="">
-        通知設定
-      </div>
-
       <div>
-        <div>
-          <input 
-            id="new-question" 
-            type="checkbox"
-            className="size-4 rounded-sm border-gray-300 bg-gray-100 text-blue-600 focus:ring-blue-500"
-            onClick={() => handleChangeSetting("receiveNewQuestionNotification")}
-            defaultChecked={data.receiveNewQuestionNotification}
-          />
-          <label 
-            htmlFor="new-question"
-            className="ms-2 text-sm font-medium text-gray-900"
-          >
-            新着問題
-          </label>
-        </div>
+        <CheckBox 
+          label="新着問題"
+          id="new-question" 
+          type="checkbox"
+          onClick={() => handleChangeSetting("receiveNewQuestionNotification")}
+          defaultChecked={data.receiveNewQuestionNotification}
+          disabled={false}
+        />
 
-        <div>
-          <input 
-            id="useful-information" 
-            type="checkbox"
-            className="size-4 rounded-sm border-gray-300 bg-gray-100 text-blue-600 focus:ring-blue-500"
-            onClick={() => handleChangeSetting("receiveUsefulInfoNotification")}
-            defaultChecked={data.receiveUsefulInfoNotification}
-          />
-          <label 
-            htmlFor="useful-information"
-            className="ms-2 text-sm font-medium text-gray-900"
-          >
-            お役立ち情報
-          </label>
-        </div>
+        <CheckBox 
+          label="お役立ち情報"
+          id="useful-information" 
+          type="checkbox"
+          onClick={() => handleChangeSetting("receiveUsefulInfoNotification")}
+          defaultChecked={data.receiveUsefulInfoNotification}
+          disabled={false}
+        />
 
-        <div>
-          <input 
-            id="reminder" 
-            type="checkbox"
-            className="size-4 rounded-sm border-gray-300 bg-gray-100 text-blue-600 focus:ring-blue-500"
-            onClick={() => handleChangeSetting("receiveReminderNotification")}
-            defaultChecked={data.receiveReminderNotification}
-          />
-          <label 
-            htmlFor="reminder"
-            className="ms-2 text-sm font-medium text-gray-900"
-          >
-            リマインダー&その他
-          </label>
-        </div>
+        <CheckBox
+          label="リマインダー＆その他"
+          id="reminder" 
+          type="checkbox"
+          onClick={() => handleChangeSetting("receiveReminderNotification")}
+          defaultChecked={data.receiveReminderNotification}
+          disabled={false}
+        />
+
+        <CheckBox
+          label="重要なお知らせ"
+          id="importantInfo" 
+          type="checkbox"
+          defaultChecked={data.receiveReminderNotification}
+          disabled={true}
+        />
       </div>
     </>
   )
