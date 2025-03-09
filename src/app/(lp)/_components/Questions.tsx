@@ -3,7 +3,8 @@
 import dayjs from "dayjs";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
   lessonLevelMap,
   lessonTextMap,
@@ -11,28 +12,169 @@ import {
   userQuestionColorMap,
   userQuestionTextMap,
 } from "@/app/_constants";
-import { useFetch } from "@/app/_hooks/useFetch";
 import { QuestionLevel } from "@/app/_serevices/AIQuestionGenerateService";
 import { Question } from "@/app/api/questions/route";
+import { Reviewer } from "@/app/api/reviewers/route";
 
 interface Props {
   limit: number;
 }
 
 export const Questions: React.FC<Props> = ({ limit }) => {
-  const [activeTab, setActiveTab] = useState<QuestionLevel | "ALL">("ALL");
-  const { data } = useFetch<{ questions: Question[] }>(
-    `/api/questions/?limit=${limit}`
+  const searchParams = useSearchParams();
+
+  // URLクエリパラメータから初期状態を取得
+  const initialTitle = searchParams.get("title") || "";
+  const initialTab =
+    (searchParams.get("tab") as QuestionLevel | "ALL") || "ALL";
+  const initialReviewerId = Number(searchParams.get("reviewerId") || "0");
+
+  const [activeTab, setActiveTab] = useState<QuestionLevel | "ALL">(initialTab);
+  const [searchTitle, setSearchTitle] = useState(initialTitle);
+  const [selectedReviewerId, setSelectedReviewerId] =
+    useState<number>(initialReviewerId);
+  const [offset, setOffset] = useState(0);
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [reviewers, setReviewers] = useState<Reviewer[]>([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(
+    null
   );
 
-  const questions = data?.questions ?? [];
+  // URLを更新する関数
+  const updateUrl = (
+    title: string,
+    tab: QuestionLevel | "ALL",
+    reviewerId: number
+  ) => {
+    const params = new URLSearchParams();
 
-  const filteredQuestions =
-    activeTab === "ALL"
-      ? questions
-      : questions.filter(
-          (question) => question.lesson.id === lessonLevelMap[activeTab]
-        );
+    if (title) {
+      params.append("title", title);
+    }
+
+    if (tab !== "ALL") {
+      params.append("tab", tab);
+    }
+
+    if (reviewerId > 0) {
+      params.append("reviewerId", reviewerId.toString());
+    }
+
+    const queryString = params.toString();
+    const url = queryString ? `?${queryString}` : window.location.pathname;
+
+    // pushStateを使用してURLを更新（ページリロードなし）
+    window.history.pushState({}, "", url);
+  };
+
+  // レビュワー一覧を取得
+  const fetchReviewers = async () => {
+    try {
+      const response = await fetch("/api/reviewers");
+      const data = await response.json();
+      setReviewers(data.reviewers);
+    } catch (error) {
+      console.error("Error fetching reviewers:", error);
+    }
+  };
+
+  // データフェッチロジック
+  const fetchQuestions = async (resetList = false) => {
+    try {
+      setIsLoading(true);
+
+      // オフセットをリセットする場合は0に設定
+      const currentOffset = resetList ? 0 : offset;
+
+      // パラメータを構築
+      const params = new URLSearchParams();
+      params.append("limit", limit.toString());
+      params.append("offset", currentOffset.toString());
+
+      if (searchTitle) {
+        params.append("title", searchTitle);
+      }
+
+      if (activeTab !== "ALL") {
+        params.append("lessonId", lessonLevelMap[activeTab].toString());
+      }
+
+      if (selectedReviewerId > 0) {
+        params.append("reviewerId", selectedReviewerId.toString());
+      }
+
+      // APIリクエスト
+      const response = await fetch(`/api/questions/?${params.toString()}`);
+      const data = await response.json();
+
+      if (resetList) {
+        // リストをリセットする場合
+        setQuestions(data.questions);
+        setOffset(limit); // 次のオフセットを設定
+      } else {
+        // 追加ロードの場合
+        setQuestions([...questions, ...data.questions]);
+        setOffset(currentOffset + limit); // 次のオフセットを更新
+      }
+
+      // もっとデータがあるかチェック
+      setHasMore(data.pagination.hasMore);
+    } catch (error) {
+      console.error("Error fetching questions:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // 検索入力のハンドラ（debounce付き）
+  const handleSearchInputChange = (value: string) => {
+    setSearchTitle(value);
+
+    // 既存のタイムアウトをクリア
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
+    }
+
+    // 新しいタイムアウトを設定（500ms後に検索実行）
+    const timeout = setTimeout(() => {
+      updateUrl(value, activeTab, selectedReviewerId);
+      fetchQuestions(true);
+    }, 500);
+
+    setSearchTimeout(timeout);
+  };
+
+  // タブ切り替え
+  const handleTabChange = (tab: QuestionLevel | "ALL") => {
+    setActiveTab(tab);
+
+    // レビュワー選択はリセットしない（組み合わせて検索できるように）
+    updateUrl(searchTitle, tab, selectedReviewerId);
+    fetchQuestions(true);
+  };
+
+  // レビュワー選択
+  const handleReviewerSelect = (reviewerId: number) => {
+    const newReviewerId = reviewerId === selectedReviewerId ? 0 : reviewerId;
+    setSelectedReviewerId(newReviewerId);
+    updateUrl(searchTitle, activeTab, newReviewerId);
+    fetchQuestions(true);
+  };
+
+  // 追加ロード
+  const handleLoadMore = () => {
+    if (!isLoading && hasMore) {
+      fetchQuestions(false);
+    }
+  };
+
+  // 初期ロード
+  useEffect(() => {
+    fetchQuestions(true);
+    fetchReviewers();
+  }, []);
 
   return (
     <section className="mx-auto max-w-screen-xl bg-gray-100/50 py-12">
@@ -47,174 +189,299 @@ export const Questions: React.FC<Props> = ({ limit }) => {
             </p>
           </div>
         </div>
-        <div className="mt-8">
-          <div className="w-full">
-            <div className="mb-8 flex justify-center">
-              <div className="inline-flex h-10 items-center justify-center rounded-md bg-gray-100 p-1 text-gray-500">
-                <button
-                  className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
-                    activeTab === "ALL"
-                      ? "bg-white text-gray-950 shadow-sm"
-                      : ""
-                  }`}
-                  onClick={() => setActiveTab("ALL")}
-                >
-                  すべて
-                </button>
-                <button
-                  className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
-                    activeTab === "BASIC"
-                      ? "bg-white text-gray-950 shadow-sm"
-                      : ""
-                  }`}
-                  onClick={() => setActiveTab("BASIC")}
-                >
-                  基礎
-                </button>
-                <button
-                  className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
-                    activeTab === "ADVANCED"
-                      ? "bg-white text-gray-950 shadow-sm"
-                      : ""
-                  }`}
-                  onClick={() => setActiveTab("ADVANCED")}
-                >
-                  応用
-                </button>
-                <button
-                  className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
-                    activeTab === "REAL_WORLD"
-                      ? "bg-white text-gray-950 shadow-sm"
-                      : ""
-                  }`}
-                  onClick={() => setActiveTab("REAL_WORLD")}
-                >
-                  実務模擬
-                </button>
-              </div>
-            </div>
-            <div className="mt-0">
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {filteredQuestions.map((question) => (
-                  <div
-                    key={question.id}
-                    className="relative flex h-full flex-col rounded-lg border bg-white p-6 py-8 shadow-sm"
+
+        {/* 検索コントロールエリア - PCでは横並び */}
+        <div className="mt-6 flex flex-col items-center gap-4 md:flex-row md:flex-wrap md:justify-center">
+          {/* 検索バー */}
+          <div className="w-full max-w-xs">
+            <input
+              type="text"
+              value={searchTitle}
+              onChange={(e) => handleSearchInputChange(e.target.value)}
+              placeholder="問題タイトルを検索..."
+              className="w-full rounded-md border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
+            />
+          </div>
+
+          {/* レベル選択タブ */}
+          <div className="inline-flex h-10 items-center justify-center rounded-md bg-gray-100 p-1 text-gray-500">
+            <button
+              className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
+                activeTab === "ALL" ? "bg-white text-gray-950 shadow-sm" : ""
+              }`}
+              onClick={() => handleTabChange("ALL")}
+            >
+              すべて
+            </button>
+            <button
+              className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
+                activeTab === "BASIC" ? "bg-white text-gray-950 shadow-sm" : ""
+              }`}
+              onClick={() => handleTabChange("BASIC")}
+            >
+              基礎
+            </button>
+            <button
+              className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
+                activeTab === "ADVANCED"
+                  ? "bg-white text-gray-950 shadow-sm"
+                  : ""
+              }`}
+              onClick={() => handleTabChange("ADVANCED")}
+            >
+              応用
+            </button>
+            <button
+              className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
+                activeTab === "REAL_WORLD"
+                  ? "bg-white text-gray-950 shadow-sm"
+                  : ""
+              }`}
+              onClick={() => handleTabChange("REAL_WORLD")}
+            >
+              実務模擬
+            </button>
+          </div>
+        </div>
+
+        {/* レビュワー一覧 - スクロール可能なコンパクト表示 */}
+        <div className="mt-6">
+          <h3 className="mb-3 text-center text-sm font-bold text-gray-500">
+            レビュワー
+          </h3>
+          <div className="flex justify-center">
+            <div className="flex max-w-full overflow-x-auto pb-2 pt-1 md:max-w-screen-md">
+              <div className="flex gap-3 px-2">
+                {reviewers.map((reviewer) => (
+                  <button
+                    key={reviewer.id}
+                    onClick={() => handleReviewerSelect(reviewer.id)}
+                    className={`group flex min-w-[60px] flex-col items-center space-y-1 transition-transform hover:scale-105 ${
+                      selectedReviewerId === reviewer.id ? "scale-105" : ""
+                    }`}
                   >
-                    <div className="space-y-2 pb-4">
-                      <div className="flex items-center justify-between">
-                        <div className="mb-1 text-sm">
-                          <span className="text-gray-600">
-                            {dayjs(question.createdAt).format(
-                              "YYYY/MM/DD_HH:mm"
-                            )}
-                          </span>
-                          <span>
-                            {dayjs(question.createdAt).isSame(
-                              dayjs(),
-                              "day"
-                            ) && (
-                              <span className="ml-2 inline-flex items-center rounded-full text-base font-bold text-red-600">
-                                NEW
-                              </span>
-                            )}
-                          </span>
-                        </div>
-                        <div className="flex gap-2">
-                          <span
-                            className={`inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-sm font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 ${
-                              question.lesson.id === lessonLevelMap["BASIC"]
-                                ? "border-transparent bg-blue-500 text-white"
-                                : question.lesson.id ===
-                                  lessonLevelMap["ADVANCED"]
-                                ? "border-transparent bg-yellow-500 text-white"
-                                : "border-transparent bg-red-500 text-white"
-                            }`}
-                          >
-                            {
-                              lessonTextMap[
-                                question.lesson.id as keyof typeof lessonTextMap
-                              ]
-                            }
-                          </span>
-                        </div>
-                      </div>
-                      <h3 className="text-xl font-bold">{question.title}</h3>
-                      <p className="line-clamp-2 text-gray-500">
-                        {question.content}
-                      </p>
+                    <div
+                      className={`relative size-12 overflow-hidden rounded-full border-2 ${
+                        selectedReviewerId === reviewer.id
+                          ? "border-blue-500"
+                          : "border-transparent"
+                      }`}
+                    >
+                      <Image
+                        src={reviewer.profileImageUrl}
+                        alt={reviewer.name}
+                        fill
+                        sizes="48px"
+                        className="object-cover"
+                      />
                     </div>
-                    <div className="flex items-center justify-between">
-                      <div className="grow">
-                        <div className="flex flex-wrap gap-2">
-                          {question.questions.map((q) => (
-                            <span
-                              key={q.tag.name}
-                              className="inline-flex items-center rounded-md border border-gray-200 px-2.5 py-0.5 text-xs font-semibold text-gray-800 transition-colors"
-                            >
-                              {
-                                questionTagTextMap[
-                                  q.tag.name as keyof typeof questionTagTextMap
-                                ]
-                              }
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                      {question.reviewer && (
-                        <div className="group relative">
-                          <div className="flex size-10 items-center justify-center overflow-hidden rounded-full">
-                            <Image
-                              src={question.reviewer.profileImageUrl}
-                              alt="reviewer"
-                              width={80}
-                              height={80}
-                              className="size-full object-cover"
-                            />
-                          </div>
-                          <div className="invisible absolute -right-4 bottom-full z-10 mb-2 w-[320px] rounded-lg bg-gray-900 p-2 text-sm text-white opacity-0 transition-all group-hover:visible group-hover:opacity-100">
-                            <div className="flex items-center gap-2">
-                              <span className="text-xs text-gray-300">
-                                レビュワー
-                              </span>
-                              <p className="font-bold">
-                                {question.reviewer.name}
-                              </p>
-                            </div>
-                            <p className="mt-1 whitespace-pre-line text-xs text-gray-300">
-                              {question.reviewer.bio}
-                            </p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                    <div className="pt-4">
-                      <Link
-                        href={`/q/${question.id}`}
-                        className="inline-flex w-full items-center justify-center rounded-md bg-black px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
-                      >
-                        問題に挑戦する
-                      </Link>
-                    </div>
-                    {question.userQuestions?.[0] && (
-                      <div
-                        className={`absolute left-0 top-0 rounded-br-lg rounded-tl-lg px-2 py-1 text-sm text-white ${
-                          userQuestionColorMap[
-                            question.userQuestions?.[0].status
-                          ]
-                        }`}
-                      >
-                        {
-                          userQuestionTextMap[
-                            question.userQuestions?.[0].status
-                          ]
-                        }
-                      </div>
-                    )}
-                  </div>
+                    <span className="text-center text-xs font-medium">
+                      {reviewer.name}
+                    </span>
+                  </button>
                 ))}
               </div>
             </div>
           </div>
+        </div>
+
+        {/* 現在の検索条件の表示 - よりコンパクトに */}
+        {(searchTitle || selectedReviewerId > 0 || activeTab !== "ALL") && (
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+            {searchTitle && (
+              <div className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-800">
+                <span className="mr-1">検索:</span>
+                <span className="max-w-[120px] truncate font-medium">
+                  {searchTitle}
+                </span>
+                <button
+                  onClick={() => {
+                    setSearchTitle("");
+                    updateUrl("", activeTab, selectedReviewerId);
+                    fetchQuestions(true);
+                  }}
+                  className="ml-1 text-gray-500 hover:text-gray-700"
+                >
+                  ×
+                </button>
+              </div>
+            )}
+
+            {selectedReviewerId > 0 && (
+              <div className="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs text-blue-800">
+                <span className="mr-1">レビュワー:</span>
+                <span className="font-medium">
+                  {reviewers.find((r) => r.id === selectedReviewerId)?.name}
+                </span>
+                <button
+                  onClick={() => handleReviewerSelect(0)}
+                  className="ml-1 text-blue-500 hover:text-blue-700"
+                >
+                  ×
+                </button>
+              </div>
+            )}
+
+            {activeTab !== "ALL" && (
+              <div className="inline-flex items-center rounded-full bg-yellow-100 px-3 py-1 text-xs text-yellow-800">
+                <span className="mr-1">レベル:</span>
+                <span className="font-medium">
+                  {activeTab === "BASIC"
+                    ? "基礎"
+                    : activeTab === "ADVANCED"
+                    ? "応用"
+                    : "実務模擬"}
+                </span>
+                <button
+                  onClick={() => handleTabChange("ALL")}
+                  className="ml-1 text-yellow-500 hover:text-yellow-700"
+                >
+                  ×
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* 問題一覧 */}
+        <div className="mt-8">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {questions.map((question) => (
+              <div
+                key={question.id}
+                className="relative flex h-full flex-col rounded-lg border bg-white p-6 py-8 shadow-sm"
+              >
+                <div className="space-y-2 pb-4">
+                  <div className="flex items-center justify-between">
+                    <div className="mb-1 text-sm">
+                      <span className="text-gray-600">
+                        {dayjs(question.createdAt).format("YYYY/MM/DD_HH:mm")}
+                      </span>
+                      <span>
+                        {dayjs(question.createdAt).isSame(dayjs(), "day") && (
+                          <span className="ml-2 inline-flex items-center rounded-full text-base font-bold text-red-600">
+                            NEW
+                          </span>
+                        )}
+                      </span>
+                    </div>
+                    <div className="flex gap-2">
+                      <span
+                        className={`inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-sm font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 ${
+                          question.lesson.id === lessonLevelMap["BASIC"]
+                            ? "border-transparent bg-blue-500 text-white"
+                            : question.lesson.id === lessonLevelMap["ADVANCED"]
+                            ? "border-transparent bg-yellow-500 text-white"
+                            : "border-transparent bg-red-500 text-white"
+                        }`}
+                      >
+                        {
+                          lessonTextMap[
+                            question.lesson.id as keyof typeof lessonTextMap
+                          ]
+                        }
+                      </span>
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-bold">{question.title}</h3>
+                  <p className="line-clamp-2 text-gray-500">
+                    {question.content}
+                  </p>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="grow">
+                    <div className="flex flex-wrap gap-2">
+                      {question.questions.map((q) => (
+                        <span
+                          key={q.tag.name}
+                          className="inline-flex items-center rounded-md border border-gray-200 px-2.5 py-0.5 text-xs font-semibold text-gray-800 transition-colors"
+                        >
+                          {
+                            questionTagTextMap[
+                              q.tag.name as keyof typeof questionTagTextMap
+                            ]
+                          }
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  {question.reviewer && (
+                    <div className="group relative">
+                      <button
+                        onClick={() =>
+                          handleReviewerSelect(question.reviewer.id)
+                        }
+                        className={`flex size-10 items-center justify-center overflow-hidden rounded-full ${
+                          selectedReviewerId === question.reviewer.id
+                            ? "ring-2 ring-blue-500"
+                            : ""
+                        }`}
+                      >
+                        <Image
+                          src={question.reviewer.profileImageUrl}
+                          alt="reviewer"
+                          width={80}
+                          height={80}
+                          className="size-full object-cover"
+                        />
+                      </button>
+                      <div className="invisible absolute -right-4 bottom-full z-10 mb-2 w-[320px] rounded-lg bg-gray-900 p-2 text-sm text-white opacity-0 transition-all group-hover:visible group-hover:opacity-100">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-gray-300">
+                            レビュワー
+                          </span>
+                          <p className="font-bold">{question.reviewer.name}</p>
+                        </div>
+                        <p className="mt-1 whitespace-pre-line text-xs text-gray-300">
+                          {question.reviewer.bio}
+                        </p>
+                        <p className="mt-1 text-xs text-blue-300">
+                          クリックしてこのレビュワーの問題をフィルター
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="pt-4">
+                  <Link
+                    href={`/q/${question.id}`}
+                    className="inline-flex w-full items-center justify-center rounded-md bg-black px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+                  >
+                    問題に挑戦する
+                  </Link>
+                </div>
+                {question.userQuestions?.[0] && (
+                  <div
+                    className={`absolute left-0 top-0 rounded-br-lg rounded-tl-lg px-2 py-1 text-sm text-white ${
+                      userQuestionColorMap[question.userQuestions?.[0].status]
+                    }`}
+                  >
+                    {userQuestionTextMap[question.userQuestions?.[0].status]}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* ページネーション - さらに読み込むボタン */}
+          {hasMore && (
+            <div className="mt-8 flex justify-center">
+              <button
+                onClick={handleLoadMore}
+                disabled={isLoading}
+                className="rounded-md bg-gray-200 px-6 py-2 text-gray-800 transition-colors hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 disabled:opacity-50"
+              >
+                {isLoading ? "読み込み中..." : "さらに読み込む"}
+              </button>
+            </div>
+          )}
+
+          {/* 検索結果がない場合 */}
+          {questions.length === 0 && !isLoading && (
+            <div className="mt-8 text-center text-gray-500">
+              問題が見つかりませんでした。検索条件を変更してみてください。
+            </div>
+          )}
         </div>
       </div>
     </section>
