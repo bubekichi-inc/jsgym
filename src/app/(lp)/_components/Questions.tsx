@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, useCallback, useRef } from "react";
 import useSWR from "swr";
-import { QuestionCard } from "./QuestionCard";
+import { QuestionCard } from "../../_components/QuestionCard";
 import { lessonLevelMap } from "@/app/_constants";
 import { useFetch } from "@/app/_hooks/useFetch";
 import { QuestionLevel } from "@/app/_serevices/AIQuestionGenerateService";
