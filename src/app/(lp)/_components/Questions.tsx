@@ -254,7 +254,7 @@ export const Questions: React.FC<Props> = ({ limit }) => {
             レビュワー
           </h3>
           <div className="flex justify-center">
-            <div className="flex max-w-full overflow-x-auto pb-2 pt-1 md:max-w-screen-md">
+            <div className="flex max-w-full pb-2 pt-1 md:max-w-screen-md">
               <div className="flex gap-3 px-2">
                 {reviewers.map((reviewer) => (
                   <button
@@ -282,7 +282,7 @@ export const Questions: React.FC<Props> = ({ limit }) => {
                     <span className="text-center text-xs font-medium">
                       {reviewer.name}
                     </span>
-                    <div className="invisible absolute bottom-full z-10 mb-2 w-[240px] rounded-lg bg-gray-900 p-3 text-sm text-white opacity-0 transition-opacity group-hover:visible group-hover:opacity-100">
+                    <div className="invisible absolute bottom-[105%] z-[999] mb-2 w-[240px] rounded-lg bg-gray-900 p-3 text-left text-sm text-white opacity-0 transition-opacity group-hover:visible group-hover:opacity-100">
                       <p className="font-bold">{reviewer.name}</p>
                       <p className="mt-1 text-xs text-gray-300">
                         {reviewer.bio}
