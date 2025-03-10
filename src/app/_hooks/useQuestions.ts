@@ -8,12 +8,15 @@ import { api } from "@/app/_utils/api";
 import { Question } from "@/app/api/questions/route";
 import { Reviewer } from "@/app/api/reviewers/route";
 
+// ステータスの型定義を拡張
+type ExtendedStatus = UserQuestionStatus | "NOT_SUBMITTED" | "ALL";
+
 interface UseQuestionsProps {
   limit: number;
   initialTitle?: string;
   initialTab?: QuestionLevel | "ALL";
   initialReviewerId?: number;
-  initialStatus?: UserQuestionStatus | "ALL";
+  initialStatus?: ExtendedStatus;
 }
 
 interface UseQuestionsReturn {
@@ -22,23 +25,23 @@ interface UseQuestionsReturn {
   activeTab: QuestionLevel | "ALL";
   searchTitle: string;
   selectedReviewerId: number;
-  selectedStatus: UserQuestionStatus | "ALL";
+  selectedStatus: ExtendedStatus;
   hasMore: boolean;
   isLoading: boolean;
   setActiveTab: (tab: QuestionLevel | "ALL") => void;
   setSearchTitle: (title: string) => void;
   setSelectedReviewerId: (reviewerId: number) => void;
-  setSelectedStatus: (status: UserQuestionStatus | "ALL") => void;
+  setSelectedStatus: (status: ExtendedStatus) => void;
   handleSearchInputChange: (value: string) => void;
   handleTabChange: (tab: QuestionLevel | "ALL") => void;
   handleReviewerSelect: (reviewerId: number) => void;
-  handleStatusChange: (status: UserQuestionStatus | "ALL") => void;
+  handleStatusChange: (status: ExtendedStatus) => void;
   handleLoadMore: () => void;
   updateUrl: (
     title: string,
     tab: QuestionLevel | "ALL",
     reviewerId: number,
-    status: UserQuestionStatus | "ALL"
+    status: ExtendedStatus
   ) => void;
 }
 
@@ -53,9 +56,8 @@ export const useQuestions = ({
   const [searchTitle, setSearchTitle] = useState(initialTitle);
   const [selectedReviewerId, setSelectedReviewerId] =
     useState<number>(initialReviewerId);
-  const [selectedStatus, setSelectedStatus] = useState<
-    UserQuestionStatus | "ALL"
-  >(initialStatus);
+  const [selectedStatus, setSelectedStatus] =
+    useState<ExtendedStatus>(initialStatus);
   const [offset, setOffset] = useState(0);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [hasMore, setHasMore] = useState(true);
@@ -110,7 +112,7 @@ export const useQuestions = ({
       title: string,
       tab: QuestionLevel | "ALL",
       reviewerId: number,
-      status: UserQuestionStatus | "ALL"
+      status: ExtendedStatus
     ) => {
       const params = new URLSearchParams();
 
@@ -187,7 +189,7 @@ export const useQuestions = ({
 
   // ステータス選択
   const handleStatusChange = useCallback(
-    (status: UserQuestionStatus | "ALL") => {
+    (status: ExtendedStatus) => {
       // 同じステータスを選択した場合は何もしない
       if (status === selectedStatus) return;
 

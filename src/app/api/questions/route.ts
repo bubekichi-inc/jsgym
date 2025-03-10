@@ -45,7 +45,10 @@ export const GET = async (request: NextRequest) => {
   const searchTitle = searchParams.get("title") || "";
   const lessonId = Number(searchParams.get("lessonId") || "0");
   const reviewerId = Number(searchParams.get("reviewerId") || "0");
-  const status = searchParams.get("status") as UserQuestionStatus | null;
+  const status = searchParams.get("status") as
+    | UserQuestionStatus
+    | "NOT_SUBMITTED"
+    | null;
 
   const token = request.headers.get("Authorization") ?? "";
   const { data } = await supabase.auth.getUser(token);
@@ -93,12 +96,22 @@ export const GET = async (request: NextRequest) => {
 
   // ステータスによるフィルタリング
   if (status && currentUser) {
-    whereConditions.userQuestions = {
-      some: {
-        userId: currentUser.id,
-        status: status,
-      },
-    };
+    if (status === "NOT_SUBMITTED") {
+      // 未提出の場合：userQuestionが存在しないレコードを検索
+      whereConditions.userQuestions = {
+        none: {
+          userId: currentUser.id,
+        },
+      };
+    } else {
+      // その他のステータスの場合：通常のフィルタリング
+      whereConditions.userQuestions = {
+        some: {
+          userId: currentUser.id,
+          status: status,
+        },
+      };
+    }
   }
 
   try {
