@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import useSWR from "swr";
 import {
   lessonLevelMap,
@@ -13,29 +13,11 @@ import {
   userQuestionColorMap,
   userQuestionTextMap,
 } from "@/app/_constants";
+import { useFetch } from "@/app/_hooks/useFetch";
 import { QuestionLevel } from "@/app/_serevices/AIQuestionGenerateService";
 import { api } from "@/app/_utils/api";
 import { Question } from "@/app/api/questions/route";
 import { Reviewer } from "@/app/api/reviewers/route";
-
-// 拡張されたuseFetchフック - 動的なクエリパラメータに対応
-function useQuestionsApi<T>(
-  baseUrl: string,
-  params: Record<string, string | number>,
-  config?: any
-) {
-  // パラメータからキーを生成
-  const queryString = new URLSearchParams(
-    Object.entries(params)
-      .filter(([, v]) => v !== undefined && v !== null && v !== "")
-      .map(([k, v]) => [k, String(v)])
-  ).toString();
-
-  const url = queryString ? `${baseUrl}?${queryString}` : baseUrl;
-  const fetcher = async () => await api.get<T>(url);
-
-  return useSWR<T>(url, fetcher, config);
-}
 
 interface Props {
   limit: number;
@@ -57,6 +39,10 @@ export const Questions: React.FC<Props> = ({ limit }) => {
   const [offset, setOffset] = useState(0);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [hasMore, setHasMore] = useState(true);
+  const [hoveredReviewerId, setHoveredReviewerId] = useState<number | null>(
+    null
+  );
+  const hoverTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // レビュワー一覧を取得
   const { data: reviewersData } = useSWR<{ reviewers: Reviewer[] }>(
@@ -67,15 +53,15 @@ export const Questions: React.FC<Props> = ({ limit }) => {
 
   // 検索パラメータ
   const queryParams = {
-    limit,
-    offset,
+    limit: String(limit),
+    offset: String(offset),
     title: searchTitle,
-    lessonId: activeTab !== "ALL" ? lessonLevelMap[activeTab] : "",
-    reviewerId: selectedReviewerId || "",
+    lessonId: activeTab !== "ALL" ? String(lessonLevelMap[activeTab]) : "",
+    reviewerId: selectedReviewerId ? String(selectedReviewerId) : "",
   };
 
   // 問題一覧を取得
-  const { data: questionsData, isLoading } = useQuestionsApi<{
+  const { data: questionsData, isLoading } = useFetch<{
     questions: Question[];
     pagination: {
       total: number;
@@ -83,7 +69,7 @@ export const Questions: React.FC<Props> = ({ limit }) => {
       limit: number;
       hasMore: boolean;
     };
-  }>("/api/questions/", queryParams, {
+  }>(`/api/questions/?${new URLSearchParams(queryParams).toString()}`, {
     revalidateOnFocus: false,
     dedupingInterval: 5000,
   });
@@ -180,6 +166,20 @@ export const Questions: React.FC<Props> = ({ limit }) => {
     }
   }, [hasMore, isLoading, limit]);
 
+  const handleReviewerMouseEnter = (reviewerId: number) => {
+    hoverTimerRef.current = setTimeout(() => {
+      setHoveredReviewerId(reviewerId);
+    }, 500); // 0.5秒後に表示
+  };
+
+  const handleReviewerMouseLeave = () => {
+    if (hoverTimerRef.current) {
+      clearTimeout(hoverTimerRef.current);
+      hoverTimerRef.current = null;
+    }
+    setHoveredReviewerId(null);
+  };
+
   return (
     <section className="mx-auto max-w-screen-xl bg-gray-100/50 py-12">
       <div className="container mx-auto px-4 md:px-6">
@@ -260,9 +260,11 @@ export const Questions: React.FC<Props> = ({ limit }) => {
                   <button
                     key={reviewer.id}
                     onClick={() => handleReviewerSelect(reviewer.id)}
-                    className={`group flex min-w-[60px] flex-col items-center space-y-1 transition-transform hover:scale-105 ${
+                    className={`group relative flex min-w-[60px] flex-col items-center space-y-1 transition-transform hover:scale-105 ${
                       selectedReviewerId === reviewer.id ? "scale-105" : ""
                     }`}
+                    onMouseEnter={() => handleReviewerMouseEnter(reviewer.id)}
+                    onMouseLeave={handleReviewerMouseLeave}
                   >
                     <div
                       className={`relative size-12 overflow-hidden rounded-full border-2 ${
@@ -282,7 +284,13 @@ export const Questions: React.FC<Props> = ({ limit }) => {
                     <span className="text-center text-xs font-medium">
                       {reviewer.name}
                     </span>
-                    <div className="invisible absolute bottom-[105%] z-[999] mb-2 w-[240px] rounded-lg bg-gray-900 p-3 text-left text-sm text-white opacity-0 transition-opacity group-hover:visible group-hover:opacity-100">
+                    <div
+                      className={`absolute bottom-[105%] z-[999] mb-2 w-[240px] rounded-lg bg-gray-900 p-3 text-left text-sm text-white transition-opacity duration-200 ${
+                        hoveredReviewerId === reviewer.id
+                          ? "visible opacity-100"
+                          : "invisible opacity-0"
+                      }`}
+                    >
                       <p className="font-bold">{reviewer.name}</p>
                       <p className="mt-1 text-xs text-gray-300">
                         {reviewer.bio}
