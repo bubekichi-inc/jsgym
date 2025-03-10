@@ -1,5 +1,6 @@
 "use client";
 
+import { UserQuestionStatus } from "@prisma/client";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useRef, useState } from "react";
@@ -20,6 +21,8 @@ export const Questions: React.FC<Props> = ({ limit }) => {
   const initialTab =
     (searchParams.get("tab") as QuestionLevel | "ALL") || "ALL";
   const initialReviewerId = Number(searchParams.get("reviewerId") || "0");
+  const initialStatus =
+    (searchParams.get("status") as UserQuestionStatus | "ALL") || "ALL";
 
   const [hoveredReviewerId, setHoveredReviewerId] = useState<number | null>(
     null
@@ -32,19 +35,20 @@ export const Questions: React.FC<Props> = ({ limit }) => {
     questions,
     reviewers,
     activeTab,
-    searchTitle,
     selectedReviewerId,
+    selectedStatus,
     hasMore,
     isLoading,
-    handleSearchInputChange,
     handleTabChange,
     handleReviewerSelect,
+    handleStatusChange,
     handleLoadMore,
   } = useQuestions({
     limit,
     initialTitle,
     initialTab,
     initialReviewerId,
+    initialStatus,
   });
 
   const handleReviewerMouseEnter = (reviewerId: number) => {
@@ -62,8 +66,8 @@ export const Questions: React.FC<Props> = ({ limit }) => {
   };
 
   return (
-    <section className="mx-auto max-w-screen-xl bg-gray-100/50 py-12">
-      <div className="container mx-auto space-y-10 px-4 md:space-y-20 md:px-6">
+    <section className="mx-auto max-w-screen-xl bg-gray-100/50 py-4 md:py-12">
+      <div className="container mx-auto space-y-6 px-4 md:space-y-20 md:px-6">
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
           <div className="space-y-4">
             <h2 className="text-2xl font-bold tracking-tighter">問題一覧</h2>
@@ -85,49 +89,110 @@ export const Questions: React.FC<Props> = ({ limit }) => {
             />
           </div> */}
 
-            {/* レベル選択タブ */}
-            <div className="inline-flex h-10 items-center justify-center rounded-md bg-gray-100 p-1 text-gray-500">
-              <button
-                className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
-                  activeTab === "ALL" ? "bg-white text-gray-950 shadow-sm" : ""
-                }`}
-                onClick={() => handleTabChange("ALL")}
-              >
-                すべて
-              </button>
-              <button
-                className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
-                  activeTab === "BASIC"
-                    ? "bg-white text-gray-950 shadow-sm"
-                    : ""
-                }`}
-                onClick={() => handleTabChange("BASIC")}
-              >
-                基礎
-              </button>
-              <button
-                className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
-                  activeTab === "ADVANCED"
-                    ? "bg-white text-gray-950 shadow-sm"
-                    : ""
-                }`}
-                onClick={() => handleTabChange("ADVANCED")}
-              >
-                応用
-              </button>
-              <button
-                className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
-                  activeTab === "REAL_WORLD"
-                    ? "bg-white text-gray-950 shadow-sm"
-                    : ""
-                }`}
-                onClick={() => handleTabChange("REAL_WORLD")}
-              >
-                実務模擬
-              </button>
+            <div className="space-y-3">
+              {/* レベル選択タブ */}
+              <div className="flex items-center gap-4 rounded-md bg-white px-4">
+                {!isSp && (
+                  <p className="text-xs font-bold text-gray-500">レベル</p>
+                )}
+                <div className="flex h-10 items-center justify-center rounded-md p-1 text-gray-500">
+                  <button
+                    className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
+                      activeTab === "ALL"
+                        ? "bg-blue-100 text-blue-800 shadow-sm"
+                        : ""
+                    }`}
+                    onClick={() => handleTabChange("ALL")}
+                  >
+                    すべて
+                  </button>
+                  <button
+                    className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
+                      activeTab === "BASIC"
+                        ? "bg-blue-100 text-blue-800 shadow-sm"
+                        : ""
+                    }`}
+                    onClick={() => handleTabChange("BASIC")}
+                  >
+                    基礎
+                  </button>
+                  <button
+                    className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
+                      activeTab === "ADVANCED"
+                        ? "bg-blue-100 text-blue-800 shadow-sm"
+                        : ""
+                    }`}
+                    onClick={() => handleTabChange("ADVANCED")}
+                  >
+                    応用
+                  </button>
+                  <button
+                    className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
+                      activeTab === "REAL_WORLD"
+                        ? "bg-blue-100 text-blue-800 shadow-sm"
+                        : ""
+                    }`}
+                    onClick={() => handleTabChange("REAL_WORLD")}
+                  >
+                    実務模擬
+                  </button>
+                </div>
+              </div>
+
+              {/* ステータス選択タブ */}
+              <div className="flex items-center gap-4 rounded-md bg-white px-4">
+                {!isSp && (
+                  <p className="text-xs font-bold text-gray-500">ステータス</p>
+                )}
+                <div className="flex h-10 items-center justify-center rounded-md p-1 text-gray-500">
+                  <button
+                    className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
+                      selectedStatus === "ALL"
+                        ? "bg-blue-100 text-blue-800 shadow-sm"
+                        : ""
+                    }`}
+                    onClick={() => handleStatusChange("ALL")}
+                  >
+                    全て
+                  </button>
+                  <button
+                    className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
+                      selectedStatus === "PASSED"
+                        ? "bg-blue-100 text-blue-800 shadow-sm"
+                        : ""
+                    }`}
+                    onClick={() => handleStatusChange("PASSED")}
+                  >
+                    合格済み
+                  </button>
+                  <button
+                    className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
+                      selectedStatus === "REVISION_REQUIRED"
+                        ? "bg-blue-100 text-blue-800 shadow-sm"
+                        : ""
+                    }`}
+                    onClick={() => handleStatusChange("REVISION_REQUIRED")}
+                  >
+                    再提出
+                  </button>
+                  <button
+                    className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
+                      selectedStatus === "DRAFT"
+                        ? "bg-blue-100 text-blue-800 shadow-sm"
+                        : ""
+                    }`}
+                    onClick={() => handleStatusChange("DRAFT")}
+                  >
+                    下書き
+                  </button>
+                </div>
+              </div>
             </div>
+
             <div className="flex flex-col items-center gap-2 rounded-md bg-white py-2 md:flex-row md:px-4">
-              <p className="text-xs font-bold text-gray-500">レビュワー</p>
+              {!isSp && (
+                <p className="text-xs font-bold text-gray-500">レビュワー</p>
+              )}
               <div className="flex justify-center">
                 <div className="flex max-w-full pb-2 pt-1 md:max-w-screen-md">
                   <div className="flex gap-3 px-2">
@@ -135,8 +200,8 @@ export const Questions: React.FC<Props> = ({ limit }) => {
                       <button
                         key={reviewer.id}
                         onClick={() => handleReviewerSelect(reviewer.id)}
-                        className={`group relative flex min-w-[60px] flex-col items-center space-y-1 transition-transform hover:scale-105 ${
-                          selectedReviewerId === reviewer.id ? "scale-105" : ""
+                        className={`group relative flex min-w-[60px] flex-col items-center space-y-1 transition-transform hover:scale-110 ${
+                          selectedReviewerId === reviewer.id ? "scale-110" : ""
                         }`}
                         onMouseEnter={() =>
                           handleReviewerMouseEnter(reviewer.id)
@@ -146,7 +211,7 @@ export const Questions: React.FC<Props> = ({ limit }) => {
                         <div
                           className={`relative size-12 overflow-hidden rounded-full border-2 ${
                             selectedReviewerId === reviewer.id
-                              ? "border-blue-500"
+                              ? "border-2 border-blue-500"
                               : "border-transparent"
                           }`}
                         >
@@ -185,61 +250,6 @@ export const Questions: React.FC<Props> = ({ limit }) => {
               </div>
             </div>
           </div>
-
-          {(searchTitle || selectedReviewerId > 0 || activeTab !== "ALL") && (
-            <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-              {searchTitle && (
-                <div className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-800">
-                  <span className="mr-1">検索:</span>
-                  <span className="max-w-[120px] truncate font-medium">
-                    {searchTitle}
-                  </span>
-                  <button
-                    onClick={() => {
-                      handleSearchInputChange("");
-                    }}
-                    className="ml-1 text-gray-500 hover:text-gray-700"
-                  >
-                    ×
-                  </button>
-                </div>
-              )}
-
-              {selectedReviewerId > 0 && (
-                <div className="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs text-blue-800">
-                  <span className="mr-1">レビュワー:</span>
-                  <span className="font-medium">
-                    {reviewers.find((r) => r.id === selectedReviewerId)?.name}
-                  </span>
-                  <button
-                    onClick={() => handleReviewerSelect(0)}
-                    className="ml-1 text-blue-500 hover:text-blue-700"
-                  >
-                    ×
-                  </button>
-                </div>
-              )}
-
-              {activeTab !== "ALL" && (
-                <div className="inline-flex items-center rounded-full bg-yellow-100 px-3 py-1 text-xs text-yellow-800">
-                  <span className="mr-1">レベル:</span>
-                  <span className="font-medium">
-                    {activeTab === "BASIC"
-                      ? "基礎"
-                      : activeTab === "ADVANCED"
-                      ? "応用"
-                      : "実務模擬"}
-                  </span>
-                  <button
-                    onClick={() => handleTabChange("ALL")}
-                    className="ml-1 text-yellow-500 hover:text-yellow-700"
-                  >
-                    ×
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
         </div>
 
         {/* 問題一覧 */}

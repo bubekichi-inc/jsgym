@@ -45,6 +45,7 @@ export const GET = async (request: NextRequest) => {
   const searchTitle = searchParams.get("title") || "";
   const lessonId = Number(searchParams.get("lessonId") || "0");
   const reviewerId = Number(searchParams.get("reviewerId") || "0");
+  const status = searchParams.get("status") as UserQuestionStatus | null;
 
   const token = request.headers.get("Authorization") ?? "";
   const { data } = await supabase.auth.getUser(token);
@@ -88,6 +89,16 @@ export const GET = async (request: NextRequest) => {
   // レビュワーIDによるフィルタリング
   if (reviewerId > 0) {
     whereConditions.reviewerId = reviewerId;
+  }
+
+  // ステータスによるフィルタリング
+  if (status && currentUser) {
+    whereConditions.userQuestions = {
+      some: {
+        userId: currentUser.id,
+        status: status,
+      },
+    };
   }
 
   try {
