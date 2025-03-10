@@ -14,15 +14,9 @@ import { Question } from "@/app/api/questions/route";
 
 interface QuestionCardProps {
   question: Question;
-  selectedReviewerId: number;
-  onReviewerSelect: (reviewerId: number) => void;
 }
 
-export const QuestionCard: React.FC<QuestionCardProps> = ({
-  question,
-  selectedReviewerId,
-  onReviewerSelect,
-}) => {
+export const QuestionCard: React.FC<QuestionCardProps> = ({ question }) => {
   return (
     <div className="relative flex h-full flex-col rounded-lg border bg-white p-6 py-8 shadow-sm">
       <div className="space-y-2 pb-4">
@@ -75,13 +69,8 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
         </div>
         {question.reviewer && (
           <div className="group relative">
-            <button
-              onClick={() => onReviewerSelect(question.reviewer.id)}
-              className={`flex size-10 items-center justify-center overflow-hidden rounded-full ${
-                selectedReviewerId === question.reviewer.id
-                  ? "ring-2 ring-blue-500"
-                  : ""
-              }`}
+            <div
+              className={`flex size-10 items-center justify-center overflow-hidden rounded-full`}
             >
               <Image
                 src={question.reviewer.profileImageUrl}
@@ -90,7 +79,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
                 height={80}
                 className="size-full object-cover"
               />
-            </button>
+            </div>
             <div className="invisible absolute -right-4 bottom-full z-10 mb-2 w-[320px] rounded-lg bg-gray-900 p-2 text-sm text-white opacity-0 transition-all group-hover:visible group-hover:opacity-100">
               <div className="flex items-center gap-2">
                 <span className="text-xs text-gray-300">レビュワー</span>

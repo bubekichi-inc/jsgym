@@ -360,12 +360,7 @@ export const Questions: React.FC<Props> = ({ limit }) => {
         <div className="mt-8">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {questions.map((question) => (
-              <QuestionCard
-                key={question.id}
-                question={question}
-                selectedReviewerId={selectedReviewerId}
-                onReviewerSelect={handleReviewerSelect}
-              />
+              <QuestionCard key={question.id} question={question} />
             ))}
           </div>
 
