@@ -66,8 +66,8 @@ export const Questions: React.FC<Props> = ({ limit }) => {
   };
 
   return (
-    <section className="mx-auto max-w-screen-xl bg-gray-100/50 py-12">
-      <div className="container mx-auto space-y-10 px-4 md:space-y-20 md:px-6">
+    <section className="mx-auto max-w-screen-xl bg-gray-100/50 py-4 md:py-12">
+      <div className="container mx-auto space-y-6 px-4 md:space-y-20 md:px-6">
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
           <div className="space-y-4">
             <h2 className="text-2xl font-bold tracking-tighter">問題一覧</h2>
@@ -92,7 +92,9 @@ export const Questions: React.FC<Props> = ({ limit }) => {
             <div className="space-y-3">
               {/* レベル選択タブ */}
               <div className="flex items-center gap-4 rounded-md bg-white px-4">
-                <p className="text-xs font-bold text-gray-500">レベル</p>
+                {!isSp && (
+                  <p className="text-xs font-bold text-gray-500">レベル</p>
+                )}
                 <div className="flex h-10 items-center justify-center rounded-md p-1 text-gray-500">
                   <button
                     className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
@@ -139,7 +141,9 @@ export const Questions: React.FC<Props> = ({ limit }) => {
 
               {/* ステータス選択タブ */}
               <div className="flex items-center gap-4 rounded-md bg-white px-4">
-                <p className="text-xs font-bold text-gray-500">ステータス</p>
+                {!isSp && (
+                  <p className="text-xs font-bold text-gray-500">ステータス</p>
+                )}
                 <div className="flex h-10 items-center justify-center rounded-md p-1 text-gray-500">
                   <button
                     className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
@@ -186,7 +190,9 @@ export const Questions: React.FC<Props> = ({ limit }) => {
             </div>
 
             <div className="flex flex-col items-center gap-2 rounded-md bg-white py-2 md:flex-row md:px-4">
-              <p className="text-xs font-bold text-gray-500">レビュワー</p>
+              {!isSp && (
+                <p className="text-xs font-bold text-gray-500">レビュワー</p>
+              )}
               <div className="flex justify-center">
                 <div className="flex max-w-full pb-2 pt-1 md:max-w-screen-md">
                   <div className="flex gap-3 px-2">
