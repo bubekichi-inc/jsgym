@@ -38,44 +38,65 @@ const Page: React.FC = () => {
     return <p className="text-red-500">データ取得に失敗: {error.message}</p>;
 
   return (
-    <>
-      <div>
-        <CheckBox 
-          label="新着問題"
-          id="new-question" 
-          type="checkbox"
-          onClick={() => handleChangeSetting("receiveNewQuestionNotification")}
-          defaultChecked={data.receiveNewQuestionNotification}
-          disabled={false}
-        />
+    <div className="mx-auto w-full max-w-2xl">
+      <div className="flex flex-col gap-y-6">
+        <div>
+          <CheckBox 
+            label="新着問題"
+            id="new-question" 
+            type="checkbox"
+            onClick={() => handleChangeSetting("receiveNewQuestionNotification")}
+            defaultChecked={data.receiveNewQuestionNotification}
+            disabled={false}
+          />
+          <p>
+            新しい問題の通知を受け取る
+          </p>
+        </div>
 
-        <CheckBox 
-          label="お役立ち情報"
-          id="useful-information" 
-          type="checkbox"
-          onClick={() => handleChangeSetting("receiveUsefulInfoNotification")}
-          defaultChecked={data.receiveUsefulInfoNotification}
-          disabled={false}
-        />
+        <div>
+          <CheckBox 
+            label="お役立ち情報"
+            id="useful-information" 
+            type="checkbox"
+            onClick={() => handleChangeSetting("receiveUsefulInfoNotification")}
+            defaultChecked={data.receiveUsefulInfoNotification}
+            disabled={false}
+          />
+          <p>
+          プログラミングに関する役立つ情報を受け取る
+          </p>
+        </div>
 
-        <CheckBox
-          label="リマインダー＆その他"
-          id="reminder" 
-          type="checkbox"
-          onClick={() => handleChangeSetting("receiveReminderNotification")}
-          defaultChecked={data.receiveReminderNotification}
-          disabled={false}
-        />
+        <div>
+          <CheckBox
+            label="リマインダー＆その他"
+            id="reminder" 
+            type="checkbox"
+            onClick={() => handleChangeSetting("receiveReminderNotification")}
+            defaultChecked={data.receiveReminderNotification}
+            disabled={false}
+          />
+          <p>
+            学習のリマインド、その他のニュースを受け取る
+          </p>
+        </div>
 
-        <CheckBox
-          label="重要なお知らせ"
-          id="importantInfo" 
-          type="checkbox"
-          defaultChecked={data.receiveReminderNotification}
-          disabled={true}
-        />
+        <div>
+          <CheckBox
+            label="重要なお知らせ"
+            id="importantInfo" 
+            type="checkbox"
+            defaultChecked={data.receiveReminderNotification}
+            disabled={true}
+          />
+        <p>
+          セキュリティや法的処置等、運営からの重要なお知らせを受け取る<br />
+          セキュリティ上OFFにはできません
+        </p>
+        </div>
       </div>
-    </>
+    </div>
   )
 };
 
