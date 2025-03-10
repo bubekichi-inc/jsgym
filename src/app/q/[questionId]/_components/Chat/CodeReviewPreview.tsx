@@ -1,10 +1,14 @@
-import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChevronLeft,
+  faChevronRight,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CodeReviewCommentLevel, CodeReviewResult } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
+import { ExampleAnswerModal } from "../ExampleAnswerModal";
 import { CommentLevelBadge } from "./CommentLevelBadge";
 import { MarkdownWrapper } from "@/app/_components/MarkdownWrapper";
 import { courseTextMap, lessonTextMap } from "@/app/_constants";
@@ -26,6 +30,7 @@ interface Props {
 }
 
 export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
+  const [showAnswerModal, setShowAnswerModal] = useState(false);
   const resultText = useMemo(() => {
     switch (codeReview.result) {
       case "APPROVED":
@@ -100,8 +105,8 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
         )}
       </div>
       {codeReview.result === "APPROVED" && (
-        <div className="flex items-end justify-end">
-          <div className="flex flex-col items-end gap-4">
+        <div className="flex w-full items-end justify-end">
+          <div className="flex w-full flex-col items-end gap-4">
             <div className="flex items-center gap-4">
               <span className="text-xs font-bold text-orange-500">
                 成果をシェアしよう！
@@ -133,25 +138,44 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
                 />
               </a>
             </div>
-            <div className="flex items-center">
+            <div className="flex w-full flex-col items-start gap-4 md:flex-row md:items-center md:justify-between md:gap-0">
               <Link
                 href={`/q`}
-                className="flex items-center gap-1 px-3 py-1 text-sm text-gray-600 duration-150 hover:underline"
+                className="flex items-center gap-1 py-1 text-sm text-gray-600 duration-150 hover:underline"
               >
-                問題一覧に戻る
+                <FontAwesomeIcon icon={faChevronLeft} className="size-3" />
+                <span>問題一覧に戻る</span>
               </Link>
-              {data?.nextQuestion && (
-                <Link
-                  href={`/q/${data.nextQuestion.id}`}
-                  className="flex items-center gap-2 rounded border border-blue-500 bg-white px-3 py-2 text-sm font-bold text-blue-500 duration-150 hover:bg-blue-50"
+              <div className="flex items-center gap-6">
+                <button
+                  className="text-xs font-bold text-gray-500 hover:underline"
+                  onClick={() => setShowAnswerModal(true)}
                 >
-                  <span>次の{data.nextQuestion.lesson.name}問題へ</span>
-                  <FontAwesomeIcon icon={faChevronRight} className="size-3" />
-                </Link>
-              )}
+                  模範解答例を見る
+                </button>
+                {data?.nextQuestion && (
+                  <Link
+                    href={`/q/${data.nextQuestion.id}`}
+                    className="flex items-center gap-2 rounded border border-blue-500 bg-white px-3 py-2 text-sm font-bold text-blue-500 duration-150 hover:bg-blue-50"
+                  >
+                    <span>次の{data.nextQuestion.lesson.name}問題へ</span>
+                    <FontAwesomeIcon icon={faChevronRight} className="size-3" />
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
         </div>
+      )}
+
+      {data && (
+        <ExampleAnswerModal
+          title={data.question.title}
+          answer={data.question.exampleAnswer}
+          isOpen={showAnswerModal}
+          onClose={() => setShowAnswerModal(false)}
+          courseType={data.question.lesson.course.name}
+        />
       )}
     </div>
   );

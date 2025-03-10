@@ -9,25 +9,25 @@ datasource db {
 }
 
 model User {
-  id                                String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  supabaseUserId                    String             @unique @map("supabase_user_id")
-  stripeCustomerId                  String             @unique @map("stripe_customer_id")
-  email                             String?
-  name                              String?
-  iconUrl                           String?            @map("icon_url")
-  receiptName                       String?            @map("receipt_name")
-  points                            Int                @default(0)
-  createdAt                         DateTime           @default(now()) @map("created_at")
-  updatedAt                         DateTime           @updatedAt @map("updated_at")
-  editorFontSize                    EditorFontSize     @default(MEDIUM) @map("editor_font_size")
-  editorTheme                       EditorTheme        @default(DARK) @map("editor_theme")
-  pointTransactions                 PointTransaction[]
-  reviewer                          Reviewer?
-  userQuestions                     UserQuestion[]
-  receiveNewQuestionNotification    Boolean            @default(true) @map("receive_new_question_notification")
-  receiveUsefulInfoNotification     Boolean            @default(true) @map("receive_useful_info_notification")
-  receiveReminderNotification       Boolean            @default(true) @map("receive_reminder_notification")
-  
+  id                             String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  supabaseUserId                 String             @unique @map("supabase_user_id")
+  stripeCustomerId               String             @unique @map("stripe_customer_id")
+  email                          String?
+  name                           String?
+  iconUrl                        String?            @map("icon_url")
+  receiptName                    String?            @map("receipt_name")
+  points                         Int                @default(0)
+  createdAt                      DateTime           @default(now()) @map("created_at")
+  updatedAt                      DateTime           @updatedAt @map("updated_at")
+  editorFontSize                 EditorFontSize     @default(MEDIUM) @map("editor_font_size")
+  editorTheme                    EditorTheme        @default(DARK) @map("editor_theme")
+  receiveNewQuestionNotification Boolean            @default(true) @map("receive_new_question_notification")
+  receiveReminderNotification    Boolean            @default(true) @map("receive_reminder_notification")
+  receiveUsefulInfoNotification  Boolean            @default(true) @map("receive_useful_info_notification")
+  pointTransactions              PointTransaction[]
+  reviewer                       Reviewer?
+  userQuestions                  UserQuestion[]
+
   @@map("users")
 }
 

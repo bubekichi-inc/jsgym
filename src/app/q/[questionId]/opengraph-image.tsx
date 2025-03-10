@@ -15,7 +15,7 @@ export const size = {
 
 export const metadata = buildMetaData({
   title: "JS Gym",
-  path: "/q/[questionId]",
+  path: "/q/[questionId]/opengraph-image",
   robots: {
     index: false,
   },

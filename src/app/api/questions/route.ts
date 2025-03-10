@@ -38,7 +38,17 @@ export type Question = {
 export const GET = async (request: NextRequest) => {
   const prisma = await buildPrisma();
 
-  const limit = Number(request.nextUrl.searchParams.get("limit"));
+  // クエリパラメータを取得
+  const searchParams = request.nextUrl.searchParams;
+  const limit = Number(searchParams.get("limit") || "24");
+  const offset = Number(searchParams.get("offset") || "0");
+  const searchTitle = searchParams.get("title") || "";
+  const lessonId = Number(searchParams.get("lessonId") || "0");
+  const reviewerId = Number(searchParams.get("reviewerId") || "0");
+  const status = searchParams.get("status") as
+    | UserQuestionStatus
+    | "NOT_SUBMITTED"
+    | null;
 
   const token = request.headers.get("Authorization") ?? "";
   const { data } = await supabase.auth.getUser(token);
@@ -63,8 +73,57 @@ export const GET = async (request: NextRequest) => {
       }
     : {};
 
+  // フィルタリング条件を構築
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const whereConditions: any = {};
+
+  // タイトル検索
+  if (searchTitle) {
+    whereConditions.title = {
+      contains: searchTitle,
+    };
+  }
+
+  // レッスンIDによるフィルタリング
+  if (lessonId > 0) {
+    whereConditions.lessonId = lessonId;
+  }
+
+  // レビュワーIDによるフィルタリング
+  if (reviewerId > 0) {
+    whereConditions.reviewerId = reviewerId;
+  }
+
+  // ステータスによるフィルタリング
+  if (status && currentUser) {
+    if (status === "NOT_SUBMITTED") {
+      // 未提出の場合：userQuestionが存在しないレコードを検索
+      whereConditions.userQuestions = {
+        none: {
+          userId: currentUser.id,
+        },
+      };
+    } else {
+      // その他のステータスの場合：通常のフィルタリング
+      whereConditions.userQuestions = {
+        some: {
+          userId: currentUser.id,
+          status: status,
+        },
+      };
+    }
+  }
+
   try {
+    // 問題の総数を取得（ページネーション用）
+    const totalCount = await prisma.question.count({
+      where: whereConditions,
+    });
+
+    // 問題を取得
     const questions = await prisma.question.findMany({
+      where: whereConditions,
+      skip: offset,
       take: limit,
       orderBy: {
         createdAt: "desc",
@@ -103,9 +162,24 @@ export const GET = async (request: NextRequest) => {
       },
     });
 
-    return NextResponse.json<{ questions: Question[] }>(
+    // レスポンスにページネーション情報を追加
+    return NextResponse.json<{
+      questions: Question[];
+      pagination: {
+        total: number;
+        offset: number;
+        limit: number;
+        hasMore: boolean;
+      };
+    }>(
       {
         questions,
+        pagination: {
+          total: totalCount,
+          offset,
+          limit,
+          hasMore: offset + questions.length < totalCount,
+        },
       },
       { status: 200 }
     );
