@@ -74,8 +74,7 @@ export const Questions: React.FC<Props> = ({ limit }) => {
 
         {/* 検索コントロールエリア - PCでは横並び */}
         <div className="mt-6 flex flex-col items-center gap-4 md:flex-row md:flex-wrap md:justify-center">
-          {/* 検索バー */}
-          <div className="w-full max-w-xs">
+          {/* <div className="w-full max-w-xs">
             <input
               type="text"
               value={searchTitle}
@@ -83,7 +82,7 @@ export const Questions: React.FC<Props> = ({ limit }) => {
               placeholder="問題タイトルを検索..."
               className="w-full rounded-md border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
             />
-          </div>
+          </div> */}
 
           {/* レベル選択タブ */}
           <div className="inline-flex h-10 items-center justify-center rounded-md bg-gray-100 p-1 text-gray-500">
@@ -124,61 +123,57 @@ export const Questions: React.FC<Props> = ({ limit }) => {
               実務模擬
             </button>
           </div>
-        </div>
-
-        {/* レビュワー一覧 - スクロール可能なコンパクト表示 */}
-        <div className="mt-6">
-          <h3 className="mb-3 text-center text-sm font-bold text-gray-500">
-            レビュワー
-          </h3>
-          <div className="flex justify-center">
-            <div className="flex max-w-full pb-2 pt-1 md:max-w-screen-md">
-              <div className="flex gap-3 px-2">
-                {reviewers.map((reviewer) => (
-                  <button
-                    key={reviewer.id}
-                    onClick={() => handleReviewerSelect(reviewer.id)}
-                    className={`group relative flex min-w-[60px] flex-col items-center space-y-1 transition-transform hover:scale-105 ${
-                      selectedReviewerId === reviewer.id ? "scale-105" : ""
-                    }`}
-                    onMouseEnter={() => handleReviewerMouseEnter(reviewer.id)}
-                    onMouseLeave={handleReviewerMouseLeave}
-                  >
-                    <div
-                      className={`relative size-12 overflow-hidden rounded-full border-2 ${
-                        selectedReviewerId === reviewer.id
-                          ? "border-blue-500"
-                          : "border-transparent"
+          <div className="flex items-center gap-2 rounded-md bg-white px-4 py-2">
+            <p className="text-xs font-bold text-gray-500">レビュワー</p>
+            <div className="flex justify-center">
+              <div className="flex max-w-full pb-2 pt-1 md:max-w-screen-md">
+                <div className="flex gap-3 px-2">
+                  {reviewers.map((reviewer) => (
+                    <button
+                      key={reviewer.id}
+                      onClick={() => handleReviewerSelect(reviewer.id)}
+                      className={`group relative flex min-w-[60px] flex-col items-center space-y-1 transition-transform hover:scale-105 ${
+                        selectedReviewerId === reviewer.id ? "scale-105" : ""
                       }`}
+                      onMouseEnter={() => handleReviewerMouseEnter(reviewer.id)}
+                      onMouseLeave={handleReviewerMouseLeave}
                     >
-                      <Image
-                        src={reviewer.profileImageUrl}
-                        alt={reviewer.name}
-                        fill
-                        sizes="48px"
-                        className="object-cover"
-                      />
-                    </div>
-                    <span className="text-center text-xs font-medium">
-                      {reviewer.name}
-                    </span>
-                    <div
-                      className={`absolute bottom-[105%] z-[999] mb-2 w-[240px] rounded-lg bg-gray-900 p-3 text-left text-sm text-white transition-opacity duration-200 ${
-                        hoveredReviewerId === reviewer.id
-                          ? "visible opacity-100"
-                          : "invisible opacity-0"
-                      }`}
-                    >
-                      <p className="font-bold">{reviewer.name}</p>
-                      <p className="mt-1 text-xs text-gray-300">
-                        {reviewer.bio}
-                      </p>
-                      <p className="mt-1 text-xs text-blue-300">
-                        問題数: {reviewer.questionCount}
-                      </p>
-                    </div>
-                  </button>
-                ))}
+                      <div
+                        className={`relative size-12 overflow-hidden rounded-full border-2 ${
+                          selectedReviewerId === reviewer.id
+                            ? "border-blue-500"
+                            : "border-transparent"
+                        }`}
+                      >
+                        <Image
+                          src={reviewer.profileImageUrl}
+                          alt={reviewer.name}
+                          fill
+                          sizes="48px"
+                          className="object-cover"
+                        />
+                      </div>
+                      <span className="text-center text-xs font-medium">
+                        {reviewer.name}
+                      </span>
+                      <div
+                        className={`absolute bottom-[105%] z-[999] mb-2 w-[240px] rounded-lg bg-gray-900 p-3 text-left text-sm text-white transition-opacity duration-200 ${
+                          hoveredReviewerId === reviewer.id
+                            ? "visible opacity-100"
+                            : "invisible opacity-0"
+                        }`}
+                      >
+                        <p className="font-bold">{reviewer.name}</p>
+                        <p className="mt-1 text-xs text-gray-300">
+                          {reviewer.bio}
+                        </p>
+                        <p className="mt-1 text-xs text-blue-300">
+                          問題数: {reviewer.questionCount}
+                        </p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
