@@ -9,7 +9,7 @@ interface Props {
 }
 
 export const Questions: React.FC<Props> = ({ limit }) => {
-  const { questions, hasMore, isLoading, handleLoadMore } = useQuestions({
+  const { questions, isLoading } = useQuestions({
     limit,
   });
 
