@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { buildError } from "../_utils/buildError";
 import { buildPrisma } from "@/app/_utils/prisma";
 
@@ -12,7 +12,7 @@ export type Reviewer = {
   questionCount: number;
 };
 
-export const GET = async (request: NextRequest) => {
+export const GET = async () => {
   const prisma = await buildPrisma();
 
   try {
