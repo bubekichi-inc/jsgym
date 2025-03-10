@@ -1,38 +1,17 @@
 "use client";
 
-import dayjs from "dayjs";
-import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import {
-  lessonLevelMap,
-  lessonTextMap,
-  questionTagTextMap,
-  userQuestionColorMap,
-  userQuestionTextMap,
-} from "@/app/_constants";
-import { useFetch } from "@/app/_hooks/useFetch";
-import { QuestionLevel } from "@/app/_serevices/AIQuestionGenerateService";
-import { Question } from "@/app/api/questions/route";
+import { QuestionCard } from "@/app/_components/QuestionCard";
+import { useQuestions } from "@/app/_hooks/useQuestions";
 
 interface Props {
   limit: number;
 }
 
 export const Questions: React.FC<Props> = ({ limit }) => {
-  const [activeTab, setActiveTab] = useState<QuestionLevel | "ALL">("ALL");
-  const { data } = useFetch<{ questions: Question[] }>(
-    `/api/questions/?limit=${limit}`
-  );
-
-  const questions = data?.questions ?? [];
-
-  const filteredQuestions =
-    activeTab === "ALL"
-      ? questions
-      : questions.filter(
-          (question) => question.lesson.id === lessonLevelMap[activeTab]
-        );
+  const { questions, isLoading } = useQuestions({
+    limit,
+  });
 
   return (
     <section className="mx-auto max-w-screen-xl bg-gray-100/50 py-12">
@@ -47,174 +26,29 @@ export const Questions: React.FC<Props> = ({ limit }) => {
             </p>
           </div>
         </div>
+
+        {/* 問題一覧 */}
         <div className="mt-8">
-          <div className="w-full">
-            <div className="mb-8 flex justify-center">
-              <div className="inline-flex h-10 items-center justify-center rounded-md bg-gray-100 p-1 text-gray-500">
-                <button
-                  className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
-                    activeTab === "ALL"
-                      ? "bg-white text-gray-950 shadow-sm"
-                      : ""
-                  }`}
-                  onClick={() => setActiveTab("ALL")}
-                >
-                  すべて
-                </button>
-                <button
-                  className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
-                    activeTab === "BASIC"
-                      ? "bg-white text-gray-950 shadow-sm"
-                      : ""
-                  }`}
-                  onClick={() => setActiveTab("BASIC")}
-                >
-                  基礎
-                </button>
-                <button
-                  className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
-                    activeTab === "ADVANCED"
-                      ? "bg-white text-gray-950 shadow-sm"
-                      : ""
-                  }`}
-                  onClick={() => setActiveTab("ADVANCED")}
-                >
-                  応用
-                </button>
-                <button
-                  className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
-                    activeTab === "REAL_WORLD"
-                      ? "bg-white text-gray-950 shadow-sm"
-                      : ""
-                  }`}
-                  onClick={() => setActiveTab("REAL_WORLD")}
-                >
-                  実務模擬
-                </button>
-              </div>
-            </div>
-            <div className="mt-0">
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {filteredQuestions.map((question) => (
-                  <div
-                    key={question.id}
-                    className="relative flex h-full flex-col rounded-lg border bg-white p-6 py-8 shadow-sm"
-                  >
-                    <div className="space-y-2 pb-4">
-                      <div className="flex items-center justify-between">
-                        <div className="mb-1 text-sm">
-                          <span className="text-gray-600">
-                            {dayjs(question.createdAt).format(
-                              "YYYY/MM/DD_HH:mm"
-                            )}
-                          </span>
-                          <span>
-                            {dayjs(question.createdAt).isSame(
-                              dayjs(),
-                              "day"
-                            ) && (
-                              <span className="ml-2 inline-flex items-center rounded-full text-base font-bold text-red-600">
-                                NEW
-                              </span>
-                            )}
-                          </span>
-                        </div>
-                        <div className="flex gap-2">
-                          <span
-                            className={`inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-sm font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 ${
-                              question.lesson.id === lessonLevelMap["BASIC"]
-                                ? "border-transparent bg-blue-500 text-white"
-                                : question.lesson.id ===
-                                  lessonLevelMap["ADVANCED"]
-                                ? "border-transparent bg-yellow-500 text-white"
-                                : "border-transparent bg-red-500 text-white"
-                            }`}
-                          >
-                            {
-                              lessonTextMap[
-                                question.lesson.id as keyof typeof lessonTextMap
-                              ]
-                            }
-                          </span>
-                        </div>
-                      </div>
-                      <h3 className="text-xl font-bold">{question.title}</h3>
-                      <p className="line-clamp-2 text-gray-500">
-                        {question.content}
-                      </p>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div className="grow">
-                        <div className="flex flex-wrap gap-2">
-                          {question.questions.map((q) => (
-                            <span
-                              key={q.tag.name}
-                              className="inline-flex items-center rounded-md border border-gray-200 px-2.5 py-0.5 text-xs font-semibold text-gray-800 transition-colors"
-                            >
-                              {
-                                questionTagTextMap[
-                                  q.tag.name as keyof typeof questionTagTextMap
-                                ]
-                              }
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                      {question.reviewer && (
-                        <div className="group relative">
-                          <div className="flex size-10 items-center justify-center overflow-hidden rounded-full">
-                            <Image
-                              src={question.reviewer.profileImageUrl}
-                              alt="reviewer"
-                              width={80}
-                              height={80}
-                              className="size-full object-cover"
-                            />
-                          </div>
-                          <div className="invisible absolute -right-4 bottom-full z-10 mb-2 w-[320px] rounded-lg bg-gray-900 p-2 text-sm text-white opacity-0 transition-all group-hover:visible group-hover:opacity-100">
-                            <div className="flex items-center gap-2">
-                              <span className="text-xs text-gray-300">
-                                レビュワー
-                              </span>
-                              <p className="font-bold">
-                                {question.reviewer.name}
-                              </p>
-                            </div>
-                            <p className="mt-1 whitespace-pre-line text-xs text-gray-300">
-                              {question.reviewer.bio}
-                            </p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                    <div className="pt-4">
-                      <Link
-                        href={`/q/${question.id}`}
-                        className="inline-flex w-full items-center justify-center rounded-md bg-black px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
-                      >
-                        問題に挑戦する
-                      </Link>
-                    </div>
-                    {question.userQuestions?.[0] && (
-                      <div
-                        className={`absolute left-0 top-0 rounded-br-lg rounded-tl-lg px-2 py-1 text-sm text-white ${
-                          userQuestionColorMap[
-                            question.userQuestions?.[0].status
-                          ]
-                        }`}
-                      >
-                        {
-                          userQuestionTextMap[
-                            question.userQuestions?.[0].status
-                          ]
-                        }
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {questions.map((question) => (
+              <QuestionCard key={question.id} question={question} />
+            ))}
           </div>
+
+          {questions.length === 0 && !isLoading && (
+            <div className="mt-8 text-center text-gray-500">
+              問題が見つかりませんでした。検索条件を変更してみてください。
+            </div>
+          )}
+        </div>
+
+        <div className="flex justify-center">
+          <Link
+            href="/q"
+            className="mt-8 rounded border border-textMain px-4 py-2 duration-150 hover:bg-textMain hover:text-white"
+          >
+            もっと見る
+          </Link>
         </div>
       </div>
     </section>
