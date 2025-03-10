@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useRef, useState } from "react";
 import { QuestionCard } from "@/app/_components/QuestionCard";
+import { useDevice } from "@/app/_hooks/useDevice";
 import { useQuestions } from "@/app/_hooks/useQuestions";
 import { QuestionLevel } from "@/app/_serevices/AIQuestionGenerateService";
 
@@ -24,6 +25,8 @@ export const Questions: React.FC<Props> = ({ limit }) => {
     null
   );
   const hoverTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const { isSp } = useDevice();
 
   const {
     questions,
@@ -123,7 +126,7 @@ export const Questions: React.FC<Props> = ({ limit }) => {
               実務模擬
             </button>
           </div>
-          <div className="flex items-center gap-2 rounded-md bg-white px-4 py-2">
+          <div className="flex flex-col items-center gap-2 rounded-md bg-white py-2 md:flex-row md:px-4">
             <p className="text-xs font-bold text-gray-500">レビュワー</p>
             <div className="flex justify-center">
               <div className="flex max-w-full pb-2 pt-1 md:max-w-screen-md">
@@ -153,24 +156,26 @@ export const Questions: React.FC<Props> = ({ limit }) => {
                           className="object-cover"
                         />
                       </div>
-                      <span className="text-center text-xs font-medium">
+                      <span className="whitespace-nowrap text-center text-xs font-medium">
                         {reviewer.name}
                       </span>
-                      <div
-                        className={`absolute bottom-[105%] z-[999] mb-2 w-[240px] rounded-lg bg-gray-900 p-3 text-left text-sm text-white transition-opacity duration-200 ${
-                          hoveredReviewerId === reviewer.id
-                            ? "visible opacity-100"
-                            : "invisible opacity-0"
-                        }`}
-                      >
-                        <p className="font-bold">{reviewer.name}</p>
-                        <p className="mt-1 text-xs text-gray-300">
-                          {reviewer.bio}
-                        </p>
-                        <p className="mt-1 text-xs text-blue-300">
-                          問題数: {reviewer.questionCount}
-                        </p>
-                      </div>
+                      {!isSp && (
+                        <div
+                          className={`absolute bottom-[105%] z-[999] mb-2 w-[240px] rounded-lg bg-gray-900 p-3 text-left text-sm text-white transition-opacity duration-200 ${
+                            hoveredReviewerId === reviewer.id
+                              ? "visible opacity-100"
+                              : "invisible opacity-0"
+                          }`}
+                        >
+                          <p className="font-bold">{reviewer.name}</p>
+                          <p className="mt-1 text-xs text-gray-300">
+                            {reviewer.bio}
+                          </p>
+                          <p className="mt-1 text-xs text-blue-300">
+                            問題数: {reviewer.questionCount}
+                          </p>
+                        </div>
+                      )}
                     </button>
                   ))}
                 </div>
