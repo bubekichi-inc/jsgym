@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { useRef, useState } from "react";
 import { useMe } from "@/app/(member)/_hooks/useMe";
 import { QuestionCard } from "@/app/_components/QuestionCard";
+import { Skeleton } from "@/app/_components/Skeleton";
 import { useDevice } from "@/app/_hooks/useDevice";
 import { useQuestions } from "@/app/_hooks/useQuestions";
 import { QuestionLevel } from "@/app/_serevices/AIQuestionGenerateService";
@@ -271,33 +272,55 @@ export const Questions: React.FC<Props> = ({ limit }) => {
         </div>
 
         {/* 問題一覧 */}
-        <div className="mt-8">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {questions.map((question) => (
-              <QuestionCard key={question.id} question={question} />
-            ))}
+        {isLoading ? (
+          <div className="">
+            <div className="mt-8">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {Array.from({ length: 6 }).map((_, index) => (
+                  <div
+                    key={index}
+                    className="flex flex-col space-y-2 rounded-lg border p-4 shadow-sm"
+                  >
+                    <Skeleton height={24} width={200} />
+                    <Skeleton height={100} />
+                    <div className="flex items-center justify-between space-x-2">
+                      <Skeleton width={100} height={16} />
+                      <Skeleton width={40} height={40} round={20} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-
-          {/* ページネーション - さらに読み込むボタン */}
-          {hasMore && (
-            <div className="mt-8 flex justify-center">
-              <button
-                onClick={handleLoadMore}
-                disabled={isLoading}
-                className="rounded-md bg-gray-200 px-6 py-2 text-gray-800 transition-colors hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 disabled:opacity-50"
-              >
-                {isLoading ? "読み込み中..." : "さらに読み込む"}
-              </button>
+        ) : (
+          <div className="mt-8">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {questions.map((question) => (
+                <QuestionCard key={question.id} question={question} />
+              ))}
             </div>
-          )}
 
-          {/* 検索結果がない場合 */}
-          {questions.length === 0 && !isLoading && (
-            <div className="mt-8 text-center text-gray-500">
-              問題が見つかりませんでした。検索条件を変更してみてください。
-            </div>
-          )}
-        </div>
+            {/* ページネーション - さらに読み込むボタン */}
+            {hasMore && (
+              <div className="mt-8 flex justify-center">
+                <button
+                  onClick={handleLoadMore}
+                  disabled={isLoading}
+                  className="rounded-md bg-gray-200 px-6 py-2 text-gray-800 transition-colors hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 disabled:opacity-50"
+                >
+                  {isLoading ? "読み込み中..." : "さらに読み込む"}
+                </button>
+              </div>
+            )}
+
+            {/* 検索結果がない場合 */}
+            {questions.length === 0 && !isLoading && (
+              <div className="mt-8 text-center text-gray-500">
+                問題が見つかりませんでした。検索条件を変更してみてください。
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </section>
   );
