@@ -6,12 +6,14 @@ import { QuestionLevel } from "@/app/_serevices/AIQuestionGenerateService";
 import { api } from "@/app/_utils/api";
 import { Question } from "@/app/api/questions/route";
 import { Reviewer } from "@/app/api/reviewers/route";
+import { UserQuestionStatus } from "@prisma/client";
 
 interface UseQuestionsProps {
   limit: number;
   initialTitle?: string;
   initialTab?: QuestionLevel | "ALL";
   initialReviewerId?: number;
+  initialStatus?: UserQuestionStatus | "ALL";
 }
 
 interface UseQuestionsReturn {
@@ -20,19 +22,23 @@ interface UseQuestionsReturn {
   activeTab: QuestionLevel | "ALL";
   searchTitle: string;
   selectedReviewerId: number;
+  selectedStatus: UserQuestionStatus | "ALL";
   hasMore: boolean;
   isLoading: boolean;
   setActiveTab: (tab: QuestionLevel | "ALL") => void;
   setSearchTitle: (title: string) => void;
   setSelectedReviewerId: (reviewerId: number) => void;
+  setSelectedStatus: (status: UserQuestionStatus | "ALL") => void;
   handleSearchInputChange: (value: string) => void;
   handleTabChange: (tab: QuestionLevel | "ALL") => void;
   handleReviewerSelect: (reviewerId: number) => void;
+  handleStatusChange: (status: UserQuestionStatus | "ALL") => void;
   handleLoadMore: () => void;
   updateUrl: (
     title: string,
     tab: QuestionLevel | "ALL",
-    reviewerId: number
+    reviewerId: number,
+    status: UserQuestionStatus | "ALL"
   ) => void;
 }
 
@@ -41,11 +47,15 @@ export const useQuestions = ({
   initialTitle = "",
   initialTab = "ALL",
   initialReviewerId = 0,
+  initialStatus = "ALL",
 }: UseQuestionsProps): UseQuestionsReturn => {
   const [activeTab, setActiveTab] = useState<QuestionLevel | "ALL">(initialTab);
   const [searchTitle, setSearchTitle] = useState(initialTitle);
   const [selectedReviewerId, setSelectedReviewerId] =
     useState<number>(initialReviewerId);
+  const [selectedStatus, setSelectedStatus] = useState<
+    UserQuestionStatus | "ALL"
+  >(initialStatus);
   const [offset, setOffset] = useState(0);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [hasMore, setHasMore] = useState(true);
@@ -64,6 +74,7 @@ export const useQuestions = ({
     title: searchTitle,
     lessonId: activeTab !== "ALL" ? String(lessonLevelMap[activeTab]) : "",
     reviewerId: selectedReviewerId ? String(selectedReviewerId) : "",
+    status: selectedStatus !== "ALL" ? selectedStatus : "",
   };
 
   // 問題一覧を取得
@@ -95,7 +106,12 @@ export const useQuestions = ({
 
   // URLを更新する関数
   const updateUrl = useCallback(
-    (title: string, tab: QuestionLevel | "ALL", reviewerId: number) => {
+    (
+      title: string,
+      tab: QuestionLevel | "ALL",
+      reviewerId: number,
+      status: UserQuestionStatus | "ALL"
+    ) => {
       const params = new URLSearchParams();
 
       if (title) {
@@ -108,6 +124,10 @@ export const useQuestions = ({
 
       if (reviewerId > 0) {
         params.append("reviewerId", reviewerId.toString());
+      }
+
+      if (status !== "ALL") {
+        params.append("status", status);
       }
 
       const queryString = params.toString();
@@ -125,9 +145,9 @@ export const useQuestions = ({
     (value: string) => {
       setSearchTitle(value);
       setOffset(0); // 検索時はoffsetリセット
-      updateUrl(value, activeTab, selectedReviewerId);
+      updateUrl(value, activeTab, selectedReviewerId, selectedStatus);
     },
-    [activeTab, selectedReviewerId, updateUrl]
+    [activeTab, selectedReviewerId, selectedStatus, updateUrl]
   );
 
   // タブ切り替え
@@ -141,9 +161,9 @@ export const useQuestions = ({
       setOffset(0); // タブ切替時はoffsetリセット
 
       // レビュワー選択はリセットしない（組み合わせて検索できるように）
-      updateUrl(searchTitle, tab, selectedReviewerId);
+      updateUrl(searchTitle, tab, selectedReviewerId, selectedStatus);
     },
-    [activeTab, searchTitle, selectedReviewerId, updateUrl]
+    [activeTab, searchTitle, selectedReviewerId, selectedStatus, updateUrl]
   );
 
   // レビュワー選択
@@ -160,9 +180,23 @@ export const useQuestions = ({
 
       setSelectedReviewerId(newReviewerId);
       setOffset(0); // レビュワー変更時はoffsetリセット
-      updateUrl(searchTitle, activeTab, newReviewerId);
+      updateUrl(searchTitle, activeTab, newReviewerId, selectedStatus);
     },
-    [activeTab, searchTitle, selectedReviewerId, updateUrl]
+    [activeTab, searchTitle, selectedReviewerId, selectedStatus, updateUrl]
+  );
+
+  // ステータス選択
+  const handleStatusChange = useCallback(
+    (status: UserQuestionStatus | "ALL") => {
+      // 同じステータスを選択した場合は何もしない
+      if (status === selectedStatus) return;
+
+      console.log("Status changed:", status);
+      setSelectedStatus(status);
+      setOffset(0); // ステータス変更時はoffsetリセット
+      updateUrl(searchTitle, activeTab, selectedReviewerId, status);
+    },
+    [activeTab, searchTitle, selectedReviewerId, selectedStatus, updateUrl]
   );
 
   // 追加ロード
@@ -178,14 +212,17 @@ export const useQuestions = ({
     activeTab,
     searchTitle,
     selectedReviewerId,
+    selectedStatus,
     hasMore,
     isLoading,
     setActiveTab,
     setSearchTitle,
     setSelectedReviewerId,
+    setSelectedStatus,
     handleSearchInputChange,
     handleTabChange,
     handleReviewerSelect,
+    handleStatusChange,
     handleLoadMore,
     updateUrl,
   };
