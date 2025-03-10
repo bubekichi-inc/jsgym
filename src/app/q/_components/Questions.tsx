@@ -4,6 +4,7 @@ import { UserQuestionStatus } from "@prisma/client";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useRef, useState } from "react";
+import { useMe } from "@/app/(member)/_hooks/useMe";
 import { QuestionCard } from "@/app/_components/QuestionCard";
 import { useDevice } from "@/app/_hooks/useDevice";
 import { useQuestions } from "@/app/_hooks/useQuestions";
@@ -30,6 +31,7 @@ export const Questions: React.FC<Props> = ({ limit }) => {
   const hoverTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const { isSp } = useDevice();
+  const { data: me } = useMe();
 
   const {
     questions,
@@ -140,53 +142,57 @@ export const Questions: React.FC<Props> = ({ limit }) => {
               </div>
 
               {/* ステータス選択タブ */}
-              <div className="flex items-center gap-4 rounded-md bg-white px-4">
-                {!isSp && (
-                  <p className="text-xs font-bold text-gray-500">ステータス</p>
-                )}
-                <div className="flex h-10 items-center justify-center rounded-md p-1 text-gray-500">
-                  <button
-                    className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
-                      selectedStatus === "ALL"
-                        ? "bg-blue-100 text-blue-800 shadow-sm"
-                        : ""
-                    }`}
-                    onClick={() => handleStatusChange("ALL")}
-                  >
-                    すべて
-                  </button>
-                  <button
-                    className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
-                      selectedStatus === "PASSED"
-                        ? "bg-blue-100 text-blue-800 shadow-sm"
-                        : ""
-                    }`}
-                    onClick={() => handleStatusChange("PASSED")}
-                  >
-                    合格済み
-                  </button>
-                  <button
-                    className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
-                      selectedStatus === "REVISION_REQUIRED"
-                        ? "bg-blue-100 text-blue-800 shadow-sm"
-                        : ""
-                    }`}
-                    onClick={() => handleStatusChange("REVISION_REQUIRED")}
-                  >
-                    再提出
-                  </button>
-                  <button
-                    className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
-                      selectedStatus === "DRAFT"
-                        ? "bg-blue-100 text-blue-800 shadow-sm"
-                        : ""
-                    }`}
-                    onClick={() => handleStatusChange("DRAFT")}
-                  >
-                    下書き
-                  </button>
+              {me && (
+                <div className="flex items-center gap-4 rounded-md bg-white px-4">
+                  {!isSp && (
+                    <p className="text-xs font-bold text-gray-500">
+                      ステータス
+                    </p>
+                  )}
+                  <div className="flex h-10 items-center justify-center rounded-md p-1 text-gray-500">
+                    <button
+                      className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
+                        selectedStatus === "ALL"
+                          ? "bg-blue-100 text-blue-800 shadow-sm"
+                          : ""
+                      }`}
+                      onClick={() => handleStatusChange("ALL")}
+                    >
+                      すべて
+                    </button>
+                    <button
+                      className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
+                        selectedStatus === "PASSED"
+                          ? "bg-blue-100 text-blue-800 shadow-sm"
+                          : ""
+                      }`}
+                      onClick={() => handleStatusChange("PASSED")}
+                    >
+                      合格済み
+                    </button>
+                    <button
+                      className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
+                        selectedStatus === "REVISION_REQUIRED"
+                          ? "bg-blue-100 text-blue-800 shadow-sm"
+                          : ""
+                      }`}
+                      onClick={() => handleStatusChange("REVISION_REQUIRED")}
+                    >
+                      再提出
+                    </button>
+                    <button
+                      className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
+                        selectedStatus === "DRAFT"
+                          ? "bg-blue-100 text-blue-800 shadow-sm"
+                          : ""
+                      }`}
+                      onClick={() => handleStatusChange("DRAFT")}
+                    >
+                      下書き
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             <div className="flex flex-col items-center gap-2 rounded-md bg-white py-2 md:flex-row md:px-4">
