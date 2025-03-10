@@ -1,15 +1,13 @@
 "use client";
 
-import { Editor } from "@monaco-editor/react";
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
+import { ExampleAnswerModal } from "../ExampleAnswerModal";
 import { StatusBadge } from "../StatusBadge";
 import { DropdownMenu } from "./DropdownMenu";
-import { Modal } from "@/app/_components/Modal";
 import { Skeleton } from "@/app/_components/Skeleton";
 import { lessonStyleMap, lessonTextMap } from "@/app/_constants";
 import { useQuestion } from "@/app/_hooks/useQuestion";
-import { language } from "@/app/_utils/language";
 
 export const TitleSection: React.FC = () => {
   const [showAnswerModal, setShowAnswerModal] = useState(false);
@@ -49,28 +47,13 @@ export const TitleSection: React.FC = () => {
         <DropdownMenu onShowAnswer={() => setShowAnswerModal(true)} />
       </div>
 
-      <Modal isOpen={showAnswerModal} onClose={() => setShowAnswerModal(false)}>
-        <div className="w-[800px] space-y-4">
-          <p className="text-lg font-bold">{data.question.title}の解答コード</p>
-          <Editor
-            className="bg-editorDark py-6"
-            height="300px"
-            defaultLanguage={language(
-              data.question.lesson.course.name || "JAVA_SCRIPT"
-            )}
-            value={data.question.exampleAnswer}
-            theme="vs-dark"
-            options={{
-              fontSize: 14,
-              tabSize: 2,
-              readOnly: true,
-              readOnlyMessage: {
-                value: "編集できません",
-              },
-            }}
-          />
-        </div>
-      </Modal>
+      <ExampleAnswerModal
+        title={data.question.title}
+        answer={data.question.exampleAnswer}
+        isOpen={showAnswerModal}
+        onClose={() => setShowAnswerModal(false)}
+        courseType={data.question.lesson.course.name}
+      />
     </>
   );
 };
