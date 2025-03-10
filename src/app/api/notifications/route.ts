@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { buildError } from "../_utils/buildError";
 import { getCurrentUser } from "../_utils/getCurrentUser";
-import { FetchNotificationRequest, UpdateNotificationRequest, UpdateNotificationResponse } from "./_types/notification";
+import { FetchNotificationRequest, UpdateNotificationResponse } from "./_types/notification";
 import { buildPrisma } from "@/app/_utils/prisma";
 
 // 通知設定取得用のAPI
@@ -42,26 +42,16 @@ export const PUT = async (request: NextRequest) => {
   try {
     const currentUser = await getCurrentUser({ request });
     const body = await request.json();
-
-    const {
-      receiveNewQuestionNotification,
-      receiveUsefulInfoNotification,
-      receiveReminderNotification,
-    }: UpdateNotificationRequest = body;
+    const keyName: string = Object.keys(body)[0];
+    const updatedData = { [keyName]: body[keyName] }
 
     const updateSettings = await prisma.user.update({
       where: {
         id: currentUser.id,
       },
-      data: {
-        receiveNewQuestionNotification,
-        receiveUsefulInfoNotification,
-        receiveReminderNotification,
-      },
+      data: updatedData,
       select: {
-        receiveNewQuestionNotification: true,
-        receiveUsefulInfoNotification: true,
-        receiveReminderNotification: true,
+        [keyName]: true,
       },
     });
 
@@ -71,7 +61,7 @@ export const PUT = async (request: NextRequest) => {
         { status: 404 }
       );
 
-    return NextResponse.json<UpdateNotificationResponse>(updateSettings, {
+    return NextResponse.json<Partial<UpdateNotificationResponse>>(updateSettings, {
       status: 200,
     });
   } catch (e) {

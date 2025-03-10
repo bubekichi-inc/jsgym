@@ -16,13 +16,15 @@ const Page: React.FC = () => {
   const handleChangeSetting = async(selectItem: NotificationSettingKey) => {
     if(!data) return;
 
-    const updatedData: UpdateNotificationRequest = {
-      ...data,
+    const updatedData: Partial<UpdateNotificationRequest> = {
       [selectItem]: !data[selectItem],
     }
 
     try {
-      await api.put<UpdateNotificationRequest, UpdateNotificationResponse>("/api/notifications", updatedData); 
+      await api.put<Partial<UpdateNotificationRequest>, UpdateNotificationResponse>(
+        "/api/notifications", 
+        updatedData
+      ); 
       mutate();
       alert("通知設定を更新しました。");     
     } catch (e) {
