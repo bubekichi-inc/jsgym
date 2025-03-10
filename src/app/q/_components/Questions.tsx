@@ -247,7 +247,7 @@ export const Questions: React.FC<Props> = ({ limit }) => {
                         </span>
                         {!isSp && (
                           <div
-                            className={`absolute bottom-[105%] z-[999] mb-2 w-[240px] rounded-lg bg-gray-900 p-3 text-left text-sm text-white transition-opacity duration-200 ${
+                            className={`absolute bottom-[105%] z-[999] mb-2 w-[320px] rounded-lg bg-gray-900 p-3 text-left text-sm text-white transition-opacity duration-200 ${
                               hoveredReviewerId === reviewer.id
                                 ? "visible opacity-100"
                                 : "invisible opacity-0"
