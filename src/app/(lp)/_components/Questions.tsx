@@ -4,7 +4,8 @@ import dayjs from "dayjs";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import useSWR from "swr";
 import {
   lessonLevelMap,
   lessonTextMap,
@@ -13,8 +14,28 @@ import {
   userQuestionTextMap,
 } from "@/app/_constants";
 import { QuestionLevel } from "@/app/_serevices/AIQuestionGenerateService";
+import { api } from "@/app/_utils/api";
 import { Question } from "@/app/api/questions/route";
 import { Reviewer } from "@/app/api/reviewers/route";
+
+// 拡張されたuseFetchフック - 動的なクエリパラメータに対応
+function useQuestionsApi<T>(
+  baseUrl: string,
+  params: Record<string, string | number>,
+  config?: any
+) {
+  // パラメータからキーを生成
+  const queryString = new URLSearchParams(
+    Object.entries(params)
+      .filter(([, v]) => v !== undefined && v !== null && v !== "")
+      .map(([k, v]) => [k, String(v)])
+  ).toString();
+
+  const url = queryString ? `${baseUrl}?${queryString}` : baseUrl;
+  const fetcher = async () => await api.get<T>(url);
+
+  return useSWR<T>(url, fetcher, config);
+}
 
 interface Props {
   limit: number;
@@ -35,146 +56,129 @@ export const Questions: React.FC<Props> = ({ limit }) => {
     useState<number>(initialReviewerId);
   const [offset, setOffset] = useState(0);
   const [questions, setQuestions] = useState<Question[]>([]);
-  const [reviewers, setReviewers] = useState<Reviewer[]>([]);
   const [hasMore, setHasMore] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(
-    null
-  );
-
-  // URLを更新する関数
-  const updateUrl = (
-    title: string,
-    tab: QuestionLevel | "ALL",
-    reviewerId: number
-  ) => {
-    const params = new URLSearchParams();
-
-    if (title) {
-      params.append("title", title);
-    }
-
-    if (tab !== "ALL") {
-      params.append("tab", tab);
-    }
-
-    if (reviewerId > 0) {
-      params.append("reviewerId", reviewerId.toString());
-    }
-
-    const queryString = params.toString();
-    const url = queryString ? `?${queryString}` : window.location.pathname;
-
-    // pushStateを使用してURLを更新（ページリロードなし）
-    window.history.pushState({}, "", url);
-  };
 
   // レビュワー一覧を取得
-  const fetchReviewers = async () => {
-    try {
-      const response = await fetch("/api/reviewers");
-      const data = await response.json();
-      setReviewers(data.reviewers);
-    } catch (error) {
-      console.error("Error fetching reviewers:", error);
-    }
+  const { data: reviewersData } = useSWR<{ reviewers: Reviewer[] }>(
+    "/api/reviewers",
+    api.get
+  );
+  const reviewers = reviewersData?.reviewers || [];
+
+  // 検索パラメータ
+  const queryParams = {
+    limit,
+    offset,
+    title: searchTitle,
+    lessonId: activeTab !== "ALL" ? lessonLevelMap[activeTab] : "",
+    reviewerId: selectedReviewerId || "",
   };
 
-  // データフェッチロジック
-  const fetchQuestions = async (resetList = false) => {
-    try {
-      setIsLoading(true);
+  // 問題一覧を取得
+  const { data: questionsData, isLoading } = useQuestionsApi<{
+    questions: Question[];
+    pagination: {
+      total: number;
+      offset: number;
+      limit: number;
+      hasMore: boolean;
+    };
+  }>("/api/questions/", queryParams, {
+    revalidateOnFocus: false,
+    dedupingInterval: 5000,
+  });
 
-      // オフセットをリセットする場合は0に設定
-      const currentOffset = resetList ? 0 : offset;
-
-      // パラメータを構築
-      const params = new URLSearchParams();
-      params.append("limit", limit.toString());
-      params.append("offset", currentOffset.toString());
-
-      if (searchTitle) {
-        params.append("title", searchTitle);
-      }
-
-      if (activeTab !== "ALL") {
-        params.append("lessonId", lessonLevelMap[activeTab].toString());
-      }
-
-      if (selectedReviewerId > 0) {
-        params.append("reviewerId", selectedReviewerId.toString());
-      }
-
-      // APIリクエスト
-      const response = await fetch(`/api/questions/?${params.toString()}`);
-      const data = await response.json();
-
-      if (resetList) {
-        // リストをリセットする場合
-        setQuestions(data.questions);
-        setOffset(limit); // 次のオフセットを設定
+  // データが取得できたらstateを更新
+  useEffect(() => {
+    if (questionsData) {
+      // 初回ロードかページネーションかを判断
+      if (offset === 0) {
+        setQuestions(questionsData.questions);
       } else {
-        // 追加ロードの場合
-        setQuestions([...questions, ...data.questions]);
-        setOffset(currentOffset + limit); // 次のオフセットを更新
+        setQuestions((prev) => [...prev, ...questionsData.questions]);
+      }
+      setHasMore(questionsData.pagination.hasMore);
+    }
+  }, [questionsData, offset]);
+
+  // URLを更新する関数
+  const updateUrl = useCallback(
+    (title: string, tab: QuestionLevel | "ALL", reviewerId: number) => {
+      const params = new URLSearchParams();
+
+      if (title) {
+        params.append("title", title);
       }
 
-      // もっとデータがあるかチェック
-      setHasMore(data.pagination.hasMore);
-    } catch (error) {
-      console.error("Error fetching questions:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+      if (tab !== "ALL") {
+        params.append("tab", tab);
+      }
 
-  // 検索入力のハンドラ（debounce付き）
-  const handleSearchInputChange = (value: string) => {
-    setSearchTitle(value);
+      if (reviewerId > 0) {
+        params.append("reviewerId", reviewerId.toString());
+      }
 
-    // 既存のタイムアウトをクリア
-    if (searchTimeout) {
-      clearTimeout(searchTimeout);
-    }
+      const queryString = params.toString();
+      const url = queryString ? `?${queryString}` : window.location.pathname;
 
-    // 新しいタイムアウトを設定（500ms後に検索実行）
-    const timeout = setTimeout(() => {
+      // pushStateを使用してURLを更新（ページリロードなし）
+      window.history.pushState({}, "", url);
+      console.log("URL updated:", url);
+    },
+    []
+  );
+
+  // 検索入力のハンドラ
+  const handleSearchInputChange = useCallback(
+    (value: string) => {
+      setSearchTitle(value);
+      setOffset(0); // 検索時はoffsetリセット
       updateUrl(value, activeTab, selectedReviewerId);
-      fetchQuestions(true);
-    }, 500);
-
-    setSearchTimeout(timeout);
-  };
+    },
+    [activeTab, selectedReviewerId, updateUrl]
+  );
 
   // タブ切り替え
-  const handleTabChange = (tab: QuestionLevel | "ALL") => {
-    setActiveTab(tab);
+  const handleTabChange = useCallback(
+    (tab: QuestionLevel | "ALL") => {
+      // 同じタブを選択した場合は何もしない
+      if (tab === activeTab) return;
 
-    // レビュワー選択はリセットしない（組み合わせて検索できるように）
-    updateUrl(searchTitle, tab, selectedReviewerId);
-    fetchQuestions(true);
-  };
+      console.log("Tab changed:", tab);
+      setActiveTab(tab);
+      setOffset(0); // タブ切替時はoffsetリセット
+
+      // レビュワー選択はリセットしない（組み合わせて検索できるように）
+      updateUrl(searchTitle, tab, selectedReviewerId);
+    },
+    [activeTab, searchTitle, selectedReviewerId, updateUrl]
+  );
 
   // レビュワー選択
-  const handleReviewerSelect = (reviewerId: number) => {
-    const newReviewerId = reviewerId === selectedReviewerId ? 0 : reviewerId;
-    setSelectedReviewerId(newReviewerId);
-    updateUrl(searchTitle, activeTab, newReviewerId);
-    fetchQuestions(true);
-  };
+  const handleReviewerSelect = useCallback(
+    (reviewerId: number) => {
+      console.log("Reviewer selected:", reviewerId);
+
+      // 同じレビュワーを選択した場合は選択解除
+      const newReviewerId = reviewerId === selectedReviewerId ? 0 : reviewerId;
+      console.log("New reviewer ID:", newReviewerId);
+
+      // 変更がない場合は何もしない
+      if (newReviewerId === selectedReviewerId) return;
+
+      setSelectedReviewerId(newReviewerId);
+      setOffset(0); // レビュワー変更時はoffsetリセット
+      updateUrl(searchTitle, activeTab, newReviewerId);
+    },
+    [activeTab, searchTitle, selectedReviewerId, updateUrl]
+  );
 
   // 追加ロード
-  const handleLoadMore = () => {
+  const handleLoadMore = useCallback(() => {
     if (!isLoading && hasMore) {
-      fetchQuestions(false);
+      setOffset((prev) => prev + limit);
     }
-  };
-
-  // 初期ロード
-  useEffect(() => {
-    fetchQuestions(true);
-    fetchReviewers();
-  }, []);
+  }, [hasMore, isLoading, limit]);
 
   return (
     <section className="mx-auto max-w-screen-xl bg-gray-100/50 py-12">
@@ -278,6 +282,15 @@ export const Questions: React.FC<Props> = ({ limit }) => {
                     <span className="text-center text-xs font-medium">
                       {reviewer.name}
                     </span>
+                    <div className="invisible absolute bottom-full z-10 mb-2 w-[240px] rounded-lg bg-gray-900 p-3 text-sm text-white opacity-0 transition-opacity group-hover:visible group-hover:opacity-100">
+                      <p className="font-bold">{reviewer.name}</p>
+                      <p className="mt-1 text-xs text-gray-300">
+                        {reviewer.bio}
+                      </p>
+                      <p className="mt-1 text-xs text-blue-300">
+                        問題数: {reviewer.questionCount}
+                      </p>
+                    </div>
                   </button>
                 ))}
               </div>
@@ -298,7 +311,6 @@ export const Questions: React.FC<Props> = ({ limit }) => {
                   onClick={() => {
                     setSearchTitle("");
                     updateUrl("", activeTab, selectedReviewerId);
-                    fetchQuestions(true);
                   }}
                   className="ml-1 text-gray-500 hover:text-gray-700"
                 >
