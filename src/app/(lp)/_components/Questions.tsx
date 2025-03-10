@@ -2,15 +2,10 @@
 
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState, useCallback, useRef } from "react";
-import useSWR from "swr";
-import { QuestionCard } from "../../_components/QuestionCard";
-import { lessonLevelMap } from "@/app/_constants";
-import { useFetch } from "@/app/_hooks/useFetch";
+import { useRef, useState } from "react";
+import { QuestionCard } from "@/app/_components/QuestionCard";
+import { useQuestions } from "@/app/_hooks/useQuestions";
 import { QuestionLevel } from "@/app/_serevices/AIQuestionGenerateService";
-import { api } from "@/app/_utils/api";
-import { Question } from "@/app/api/questions/route";
-import { Reviewer } from "@/app/api/reviewers/route";
 
 interface Props {
   limit: number;
@@ -25,144 +20,34 @@ export const Questions: React.FC<Props> = ({ limit }) => {
     (searchParams.get("tab") as QuestionLevel | "ALL") || "ALL";
   const initialReviewerId = Number(searchParams.get("reviewerId") || "0");
 
-  const [activeTab, setActiveTab] = useState<QuestionLevel | "ALL">(initialTab);
-  const [searchTitle, setSearchTitle] = useState(initialTitle);
-  const [selectedReviewerId, setSelectedReviewerId] =
-    useState<number>(initialReviewerId);
-  const [offset, setOffset] = useState(0);
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [hasMore, setHasMore] = useState(true);
   const [hoveredReviewerId, setHoveredReviewerId] = useState<number | null>(
     null
   );
   const hoverTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // レビュワー一覧を取得
-  const { data: reviewersData } = useSWR<{ reviewers: Reviewer[] }>(
-    "/api/reviewers",
-    api.get
-  );
-  const reviewers = reviewersData?.reviewers || [];
-
-  // 検索パラメータ
-  const queryParams = {
-    limit: String(limit),
-    offset: String(offset),
-    title: searchTitle,
-    lessonId: activeTab !== "ALL" ? String(lessonLevelMap[activeTab]) : "",
-    reviewerId: selectedReviewerId ? String(selectedReviewerId) : "",
-  };
-
-  // 問題一覧を取得
-  const { data: questionsData, isLoading } = useFetch<{
-    questions: Question[];
-    pagination: {
-      total: number;
-      offset: number;
-      limit: number;
-      hasMore: boolean;
-    };
-  }>(`/api/questions/?${new URLSearchParams(queryParams).toString()}`, {
-    revalidateOnFocus: false,
-    dedupingInterval: 5000,
+  const {
+    questions,
+    reviewers,
+    activeTab,
+    searchTitle,
+    selectedReviewerId,
+    hasMore,
+    isLoading,
+    handleSearchInputChange,
+    handleTabChange,
+    handleReviewerSelect,
+    handleLoadMore,
+  } = useQuestions({
+    limit,
+    initialTitle,
+    initialTab,
+    initialReviewerId,
   });
-
-  // データが取得できたらstateを更新
-  useEffect(() => {
-    if (questionsData) {
-      // 初回ロードかページネーションかを判断
-      if (offset === 0) {
-        setQuestions(questionsData.questions);
-      } else {
-        setQuestions((prev) => [...prev, ...questionsData.questions]);
-      }
-      setHasMore(questionsData.pagination.hasMore);
-    }
-  }, [questionsData, offset]);
-
-  // URLを更新する関数
-  const updateUrl = useCallback(
-    (title: string, tab: QuestionLevel | "ALL", reviewerId: number) => {
-      const params = new URLSearchParams();
-
-      if (title) {
-        params.append("title", title);
-      }
-
-      if (tab !== "ALL") {
-        params.append("tab", tab);
-      }
-
-      if (reviewerId > 0) {
-        params.append("reviewerId", reviewerId.toString());
-      }
-
-      const queryString = params.toString();
-      const url = queryString ? `?${queryString}` : window.location.pathname;
-
-      // pushStateを使用してURLを更新（ページリロードなし）
-      window.history.pushState({}, "", url);
-      console.log("URL updated:", url);
-    },
-    []
-  );
-
-  // 検索入力のハンドラ
-  const handleSearchInputChange = useCallback(
-    (value: string) => {
-      setSearchTitle(value);
-      setOffset(0); // 検索時はoffsetリセット
-      updateUrl(value, activeTab, selectedReviewerId);
-    },
-    [activeTab, selectedReviewerId, updateUrl]
-  );
-
-  // タブ切り替え
-  const handleTabChange = useCallback(
-    (tab: QuestionLevel | "ALL") => {
-      // 同じタブを選択した場合は何もしない
-      if (tab === activeTab) return;
-
-      console.log("Tab changed:", tab);
-      setActiveTab(tab);
-      setOffset(0); // タブ切替時はoffsetリセット
-
-      // レビュワー選択はリセットしない（組み合わせて検索できるように）
-      updateUrl(searchTitle, tab, selectedReviewerId);
-    },
-    [activeTab, searchTitle, selectedReviewerId, updateUrl]
-  );
-
-  // レビュワー選択
-  const handleReviewerSelect = useCallback(
-    (reviewerId: number) => {
-      console.log("Reviewer selected:", reviewerId);
-
-      // 同じレビュワーを選択した場合は選択解除
-      const newReviewerId = reviewerId === selectedReviewerId ? 0 : reviewerId;
-      console.log("New reviewer ID:", newReviewerId);
-
-      // 変更がない場合は何もしない
-      if (newReviewerId === selectedReviewerId) return;
-
-      setSelectedReviewerId(newReviewerId);
-      setOffset(0); // レビュワー変更時はoffsetリセット
-      updateUrl(searchTitle, activeTab, newReviewerId);
-    },
-    [activeTab, searchTitle, selectedReviewerId, updateUrl]
-  );
-
-  // 追加ロード
-  const handleLoadMore = useCallback(() => {
-    if (!isLoading && hasMore) {
-      setOffset((prev) => prev + limit);
-    }
-  }, [hasMore, isLoading, limit]);
 
   const handleReviewerMouseEnter = (reviewerId: number) => {
     hoverTimerRef.current = setTimeout(() => {
       setHoveredReviewerId(reviewerId);
-    }, 500); // 0.5秒後に表示
+    }, 800);
   };
 
   const handleReviewerMouseLeave = () => {
@@ -310,8 +195,7 @@ export const Questions: React.FC<Props> = ({ limit }) => {
                 </span>
                 <button
                   onClick={() => {
-                    setSearchTitle("");
-                    updateUrl("", activeTab, selectedReviewerId);
+                    handleSearchInputChange("");
                   }}
                   className="ml-1 text-gray-500 hover:text-gray-700"
                 >
