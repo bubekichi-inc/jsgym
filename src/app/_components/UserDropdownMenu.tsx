@@ -5,6 +5,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import { UserRole } from "@prisma/client";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -80,6 +81,18 @@ export const UserDropdownMenu: React.FC = () => {
             ログアウト
           </button>
         </MenuItem>
+        {data.role === UserRole.ADMIN && (
+          <MenuItem>
+            <button
+              className="group flex w-full items-center gap-3 rounded-lg p-3 font-bold data-[focus]:bg-gray-100"
+              type="button"
+              onClick={() => push("/admin/dashboard")}
+            >
+              <FontAwesomeIcon icon={faDashboard} />
+              ダッシュボード
+            </button>
+          </MenuItem>
+        )}
       </MenuItems>
     </Menu>
   );

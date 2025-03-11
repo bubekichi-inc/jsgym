@@ -1,10 +1,6 @@
-export type UserProfileResponse = {
-  id: string;
-  name: string | null;
-  email: string | null;
-  iconUrl: string | null;
-  receiptName: string | null;
-} | null;
+import { User } from "@prisma/client";
+
+export type UserProfileResponse = User | null;
 
 export interface UserProfileUpdateRequest {
   name: string;

@@ -71,7 +71,7 @@ export const Questions: React.FC<Props> = ({ limit }) => {
   };
 
   return (
-    <section className="mx-auto max-w-screen-xl bg-gray-100/50 py-4 md:py-12">
+    <section className="mx-auto max-w-screen-xl bg-gray-100/50 py-4 md:py-20">
       <div className="container mx-auto space-y-6 px-4 md:space-y-20 md:px-6">
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
           <div className="space-y-4">
@@ -230,7 +230,7 @@ export const Questions: React.FC<Props> = ({ limit }) => {
                         <div
                           className={`relative size-12 overflow-hidden rounded-full border-2 ${
                             selectedReviewerId === reviewer.id
-                              ? "border-2 border-blue-500"
+                              ? "border-[3px] border-blue-500"
                               : "border-transparent"
                           }`}
                         >
@@ -247,14 +247,14 @@ export const Questions: React.FC<Props> = ({ limit }) => {
                         </span>
                         {!isSp && (
                           <div
-                            className={`absolute bottom-[105%] z-[999] mb-2 w-[240px] rounded-lg bg-gray-900 p-3 text-left text-sm text-white transition-opacity duration-200 ${
+                            className={`absolute bottom-[105%] z-10 mb-2 w-[320px] whitespace-pre-wrap break-words rounded-lg bg-gray-900 p-3 text-left text-xs text-white transition-opacity duration-200 ${
                               hoveredReviewerId === reviewer.id
                                 ? "visible opacity-100"
                                 : "invisible opacity-0"
                             }`}
                           >
                             <p className="font-bold">{reviewer.name}</p>
-                            <p className="mt-1 text-xs text-gray-300">
+                            <p className="mt-1 line-clamp-[9] text-xs text-gray-300">
                               {reviewer.bio}
                             </p>
                             <p className="mt-1 text-xs text-blue-300">
