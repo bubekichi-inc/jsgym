@@ -84,7 +84,7 @@ export const UserDropdownMenu: React.FC = () => {
         {data.role === UserRole.ADMIN && (
           <MenuItem>
             <button
-              className="group flex w-full items-center gap-3 rounded-lg p-3 font-bold text-gray-500 data-[focus]:bg-gray-100"
+              className="group flex w-full items-center gap-3 rounded-lg p-3 font-bold data-[focus]:bg-gray-100"
               type="button"
               onClick={() => push("/admin/dashboard")}
             >
