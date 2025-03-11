@@ -24,6 +24,7 @@ model User {
   receiveNewQuestionNotification Boolean            @default(true) @map("receive_new_question_notification")
   receiveReminderNotification    Boolean            @default(true) @map("receive_reminder_notification")
   receiveUsefulInfoNotification  Boolean            @default(true) @map("receive_useful_info_notification")
+  role                           UserRole           @default(USER) @map("role")
   pointTransactions              PointTransaction[]
   reviewer                       Reviewer?
   userQuestions                  UserQuestion[]
@@ -200,6 +201,11 @@ model Reviewer {
   user            User?      @relation(fields: [userId], references: [id])
 
   @@map("reviewers")
+}
+
+enum UserRole {
+  USER
+  ADMIN
 }
 
 enum QuestionTagValue {
