@@ -10,6 +10,7 @@ type DailyStats = {
   newUsers: number;
   submittedAnswers: number;
   clearedQuestions: number;
+  activeUsers: number;
 };
 
 type DashboardResponse = {
@@ -31,7 +32,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedMonth(selectedMonth);
-    }, 500);
+    }, 300);
 
     return () => {
       clearTimeout(timer);
@@ -56,7 +57,12 @@ export default function AdminDashboard() {
   const maxValue =
     Math.max(
       ...chartData.map((item) =>
-        Math.max(item.newUsers, item.submittedAnswers, item.clearedQuestions)
+        Math.max(
+          item.newUsers,
+          item.submittedAnswers,
+          item.clearedQuestions,
+          item.activeUsers
+        )
       ),
       10 // 最低値を10に設定
     ) * 1.2;
@@ -90,7 +96,7 @@ export default function AdminDashboard() {
       {data && (
         <div className="space-y-8">
           {/* 統計サマリー */}
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
             <div className="rounded-lg bg-blue-50 p-4 shadow">
               <h3 className="mb-2 text-lg font-semibold">新規ユーザー登録</h3>
               <p className="text-3xl font-bold">
@@ -119,6 +125,14 @@ export default function AdminDashboard() {
                 )}
               </p>
               <p className="text-sm text-gray-500">今月の合計</p>
+            </div>
+
+            <div className="rounded-lg bg-amber-50 p-4 shadow">
+              <h3 className="mb-2 text-lg font-semibold">アクティブユーザー</h3>
+              <p className="text-3xl font-bold">
+                {Math.max(...chartData.map((item) => item.activeUsers))}
+              </p>
+              <p className="text-sm text-gray-500">今月の最大</p>
             </div>
           </div>
 
@@ -149,7 +163,7 @@ export default function AdminDashboard() {
                     >
                       {/* 新規ユーザー */}
                       <div
-                        className="group relative mx-1 w-3 bg-blue-500"
+                        className="group relative mx-0.5 w-2 bg-blue-500"
                         style={{
                           height: `${(item.newUsers / maxValue) * 100}%`,
                         }}
@@ -161,7 +175,7 @@ export default function AdminDashboard() {
 
                       {/* 解答提出数 */}
                       <div
-                        className="group relative mx-1 w-3 bg-green-500"
+                        className="group relative mx-0.5 w-2 bg-green-500"
                         style={{
                           height: `${
                             (item.submittedAnswers / maxValue) * 100
@@ -175,7 +189,7 @@ export default function AdminDashboard() {
 
                       {/* クリアした問題数 */}
                       <div
-                        className="group relative mx-1 w-3 bg-purple-500"
+                        className="group relative mx-0.5 w-2 bg-purple-500"
                         style={{
                           height: `${
                             (item.clearedQuestions / maxValue) * 100
@@ -184,6 +198,18 @@ export default function AdminDashboard() {
                       >
                         <div className="absolute bottom-full left-1/2 mb-2 -translate-x-1/2 rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 group-hover:opacity-100">
                           クリア: {item.clearedQuestions}
+                        </div>
+                      </div>
+
+                      {/* アクティブユーザー数 */}
+                      <div
+                        className="group relative mx-0.5 w-2 bg-amber-500"
+                        style={{
+                          height: `${(item.activeUsers / maxValue) * 100}%`,
+                        }}
+                      >
+                        <div className="absolute bottom-full left-1/2 mb-2 -translate-x-1/2 rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 group-hover:opacity-100">
+                          アクティブ: {item.activeUsers}
                         </div>
                       </div>
 
@@ -213,6 +239,10 @@ export default function AdminDashboard() {
                 <div className="mr-2 size-4 bg-purple-500"></div>
                 <span className="text-sm">クリアした問題数</span>
               </div>
+              <div className="flex items-center">
+                <div className="mr-2 size-4 bg-amber-500"></div>
+                <span className="text-sm">アクティブユーザー</span>
+              </div>
             </div>
           </div>
 
@@ -225,6 +255,7 @@ export default function AdminDashboard() {
                   <th className="px-4 py-3 text-left">新規ユーザー</th>
                   <th className="px-4 py-3 text-left">解答提出数</th>
                   <th className="px-4 py-3 text-left">クリアした問題数</th>
+                  <th className="px-4 py-3 text-left">アクティブユーザー</th>
                 </tr>
               </thead>
               <tbody>
@@ -234,6 +265,7 @@ export default function AdminDashboard() {
                     <td className="px-4 py-3">{item.newUsers}</td>
                     <td className="px-4 py-3">{item.submittedAnswers}</td>
                     <td className="px-4 py-3">{item.clearedQuestions}</td>
+                    <td className="px-4 py-3">{item.activeUsers}</td>
                   </tr>
                 ))}
               </tbody>

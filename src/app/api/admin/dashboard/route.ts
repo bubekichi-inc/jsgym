@@ -43,6 +43,8 @@ export async function GET(request: NextRequest) {
       end: endDate,
     });
 
+    const prisma = await buildPrisma();
+
     // 各日付ごとのデータを取得
     const dailyStats = await Promise.all(
       daysInMonth.map(async (date) => {
@@ -53,7 +55,6 @@ export async function GET(request: NextRequest) {
         dayEnd.setHours(23, 59, 59, 999);
 
         // 1. ユーザー登録数
-        const prisma = await buildPrisma();
         const newUsers = await prisma.user.count({
           where: {
             createdAt: {
@@ -84,11 +85,24 @@ export async function GET(request: NextRequest) {
           },
         });
 
+        // 4. アクティブユーザー数（その日に1回でも解答を提出したユーザー）
+        // ユーザーIDの重複を除外して数える
+        const activeUsersResult = await prisma.$queryRaw<{ count: bigint }[]>`
+          SELECT COUNT(DISTINCT u.id) as count
+          FROM users u
+          JOIN user_questions uq ON u.id = uq.user_id
+          JOIN answers a ON uq.id = a.user_id
+          WHERE a.created_at >= ${dayStart} AND a.created_at <= ${dayEnd}
+        `;
+
+        const activeUsers = Number(activeUsersResult[0]?.count || 0);
+
         return {
           date: format(date, "yyyy-MM-dd"),
           newUsers,
           submittedAnswers,
           clearedQuestions,
+          activeUsers,
         };
       })
     );
