@@ -39,7 +39,7 @@ const Page: React.FC = () => {
 
   return (
     <div className="mx-auto w-full max-w-2xl">
-      <div className="flex flex-col gap-y-6">
+      <div className="mt-8 flex flex-col gap-y-6">
         <div>
           <CheckBox 
             label="新着問題"
