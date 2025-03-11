@@ -32,7 +32,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedMonth(selectedMonth);
-    }, 300);
+    }, 600);
 
     return () => {
       clearTimeout(timer);
