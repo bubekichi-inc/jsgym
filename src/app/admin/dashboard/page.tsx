@@ -2,7 +2,7 @@
 
 import { format, parse } from "date-fns";
 import { ja } from "date-fns/locale";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useFetch } from "@/app/_hooks/useFetch";
 
 type DailyStats = {
@@ -20,14 +20,28 @@ export default function AdminDashboard() {
   const [selectedMonth, setSelectedMonth] = useState<string>(
     format(new Date(), "yyyy/M")
   );
+  const [debouncedMonth, setDebouncedMonth] = useState<string>(selectedMonth);
 
-  const { data, error, isLoading } = useFetch<DashboardResponse>(
-    `/api/admin/dashboard?month=${selectedMonth}`
-  );
-
+  // 入力値の変更を処理
   const handleMonthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedMonth(e.target.value);
   };
+
+  // 0.3秒のデバウンス処理
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedMonth(selectedMonth);
+    }, 500);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [selectedMonth]);
+
+  // デバウンスされた値でAPIリクエスト
+  const { data, error, isLoading } = useFetch<DashboardResponse>(
+    `/api/admin/dashboard?month=${debouncedMonth}`
+  );
 
   // グラフの描画用データを準備
   const chartData = data?.dailyStats || [];
