@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { CheckBox } from "./_components/checkBox";
+import { CheckBox } from "./_components/CheckBox";
 import { useNotifications } from "./_hooks/useNotifications";
 import { api } from "@/app/_utils/api";
 import { UpdateNotificationRequest, UpdateNotificationResponse} from "@/app/api/notifications/_types/notification";
