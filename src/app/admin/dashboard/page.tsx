@@ -96,7 +96,7 @@ export default function AdminDashboard() {
       {data && (
         <div className="space-y-8">
           {/* 統計サマリー */}
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+          <div className="grid grid-cols-4 gap-4">
             <div className="rounded-lg bg-blue-50 p-4 shadow">
               <h3 className="mb-2 text-lg font-semibold">新規ユーザー登録</h3>
               <p className="text-3xl font-bold">
