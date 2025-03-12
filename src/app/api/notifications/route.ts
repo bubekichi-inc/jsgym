@@ -31,15 +31,14 @@ export const PUT = async (request: NextRequest) => {
 
   try {
     const currentUser = await getCurrentUser({ request });
-    const body = await request.json();
+    const body: UpdateNotificationResponse = await request.json();
     const keyName: string = Object.keys(body)[0];
-    const updatedData = { [keyName]: body[keyName] }
 
     const updateSettings = await prisma.user.update({
       where: {
         id: currentUser.id,
       },
-      data: updatedData,
+      data: body,
       select: {
         [keyName]: true,
       },
