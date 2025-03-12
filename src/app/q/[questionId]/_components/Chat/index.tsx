@@ -14,6 +14,7 @@ import { useQuestion } from "@/app/_hooks/useQuestion";
 
 export type ChatForm = {
   message: string;
+  isWebSearch: boolean;
 };
 
 interface Props {
@@ -40,6 +41,7 @@ export const Chat: React.FC<Props> = ({
   const methods = useForm<ChatForm>({
     defaultValues: {
       message: "",
+      isWebSearch: false,
     },
   });
 

@@ -120,6 +120,7 @@ export const GET = async (request: NextRequest, { params }: Props) => {
 
 export type PostMessageBody = {
   message: string;
+  isWebSearch: boolean;
 };
 
 export const POST = async (request: NextRequest, { params }: Props) => {
@@ -128,7 +129,7 @@ export const POST = async (request: NextRequest, { params }: Props) => {
 
   try {
     const { id: currentUserId } = await getCurrentUser({ request });
-    const { message }: PostMessageBody = await request.json();
+    const { message, isWebSearch }: PostMessageBody = await request.json();
     const userQuestion = await prisma.userQuestion.findUnique({
       where: {
         userId_questionId: {
@@ -206,10 +207,15 @@ export const POST = async (request: NextRequest, { params }: Props) => {
       content: message,
     });
 
-    const systemMessageContent = await AIReviewService.getChatResponse({
-      openAIMessages,
-      reviewer: userQuestion.question.reviewer,
-    });
+    const systemMessageContent = isWebSearch
+      ? await AIReviewService.getChatResponseWithWebSearch({
+          openAIMessages,
+          reviewer: userQuestion.question.reviewer,
+        })
+      : await AIReviewService.getChatResponse({
+          openAIMessages,
+          reviewer: userQuestion.question.reviewer,
+        });
 
     await prisma.message.create({
       data: {
