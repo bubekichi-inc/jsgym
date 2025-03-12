@@ -79,6 +79,17 @@ export const MarkdownWrapper: React.FC<Props> = ({ children }) => {
             </pre>
           );
         },
+        a({ children, ...props }) {
+          return (
+            <a
+              {...props}
+              style={{ color: "blue", textDecoration: "underline" }}
+              target="_blank"
+            >
+              {children}
+            </a>
+          );
+        },
       }}
     >
       {children}
