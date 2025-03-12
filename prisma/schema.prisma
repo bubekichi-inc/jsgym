@@ -250,6 +250,7 @@ enum PointTransactionKind {
 enum CourseType {
   JAVA_SCRIPT
   TYPE_SCRIPT
+  REACT
 }
 
 enum UserQuestionStatus {
