@@ -44,12 +44,6 @@ export const PUT = async (request: NextRequest) => {
       },
     });
 
-    if (!updateSettings)
-      return NextResponse.json(
-        { error: "通知設定の更新に失敗しました" },
-        { status: 404 }
-      );
-
     return NextResponse.json<Partial<UpdateNotificationResponse>>(updateSettings, {
       status: 200,
     });
