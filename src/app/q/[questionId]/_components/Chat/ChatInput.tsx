@@ -58,7 +58,7 @@ export const ChatInput: React.FC<Props> = ({ chatBusy, setChatBusy }) => {
       });
       await api.post(`/api/questions/${questionId}/messages`, {
         message: submitText,
-        isWebSearch: watch("isWebSearch"),
+        isWebSearch: formData.isWebSearch,
       });
 
       await mutate();
@@ -103,6 +103,7 @@ export const ChatInput: React.FC<Props> = ({ chatBusy, setChatBusy }) => {
         <div className="absolute bottom-2 right-2">
           <div className="flex select-none items-center gap-2 p-2">
             <input
+              {...register("isWebSearch")}
               type="checkbox"
               id="isWebSearch"
               className="size-4 cursor-pointer"
