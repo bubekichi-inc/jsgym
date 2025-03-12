@@ -181,4 +181,26 @@ ${answer}
 
     return response.choices[0].message.parsed?.message || "";
   }
+
+  public static async getChatResponseWithWebSearch({
+    openAIMessages,
+    reviewer,
+  }: {
+    openAIMessages: ChatCompletionMessageParam[];
+    reviewer: Reviewer | null;
+  }) {
+    const input = openAIMessages
+      .map((message) => `${message.role}: ${message.content}`)
+      .join("\n");
+
+    const response = await this.openai.responses.create({
+      model: GPT_4O_MINI,
+      tools: [{ type: "web_search_preview" }],
+      input,
+      instructions: buildReviewerSettingPrompt({ reviewer }),
+      max_output_tokens: 16384,
+    });
+
+    return response.output_text || "";
+  }
 }
