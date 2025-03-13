@@ -4,7 +4,7 @@ import React from "react";
 import { CheckBox } from "./_components/CheckBox";
 import { useNotifications } from "./_hooks/useNotifications";
 import { api } from "@/app/_utils/api";
-import { UpdateNotificationRequest, UpdateNotificationResponse} from "@/app/api/notifications/_types/notification";
+import { UpdateNotificationRequest} from "@/app/api/notifications/_types/notification";
 
 type NotificationSettingKey =
   "receiveNewQuestionNotification"
@@ -21,7 +21,7 @@ const Page: React.FC = () => {
     } as UpdateNotificationRequest;
 
     try {
-      await api.put<UpdateNotificationRequest, Partial<UpdateNotificationResponse>>(
+      await api.put<UpdateNotificationRequest, { message: string }>(
         "/api/notifications", 
         updatedData
       ); 

@@ -42,7 +42,7 @@ export const PUT = async (request: NextRequest) => {
     const [key, value] = Object.entries(body)[0] as [keyof UpdateNotificationResponse, boolean];
     const updateData = { [key]: value };
 
-    const updateSettings = await prisma.user.update({
+    await prisma.user.update({
       where: {
         id: currentUser.id,
       },
@@ -52,9 +52,7 @@ export const PUT = async (request: NextRequest) => {
       },
     });
     
-    return NextResponse.json<Partial<UpdateNotificationResponse>>(updateSettings, {
-      status: 200,
-    });
+    return NextResponse.json({ message: "success" },{status: 200 });
   } catch (e) {
     return await buildError(e);
   }
