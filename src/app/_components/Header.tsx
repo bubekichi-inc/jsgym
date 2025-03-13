@@ -39,7 +39,7 @@ export const Header: React.FC = () => {
             <Link className="font-bold" href={data ? "/q" : "/"}>
               <Logo />
             </Link>
-            <span className="rounded-full bg-green-600 px-3 pb-[5px] pt-1 text-xs font-bold text-white md:text-sm">
+            <span className="pt-1 text-xs font-black text-green-600 md:text-sm">
               β版
             </span>
           </div>
