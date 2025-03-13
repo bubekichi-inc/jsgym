@@ -39,7 +39,7 @@ export const PUT = async (request: NextRequest) => {
       );
     }
     
-    const [key, value] = Object.entries(body)[0];
+    const [key, value] = Object.entries(body)[0] as [keyof UpdateNotificationResponse, boolean];
     const updateData = { [key]: value };
 
     const updateSettings = await prisma.user.update({
