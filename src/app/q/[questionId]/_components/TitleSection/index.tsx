@@ -39,7 +39,7 @@ export const TitleSection: React.FC = () => {
             </span>
             <span className="text-sm text-gray-600">{data.question.id}</span>
           </p>
-          <h1 className="text-xl font-bold md:text-2xl">
+          <h1 className="text-xl font-bold md:text-xl">
             {data.question.title}
           </h1>
           <StatusBadge status={data.userQuestion?.status || null} />
