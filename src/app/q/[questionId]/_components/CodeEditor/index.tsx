@@ -121,7 +121,7 @@ export const CodeEditor: React.FC<Props> = ({
           loading={
             <div className="text-sm font-bold text-gray-400">Loading...</div>
           }
-          onMount={(editor, monaco) => {
+          onMount={(_editor, monaco) => {
             (async () => {
               const highlighter = await createHighlighter({
                 themes: ["dark-plus"],
