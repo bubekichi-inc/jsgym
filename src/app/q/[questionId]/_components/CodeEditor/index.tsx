@@ -2,12 +2,15 @@
 
 import { Editor } from "@monaco-editor/react";
 import { EditorTheme } from "@prisma/client";
+import { shikiToMonaco } from "@shikijs/monaco";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { createHighlighter } from "shiki";
+
 import { Tabs } from "./Tabs";
-import { Terminal } from "./Terminal";
 import { ToolBar } from "./ToolBar";
 import { useEditorSetting } from "@/app/(member)/_hooks/useEditorSetting";
+import { Preview } from "@/app/_components/ReactPreview";
 import { useCodeExecutor } from "@/app/_hooks/useCodeExecutor";
 import { useDevice } from "@/app/_hooks/useDevice";
 import { useQuestion } from "@/app/_hooks/useQuestion";
@@ -36,6 +39,9 @@ export const CodeEditor: React.FC<Props> = ({
 
   const { iframeRef, executeCode, executionResult, resetLogs } =
     useCodeExecutor();
+  const [files, setFiles] = useState<Record<string, string>>({
+    "/App.tsx": "",
+  });
 
   const editorHeight = useMemo(() => {
     if (isSp) {
@@ -71,6 +77,9 @@ export const CodeEditor: React.FC<Props> = ({
   useEffect(() => {
     if (!data) return;
     setValue(data.answer?.answer || data.question.template);
+    setFiles({
+      "/App.tsx": data.answer?.answer || data.question.template,
+    });
   }, [data]);
 
   useEffect(() => {
@@ -86,6 +95,14 @@ export const CodeEditor: React.FC<Props> = ({
 
   const reset = () => setValue(data.question.template);
 
+  const change = (value?: string) => {
+    if (!value) return;
+    setValue(value);
+    setFiles({
+      "/App.tsx": value,
+    });
+  };
+
   return (
     <div className="">
       <div className="relative">
@@ -95,7 +112,7 @@ export const CodeEditor: React.FC<Props> = ({
           height={editorHeight}
           defaultLanguage={language(data.question.lesson.course.name)}
           value={value}
-          onChange={(value) => value && setValue(value)}
+          onChange={change}
           theme={theme}
           options={{
             fontSize,
@@ -104,6 +121,20 @@ export const CodeEditor: React.FC<Props> = ({
           loading={
             <div className="text-sm font-bold text-gray-400">Loading...</div>
           }
+          onMount={(editor, monaco) => {
+            (async () => {
+              const highlighter = await createHighlighter({
+                themes: ["dark-plus"],
+                langs: ["jsx", "tsx", "vue", "svelte"],
+              });
+
+              monaco.languages.register({ id: "jsx" });
+              monaco.languages.register({ id: "tsx" });
+              monaco.languages.register({ id: "vue" });
+              monaco.languages.register({ id: "svelte" });
+              shikiToMonaco(highlighter, monaco);
+            })();
+          }}
         />
         <ToolBar
           answer={value}
@@ -115,11 +146,12 @@ export const CodeEditor: React.FC<Props> = ({
           onReviewComplete={onReviewComplete}
         />
       </div>
-      <Terminal
+      <Preview files={files} />
+      {/* <Terminal
         executionResult={executionResult}
         iframeRef={iframeRef}
         onClear={resetLogs}
-      />
+      /> */}
     </div>
   );
 };

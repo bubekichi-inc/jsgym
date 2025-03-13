@@ -1,7 +1,7 @@
 import { CourseType } from "@prisma/client";
 import { buildPrisma } from "../src/app/_utils/prisma";
 import { AIreviewers, Reviewer } from "./data/aiReviewers";
-import { courses, lessons } from "./data/javascriptCourse";
+import { courses, lessons } from "./data/courseLessons";
 import { QuestionTag, questionTags } from "./data/questionTags";
 
 export type Course = {
