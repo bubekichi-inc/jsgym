@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { buildError } from "../_utils/buildError";
 import { getCurrentUser } from "../_utils/getCurrentUser";
-import { FetchNotificationRequest, UpdateNotificationResponse } from "./_types/notification";
+import { FetchNotificationRequest, UpdateNotificationRequest,UpdateNotificationResponse } from "./_types/notification";
 import { buildPrisma } from "@/app/_utils/prisma";
 
 // 通知設定取得用のAPI
@@ -31,19 +31,27 @@ export const PUT = async (request: NextRequest) => {
 
   try {
     const currentUser = await getCurrentUser({ request });
-    const body: UpdateNotificationResponse = await request.json();
-    const keyName: string = Object.keys(body)[0];
+    const body: UpdateNotificationRequest = await request.json();
+
+    if (Object.keys(body).length !== 1) {
+      throw new Error(
+        "更新できるのは1件のみです"
+      );
+    }
+    
+    const [key, value] = Object.entries(body)[0];
+    const updateData = { [key]: value };
 
     const updateSettings = await prisma.user.update({
       where: {
         id: currentUser.id,
       },
-      data: body,
+      data: updateData,
       select: {
-        [keyName]: true,
+        [key]: true,
       },
     });
-
+    
     return NextResponse.json<Partial<UpdateNotificationResponse>>(updateSettings, {
       status: 200,
     });
