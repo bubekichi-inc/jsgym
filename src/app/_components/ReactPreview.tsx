@@ -72,7 +72,7 @@ export const Preview: React.FC<Props> = ({ files }) => {
         key={refreshKey}
         src="/preview/index.html"
         title="プレビュー"
-        sandbox="allow-scripts allow-same-origin"
+        sandbox="allow-scripts"
         className="size-full min-h-[500px] border-none"
       />
     </div>
