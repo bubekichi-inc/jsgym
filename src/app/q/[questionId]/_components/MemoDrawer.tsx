@@ -79,7 +79,7 @@ export const MemoDrawer: React.FC = () => {
             ref={textareaRef}
             value={memo}
             onChange={handleMemoChange}
-            className="flex-1 resize-none rounded border border-gray-300 p-2 text-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+            className="flex-1 resize-none rounded border border-gray-300 p-2 text-base focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
             placeholder="ここにメモを入力してください..."
           />
         </div>
