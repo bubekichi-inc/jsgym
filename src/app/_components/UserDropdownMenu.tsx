@@ -1,4 +1,5 @@
 import {
+  faBookmark,
   faCog,
   faDashboard,
   faPerson,
@@ -60,6 +61,16 @@ export const UserDropdownMenu: React.FC = () => {
           >
             <FontAwesomeIcon icon={faDashboard} />
             ダッシュボード
+          </button>
+        </MenuItem>
+        <MenuItem>
+          <button
+            className="group flex w-full items-center gap-3 rounded-lg p-3 font-bold data-[focus]:bg-gray-100"
+            type="button"
+            onClick={() => push("/bookmarks")}
+          >
+            <FontAwesomeIcon icon={faBookmark} />
+            ブックマーク
           </button>
         </MenuItem>
         <MenuItem>
