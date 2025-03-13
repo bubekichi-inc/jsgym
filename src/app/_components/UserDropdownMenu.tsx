@@ -1,7 +1,7 @@
 import {
   faBookmark,
+  faChartBar,
   faCog,
-  faDashboard,
   faPerson,
   faSignOut,
 } from "@fortawesome/free-solid-svg-icons";
@@ -59,7 +59,7 @@ export const UserDropdownMenu: React.FC = () => {
             type="button"
             onClick={() => push("/dashboard")}
           >
-            <FontAwesomeIcon icon={faDashboard} />
+            <FontAwesomeIcon icon={faChartBar} />
             ダッシュボード
           </button>
         </MenuItem>
