@@ -56,7 +56,7 @@ export const Chat: React.FC<Props> = ({
   const showChatInput = data.messages.length > 1 && !isPassed;
 
   return (
-    <div className="relative space-y-6">
+    <div className="relative space-y-6 pb-8 md:pb-0">
       <div className="relative space-y-3">
         {data.messages.map((message) => {
           return <ChatMssage key={message.id} message={message} />;

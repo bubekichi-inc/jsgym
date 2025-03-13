@@ -1,6 +1,8 @@
 import {
+  faBookmark,
   faCog,
   faDashboard,
+  faPerson,
   faSignOut,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -65,6 +67,16 @@ export const UserDropdownMenu: React.FC = () => {
           <button
             className="group flex w-full items-center gap-3 rounded-lg p-3 font-bold data-[focus]:bg-gray-100"
             type="button"
+            onClick={() => push("/bookmarks")}
+          >
+            <FontAwesomeIcon icon={faBookmark} />
+            ブックマーク
+          </button>
+        </MenuItem>
+        <MenuItem>
+          <button
+            className="group flex w-full items-center gap-3 rounded-lg p-3 font-bold data-[focus]:bg-gray-100"
+            type="button"
             onClick={() => push("/settings/profile")}
           >
             <FontAwesomeIcon icon={faCog} />
@@ -88,8 +100,8 @@ export const UserDropdownMenu: React.FC = () => {
               type="button"
               onClick={() => push("/admin/dashboard")}
             >
-              <FontAwesomeIcon icon={faDashboard} />
-              ダッシュボード
+              <FontAwesomeIcon icon={faPerson} />
+              管理者
             </button>
           </MenuItem>
         )}

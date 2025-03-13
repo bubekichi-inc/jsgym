@@ -10,7 +10,7 @@ export const StatusBadge: React.FC<Props> = ({ status }) => {
 
   return (
     <span
-      className={`inline-block whitespace-nowrap rounded-full px-4 py-2 text-sm font-bold text-white ${statusColor}`}
+      className={`inline-block whitespace-nowrap rounded-full px-2 py-1 text-xs font-bold text-white ${statusColor}`}
     >
       {status ? userQuestionTextMap[status] : "未提出"}
     </span>

@@ -47,7 +47,7 @@ export const CodeEditor: React.FC<Props> = ({
     if (isSp) {
       return "calc(60vh)";
     }
-    return "calc(100vh - 48px - 280px - 36px)";
+    return "calc(100vh - 48px - 288px - 36px)";
   }, [isSp]);
 
   const theme = useMemo(() => {

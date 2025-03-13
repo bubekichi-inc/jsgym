@@ -25,7 +25,9 @@ model User {
   receiveReminderNotification    Boolean            @default(true) @map("receive_reminder_notification")
   receiveUsefulInfoNotification  Boolean            @default(true) @map("receive_useful_info_notification")
   role                           UserRole           @default(USER) @map("role")
+  memo                           String?            @default("")
   pointTransactions              PointTransaction[]
+  questionBookmarks              QuestionBookmark[]
   reviewer                       Reviewer?
   userQuestions                  UserQuestion[]
 
@@ -55,23 +57,35 @@ model Lesson {
 }
 
 model Question {
-  title         String
-  content       String
-  lessonId      Int                   @map("lesson_id")
-  template      String
-  exampleAnswer String
-  createdAt     DateTime              @default(now()) @map("created_at")
-  updatedAt     DateTime              @updatedAt @map("updated_at")
-  id            String                @id
-  reviewerId    Int                   @map("reviewer_id")
-  inputCode     String
-  outputCode    String
-  questions     QuestionTagRelation[]
-  lesson        Lesson                @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-  reviewer      Reviewer              @relation(fields: [reviewerId], references: [id])
-  userQuestions UserQuestion[]
+  title             String
+  content           String
+  lessonId          Int                   @map("lesson_id")
+  template          String
+  exampleAnswer     String
+  createdAt         DateTime              @default(now()) @map("created_at")
+  updatedAt         DateTime              @updatedAt @map("updated_at")
+  id                String                @id
+  reviewerId        Int                   @map("reviewer_id")
+  inputCode         String
+  outputCode        String
+  questionBookmarks QuestionBookmark[]
+  questions         QuestionTagRelation[]
+  lesson            Lesson                @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  reviewer          Reviewer              @relation(fields: [reviewerId], references: [id])
+  userQuestions     UserQuestion[]
 
   @@map("questions")
+}
+
+model QuestionBookmark {
+  id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  questionId String   @map("question_id")
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, questionId])
+  @@map("question_bookmarks")
 }
 
 model QuestionTag {
@@ -250,6 +264,8 @@ enum PointTransactionKind {
 enum CourseType {
   JAVA_SCRIPT
   TYPE_SCRIPT
+  REACT_JS
+  REACT_TS
 }
 
 enum UserQuestionStatus {

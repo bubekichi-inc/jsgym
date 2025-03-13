@@ -2,6 +2,7 @@
 
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
+import { BookmarkButton } from "../BookmarkButton";
 import { ExampleAnswerModal } from "../ExampleAnswerModal";
 import { StatusBadge } from "../StatusBadge";
 import { DropdownMenu } from "./DropdownMenu";
@@ -21,9 +22,9 @@ export const TitleSection: React.FC = () => {
 
   return (
     <>
-      <div className="flex items-center justify-between">
-        <div className="items-start space-y-2 md:flex md:items-center md:gap-4 md:space-y-0">
-          <p className="flex items-center gap-2">
+      <div className="flex items-center justify-between gap-4">
+        <div className="items-start space-y-2 md:flex md:items-center md:gap-6 md:space-y-0">
+          <div className="flex items-center gap-1">
             <span
               className={`whitespace-nowrap rounded-full px-2 py-1 text-xs font-bold text-white ${
                 lessonStyleMap[
@@ -37,14 +38,21 @@ export const TitleSection: React.FC = () => {
                 ]
               }
             </span>
-            <span className="text-sm text-gray-600">{data.question.id}</span>
-          </p>
-          <h1 className="text-xl font-bold md:text-2xl">
-            {data.question.title}
-          </h1>
-          <StatusBadge status={data.userQuestion?.status || null} />
+            <span className="text-xs text-gray-600 md:text-sm">
+              {data.question.id}
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <h1 className="text-base font-bold md:text-xl">
+              {data.question.title}
+            </h1>
+            <StatusBadge status={data.userQuestion?.status || null} />
+          </div>
         </div>
-        <DropdownMenu onShowAnswer={() => setShowAnswerModal(true)} />
+        <div className="flex flex-col items-center gap-1 md:flex-row">
+          <BookmarkButton />
+          <DropdownMenu onShowAnswer={() => setShowAnswerModal(true)} />
+        </div>
       </div>
 
       <ExampleAnswerModal
