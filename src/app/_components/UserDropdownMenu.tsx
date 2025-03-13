@@ -1,6 +1,7 @@
 import {
   faCog,
   faDashboard,
+  faPerson,
   faSignOut,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -88,8 +89,8 @@ export const UserDropdownMenu: React.FC = () => {
               type="button"
               onClick={() => push("/admin/dashboard")}
             >
-              <FontAwesomeIcon icon={faDashboard} />
-              ダッシュボード
+              <FontAwesomeIcon icon={faPerson} />
+              管理者
             </button>
           </MenuItem>
         )}
