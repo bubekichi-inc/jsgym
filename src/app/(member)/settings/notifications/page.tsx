@@ -4,12 +4,7 @@ import React from "react";
 import { CheckBox } from "./_components/CheckBox";
 import { useNotifications } from "./_hooks/useNotifications";
 import { api } from "@/app/_utils/api";
-import { UpdateNotificationRequest} from "@/app/api/notifications/_types/notification";
-
-type NotificationSettingKey =
-  "receiveNewQuestionNotification"
-  | "receiveReminderNotification"
-  | "receiveUsefulInfoNotification"
+import { UpdateNotificationRequest, NotificationSettingKey } from "@/app/api/notifications/_types/notification";
 
 const Page: React.FC = () => {
   const { error, data, mutate } = useNotifications();
