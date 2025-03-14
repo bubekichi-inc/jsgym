@@ -40,7 +40,6 @@ export const PUT = async (request: NextRequest) => {
     }
 
     const [key, value] = Object.entries(body)[0];
-    // 許可するkeyを指定し、as const satisfiesで
     const allowedKeys = [
       "receiveNewQuestionNotification",
       "receiveUsefulInfoNotification",
