@@ -10,6 +10,32 @@ import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "../../_utils/getCurrentUser";
 import { buildPrisma } from "@/app/_utils/prisma";
 
+// APIレスポンスの型定義
+export type DailyStats = {
+  date: string;
+  newUsers: number;
+  submittedAnswers: number;
+  clearedQuestions: number;
+  activeUsers: number;
+};
+
+export type UserDailyStats = {
+  userId: string;
+  username: string;
+  dailyActivities: {
+    date: string;
+    submittedAnswers: number;
+    clearedQuestions: number;
+  }[];
+  totalSubmitted: number;
+  totalCleared: number;
+};
+
+export type DashboardResponse = {
+  dailyStats: DailyStats[];
+  userStats: UserDailyStats[];
+};
+
 export async function GET(request: NextRequest) {
   try {
     const currentUser = await getCurrentUser({ request });
@@ -107,7 +133,91 @@ export async function GET(request: NextRequest) {
       })
     );
 
-    return NextResponse.json({ dailyStats });
+    // ユーザーごとの統計情報を取得
+    // 非アクティブユーザーも含めて全ユーザーを取得
+    const allUsers = await prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
+    // ユーザーごとの日別統計情報を取得
+    const userStats = await Promise.all(
+      allUsers.map(async (user) => {
+        // 各日付ごとの活動データを取得
+        const dailyActivities = await Promise.all(
+          daysInMonth.map(async (date) => {
+            const dayStart = new Date(date);
+            dayStart.setHours(0, 0, 0, 0);
+
+            const dayEnd = new Date(date);
+            dayEnd.setHours(23, 59, 59, 999);
+
+            // 解答提出数
+            const submittedAnswers = await prisma.answer.count({
+              where: {
+                userQuestion: {
+                  userId: user.id,
+                },
+                createdAt: {
+                  gte: dayStart,
+                  lte: dayEnd,
+                },
+              },
+            });
+
+            // クリアした問題数
+            const clearedQuestions = await prisma.userQuestion.count({
+              where: {
+                userId: user.id,
+                status: "PASSED",
+                updatedAt: {
+                  gte: dayStart,
+                  lte: dayEnd,
+                },
+              },
+            });
+
+            return {
+              date: format(date, "yyyy-MM-dd"),
+              submittedAnswers,
+              clearedQuestions,
+            };
+          })
+        );
+
+        // 月間の合計を計算
+        const totalSubmitted = dailyActivities.reduce(
+          (sum, day) => sum + day.submittedAnswers,
+          0
+        );
+        const totalCleared = dailyActivities.reduce(
+          (sum, day) => sum + day.clearedQuestions,
+          0
+        );
+
+        return {
+          userId: user.id,
+          username: user.name || "名前なし",
+          dailyActivities,
+          totalSubmitted,
+          totalCleared,
+        };
+      })
+    );
+
+    // 活動量の多い順にソート
+    userStats.sort((a, b) => {
+      // まず合計クリア数で比較
+      if (b.totalCleared !== a.totalCleared) {
+        return b.totalCleared - a.totalCleared;
+      }
+      // 次に合計提出数で比較
+      return b.totalSubmitted - a.totalSubmitted;
+    });
+
+    return NextResponse.json({ dailyStats, userStats });
   } catch (error) {
     console.error("ダッシュボードデータの取得中にエラーが発生しました:", error);
     return NextResponse.json(
