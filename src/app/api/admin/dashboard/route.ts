@@ -36,6 +36,8 @@ export type DashboardResponse = {
   userStats: UserDailyStats[];
 };
 
+export const maxDuration = 120;
+
 export async function GET(request: NextRequest) {
   try {
     const currentUser = await getCurrentUser({ request });
