@@ -2,29 +2,29 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { getCurrentUser } from "../_utils/getCurrentUser";
 import { buildPrisma } from "@/app/_utils/prisma";
+import { supabase } from "@/app/_utils/supabase";
 
 export async function GET(request: NextRequest) {
   try {
     const prisma = await buildPrisma();
-    const user = await getCurrentUser({ request });
+    const token = request.headers.get("Authorization") ?? "";
+    const { data } = await supabase.auth.getUser(token);
+    const currentUser = data.user
+      ? await prisma.user.findUnique({
+          where: {
+            supabaseUserId: data.user.id,
+          },
+          select: {
+            memo: true,
+          },
+        })
+      : null;
 
-    const userData = await prisma.user.findUnique({
-      where: {
-        id: user.id,
-      },
-      select: {
-        memo: true,
-      },
-    });
-
-    if (!userData) {
-      return NextResponse.json(
-        { error: "ユーザーが見つかりません" },
-        { status: 404 }
-      );
+    if (!currentUser) {
+      return NextResponse.json({ memo: "" }, { status: 200 });
     }
 
-    return NextResponse.json({ memo: userData.memo || "" });
+    return NextResponse.json({ memo: currentUser.memo || "" });
   } catch (error) {
     console.error("メモ取得エラー:", error);
     return NextResponse.json(
