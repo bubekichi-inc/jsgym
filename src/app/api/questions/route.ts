@@ -33,6 +33,9 @@ export type Question = {
   userQuestions: {
     status: UserQuestionStatus;
   }[];
+  questionBookmarks: {
+    id: string;
+  }[];
 };
 
 export const GET = async (request: NextRequest) => {
@@ -68,6 +71,14 @@ export const GET = async (request: NextRequest) => {
           },
           select: {
             status: true,
+          },
+        },
+        questionBookmarks: {
+          where: {
+            userId: currentUser?.id,
+          },
+          select: {
+            id: true,
           },
         },
       }

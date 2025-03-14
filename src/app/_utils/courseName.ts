@@ -5,5 +5,9 @@ export const courseName = (course: CourseType): string => {
       return "JavaScript";
     case CourseType.TYPE_SCRIPT:
       return "TypeScript";
+    case CourseType.REACT_JS:
+      return "React";
+    case CourseType.REACT_TS:
+      return "React";
   }
 };

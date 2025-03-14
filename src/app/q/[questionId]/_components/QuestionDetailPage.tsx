@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Chat } from "./Chat";
 import { CodeEditor } from "./CodeEditor";
+import { MemoDrawer } from "./MemoDrawer";
 import { Question } from "./Question";
 import { SpTab } from "./SpTab";
 import { TitleSection } from "./TitleSection";
@@ -49,6 +50,8 @@ export const QuestionDetailPage: React.FC = () => {
           />
         </div>
       </div>
+
+      <MemoDrawer />
     </div>
   );
 };

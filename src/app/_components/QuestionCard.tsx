@@ -1,5 +1,7 @@
 "use client";
 
+import { faBookmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import dayjs from "dayjs";
 import Image from "next/image";
 import Link from "next/link";
@@ -34,6 +36,14 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question }) => {
             </span>
           </div>
           <div className="flex gap-2">
+            {question.questionBookmarks?.length > 0 && (
+              <div className="flex items-center gap-1">
+                <FontAwesomeIcon
+                  icon={faBookmark}
+                  className="text-yellow-500"
+                />
+              </div>
+            )}
             <span
               className={`inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-sm font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 ${
                 question.lesson.id === lessonLevelMap["BASIC"]

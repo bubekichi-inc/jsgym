@@ -6,5 +6,11 @@ export const language = (course: CourseType): Language => {
       return "javascript";
     case CourseType.TYPE_SCRIPT:
       return "typescript";
+    case CourseType.REACT_JS:
+      return "javascript";
+    case CourseType.REACT_TS:
+      return "typescript";
+    default:
+      return "javascript";
   }
 };

@@ -208,63 +208,59 @@ export const Questions: React.FC<Props> = ({ limit }) => {
               )}
             </div>
 
-            <div className="flex flex-col items-center gap-2 rounded-md bg-white py-2 md:flex-row md:px-4">
+            <div className="flex max-w-[100vw] flex-col items-center gap-2 overflow-auto rounded-md bg-white py-2 md:flex-row md:px-4">
               {!isSp && (
                 <p className="text-xs font-bold text-gray-500">レビュワー</p>
               )}
-              <div className="flex justify-center">
-                <div className="flex max-w-full pb-2 pt-1 md:max-w-screen-md">
-                  <div className="flex gap-3 px-2">
-                    {reviewers.map((reviewer) => (
-                      <button
-                        key={reviewer.id}
-                        onClick={() => handleReviewerSelect(reviewer.id)}
-                        className={`group relative flex min-w-[60px] flex-col items-center space-y-1 transition-transform hover:scale-110 ${
-                          selectedReviewerId === reviewer.id ? "scale-110" : ""
+              <div className="flex pb-2 pt-1 md:max-w-screen-md">
+                <div className="flex gap-3 px-2">
+                  {reviewers.map((reviewer) => (
+                    <button
+                      key={reviewer.id}
+                      onClick={() => handleReviewerSelect(reviewer.id)}
+                      className={`group relative flex min-w-[60px] flex-col items-center space-y-1 transition-transform hover:scale-110 ${
+                        selectedReviewerId === reviewer.id ? "scale-110" : ""
+                      }`}
+                      onMouseEnter={() => handleReviewerMouseEnter(reviewer.id)}
+                      onMouseLeave={handleReviewerMouseLeave}
+                    >
+                      <div
+                        className={`relative size-12 overflow-hidden rounded-full border-2 ${
+                          selectedReviewerId === reviewer.id
+                            ? "border-[3px] border-blue-500"
+                            : "border-transparent"
                         }`}
-                        onMouseEnter={() =>
-                          handleReviewerMouseEnter(reviewer.id)
-                        }
-                        onMouseLeave={handleReviewerMouseLeave}
                       >
+                        <Image
+                          src={reviewer.profileImageUrl}
+                          alt={reviewer.name}
+                          fill
+                          sizes="48px"
+                          className="object-cover"
+                        />
+                      </div>
+                      <span className="whitespace-nowrap text-center text-xs font-medium">
+                        {reviewer.name}
+                      </span>
+                      {!isSp && (
                         <div
-                          className={`relative size-12 overflow-hidden rounded-full border-2 ${
-                            selectedReviewerId === reviewer.id
-                              ? "border-[3px] border-blue-500"
-                              : "border-transparent"
+                          className={`absolute bottom-[105%] z-10 mb-2 w-[320px] whitespace-pre-wrap break-words rounded-lg bg-gray-900 p-3 text-left text-xs text-white transition-opacity duration-200 ${
+                            hoveredReviewerId === reviewer.id
+                              ? "visible opacity-100"
+                              : "invisible opacity-0"
                           }`}
                         >
-                          <Image
-                            src={reviewer.profileImageUrl}
-                            alt={reviewer.name}
-                            fill
-                            sizes="48px"
-                            className="object-cover"
-                          />
+                          <p className="font-bold">{reviewer.name}</p>
+                          <p className="mt-1 line-clamp-[9] text-xs text-gray-300">
+                            {reviewer.bio}
+                          </p>
+                          <p className="mt-1 text-xs text-blue-300">
+                            問題数: {reviewer.questionCount}
+                          </p>
                         </div>
-                        <span className="whitespace-nowrap text-center text-xs font-medium">
-                          {reviewer.name}
-                        </span>
-                        {!isSp && (
-                          <div
-                            className={`absolute bottom-[105%] z-10 mb-2 w-[320px] whitespace-pre-wrap break-words rounded-lg bg-gray-900 p-3 text-left text-xs text-white transition-opacity duration-200 ${
-                              hoveredReviewerId === reviewer.id
-                                ? "visible opacity-100"
-                                : "invisible opacity-0"
-                            }`}
-                          >
-                            <p className="font-bold">{reviewer.name}</p>
-                            <p className="mt-1 line-clamp-[9] text-xs text-gray-300">
-                              {reviewer.bio}
-                            </p>
-                            <p className="mt-1 text-xs text-blue-300">
-                              問題数: {reviewer.questionCount}
-                            </p>
-                          </div>
-                        )}
-                      </button>
-                    ))}
-                  </div>
+                      )}
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
