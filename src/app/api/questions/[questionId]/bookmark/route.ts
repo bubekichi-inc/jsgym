@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { buildError } from "../../../_utils/buildError";
 import { buildPrisma } from "@/app/_utils/prisma";
+import { supabase } from "@/app/_utils/supabase";
 import { getCurrentUser } from "@/app/api/_utils/getCurrentUser";
 
 interface Props {
@@ -14,12 +15,24 @@ export const GET = async (request: NextRequest, { params }: Props) => {
   const { questionId } = await params;
 
   try {
-    const { id: userId } = await getCurrentUser({ request });
+    const token = request.headers.get("Authorization") ?? "";
+    const { data } = await supabase.auth.getUser(token);
+    const currentUser = data.user
+      ? await prisma.user.findUnique({
+          where: {
+            supabaseUserId: data.user.id,
+          },
+        })
+      : null;
+
+    if (!currentUser) {
+      return NextResponse.json({ bookmark: false }, { status: 200 });
+    }
 
     const bookmark = await prisma.questionBookmark.findUnique({
       where: {
         userId_questionId: {
-          userId,
+          userId: currentUser.id,
           questionId,
         },
       },
