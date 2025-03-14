@@ -4,18 +4,7 @@ import { format, parse } from "date-fns";
 import { ja } from "date-fns/locale";
 import { useState, useEffect } from "react";
 import { useFetch } from "@/app/_hooks/useFetch";
-
-type DailyStats = {
-  date: string;
-  newUsers: number;
-  submittedAnswers: number;
-  clearedQuestions: number;
-  activeUsers: number;
-};
-
-type DashboardResponse = {
-  dailyStats: DailyStats[];
-};
+import type { DashboardResponse } from "@/app/api/admin/dashboard/route";
 
 export default function AdminDashboard() {
   const [selectedMonth, setSelectedMonth] = useState<string>(
@@ -270,6 +259,98 @@ export default function AdminDashboard() {
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+      )}
+
+      {/* ユーザーごとの統計情報テーブル */}
+      {data && data.userStats && (
+        <div className="mt-12">
+          <h2 className="mb-4 text-xl font-bold">ユーザー別活動統計</h2>
+
+          <div className="overflow-x-auto">
+            <table className="min-w-full rounded-lg bg-white shadow">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="px-4 py-3 text-left">ユーザー名</th>
+                  {chartData.map((item, index) => (
+                    <th key={`date-${index}`} className="px-2 py-3 text-center">
+                      <div className="origin-top-left -rotate-45 whitespace-nowrap text-xs">
+                        {formattedDates[index]}
+                      </div>
+                    </th>
+                  ))}
+                  <th className="px-4 py-3 text-center">合計提出数</th>
+                  <th className="px-4 py-3 text-center">合計クリア数</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.userStats.map((user) => (
+                  <tr key={user.userId} className="border-t hover:bg-gray-50">
+                    <td className="px-4 py-3 font-medium">{user.username}</td>
+
+                    {/* 日ごとのデータセル */}
+                    {chartData.map((dayData) => {
+                      const userDayActivity = user.dailyActivities.find(
+                        (activity) => activity.date === dayData.date
+                      ) || { submittedAnswers: 0, clearedQuestions: 0 };
+
+                      return (
+                        <td
+                          key={`${user.userId}-${dayData.date}`}
+                          className="p-2 text-center"
+                        >
+                          <div className="flex flex-col">
+                            <span
+                              className={`text-xs ${
+                                userDayActivity.submittedAnswers > 0
+                                  ? "font-medium text-green-600"
+                                  : "text-gray-400"
+                              }`}
+                            >
+                              {userDayActivity.submittedAnswers}
+                            </span>
+                            <span
+                              className={`text-xs ${
+                                userDayActivity.clearedQuestions > 0
+                                  ? "font-medium text-purple-600"
+                                  : "text-gray-400"
+                              }`}
+                            >
+                              {userDayActivity.clearedQuestions}
+                            </span>
+                          </div>
+                        </td>
+                      );
+                    })}
+
+                    {/* 合計 */}
+                    <td className="px-4 py-3 text-center font-medium text-green-600">
+                      {user.totalSubmitted}
+                    </td>
+                    <td className="px-4 py-3 text-center font-medium text-purple-600">
+                      {user.totalCleared}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* 凡例 */}
+          <div className="mt-4 flex items-center space-x-6 text-sm">
+            <div className="flex items-center">
+              <span className="mr-2 font-medium text-green-600">
+                上段の数字:
+              </span>
+              <span>解答提出数</span>
+            </div>
+            <div className="flex items-center">
+              <span className="mr-2 font-medium text-purple-600">
+                下段の数字:
+              </span>
+              <span>クリアした問題数</span>
+            </div>
           </div>
         </div>
       )}
