@@ -57,7 +57,7 @@ export default function AdminDashboard() {
     ) * 1.2;
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="mx-auto px-4 py-8">
       <h1 className="mb-8 text-3xl font-bold">管理者ダッシュボード</h1>
 
       <div className="mb-6">
@@ -83,7 +83,7 @@ export default function AdminDashboard() {
       )}
 
       {data && (
-        <div className="space-y-8">
+        <div className="container space-y-8">
           {/* 統計サマリー */}
           <div className="grid grid-cols-4 gap-4">
             <div className="rounded-lg bg-blue-50 p-4 shadow">

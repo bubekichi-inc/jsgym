@@ -36,6 +36,7 @@ export type DashboardResponse = {
   userStats: UserDailyStats[];
 };
 
+// 処理時間を延長（2分）
 export const maxDuration = 120;
 
 export async function GET(request: NextRequest) {
@@ -73,7 +74,7 @@ export async function GET(request: NextRequest) {
 
     const prisma = await buildPrisma();
 
-    // 各日付ごとのデータを取得
+    // 各日付ごとのデータを取得（一括クエリに変更）
     const dailyStats = await Promise.all(
       daysInMonth.map(async (date) => {
         const dayStart = new Date(date);
@@ -135,79 +136,111 @@ export async function GET(request: NextRequest) {
       })
     );
 
-    // ユーザーごとの統計情報を取得
-    // 非アクティブユーザーも含めて全ユーザーを取得
+    // 非アクティブユーザーも含めて全ユーザーを取得（最大100人に制限）
     const allUsers = await prisma.user.findMany({
+      where: {
+        role: {
+          not: UserRole.ADMIN,
+        },
+      },
       select: {
         id: true,
         name: true,
       },
+      take: 100, // ユーザー数を制限
     });
 
-    // ユーザーごとの日別統計情報を取得
-    const userStats = await Promise.all(
-      allUsers.map(async (user) => {
-        // 各日付ごとの活動データを取得
-        const dailyActivities = await Promise.all(
-          daysInMonth.map(async (date) => {
-            const dayStart = new Date(date);
-            dayStart.setHours(0, 0, 0, 0);
+    // 月全体のユーザー活動データを一括取得
+    const userAnswers = await prisma.answer.findMany({
+      where: {
+        createdAt: {
+          gte: startDate,
+          lte: endDate,
+        },
+        userQuestion: {
+          userId: {
+            in: allUsers.map((user) => user.id),
+          },
+        },
+      },
+      select: {
+        createdAt: true,
+        userQuestion: {
+          select: {
+            userId: true,
+          },
+        },
+      },
+    });
 
-            const dayEnd = new Date(date);
-            dayEnd.setHours(23, 59, 59, 999);
+    const userQuestions = await prisma.userQuestion.findMany({
+      where: {
+        status: "PASSED",
+        updatedAt: {
+          gte: startDate,
+          lte: endDate,
+        },
+        userId: {
+          in: allUsers.map((user) => user.id),
+        },
+      },
+      select: {
+        userId: true,
+        updatedAt: true,
+      },
+    });
 
-            // 解答提出数
-            const submittedAnswers = await prisma.answer.count({
-              where: {
-                userQuestion: {
-                  userId: user.id,
-                },
-                createdAt: {
-                  gte: dayStart,
-                  lte: dayEnd,
-                },
-              },
-            });
+    // ユーザーごとの日別統計情報を集計
+    const userStats = allUsers.map((user) => {
+      // 各日付ごとの活動データを集計
+      const dailyActivities = daysInMonth.map((date) => {
+        const dayStart = new Date(date);
+        dayStart.setHours(0, 0, 0, 0);
 
-            // クリアした問題数
-            const clearedQuestions = await prisma.userQuestion.count({
-              where: {
-                userId: user.id,
-                status: "PASSED",
-                updatedAt: {
-                  gte: dayStart,
-                  lte: dayEnd,
-                },
-              },
-            });
+        const dayEnd = new Date(date);
+        dayEnd.setHours(23, 59, 59, 999);
 
-            return {
-              date: format(date, "yyyy-MM-dd"),
-              submittedAnswers,
-              clearedQuestions,
-            };
-          })
-        );
+        // その日のユーザーの解答提出数
+        const submittedAnswers = userAnswers.filter(
+          (answer) =>
+            answer.userQuestion.userId === user.id &&
+            answer.createdAt >= dayStart &&
+            answer.createdAt <= dayEnd
+        ).length;
 
-        // 月間の合計を計算
-        const totalSubmitted = dailyActivities.reduce(
-          (sum, day) => sum + day.submittedAnswers,
-          0
-        );
-        const totalCleared = dailyActivities.reduce(
-          (sum, day) => sum + day.clearedQuestions,
-          0
-        );
+        // その日のユーザーのクリア問題数
+        const clearedQuestions = userQuestions.filter(
+          (question) =>
+            question.userId === user.id &&
+            question.updatedAt >= dayStart &&
+            question.updatedAt <= dayEnd
+        ).length;
 
         return {
-          userId: user.id,
-          username: user.name || "名前なし",
-          dailyActivities,
-          totalSubmitted,
-          totalCleared,
+          date: format(date, "yyyy-MM-dd"),
+          submittedAnswers,
+          clearedQuestions,
         };
-      })
-    );
+      });
+
+      // 月間の合計を計算
+      const totalSubmitted = dailyActivities.reduce(
+        (sum, day) => sum + day.submittedAnswers,
+        0
+      );
+      const totalCleared = dailyActivities.reduce(
+        (sum, day) => sum + day.clearedQuestions,
+        0
+      );
+
+      return {
+        userId: user.id,
+        username: user.name || "名前なし",
+        dailyActivities,
+        totalSubmitted,
+        totalCleared,
+      };
+    });
 
     // 活動量の多い順にソート
     userStats.sort((a, b) => {
