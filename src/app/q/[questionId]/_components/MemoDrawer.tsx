@@ -3,10 +3,12 @@
 import { format } from "date-fns";
 import { ja } from "date-fns/locale";
 import React, { useState, useRef, useEffect } from "react";
+import { useMe } from "@/app/(member)/_hooks/useMe";
 import { useUserMemo } from "@/app/_hooks/useUserMemo";
 
 export const MemoDrawer: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { data: me } = useMe();
   const { memo, updateMemo, isSaving, lastSaved } = useUserMemo();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -26,6 +28,8 @@ export const MemoDrawer: React.FC = () => {
       textareaRef.current.focus();
     }
   }, [isOpen]);
+
+  if (!me) return null;
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-50">
