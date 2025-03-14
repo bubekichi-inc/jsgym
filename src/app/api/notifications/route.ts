@@ -47,9 +47,6 @@ export const PUT = async (request: NextRequest) => {
         id: currentUser.id,
       },
       data: updateData,
-      select: {
-        [key]: true,
-      },
     });
     
     return NextResponse.json({ message: "success" },{status: 200 });
