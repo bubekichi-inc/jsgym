@@ -33,9 +33,11 @@ export const PUT = async (request: NextRequest) => {
     const currentUser = await getCurrentUser({ request });
     const body: UpdateNotificationRequest = await request.json();
 
-    const receiveNewQuestionNotification = "receiveNewQuestionNotification" in body ? body.receiveNewQuestionNotification : undefined;
-    const receiveUsefulInfoNotification = "receiveUsefulInfoNotification" in body ? body.receiveUsefulInfoNotification : undefined;
-    const receiveReminderNotification = "receiveReminderNotification" in body ? body.receiveReminderNotification : undefined;
+    const {
+      receiveNewQuestionNotification,
+      receiveUsefulInfoNotification,
+      receiveReminderNotification
+    } = body;
 
     await prisma.user.update({
       where: {
