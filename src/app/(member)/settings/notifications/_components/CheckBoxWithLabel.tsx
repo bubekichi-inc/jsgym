@@ -2,7 +2,7 @@ import React from "react";
 import type { ComponentPropsWithRef } from "react";
 import { CheckBox } from "@/app/_components/CheckBox";
 
-interface Props extends ComponentPropsWithRef<"input"> {
+interface Props extends Omit<ComponentPropsWithRef<"input">, "type"> {
   label: string;
 }
 

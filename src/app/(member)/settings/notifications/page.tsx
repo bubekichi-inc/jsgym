@@ -40,7 +40,6 @@ const Page: React.FC = () => {
           <CheckBoxWithLabel
             label="新着問題" 
             id="new-question"
-            type="checkbox"
             onClick={() => handleChangeSetting("receiveNewQuestionNotification")}
             defaultChecked={data.receiveNewQuestionNotification}
             disabled={false}
@@ -54,7 +53,6 @@ const Page: React.FC = () => {
           <CheckBoxWithLabel 
             label="お役立ち情報"
             id="useful-information" 
-            type="checkbox"
             onClick={() => handleChangeSetting("receiveUsefulInfoNotification")}
             defaultChecked={data.receiveUsefulInfoNotification}
             disabled={false}
@@ -68,7 +66,6 @@ const Page: React.FC = () => {
           <CheckBoxWithLabel
             label="リマインダー＆その他"
             id="reminder" 
-            type="checkbox"
             onClick={() => handleChangeSetting("receiveReminderNotification")}
             defaultChecked={data.receiveReminderNotification}
             disabled={false}
@@ -82,7 +79,6 @@ const Page: React.FC = () => {
           <CheckBoxWithLabel
             label="重要なお知らせ"
             id="importantInfo" 
-            type="checkbox"
             defaultChecked={true}
             disabled={true}
           />
