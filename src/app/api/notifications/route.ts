@@ -33,12 +33,6 @@ export const PUT = async (request: NextRequest) => {
     const currentUser = await getCurrentUser({ request });
     const body: UpdateNotificationRequest = await request.json();
 
-    if (Object.keys(body).length !== 1) {
-      throw new Error(
-        "更新できるのは1件のみです"
-      );
-    }
-    
     const receiveNewQuestionNotification = "receiveNewQuestionNotification" in body ? body.receiveNewQuestionNotification : undefined;
     const receiveUsefulInfoNotification = "receiveUsefulInfoNotification" in body ? body.receiveUsefulInfoNotification : undefined;
     const receiveReminderNotification = "receiveReminderNotification" in body ? body.receiveReminderNotification : undefined;
