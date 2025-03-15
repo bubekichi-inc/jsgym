@@ -16,9 +16,9 @@ const Notification: React.FC = () => {
   const { error, data, mutate } = useNotifications();
   const { register, watch, setValue } = useForm<FetchNotificationRequest>({
     defaultValues: {
-      receiveNewQuestionNotification: false,
-      receiveUsefulInfoNotification: false,
-      receiveReminderNotification: false,
+      receiveNewQuestionNotification: true,
+      receiveUsefulInfoNotification: true,
+      receiveReminderNotification: true,
     }
   });
 
