@@ -14,26 +14,24 @@ import {
 
 const Notification: React.FC = () => {
   const { error, data, mutate } = useNotifications();
-  const { register, watch, setValue } = useForm<FetchNotificationRequest>({
+  const { register, watch, reset } = useForm<FetchNotificationRequest>({
     defaultValues: {
       receiveNewQuestionNotification: true,
       receiveUsefulInfoNotification: true,
       receiveReminderNotification: true,
-    }
+    },
   });
 
   useEffect(() => {
     if (data) {
-      setValue("receiveNewQuestionNotification", data.receiveNewQuestionNotification);
-      setValue("receiveUsefulInfoNotification", data.receiveUsefulInfoNotification);
-      setValue("receiveReminderNotification", data.receiveReminderNotification);
+      reset(data);
     }
-  }, [data, setValue]);
+  }, [data, reset]);
 
   const [newQuestionStatus, usefulInfoStatus, reminderStatus] = watch([
     "receiveNewQuestionNotification",
     "receiveUsefulInfoNotification",
-    "receiveReminderNotification"
+    "receiveReminderNotification",
   ]);
 
   const handleChangeSetting = async (selectItem: NotificationSettingKey) => {
@@ -69,7 +67,7 @@ const Notification: React.FC = () => {
             id="new-question"
             {...register("receiveNewQuestionNotification", {
               onChange: () =>
-                handleChangeSetting("receiveNewQuestionNotification")
+                handleChangeSetting("receiveNewQuestionNotification"),
             })}
             checked={newQuestionStatus}
             disabled={false}
@@ -82,7 +80,8 @@ const Notification: React.FC = () => {
             label="お役立ち情報"
             id="useful-information"
             {...register("receiveUsefulInfoNotification", {
-              onChange: () => handleChangeSetting("receiveUsefulInfoNotification")
+              onChange: () =>
+                handleChangeSetting("receiveUsefulInfoNotification"),
             })}
             checked={usefulInfoStatus}
             disabled={false}
@@ -95,7 +94,8 @@ const Notification: React.FC = () => {
             label="リマインダー＆その他"
             id="reminder"
             {...register("receiveReminderNotification", {
-              onChange: () => handleChangeSetting("receiveReminderNotification")
+              onChange: () =>
+                handleChangeSetting("receiveReminderNotification"),
             })}
             checked={reminderStatus}
             disabled={false}
