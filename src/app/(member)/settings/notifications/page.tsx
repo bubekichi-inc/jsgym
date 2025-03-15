@@ -83,7 +83,7 @@ const Page: React.FC = () => {
             label="重要なお知らせ"
             id="importantInfo" 
             type="checkbox"
-            defaultChecked={data.receiveReminderNotification}
+            defaultChecked={true}
             disabled={true}
           />
         <p>
