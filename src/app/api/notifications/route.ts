@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { buildError } from "../_utils/buildError";
 import { getCurrentUser } from "../_utils/getCurrentUser";
-import { FetchNotificationRequest, UpdateNotificationRequest, NotificationSettingKey } from "./_types/notification";
+import { FetchNotificationRequest, UpdateNotificationRequest } from "./_types/notification";
 import { buildPrisma } from "@/app/_utils/prisma";
 
 // 通知設定取得用のAPI
@@ -33,33 +33,22 @@ export const PUT = async (request: NextRequest) => {
     const currentUser = await getCurrentUser({ request });
     const body: UpdateNotificationRequest = await request.json();
 
-    if (Object.keys(body).length !== 1) {
-      throw new Error(
-        "更新できるのは1件のみです"
-      );
-    }
-
-    const [key, value] = Object.entries(body)[0];
-    const allowedKeys = [
-      "receiveNewQuestionNotification",
-      "receiveUsefulInfoNotification",
-      "receiveReminderNotification"
-    ] as const satisfies NotificationSettingKey[];
-
-    if (!allowedKeys.includes(key as NotificationSettingKey)) {
-      throw new Error(`更新できないキーです: ${key}`);
-    }
-
-    const updateData = { [key]: value };
+    const receiveNewQuestionNotification = "receiveNewQuestionNotification" in body ? body.receiveNewQuestionNotification : undefined;
+    const receiveUsefulInfoNotification = "receiveUsefulInfoNotification" in body ? body.receiveUsefulInfoNotification : undefined;
+    const receiveReminderNotification = "receiveReminderNotification" in body ? body.receiveReminderNotification : undefined;
 
     await prisma.user.update({
       where: {
         id: currentUser.id,
       },
-      data: updateData,
+      data: {
+        receiveNewQuestionNotification,
+        receiveUsefulInfoNotification,
+        receiveReminderNotification
+      }
     });
     
-    return NextResponse.json({ message: "success" },{status: 200 });
+    return NextResponse.json({ message: "success" },{ status: 200 });
   } catch (e) {
     return await buildError(e);
   }
