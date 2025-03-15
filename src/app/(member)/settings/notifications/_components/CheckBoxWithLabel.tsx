@@ -1,16 +1,16 @@
 import React from "react";
 import type { ComponentPropsWithRef } from "react";
+import { CheckBox } from "@/app/_components/CheckBox";
 
 interface Props extends ComponentPropsWithRef<"input"> {
   label: string;
 }
 
-export const CheckBox: React.FC<Props> = ({ label, ...props }) => {
+export const CheckBoxWithLabel: React.FC<Props> = ({ label, ...props }) => {
   return (
     <div className="flex items-center">
-      <input
-        className="size-5 rounded-sm border-gray-300 bg-buttonMain text-blue-600"
-        {...props}
+      <CheckBox
+        {...props} 
       />
       <label
         htmlFor={props.id}

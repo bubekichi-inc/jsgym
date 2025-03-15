@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { CheckBox } from "./_components/CheckBox";
+import { CheckBoxWithLabel } from "./_components/CheckBoxWithLabel";
 import { useNotifications } from "./_hooks/useNotifications";
 import { api } from "@/app/_utils/api";
 import { UpdateNotificationRequest, NotificationSettingKey } from "@/app/api/notifications/_types/notification";
@@ -36,9 +36,9 @@ const Page: React.FC = () => {
     <div className="mx-auto w-full max-w-2xl">
       <div className="mt-8 flex flex-col gap-y-6">
         <div>
-          <CheckBox 
-            label="新着問題"
-            id="new-question" 
+          <CheckBoxWithLabel
+            label="新着問題" 
+            id="new-question"
             type="checkbox"
             onClick={() => handleChangeSetting("receiveNewQuestionNotification")}
             defaultChecked={data.receiveNewQuestionNotification}
@@ -50,7 +50,7 @@ const Page: React.FC = () => {
         </div>
 
         <div>
-          <CheckBox 
+          <CheckBoxWithLabel 
             label="お役立ち情報"
             id="useful-information" 
             type="checkbox"
@@ -64,7 +64,7 @@ const Page: React.FC = () => {
         </div>
 
         <div>
-          <CheckBox
+          <CheckBoxWithLabel
             label="リマインダー＆その他"
             id="reminder" 
             type="checkbox"
@@ -78,7 +78,7 @@ const Page: React.FC = () => {
         </div>
 
         <div>
-          <CheckBox
+          <CheckBoxWithLabel
             label="重要なお知らせ"
             id="importantInfo" 
             type="checkbox"
