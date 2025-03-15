@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { toast } from "react-toastify";
 import { CheckBoxWithLabel } from "./_components/CheckBoxWithLabel";
 import { useNotifications } from "./_hooks/useNotifications";
 import { api } from "@/app/_utils/api";
@@ -21,10 +22,10 @@ const Page: React.FC = () => {
         updatedData
       ); 
       mutate();
-      alert("通知設定を更新しました。");     
+      toast.success("通知設定を更新しました。");     
     } catch (e) {
       console.log("通知設定の更新に失敗:", e);
-      alert("通知設定の更新に失敗しました。");     
+      toast.error("通知設定の更新に失敗しました。");     
     }
   };
 
