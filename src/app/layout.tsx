@@ -21,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const gaId = process.env.GA_ID;
-  const clarityProjectId = process.env.CLARITY_PROJECT_ID;
+  // const clarityProjectId = process.env.CLARITY_PROJECT_ID;
 
   return (
     <html lang="ja">
