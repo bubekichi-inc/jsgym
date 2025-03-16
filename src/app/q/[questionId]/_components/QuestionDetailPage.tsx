@@ -82,11 +82,7 @@ export const QuestionDetailPage: React.FC = () => {
             </div>
           )}
 
-          {activeTab === "preview" && (
-            <div className="">
-              <Preview files={files} />
-            </div>
-          )}
+          {activeTab === "preview" && <Preview files={files} />}
         </div>
 
         <div className="w-1/2">

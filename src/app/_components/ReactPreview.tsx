@@ -1,14 +1,13 @@
 // src/components/Preview.tsx
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 interface Props {
   files: Record<string, string>;
 }
 
 export const Preview: React.FC<Props> = ({ files }) => {
-  const [refreshKey, setRefreshKey] = useState(0);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   // ファイルが変更されたときの処理
@@ -37,7 +36,7 @@ export const Preview: React.FC<Props> = ({ files }) => {
         iframe.removeEventListener("load", handleIframeLoad);
       }
     };
-  }, [files, refreshKey]);
+  }, [files]);
 
   // コードが変更されたらリフレッシュする必要はない
   // コードの内容が変わったら直接postMessageで送信できる
