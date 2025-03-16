@@ -5,9 +5,9 @@ export type FetchNotificationRequest = {
 }
 
 export type UpdateNotificationRequest = {
-  receiveNewQuestionNotification?: true,
-  receiveUsefulInfoNotification?: true,
-  receiveReminderNotification?: true,
+  receiveNewQuestionNotification?: boolean;
+  receiveUsefulInfoNotification?: boolean;
+  receiveReminderNotification?: boolean;
 };
 
 export type NotificationSettingKey =
