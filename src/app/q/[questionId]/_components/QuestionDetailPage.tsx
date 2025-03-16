@@ -4,11 +4,12 @@ import React, { useState } from "react";
 import { Chat } from "./Chat";
 import { CodeEditor } from "./CodeEditor";
 import { MemoDrawer } from "./MemoDrawer";
+import { PcTab } from "./PcTab";
 import { Question } from "./Question";
 import { SpTab } from "./SpTab";
 import { TitleSection } from "./TitleSection";
 
-type TabType = "question" | "editor";
+export type TabType = "question" | "editor" | "preview";
 
 export const QuestionDetailPage: React.FC = () => {
   const [reviewBusy, setReviewBusy] = useState(false);
@@ -22,12 +23,13 @@ export const QuestionDetailPage: React.FC = () => {
   return (
     <div className="flex flex-col pt-[44px] md:pt-0">
       <SpTab activeTab={activeTab} handleTabChange={handleTabChange} />
+      <PcTab activeTab={activeTab} handleTabChange={handleTabChange} />
 
       <div className="flex w-full flex-col md:flex-row md:justify-center">
         <div
           className={`w-full ${
             activeTab === "question" ? "block" : "hidden"
-          } relative max-h-[calc(100vh-96px)] space-y-6 p-4 md:block md:max-h-[calc(100vh-48px)] md:w-1/2 md:overflow-y-auto md:p-6`}
+          } relative max-h-[calc(100vh-96px)] space-y-6 p-4 md:mt-8 md:block md:max-h-[calc(100vh-48px)] md:w-1/2 md:overflow-y-auto md:p-6`}
         >
           <TitleSection />
           <Question />

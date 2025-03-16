@@ -1,12 +1,13 @@
 import React from "react";
+import { TabType } from "./QuestionDetailPage";
 
 interface Props {
-  activeTab: "question" | "editor";
-  handleTabChange: (tab: "question" | "editor") => void;
+  activeTab: TabType;
+  handleTabChange: (tab: TabType) => void;
 }
 
 export const SpTab: React.FC<Props> = ({ activeTab, handleTabChange }) => {
-  const getTabButtonClass = (tabType: "question" | "editor") => {
+  const getTabButtonClass = (tabType: TabType) => {
     return `w-1/2 py-3 text-center duration-150 relative font-bold ${
       activeTab === tabType ? "text-textMain" : "text-gray-400"
     }`;
