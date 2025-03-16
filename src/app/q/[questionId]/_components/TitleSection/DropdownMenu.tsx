@@ -41,7 +41,7 @@ export const DropdownMenu: React.FC<Props> = ({ onShowAnswer }) => {
 
   return (
     <div className="">
-      <Menu>
+      <Menu as="div">
         <MenuButton className="rounded-full px-2 py-1 duration-150 hover:bg-gray-200 active:bg-gray-200">
           <FontAwesomeIcon icon={faEllipsis} className="size-6 text-gray-600" />
         </MenuButton>
