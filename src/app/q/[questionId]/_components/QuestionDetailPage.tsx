@@ -8,6 +8,8 @@ import { PcTab } from "./PcTab";
 import { Question } from "./Question";
 import { SpTab } from "./SpTab";
 import { TitleSection } from "./TitleSection";
+import { Preview } from "@/app/_components/ReactPreview";
+import { useDevice } from "@/app/_hooks/useDevice";
 
 export type TabType = "question" | "editor" | "preview";
 
@@ -15,40 +17,84 @@ export const QuestionDetailPage: React.FC = () => {
   const [reviewBusy, setReviewBusy] = useState(false);
   const [chatBusy, setChatBusy] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>("question");
+  const { isSp } = useDevice();
+  const [files, setFiles] = useState<Record<string, string>>({
+    "/App.tsx": "",
+  });
 
   const handleTabChange = (tab: TabType) => {
     setActiveTab(tab);
   };
 
-  return (
-    <div className="flex flex-col pt-[44px] md:pt-0">
-      <SpTab activeTab={activeTab} handleTabChange={handleTabChange} />
-      <PcTab activeTab={activeTab} handleTabChange={handleTabChange} />
+  if (isSp) {
+    return (
+      <div className="">
+        <SpTab activeTab={activeTab} handleTabChange={handleTabChange} />
+        <div className="flex w-full flex-col md:flex-row">
+          <div
+            className={`w-full ${
+              activeTab === "question" ? "block" : "hidden"
+            } relative max-h-[calc(100vh-96px)] space-y-6 p-4`}
+          >
+            <TitleSection />
+            <Question />
+            <Chat
+              reviewBusy={reviewBusy}
+              chatBusy={chatBusy}
+              setChatBusy={setChatBusy}
+            />
+          </div>
 
-      <div className="flex w-full flex-col md:flex-row md:justify-center">
-        <div
-          className={`w-full ${
-            activeTab === "question" ? "block" : "hidden"
-          } relative max-h-[calc(100vh-96px)] space-y-6 p-4 md:mt-8 md:block md:max-h-[calc(100vh-48px)] md:w-1/2 md:overflow-y-auto md:p-6`}
-        >
-          <TitleSection />
-          <Question />
-          <Chat
-            reviewBusy={reviewBusy}
-            chatBusy={chatBusy}
-            setChatBusy={setChatBusy}
-          />
+          <div
+            className={`w-full ${
+              activeTab === "editor" ? "block" : "hidden"
+            } md:block md:w-1/2`}
+          >
+            <CodeEditor
+              reviewBusy={reviewBusy}
+              setReviewBusy={setReviewBusy}
+              onReviewComplete={() => handleTabChange("question")}
+              setFiles={setFiles}
+            />
+          </div>
         </div>
 
-        <div
-          className={`w-full ${
-            activeTab === "editor" ? "block" : "hidden"
-          } md:block md:w-1/2`}
-        >
+        <MemoDrawer />
+      </div>
+    );
+  }
+
+  return (
+    <div className="">
+      <PcTab activeTab={activeTab} handleTabChange={handleTabChange} />
+
+      <div className="flex w-full justify-center">
+        <div className="mt-8 max-h-[calc(100vh-48px)] w-1/2 overflow-auto p-6">
+          {activeTab === "question" && (
+            <div className="relative space-y-6">
+              <TitleSection />
+              <Question />
+              <Chat
+                reviewBusy={reviewBusy}
+                chatBusy={chatBusy}
+                setChatBusy={setChatBusy}
+              />
+            </div>
+          )}
+
+          {activeTab === "preview" && (
+            <div className="">
+              <Preview files={files} />
+            </div>
+          )}
+        </div>
+
+        <div className="w-1/2">
           <CodeEditor
             reviewBusy={reviewBusy}
             setReviewBusy={setReviewBusy}
             onReviewComplete={() => handleTabChange("question")}
+            setFiles={setFiles}
           />
         </div>
       </div>

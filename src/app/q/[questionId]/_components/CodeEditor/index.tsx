@@ -8,9 +8,9 @@ import { useEffect, useMemo, useState } from "react";
 import { createHighlighter } from "shiki";
 
 import { Tabs } from "./Tabs";
+import { Terminal } from "./Terminal";
 import { ToolBar } from "./ToolBar";
 import { useEditorSetting } from "@/app/(member)/_hooks/useEditorSetting";
-import { Preview } from "@/app/_components/ReactPreview";
 import { useCodeExecutor } from "@/app/_hooks/useCodeExecutor";
 import { useDevice } from "@/app/_hooks/useDevice";
 import { useQuestion } from "@/app/_hooks/useQuestion";
@@ -20,12 +20,14 @@ interface Props {
   reviewBusy: boolean;
   setReviewBusy: (busy: boolean) => void;
   onReviewComplete: () => void;
+  setFiles: (files: Record<string, string>) => void;
 }
 
 export const CodeEditor: React.FC<Props> = ({
   reviewBusy,
   setReviewBusy,
   onReviewComplete,
+  setFiles,
 }) => {
   const { isSp } = useDevice();
   const params = useParams();
@@ -39,9 +41,6 @@ export const CodeEditor: React.FC<Props> = ({
 
   const { iframeRef, executeCode, executionResult, resetLogs } =
     useCodeExecutor();
-  const [files, setFiles] = useState<Record<string, string>>({
-    "/App.tsx": "",
-  });
 
   const editorHeight = useMemo(() => {
     if (isSp) {
@@ -80,7 +79,7 @@ export const CodeEditor: React.FC<Props> = ({
     setFiles({
       "/App.tsx": data.answer?.answer || data.question.template,
     });
-  }, [data]);
+  }, [data, setFiles]);
 
   useEffect(() => {
     if (value !== data?.question.template) {
@@ -146,12 +145,11 @@ export const CodeEditor: React.FC<Props> = ({
           onReviewComplete={onReviewComplete}
         />
       </div>
-      <Preview files={files} />
-      {/* <Terminal
+      <Terminal
         executionResult={executionResult}
         iframeRef={iframeRef}
         onClear={resetLogs}
-      /> */}
+      />
     </div>
   );
 };

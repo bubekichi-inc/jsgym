@@ -14,7 +14,7 @@ export const SpTab: React.FC<Props> = ({ activeTab, handleTabChange }) => {
   };
 
   return (
-    <div className="fixed top-[48px] z-50 flex w-full bg-white text-sm md:hidden">
+    <div className="fixed top-[48px] z-50 flex w-full bg-white text-sm">
       <div className="relative w-full">
         <div
           className="absolute bottom-0 h-[3px] w-1/2 rounded-full bg-textMain transition-transform duration-300 ease-in-out"
