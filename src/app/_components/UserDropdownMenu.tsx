@@ -33,7 +33,7 @@ export const UserDropdownMenu: React.FC = () => {
   if (!data) return null;
 
   return (
-    <Menu>
+    <Menu as="div">
       <MenuButton className="relative size-8 select-none overflow-hidden rounded-full border">
         {data.iconUrl ? (
           <Image

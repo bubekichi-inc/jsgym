@@ -99,7 +99,7 @@ export const EditorSettingsDropdown: React.FC = () => {
 
   return (
     <>
-      <Menu>
+      <Menu as="div">
         <MenuButton className="h-full px-3">
           <FontAwesomeIcon icon={faCog} className={`size-4 ${cogClass}`} />
         </MenuButton>
