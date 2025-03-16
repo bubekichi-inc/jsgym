@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
+import Script from "next/script";
 import { Suspense } from "react";
 import { ToastContainer } from "react-toastify";
 import { Header } from "./_components/Header";
@@ -21,6 +22,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const gaId = process.env.GA_ID;
+  const clarityProjectId = process.env.CLARITY_PROJECT_ID;
 
   return (
     <html lang="ja">
@@ -50,6 +52,17 @@ export default function RootLayout({
         </a>
       </body>
       {gaId && <GoogleAnalytics gaId={gaId} />}
+      {clarityProjectId && (
+        <Script id="clarity-script" strategy="afterInteractive">
+          {`
+          (function(c,l,a,r,i,t,y){
+              c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+              t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+              y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+          })(window, document, "clarity", "script", "${clarityProjectId}");
+        `}
+        </Script>
+      )}
     </html>
   );
 }
