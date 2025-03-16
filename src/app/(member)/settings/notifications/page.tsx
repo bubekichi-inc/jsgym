@@ -14,7 +14,7 @@ import {
 
 const Notification: React.FC = () => {
   const { error, data, mutate } = useNotifications();
-  const { register, watch, reset } = useForm<FetchNotificationRequest>({
+  const { register, watch, setValue } = useForm<FetchNotificationRequest>({
     defaultValues: {
       receiveNewQuestionNotification: true,
       receiveUsefulInfoNotification: true,
@@ -24,9 +24,11 @@ const Notification: React.FC = () => {
 
   useEffect(() => {
     if (data) {
-      reset(data);
+      setValue("receiveNewQuestionNotification", data.receiveNewQuestionNotification);
+      setValue("receiveUsefulInfoNotification", data.receiveUsefulInfoNotification);
+      setValue("receiveReminderNotification", data.receiveReminderNotification);
     }
-  }, [data, reset]);
+  }, [data,setValue]);
 
   const [newQuestionStatus, usefulInfoStatus, reminderStatus] = watch([
     "receiveNewQuestionNotification",
