@@ -1,8 +1,12 @@
+import * as Sentry from "@sentry/nextjs";
 import { NextResponse } from "next/server";
 import { SlackService } from "@/app/_serevices/SlackService";
 import { StripeCheckoutError } from "@/app/api/_utils/StripeCheckoutError";
 
 export const buildError = async (e: unknown) => {
+  console.log("error!!!")
+  Sentry.captureException(e);
+
   if (e instanceof StripeCheckoutError) {
     // エラーログに UserId と StripePaymentId を含める
     const msg =
