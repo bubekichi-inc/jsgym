@@ -23,6 +23,7 @@ export default function RootLayout({
 }>) {
   const gaId = process.env.GA_ID;
   const clarityProjectId = process.env.CLARITY_PROJECT_ID;
+  console.log(clarityProjectId);
 
   return (
     <html lang="ja">
@@ -52,7 +53,7 @@ export default function RootLayout({
         </a>
       </body>
       {gaId && <GoogleAnalytics gaId={gaId} />}
-      {clarityProjectId && (
+      {/* {clarityProjectId && (
         <Script
           id="clarity-script"
           strategy="afterInteractive"
@@ -66,7 +67,7 @@ export default function RootLayout({
             })(window, document, "clarity", "script", ${clarityProjectId});
           `}
         </Script>
-      )}
+      )} */}
     </html>
   );
 }
