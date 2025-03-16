@@ -23,7 +23,6 @@ export default function RootLayout({
 }>) {
   const gaId = process.env.GA_ID;
   const clarityProjectId = process.env.CLARITY_PROJECT_ID;
-  console.log(clarityProjectId);
 
   return (
     <html lang="ja">
