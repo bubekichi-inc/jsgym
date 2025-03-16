@@ -14,7 +14,7 @@ import {
 
 const Notification: React.FC = () => {
   const { error, data, mutate } = useNotifications();
-  const { register, watch, setValue } = useForm<FetchNotificationRequest>({
+  const { register, reset } = useForm<FetchNotificationRequest>({
     defaultValues: {
       receiveNewQuestionNotification: true,
       receiveUsefulInfoNotification: true,
@@ -24,17 +24,9 @@ const Notification: React.FC = () => {
 
   useEffect(() => {
     if (data) {
-      setValue("receiveNewQuestionNotification", data.receiveNewQuestionNotification);
-      setValue("receiveUsefulInfoNotification", data.receiveUsefulInfoNotification);
-      setValue("receiveReminderNotification", data.receiveReminderNotification);
+      reset(data);
     }
-  }, [data,setValue]);
-
-  const [newQuestionStatus, usefulInfoStatus, reminderStatus] = watch([
-    "receiveNewQuestionNotification",
-    "receiveUsefulInfoNotification",
-    "receiveReminderNotification",
-  ]);
+  }, [data, reset]);
 
   const handleChangeSetting = async (selectItem: NotificationSettingKey) => {
     if (!data) return;
@@ -71,7 +63,6 @@ const Notification: React.FC = () => {
               onChange: () =>
                 handleChangeSetting("receiveNewQuestionNotification"),
             })}
-            checked={newQuestionStatus}
             disabled={false}
           />
           <p>新しい問題の通知を受け取る</p>
@@ -85,7 +76,6 @@ const Notification: React.FC = () => {
               onChange: () =>
                 handleChangeSetting("receiveUsefulInfoNotification"),
             })}
-            checked={usefulInfoStatus}
             disabled={false}
           />
           <p>プログラミングに関する役立つ情報を受け取る</p>
@@ -99,7 +89,6 @@ const Notification: React.FC = () => {
               onChange: () =>
                 handleChangeSetting("receiveReminderNotification"),
             })}
-            checked={reminderStatus}
             disabled={false}
           />
           <p>学習のリマインド、その他のニュースを受け取る</p>
