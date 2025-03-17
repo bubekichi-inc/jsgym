@@ -41,15 +41,19 @@ export const Preview: React.FC<Props> = ({ files }) => {
   // コードが変更されたらリフレッシュする必要はない
   // コードの内容が変わったら直接postMessageで送信できる
   useEffect(() => {
-    if (iframeRef.current?.contentWindow) {
-      iframeRef.current.contentWindow.postMessage(
-        {
-          type: "CODE_UPDATE",
-          code: files["/App.tsx"] || "",
-        },
-        "*"
-      );
-    }
+    const timer = setTimeout(() => {
+      if (iframeRef.current?.contentWindow) {
+        iframeRef.current.contentWindow.postMessage(
+          {
+            type: "CODE_UPDATE",
+            code: files["/App.tsx"] || "",
+          },
+          "*"
+        );
+      }
+    }, 1000);
+
+    return () => clearTimeout(timer);
   }, [files]);
 
   return (
