@@ -91,7 +91,11 @@ export const QuestionDetailPage: React.FC = () => {
       )}
 
       <div className="flex w-full justify-center">
-        <div className="mt-10 max-h-[calc(100vh-48px)] w-1/2 overflow-auto">
+        <div
+          className={`${
+            pageType === "browser" ? "mt-10" : ""
+          } max-h-[calc(100vh-48px)] w-1/2 overflow-auto`}
+        >
           {activeTab === "question" && (
             <div className="relative space-y-6 p-6">
               <TitleSection />
