@@ -23,8 +23,8 @@ export const Questions: React.FC<Props> = ({ limit }) => {
 
   // URLクエリパラメータから初期状態を取得
   const initialTitle = searchParams.get("title") || "";
-  const initialTab =
-    (searchParams.get("tab") as QuestionLevel | "ALL") || "ALL";
+  const initialLevel =
+    (searchParams.get("level") as QuestionLevel | "ALL") || "ALL";
   const initialReviewerId = Number(searchParams.get("reviewerId") || "0");
   const initialStatus = (searchParams.get("status") as ExtendedStatus) || "ALL";
 
@@ -39,19 +39,19 @@ export const Questions: React.FC<Props> = ({ limit }) => {
   const {
     questions,
     reviewers,
-    activeTab,
+    selectedLevel,
     selectedReviewerId,
     selectedStatus,
     hasMore,
     isLoading,
-    handleTabChange,
+    handleLevelChange,
     handleReviewerSelect,
     handleStatusChange,
     handleLoadMore,
   } = useQuestions({
     limit,
     initialTitle,
-    initialTab,
+    initialLevel,
     initialReviewerId,
     initialStatus,
   });
@@ -103,41 +103,41 @@ export const Questions: React.FC<Props> = ({ limit }) => {
                 <div className="flex h-10 items-center justify-center rounded-md p-1 text-gray-500">
                   <button
                     className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
-                      activeTab === "ALL"
+                      selectedLevel === "ALL"
                         ? "bg-blue-100 text-blue-800 shadow-sm"
                         : ""
                     }`}
-                    onClick={() => handleTabChange("ALL")}
+                    onClick={() => handleLevelChange("ALL")}
                   >
                     すべて
                   </button>
                   <button
                     className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
-                      activeTab === "BASIC"
+                      selectedLevel === "BASIC"
                         ? "bg-blue-100 text-blue-800 shadow-sm"
                         : ""
                     }`}
-                    onClick={() => handleTabChange("BASIC")}
+                    onClick={() => handleLevelChange("BASIC")}
                   >
                     基礎
                   </button>
                   <button
                     className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
-                      activeTab === "ADVANCED"
+                      selectedLevel === "ADVANCED"
                         ? "bg-blue-100 text-blue-800 shadow-sm"
                         : ""
                     }`}
-                    onClick={() => handleTabChange("ADVANCED")}
+                    onClick={() => handleLevelChange("ADVANCED")}
                   >
                     応用
                   </button>
                   <button
                     className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
-                      activeTab === "REAL_WORLD"
+                      selectedLevel === "REAL_WORLD"
                         ? "bg-blue-100 text-blue-800 shadow-sm"
                         : ""
                     }`}
-                    onClick={() => handleTabChange("REAL_WORLD")}
+                    onClick={() => handleLevelChange("REAL_WORLD")}
                   >
                     実務模擬
                   </button>

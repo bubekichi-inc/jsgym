@@ -13,7 +13,7 @@ type ExtendedStatus = UserQuestionStatus | "NOT_SUBMITTED" | "ALL";
 interface UseQuestionsProps {
   limit: number;
   initialTitle?: string;
-  initialTab?: QuestionLevel | "ALL";
+  initialLevel?: QuestionLevel | "ALL";
   initialReviewerId?: number;
   initialStatus?: ExtendedStatus;
 }
@@ -27,18 +27,18 @@ interface UseQuestionsReturn {
   selectedStatus: ExtendedStatus;
   hasMore: boolean;
   isLoading: boolean;
-  setSelectedLevel: (tab: QuestionLevel | "ALL") => void;
+  setSelectedLevel: (level: QuestionLevel | "ALL") => void;
   setSearchTitle: (title: string) => void;
   setSelectedReviewerId: (reviewerId: number) => void;
   setSelectedStatus: (status: ExtendedStatus) => void;
   handleSearchInputChange: (value: string) => void;
-  handleTabChange: (tab: QuestionLevel | "ALL") => void;
+  handleLevelChange: (level: QuestionLevel | "ALL") => void;
   handleReviewerSelect: (reviewerId: number) => void;
   handleStatusChange: (status: ExtendedStatus) => void;
   handleLoadMore: () => void;
   updateUrl: (
     title: string,
-    tab: QuestionLevel | "ALL",
+    level: QuestionLevel | "ALL",
     reviewerId: number,
     status: ExtendedStatus
   ) => void;
@@ -47,12 +47,12 @@ interface UseQuestionsReturn {
 export const useQuestions = ({
   limit,
   initialTitle = "",
-  initialTab = "ALL",
+  initialLevel = "ALL",
   initialReviewerId = 0,
   initialStatus = "ALL",
 }: UseQuestionsProps): UseQuestionsReturn => {
   const [selectedLevel, setSelectedLevel] = useState<QuestionLevel | "ALL">(
-    initialTab
+    initialLevel
   );
   const [searchTitle, setSearchTitle] = useState(initialTitle);
   const [selectedReviewerId, setSelectedReviewerId] =
@@ -111,7 +111,7 @@ export const useQuestions = ({
   const updateUrl = useCallback(
     (
       title: string,
-      tab: QuestionLevel | "ALL",
+      level: QuestionLevel | "ALL",
       reviewerId: number,
       status: ExtendedStatus
     ) => {
@@ -121,8 +121,8 @@ export const useQuestions = ({
         params.append("title", title);
       }
 
-      if (tab !== "ALL") {
-        params.append("tab", tab);
+      if (level !== "ALL") {
+        params.append("level", level);
       }
 
       if (reviewerId > 0) {
@@ -154,12 +154,11 @@ export const useQuestions = ({
   );
 
   // タブ切り替え
-  const handleTabChange = useCallback(
+  const handleLevelChange = useCallback(
     (level: QuestionLevel | "ALL") => {
       // 同じタブを選択した場合は何もしない
       if (level === selectedLevel) return;
 
-      console.log("Tab changed:", level);
       setSelectedLevel(level);
       setOffset(0); // タブ切替時はoffsetリセット
 
@@ -223,7 +222,7 @@ export const useQuestions = ({
     setSelectedReviewerId,
     setSelectedStatus,
     handleSearchInputChange,
-    handleTabChange,
+    handleLevelChange,
     handleReviewerSelect,
     handleStatusChange,
     handleLoadMore,
