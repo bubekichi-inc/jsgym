@@ -110,7 +110,7 @@ export const CodeEditor: React.FC<Props> = ({
         <Editor
           className="bg-editorDark"
           height={editorHeight}
-          defaultLanguage={language(data.question.lesson.course.name)}
+          defaultLanguage={language(data.question.type)}
           value={value}
           onChange={change}
           theme={theme}
