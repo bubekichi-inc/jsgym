@@ -29,21 +29,11 @@ export const GET = async (request: NextRequest) => {
         title: true,
         createdAt: true,
         content: true,
+        type: true,
+        level: true,
         questions: {
           select: {
             tag: true,
-          },
-        },
-        lesson: {
-          select: {
-            id: true,
-            name: true,
-            course: {
-              select: {
-                id: true,
-                name: true,
-              },
-            },
           },
         },
         reviewer: {
