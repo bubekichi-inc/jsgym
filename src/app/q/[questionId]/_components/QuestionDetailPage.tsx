@@ -36,14 +36,14 @@ export const QuestionDetailPage: React.FC = () => {
   };
 
   const pageType: PageType = React.useMemo(() => {
-    switch (data?.question.lesson.course.name) {
+    switch (data?.question.type) {
       case "REACT_JS":
       case "REACT_TS":
         return "browser";
       default:
         return "code";
     }
-  }, [data?.question.lesson.course.name]);
+  }, [data?.question.type]);
 
   if (isSp) {
     return (

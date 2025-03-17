@@ -1,15 +1,13 @@
 import { Editor } from "@monaco-editor/react";
-import { CourseType } from "@prisma/client";
 import React from "react";
 import { Modal } from "@/app/_components/Modal";
-import { language } from "@/app/_utils/language";
 
 interface Props {
   title: string;
   answer: string;
   isOpen: boolean;
   onClose: () => void;
-  courseType: CourseType;
+  language: string;
 }
 
 export const ExampleAnswerModal: React.FC<Props> = ({
@@ -17,7 +15,7 @@ export const ExampleAnswerModal: React.FC<Props> = ({
   answer,
   isOpen,
   onClose,
-  courseType,
+  language,
 }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -26,7 +24,7 @@ export const ExampleAnswerModal: React.FC<Props> = ({
         <Editor
           className="bg-editorDark py-6"
           height="300px"
-          defaultLanguage={language(courseType || "JAVA_SCRIPT")}
+          defaultLanguage={language}
           value={answer}
           theme="vs-dark"
           options={{

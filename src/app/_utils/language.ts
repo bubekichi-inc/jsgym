@@ -1,14 +1,14 @@
-import { CourseType } from "@prisma/client";
+import { QuestionType } from "@prisma/client";
 import { Language } from "../_types/Language";
-export const language = (course: CourseType): Language => {
+export const language = (course: QuestionType): Language => {
   switch (course) {
-    case CourseType.JAVA_SCRIPT:
+    case QuestionType.JAVA_SCRIPT:
       return "javascript";
-    case CourseType.TYPE_SCRIPT:
+    case QuestionType.TYPE_SCRIPT:
       return "typescript";
-    case CourseType.REACT_JS:
+    case QuestionType.REACT_JS:
       return "javascript";
-    case CourseType.REACT_TS:
+    case QuestionType.REACT_TS:
       return "typescript";
     default:
       return "javascript";

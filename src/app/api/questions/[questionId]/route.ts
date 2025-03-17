@@ -1,4 +1,8 @@
-import { CourseType, UserQuestionStatus } from "@prisma/client";
+import {
+  QuestionLevel,
+  QuestionType,
+  UserQuestionStatus,
+} from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { buildError } from "../../_utils/buildError";
 import { buildPrisma } from "@/app/_utils/prisma";
@@ -20,14 +24,8 @@ export type QuestionResponse = {
     content: string;
     template: string;
     createdAt: Date;
-    lesson: {
-      id: number;
-      name: string;
-      course: {
-        id: number;
-        name: CourseType;
-      };
-    };
+    level: QuestionLevel;
+    type: QuestionType;
     reviewer: {
       id: number;
       name: string;
@@ -48,10 +46,6 @@ export type QuestionResponse = {
   nextQuestion: {
     id: string;
     title: string;
-    lesson: {
-      id: number;
-      name: string;
-    };
   } | null;
 };
 
@@ -82,18 +76,8 @@ export const GET = async (request: NextRequest, { params }: Props) => {
         content: true,
         template: true,
         createdAt: true,
-        lesson: {
-          select: {
-            id: true,
-            name: true,
-            course: {
-              select: {
-                id: true,
-                name: true,
-              },
-            },
-          },
-        },
+        level: true,
+        type: true,
         reviewer: {
           select: {
             id: true,
@@ -134,7 +118,7 @@ export const GET = async (request: NextRequest, { params }: Props) => {
 
     const nextQuestion = await prisma.question.findFirst({
       where: {
-        lessonId: question.lesson.id,
+        level: question.level,
         userQuestions: {
           none: {
             userId: currentUser?.id,
@@ -144,12 +128,6 @@ export const GET = async (request: NextRequest, { params }: Props) => {
       select: {
         id: true,
         title: true,
-        lesson: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
       },
       orderBy: {
         id: "asc",

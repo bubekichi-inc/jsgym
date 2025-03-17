@@ -7,8 +7,9 @@ import { ExampleAnswerModal } from "../ExampleAnswerModal";
 import { StatusBadge } from "../StatusBadge";
 import { DropdownMenu } from "./DropdownMenu";
 import { Skeleton } from "@/app/_components/Skeleton";
-import { lessonStyleMap, lessonTextMap } from "@/app/_constants";
+import { levelStyleMap, levelTextMap } from "@/app/_constants";
 import { useQuestion } from "@/app/_hooks/useQuestion";
+import { language } from "@/app/_utils/language";
 
 export const TitleSection: React.FC = () => {
   const [showAnswerModal, setShowAnswerModal] = useState(false);
@@ -26,16 +27,10 @@ export const TitleSection: React.FC = () => {
         <div className="items-start space-y-2 md:flex md:items-center md:gap-3 md:space-y-0">
           <span
             className={`whitespace-nowrap rounded-full px-2 py-1 text-xs font-bold text-white ${
-              lessonStyleMap[
-                data.question.lesson.id as keyof typeof lessonTextMap
-              ]
+              levelStyleMap[data.question.level as keyof typeof levelStyleMap]
             }`}
           >
-            {
-              lessonTextMap[
-                data.question.lesson.id as keyof typeof lessonTextMap
-              ]
-            }
+            {levelTextMap[data.question.level as keyof typeof levelTextMap]}
           </span>
           <h1 className="text-base font-bold md:text-lg">
             {data.question.title}
@@ -55,7 +50,7 @@ export const TitleSection: React.FC = () => {
         answer={data.question.exampleAnswer}
         isOpen={showAnswerModal}
         onClose={() => setShowAnswerModal(false)}
-        courseType={data.question.lesson.course.name}
+        language={language(data.question.type)}
       />
     </>
   );
