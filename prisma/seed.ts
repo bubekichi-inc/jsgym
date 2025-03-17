@@ -4,7 +4,6 @@ import { QuestionTag, questionTags } from "./data/questionTags";
 
 export type Question = {
   id: number;
-  lessonId: number;
   content: string;
   template: string;
   title: string;
