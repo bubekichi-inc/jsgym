@@ -1,4 +1,8 @@
-import { UserQuestionStatus } from "@prisma/client";
+import {
+  QuestionLevel,
+  QuestionType,
+  UserQuestionStatus,
+} from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { buildError } from "../_utils/buildError";
 import { buildPrisma } from "@/app/_utils/prisma";
@@ -11,6 +15,8 @@ export type Question = {
   title: string;
   createdAt: Date;
   content: string;
+  type: QuestionType;
+  level: QuestionLevel;
   reviewer: {
     id: number;
     bio: string;
@@ -22,14 +28,6 @@ export type Question = {
       name: string;
     };
   }[];
-  lesson: {
-    id: number;
-    name: string;
-    course: {
-      id: number;
-      name: string;
-    };
-  };
   userQuestions: {
     status: UserQuestionStatus;
   }[];
@@ -46,7 +44,7 @@ export const GET = async (request: NextRequest) => {
   const limit = Number(searchParams.get("limit") || "24");
   const offset = Number(searchParams.get("offset") || "0");
   const searchTitle = searchParams.get("title") || "";
-  const lessonId = Number(searchParams.get("lessonId") || "0");
+  const level = searchParams.get("level") as QuestionLevel | null;
   const reviewerId = Number(searchParams.get("reviewerId") || "0");
   const status = searchParams.get("status") as
     | UserQuestionStatus
@@ -95,9 +93,10 @@ export const GET = async (request: NextRequest) => {
     };
   }
 
-  // レッスンIDによるフィルタリング
-  if (lessonId > 0) {
-    whereConditions.lessonId = lessonId;
+  //  レベルよるフィルタリング
+  console.log("level", level);
+  if (level) {
+    whereConditions.level = level;
   }
 
   // レビュワーIDによるフィルタリング
@@ -144,21 +143,11 @@ export const GET = async (request: NextRequest) => {
         title: true,
         createdAt: true,
         content: true,
+        type: true,
+        level: true,
         questions: {
           select: {
             tag: true,
-          },
-        },
-        lesson: {
-          select: {
-            id: true,
-            name: true,
-            course: {
-              select: {
-                id: true,
-                name: true,
-              },
-            },
           },
         },
         reviewer: {

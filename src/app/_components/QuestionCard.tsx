@@ -2,12 +2,12 @@
 
 import { faBookmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { QuestionLevel } from "@prisma/client";
 import dayjs from "dayjs";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  lessonLevelMap,
-  lessonTextMap,
+  levelTextMap,
   questionTagTextMap,
   userQuestionColorMap,
   userQuestionTextMap,
@@ -46,14 +46,14 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question }) => {
             )}
             <span
               className={`inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-sm font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 ${
-                question.lesson.id === lessonLevelMap["BASIC"]
+                question.level === QuestionLevel.BASIC
                   ? "border-transparent bg-blue-500 text-white"
-                  : question.lesson.id === lessonLevelMap["ADVANCED"]
+                  : question.level === QuestionLevel.ADVANCED
                   ? "border-transparent bg-yellow-500 text-white"
                   : "border-transparent bg-red-500 text-white"
               }`}
             >
-              {lessonTextMap[question.lesson.id as keyof typeof lessonTextMap]}
+              {levelTextMap[question.level as keyof typeof levelTextMap]}
             </span>
           </div>
         </div>

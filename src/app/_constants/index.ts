@@ -1,21 +1,15 @@
 import { UserQuestionStatus } from "@prisma/client";
 
-export const lessonTextMap = {
-  1: "基礎",
-  2: "応用",
-  3: "実務模擬",
+export const levelTextMap = {
+  BASIC: "基礎",
+  ADVANCED: "応用",
+  REAL_WORLD: "実務模擬",
 };
 
-export const lessonLevelMap = {
-  BASIC: 1,
-  ADVANCED: 2,
-  REAL_WORLD: 3,
-};
-
-export const lessonStyleMap = {
-  1: "bg-blue-600",
-  2: "bg-yellow-600",
-  3: "bg-red-600",
+export const levelStyleMap = {
+  BASIC: "bg-blue-600",
+  ADVANCED: "bg-yellow-600",
+  REAL_WORLD: "bg-red-600",
 };
 
 export const courseTextMap = {
@@ -30,6 +24,11 @@ export const questionTagTextMap = {
   OBJECT: "オブジェクト",
   FUNCTION: "関数",
   CLASS: "クラス",
+  STATE: "ステート",
+  PROPS: "プロパティ",
+  HOOK: "フック",
+  ERROR_HANDLING: "エラーハンドリング",
+  ASYNC: "非同期",
 };
 
 export const userQuestionColorMap: Record<UserQuestionStatus, string> = {

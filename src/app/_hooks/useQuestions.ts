@@ -2,7 +2,6 @@ import { UserQuestionStatus } from "@prisma/client";
 import { useCallback, useEffect, useState } from "react";
 import useSWR from "swr";
 import { useFetch } from "./useFetch";
-import { lessonLevelMap } from "@/app/_constants";
 import { QuestionLevel } from "@/app/_serevices/AIQuestionGenerateService";
 import { api } from "@/app/_utils/api";
 import { Question } from "@/app/api/questions/route";
@@ -22,13 +21,13 @@ interface UseQuestionsProps {
 interface UseQuestionsReturn {
   questions: Question[];
   reviewers: Reviewer[];
-  activeTab: QuestionLevel | "ALL";
+  selectedLevel: QuestionLevel | "ALL";
   searchTitle: string;
   selectedReviewerId: number;
   selectedStatus: ExtendedStatus;
   hasMore: boolean;
   isLoading: boolean;
-  setActiveTab: (tab: QuestionLevel | "ALL") => void;
+  setSelectedLevel: (tab: QuestionLevel | "ALL") => void;
   setSearchTitle: (title: string) => void;
   setSelectedReviewerId: (reviewerId: number) => void;
   setSelectedStatus: (status: ExtendedStatus) => void;
@@ -52,7 +51,9 @@ export const useQuestions = ({
   initialReviewerId = 0,
   initialStatus = "ALL",
 }: UseQuestionsProps): UseQuestionsReturn => {
-  const [activeTab, setActiveTab] = useState<QuestionLevel | "ALL">(initialTab);
+  const [selectedLevel, setSelectedLevel] = useState<QuestionLevel | "ALL">(
+    initialTab
+  );
   const [searchTitle, setSearchTitle] = useState(initialTitle);
   const [selectedReviewerId, setSelectedReviewerId] =
     useState<number>(initialReviewerId);
@@ -74,7 +75,7 @@ export const useQuestions = ({
     limit: String(limit),
     offset: String(offset),
     title: searchTitle,
-    lessonId: activeTab !== "ALL" ? String(lessonLevelMap[activeTab]) : "",
+    level: selectedLevel !== "ALL" ? selectedLevel : "",
     reviewerId: selectedReviewerId ? String(selectedReviewerId) : "",
     status: selectedStatus !== "ALL" ? selectedStatus : "",
   };
@@ -147,25 +148,25 @@ export const useQuestions = ({
     (value: string) => {
       setSearchTitle(value);
       setOffset(0); // 検索時はoffsetリセット
-      updateUrl(value, activeTab, selectedReviewerId, selectedStatus);
+      updateUrl(value, selectedLevel, selectedReviewerId, selectedStatus);
     },
-    [activeTab, selectedReviewerId, selectedStatus, updateUrl]
+    [selectedLevel, selectedReviewerId, selectedStatus, updateUrl]
   );
 
   // タブ切り替え
   const handleTabChange = useCallback(
-    (tab: QuestionLevel | "ALL") => {
+    (level: QuestionLevel | "ALL") => {
       // 同じタブを選択した場合は何もしない
-      if (tab === activeTab) return;
+      if (level === selectedLevel) return;
 
-      console.log("Tab changed:", tab);
-      setActiveTab(tab);
+      console.log("Tab changed:", level);
+      setSelectedLevel(level);
       setOffset(0); // タブ切替時はoffsetリセット
 
       // レビュワー選択はリセットしない（組み合わせて検索できるように）
-      updateUrl(searchTitle, tab, selectedReviewerId, selectedStatus);
+      updateUrl(searchTitle, level, selectedReviewerId, selectedStatus);
     },
-    [activeTab, searchTitle, selectedReviewerId, selectedStatus, updateUrl]
+    [selectedLevel, searchTitle, selectedReviewerId, selectedStatus, updateUrl]
   );
 
   // レビュワー選択
@@ -182,9 +183,9 @@ export const useQuestions = ({
 
       setSelectedReviewerId(newReviewerId);
       setOffset(0); // レビュワー変更時はoffsetリセット
-      updateUrl(searchTitle, activeTab, newReviewerId, selectedStatus);
+      updateUrl(searchTitle, selectedLevel, newReviewerId, selectedStatus);
     },
-    [activeTab, searchTitle, selectedReviewerId, selectedStatus, updateUrl]
+    [selectedLevel, searchTitle, selectedReviewerId, selectedStatus, updateUrl]
   );
 
   // ステータス選択
@@ -196,9 +197,9 @@ export const useQuestions = ({
       console.log("Status changed:", status);
       setSelectedStatus(status);
       setOffset(0); // ステータス変更時はoffsetリセット
-      updateUrl(searchTitle, activeTab, selectedReviewerId, status);
+      updateUrl(searchTitle, selectedLevel, selectedReviewerId, status);
     },
-    [activeTab, searchTitle, selectedReviewerId, selectedStatus, updateUrl]
+    [selectedLevel, searchTitle, selectedReviewerId, selectedStatus, updateUrl]
   );
 
   // 追加ロード
@@ -211,13 +212,13 @@ export const useQuestions = ({
   return {
     questions,
     reviewers,
-    activeTab,
+    selectedLevel,
     searchTitle,
     selectedReviewerId,
     selectedStatus,
     hasMore,
     isLoading,
-    setActiveTab,
+    setSelectedLevel,
     setSearchTitle,
     setSelectedReviewerId,
     setSelectedStatus,
