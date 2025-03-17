@@ -1,7 +1,7 @@
 import { QuestionType } from "@prisma/client";
 import { Language } from "../_types/Language";
-export const language = (course: QuestionType): Language => {
-  switch (course) {
+export const language = (type: QuestionType): Language => {
+  switch (type) {
     case QuestionType.JAVA_SCRIPT:
       return "javascript";
     case QuestionType.TYPE_SCRIPT:
