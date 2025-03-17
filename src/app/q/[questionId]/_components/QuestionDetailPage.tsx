@@ -41,7 +41,7 @@ export const QuestionDetailPage: React.FC = () => {
       case "REACT_TS":
         return "browser";
       default:
-        return "browser";
+        return "code";
     }
   }, [data?.question.type]);
 
