@@ -129,7 +129,7 @@ export const ToolBar: React.FC<Props> = ({
 
   return (
     <>
-      <div className="absolute bottom-2 right-2 flex items-center gap-4 rounded-full border border-gray-700 bg-black px-4 py-2 text-white md:bottom-4 md:right-4 md:py-3">
+      <div className="flex items-center gap-4 rounded-full border border-gray-700 bg-black px-4 py-2 text-white md:py-3">
         <button
           type="button"
           onClick={onExecuteCode}

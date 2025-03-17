@@ -1,5 +1,6 @@
 "use client";
 
+import { useParams } from "next/navigation";
 import React, { useState } from "react";
 import { Chat } from "./Chat";
 import { CodeEditor } from "./CodeEditor";
@@ -10,14 +11,22 @@ import { SpTab } from "./SpTab";
 import { TitleSection } from "./TitleSection";
 import { Preview } from "@/app/_components/ReactPreview";
 import { useDevice } from "@/app/_hooks/useDevice";
+import { useQuestion } from "@/app/_hooks/useQuestion";
+
+export type PageType = "browser" | "code";
 
 export type TabType = "question" | "editor" | "preview";
 
 export const QuestionDetailPage: React.FC = () => {
+  const params = useParams();
   const [reviewBusy, setReviewBusy] = useState(false);
   const [chatBusy, setChatBusy] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>("question");
   const { isSp } = useDevice();
+  const questionId = params.questionId as string;
+  const { data } = useQuestion({
+    questionId,
+  });
   const [files, setFiles] = useState<Record<string, string>>({
     "/App.tsx": "",
   });
@@ -25,6 +34,16 @@ export const QuestionDetailPage: React.FC = () => {
   const handleTabChange = (tab: TabType) => {
     setActiveTab(tab);
   };
+
+  const pageType: PageType = React.useMemo(() => {
+    switch (data?.question.lesson.course.name) {
+      case "REACT_JS":
+      case "REACT_TS":
+        return "browser";
+      default:
+        return "code";
+    }
+  }, [data?.question.lesson.course.name]);
 
   if (isSp) {
     return (
@@ -55,6 +74,7 @@ export const QuestionDetailPage: React.FC = () => {
               setReviewBusy={setReviewBusy}
               onReviewComplete={() => handleTabChange("question")}
               setFiles={setFiles}
+              showTerminal={pageType === "browser"}
             />
           </div>
         </div>
@@ -66,12 +86,14 @@ export const QuestionDetailPage: React.FC = () => {
 
   return (
     <div className="">
-      <PcTab activeTab={activeTab} handleTabChange={handleTabChange} />
+      {pageType === "browser" && (
+        <PcTab activeTab={activeTab} handleTabChange={handleTabChange} />
+      )}
 
       <div className="flex w-full justify-center">
-        <div className="mt-8 max-h-[calc(100vh-48px)] w-1/2 overflow-auto p-6">
+        <div className="mt-10 max-h-[calc(100vh-48px)] w-1/2 overflow-auto">
           {activeTab === "question" && (
-            <div className="relative space-y-6">
+            <div className="relative space-y-6 p-6">
               <TitleSection />
               <Question />
               <Chat
@@ -91,6 +113,7 @@ export const QuestionDetailPage: React.FC = () => {
             setReviewBusy={setReviewBusy}
             onReviewComplete={() => handleTabChange("question")}
             setFiles={setFiles}
+            showTerminal={pageType === "code"}
           />
         </div>
       </div>

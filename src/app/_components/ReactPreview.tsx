@@ -53,7 +53,7 @@ export const Preview: React.FC<Props> = ({ files }) => {
   }, [files]);
 
   return (
-    <div className="flex h-full min-h-[500px] flex-col overflow-hidden rounded-md border border-gray-300 bg-white">
+    <div className="flex h-full min-h-[500px] flex-col overflow-hidden bg-white">
       <div className="flex flex-col border-b border-gray-200">
         <div className="flex items-center bg-gray-50 px-3 py-2">
           <div className="mr-2 flex items-center space-x-2">
@@ -67,7 +67,7 @@ export const Preview: React.FC<Props> = ({ files }) => {
         </div>
       </div>
 
-      <div className="flex-1 p-1">
+      <div className="flex-1">
         <iframe
           ref={iframeRef}
           src="/preview/index.html"

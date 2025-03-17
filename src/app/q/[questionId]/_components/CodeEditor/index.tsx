@@ -21,6 +21,7 @@ interface Props {
   setReviewBusy: (busy: boolean) => void;
   onReviewComplete: () => void;
   setFiles: (files: Record<string, string>) => void;
+  showTerminal: boolean;
 }
 
 export const CodeEditor: React.FC<Props> = ({
@@ -28,6 +29,7 @@ export const CodeEditor: React.FC<Props> = ({
   setReviewBusy,
   onReviewComplete,
   setFiles,
+  showTerminal,
 }) => {
   const { isSp } = useDevice();
   const params = useParams();
@@ -43,11 +45,10 @@ export const CodeEditor: React.FC<Props> = ({
     useCodeExecutor();
 
   const editorHeight = useMemo(() => {
-    if (isSp) {
-      return "calc(60vh)";
-    }
+    if (!showTerminal) return "calc(100vh - 48px - 36px)";
+    if (isSp) return "calc(60vh)";
     return "calc(100vh - 48px - 288px - 36px)";
-  }, [isSp]);
+  }, [isSp, showTerminal]);
 
   const theme = useMemo(() => {
     switch (editorSettingData?.editorSetting.editorTheme) {
@@ -150,21 +151,25 @@ export const CodeEditor: React.FC<Props> = ({
             })();
           }}
         />
-        <ToolBar
-          answer={value}
-          onExecuteCode={() => executeCode(value)}
-          reviewBusy={reviewBusy}
-          setReviewBusy={setReviewBusy}
-          touched={touched}
-          onReset={reset}
-          onReviewComplete={onReviewComplete}
-        />
+        <div className="absolute bottom-2 right-2 md:bottom-4 md:right-4">
+          <ToolBar
+            answer={value}
+            onExecuteCode={() => executeCode(value)}
+            reviewBusy={reviewBusy}
+            setReviewBusy={setReviewBusy}
+            touched={touched}
+            onReset={reset}
+            onReviewComplete={onReviewComplete}
+          />
+        </div>
       </div>
-      <Terminal
-        executionResult={executionResult}
-        iframeRef={iframeRef}
-        onClear={resetLogs}
-      />
+      {showTerminal && (
+        <Terminal
+          executionResult={executionResult}
+          iframeRef={iframeRef}
+          onClear={resetLogs}
+        />
+      )}
     </div>
   );
 };

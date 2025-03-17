@@ -1,4 +1,6 @@
 "use client";
+import { faExternalLink } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
@@ -17,7 +19,20 @@ export const Header: React.FC = () => {
 
   const rightContent = () => {
     if (isLoading) return <div className=""></div>;
-    if (data) return <UserDropdownMenu />;
+    if (data)
+      return (
+        <div className="flex items-center gap-4">
+          <a
+            href="https://docs.google.com/forms/d/e/1FAIpQLSeLy-YzsFnzUVdX-g5U3v4dLtN2QilTAZlvWjjzxW5rsYf_hg/viewform?usp=header"
+            target="_blank"
+            className="items-center text-xs font-bold text-blue-500"
+          >
+            フィードバック
+            <FontAwesomeIcon icon={faExternalLink} className="ml-1 size-3" />
+          </a>
+          <UserDropdownMenu />
+        </div>
+      );
     return (
       <button
         onClick={() => {
