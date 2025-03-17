@@ -15,8 +15,8 @@ import { buildPrisma } from "@/app/_utils/prisma";
  * @returns {("BASIC"|"ADVANCED"|"REAL_WORLD")} ランダムに選ばれた難易度
  */
 const getRandomLevel = (): QuestionLevel => {
-  const basicRate = 0.4;
-  const advancedRate = 0.3;
+  const basicRate = 0.2;
+  const advancedRate = 0.7;
 
   const random = Math.random();
 
