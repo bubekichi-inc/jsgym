@@ -1,19 +1,6 @@
-import { CourseType } from "@prisma/client";
 import { buildPrisma } from "../src/app/_utils/prisma";
 import { AIreviewers, Reviewer } from "./data/aiReviewers";
-import { courses, lessons } from "./data/courseLessons";
 import { QuestionTag, questionTags } from "./data/questionTags";
-
-export type Course = {
-  id: number;
-  name: CourseType;
-};
-
-export type Lesson = {
-  id: number;
-  name: string;
-  courseId: number;
-};
 
 export type Question = {
   id: number;
@@ -27,30 +14,6 @@ export type Question = {
 
 const seedData = async () => {
   const prisma = await buildPrisma();
-
-  const upsertCourses = async (courses: Course[]) => {
-    await Promise.all(
-      courses.map((course) =>
-        prisma.course.upsert({
-          where: { id: course.id },
-          create: course,
-          update: course,
-        })
-      )
-    );
-  };
-
-  const upsertLessons = async (lessons: Lesson[]) => {
-    await Promise.all(
-      lessons.map((lesson) =>
-        prisma.lesson.upsert({
-          where: { id: lesson.id },
-          create: lesson,
-          update: lesson,
-        })
-      )
-    );
-  };
 
   const upsertReviewers = async (reviewers: Reviewer[]) => {
     await Promise.all(
@@ -77,10 +40,7 @@ const seedData = async () => {
   };
 
   try {
-    await upsertCourses(courses);
-    await upsertLessons(lessons);
     await upsertReviewers(AIreviewers);
-    // await upsertQuestions(questions);
     await upsertQuestionTags(questionTags);
   } catch (error) {
     console.error(`エラー発生${error}`);

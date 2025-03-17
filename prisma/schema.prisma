@@ -34,32 +34,9 @@ model User {
   @@map("users")
 }
 
-model Course {
-  id        Int        @id @default(autoincrement())
-  name      CourseType
-  createdAt DateTime   @default(now()) @map("created_at")
-  updatedAt DateTime   @updatedAt @map("updated_at")
-  lessons   Lesson[]
-
-  @@map("courses")
-}
-
-model Lesson {
-  id        Int        @id @default(autoincrement())
-  name      String
-  courseId  Int        @map("course_id")
-  createdAt DateTime   @default(now()) @map("created_at")
-  updatedAt DateTime   @updatedAt @map("updated_at")
-  course    Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  questions Question[]
-
-  @@map("lessons")
-}
-
 model Question {
   title             String
   content           String
-  lessonId          Int                   @map("lesson_id")
   template          String
   exampleAnswer     String
   createdAt         DateTime              @default(now()) @map("created_at")
@@ -68,9 +45,10 @@ model Question {
   reviewerId        Int                   @map("reviewer_id")
   inputCode         String
   outputCode        String
+  level             QuestionLevel         @default(BASIC)
+  type              QuestionType          @default(JAVA_SCRIPT)
   questionBookmarks QuestionBookmark[]
   questions         QuestionTagRelation[]
-  lesson            Lesson                @relation(fields: [lessonId], references: [id], onDelete: Cascade)
   reviewer          Reviewer              @relation(fields: [reviewerId], references: [id])
   userQuestions     UserQuestion[]
 
@@ -160,10 +138,10 @@ model CodeReview {
   messageId      String?             @unique @map("message_id") @db.Uuid
   overview       String
   result         CodeReviewResult
-  score          Int
   createdAt      DateTime            @default(now()) @map("created_at")
   updatedAt      DateTime            @updatedAt @map("updated_at")
   userQuestionId String              @map("user_id") @db.Uuid
+  score          Int
   comments       CodeReviewComment[]
   message        Message?            @relation(fields: [messageId], references: [id])
   userQuestion   UserQuestion        @relation(fields: [userQuestionId], references: [id], onDelete: Cascade)
@@ -266,11 +244,17 @@ enum PointTransactionKind {
   COMPENSATION
 }
 
-enum CourseType {
+enum QuestionType {
   JAVA_SCRIPT
   TYPE_SCRIPT
   REACT_JS
   REACT_TS
+}
+
+enum QuestionLevel {
+  BASIC
+  ADVANCED
+  REAL_WORLD
 }
 
 enum UserQuestionStatus {
