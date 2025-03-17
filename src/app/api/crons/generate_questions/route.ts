@@ -1,7 +1,8 @@
-import { CourseType } from "@prisma/client";
+import { QuestionType } from "@prisma/client";
 import { nanoid } from "nanoid";
 import { NextResponse } from "next/server";
 import { buildError } from "../../_utils/buildError";
+import { levelTextMap } from "@/app/_constants";
 import {
   AIQuestionGenerateService,
   QuestionLevel,
@@ -13,7 +14,7 @@ import { buildPrisma } from "@/app/_utils/prisma";
  * 難易度を "BASIC", "ADVANCED", "REAL_WORLD" の比率 5:3:2 で返す関数
  * @returns {("BASIC"|"ADVANCED"|"REAL_WORLD")} ランダムに選ばれた難易度
  */
-const getRandomDifficulty = (): QuestionLevel => {
+const getRandomLevel = (): QuestionLevel => {
   const basicRate = 0.4;
   const advancedRate = 0.3;
 
@@ -28,24 +29,8 @@ const getRandomDifficulty = (): QuestionLevel => {
   }
 };
 
-const getLessonId = (level: QuestionLevel) => {
-  if (level === "BASIC") {
-    return 1;
-  } else if (level === "ADVANCED") {
-    return 2;
-  } else {
-    return 3;
-  }
-};
-
-const getLevelName = (lessonId: number) => {
-  if (lessonId === 1) {
-    return "基礎";
-  } else if (lessonId === 2) {
-    return "応用";
-  } else {
-    return "実務模擬";
-  }
+const getLevelName = (level: QuestionLevel) => {
+  return levelTextMap[level as keyof typeof levelTextMap];
 };
 
 export const maxDuration = 180;
@@ -57,8 +42,8 @@ const generage = async () => {
   const reviewer = reviewes[Math.floor(Math.random() * reviewes.length)];
 
   const response = await AIQuestionGenerateService.generateQuestion({
-    course: CourseType.JAVA_SCRIPT,
-    level: getRandomDifficulty(),
+    type: QuestionType.JAVA_SCRIPT,
+    level: getRandomLevel(),
     reviewer,
   });
 
@@ -75,7 +60,7 @@ const generage = async () => {
       inputCode: response.inputCode,
       outputCode: response.outputCode,
       exampleAnswer: response.exampleAnswer,
-      lessonId: getLessonId(response.level),
+      level: response.level,
       reviewerId: reviewer.id,
     },
   });
@@ -102,13 +87,13 @@ export const GET = async () => {
     const question2 = await generage();
     const question3 = await generage();
 
-    const question1Text = `[${getLevelName(question1.lessonId)}] ${
+    const question1Text = `[${getLevelName(question1.level)}] ${
       question1.title
     }\nhttps://jsgym.shiftb.dev/q/${question1.id}\n\n`;
-    const question2Text = `[${getLevelName(question2.lessonId)}] ${
+    const question2Text = `[${getLevelName(question2.level)}] ${
       question2.title
     }\nhttps://jsgym.shiftb.dev/q/${question2.id}\n\n`;
-    const question3Text = `[${getLevelName(question3.lessonId)}] ${
+    const question3Text = `[${getLevelName(question3.level)}] ${
       question3.title
     }\nhttps://jsgym.shiftb.dev/q/${question3.id}\n\n`;
 

@@ -1,4 +1,4 @@
-import { CourseType, QuestionTagValue, Reviewer } from "@prisma/client";
+import { QuestionTagValue, QuestionType, Reviewer } from "@prisma/client";
 import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 import { z } from "zod";
@@ -54,23 +54,23 @@ export class AIQuestionGenerateService {
   });
 
   public static buildPrompt({
-    course,
+    type,
     level,
     titleContentList,
   }: {
-    course: CourseType;
+    type: QuestionType;
     level: QuestionLevel;
     titleContentList: string[];
   }) {
     return `
 # 概要
-${course}の問題を作成してください。
+${type}の問題を作成してください。
 これから、JavaScriptを自走して書けるようになるための問題です。
 アプリケーションのユーザーが、その問題を解いて、提出して、判定を得ることで、学習を進めることができます。
 
-${course === "JAVA_SCRIPT" && level === "BASIC" && lesson1Example}
-${course === "JAVA_SCRIPT" && level === "ADVANCED" && lesson2Example}
-${course === "JAVA_SCRIPT" && level === "REAL_WORLD" && lesson3Example}
+${type === "JAVA_SCRIPT" && level === "BASIC" && lesson1Example}
+${type === "JAVA_SCRIPT" && level === "ADVANCED" && lesson2Example}
+${type === "JAVA_SCRIPT" && level === "REAL_WORLD" && lesson3Example}
 
 # 出力型の説明
 * title: 問題のタイトル
@@ -89,11 +89,11 @@ ${titleContentList.join("\n")}`;
   }
 
   public static async generateQuestion({
-    course,
+    type,
     level,
     reviewer,
   }: {
-    course: CourseType;
+    type: QuestionType;
     level: QuestionLevel;
     reviewer: Reviewer;
   }): Promise<GenerateQuestionJsonResponse | null> {
@@ -122,7 +122,7 @@ ${titleContentList.join("\n")}`;
         },
         {
           role: "user",
-          content: this.buildPrompt({ course, level, titleContentList }),
+          content: this.buildPrompt({ type, level, titleContentList }),
         },
       ],
       temperature: 1,
