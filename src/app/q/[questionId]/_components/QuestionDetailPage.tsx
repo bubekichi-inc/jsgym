@@ -65,16 +65,16 @@ export const QuestionDetailPage: React.FC = () => {
           </div>
 
           <div
-            className={`w-full ${
+            className={`mt-11 w-full ${
               activeTab === "editor" ? "block" : "hidden"
-            } md:block md:w-1/2`}
+            }`}
           >
             <CodeEditor
               reviewBusy={reviewBusy}
               setReviewBusy={setReviewBusy}
               onReviewComplete={() => handleTabChange("question")}
               setFiles={setFiles}
-              showTerminal={pageType === "browser"}
+              showTerminal={pageType === "code"}
             />
           </div>
         </div>
