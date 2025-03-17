@@ -24,7 +24,6 @@ export const POST = async (request: NextRequest, { params }: Props) => {
         id: questionId,
       },
       include: {
-        lesson: true,
         reviewer: true,
       },
     });

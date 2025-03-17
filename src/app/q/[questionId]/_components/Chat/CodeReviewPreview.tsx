@@ -11,8 +11,9 @@ import React, { useMemo, useState } from "react";
 import { ExampleAnswerModal } from "../ExampleAnswerModal";
 import { CommentLevelBadge } from "./CommentLevelBadge";
 import { MarkdownWrapper } from "@/app/_components/MarkdownWrapper";
-import { courseTextMap, lessonTextMap } from "@/app/_constants";
+import { levelTextMap, typeTextMap } from "@/app/_constants";
 import { useQuestion } from "@/app/_hooks/useQuestion";
+import { language } from "@/app/_utils/language";
 
 interface Props {
   codeReview: {
@@ -55,12 +56,10 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
 
   const shareText = useMemo(() => {
     return `JS Gymで問題をクリアしました！%0a%0a${
-      courseTextMap[
-        data?.question.lesson.course.id as keyof typeof courseTextMap
-      ]
-    }${
-      lessonTextMap[data?.question.lesson.id as keyof typeof lessonTextMap]
-    }%0a${data?.question.title}%0a%0a${location.origin}/q/${questionId}`;
+      typeTextMap[data?.question.type as keyof typeof typeTextMap]
+    }${levelTextMap[data?.question.level as keyof typeof levelTextMap]}%0a${
+      data?.question.title
+    }%0a%0a${location.origin}/q/${questionId}`;
   }, [data, questionId]);
 
   return (
@@ -158,7 +157,7 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
                     href={`/q/${data.nextQuestion.id}`}
                     className="flex items-center gap-2 rounded border border-blue-500 bg-white px-3 py-2 text-sm font-bold text-blue-500 duration-150 hover:bg-blue-50"
                   >
-                    <span>次の{data.nextQuestion.lesson.name}問題へ</span>
+                    <span>次の問題へ</span>
                     <FontAwesomeIcon icon={faChevronRight} className="size-3" />
                   </Link>
                 )}
@@ -174,7 +173,7 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
           answer={data.question.exampleAnswer}
           isOpen={showAnswerModal}
           onClose={() => setShowAnswerModal(false)}
-          courseType={data.question.lesson.course.name}
+          language={language(data.question.type)}
         />
       )}
     </div>

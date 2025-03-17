@@ -12,10 +12,11 @@ export const levelStyleMap = {
   REAL_WORLD: "bg-red-600",
 };
 
-export const courseTextMap = {
-  1: "JavaScript",
-  // 2: "TypeScript",
-  // 3: "React",
+export const typeTextMap = {
+  REACT_JS: "React",
+  REACT_TS: "React",
+  JAVA_SCRIPT: "JavaScript",
+  TYPE_SCRIPT: "TypeScript",
 };
 
 export const questionTagTextMap = {

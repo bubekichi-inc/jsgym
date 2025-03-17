@@ -21,7 +21,7 @@ export const ChatMssage: React.FC<Props> = ({ message }) => {
   return (
     <div className={`flex gap-3 ${messageType === "SUBMIT" && "pt-4"}`}>
       <SenderIcon sender={message.sender} reviewer={message.reviewer} />
-      <div className="w-full text-sm">
+      <div className="w-full overflow-auto text-sm">
         {messageType === "SUBMIT" && <SubmitPreview answer={message.answer!} />}
         {messageType === "CODE_REVIEW" && (
           <CodeReviewPreview codeReview={message.codeReview!} />

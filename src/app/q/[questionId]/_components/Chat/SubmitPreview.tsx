@@ -1,10 +1,7 @@
 import { faCaretDown, faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Editor } from "@monaco-editor/react";
-import { useParams } from "next/navigation";
 import React, { useState } from "react";
-import { useQuestion } from "@/app/_hooks/useQuestion";
-import { language } from "@/app/_utils/language";
+import { toast } from "react-toastify";
 
 interface Props {
   answer: {
@@ -15,20 +12,15 @@ interface Props {
 }
 
 export const SubmitPreview: React.FC<Props> = ({ answer }) => {
-  const params = useParams();
-  const questionId = params.questionId as string;
-  const { data } = useQuestion({
-    questionId,
-  });
-
   const [show, setShow] = useState(false);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(answer.answer);
+    toast.success("コードをコピーしました");
   };
 
   return (
-    <div className="space-y-2 px-4 pb-4">
+    <div className="space-y-2 pb-4 pl-4">
       <div className="flex justify-between text-gray-600">
         <p>コードを提出しました。</p>
         <button
@@ -44,30 +36,16 @@ export const SubmitPreview: React.FC<Props> = ({ answer }) => {
       </div>
 
       {show && (
-        <div className="relative">
+        <div className="relative w-full overflow-auto">
           <button
             className="absolute right-4 top-4 text-gray-200"
             onClick={handleCopy}
           >
             <FontAwesomeIcon icon={faCopy} className="size-5" />
           </button>
-          <Editor
-            className="bg-editorDark py-6"
-            height="300px"
-            defaultLanguage={language(
-              data?.question.lesson.course.name || "JAVA_SCRIPT"
-            )}
-            value={answer.answer}
-            theme="vs-dark"
-            options={{
-              fontSize: 14,
-              tabSize: 2,
-              readOnly: true,
-              readOnlyMessage: {
-                value: "編集できません",
-              },
-            }}
-          />
+          <pre className="w-full overflow-auto rounded bg-editorDark p-4 text-sm text-white">
+            <code>{answer.answer}</code>
+          </pre>
         </div>
       )}
     </div>
