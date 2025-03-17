@@ -23,8 +23,8 @@ export const TitleSection: React.FC = () => {
 
   return (
     <>
-      <div className="flex items-center justify-between gap-3">
-        <div className="items-start space-y-2 md:flex md:items-center md:gap-3 md:space-y-0">
+      <div className="flex items-center justify-between gap-1 md:gap-3">
+        <div className="flex items-center gap-1 md:gap-3">
           <span
             className={`whitespace-nowrap rounded-full px-2 py-1 text-xs font-bold text-white ${
               levelStyleMap[data.question.level as keyof typeof levelStyleMap]
@@ -32,11 +32,11 @@ export const TitleSection: React.FC = () => {
           >
             {levelTextMap[data.question.level as keyof typeof levelTextMap]}
           </span>
-          <h1 className="text-base font-bold md:text-lg">
+          <h1 className="text-sm font-bold md:text-lg">
             {data.question.title}
           </h1>
         </div>
-        <div className="flex flex-col items-center gap-1 md:flex-row">
+        <div className="flex items-center md:gap-1">
           <div className="px-1">
             <StatusBadge status={data.userQuestion?.status || null} />
           </div>

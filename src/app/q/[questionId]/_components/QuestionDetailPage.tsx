@@ -53,7 +53,7 @@ export const QuestionDetailPage: React.FC = () => {
           <div
             className={`w-full ${
               activeTab === "question" ? "block" : "hidden"
-            } relative max-h-[calc(100vh-96px)] space-y-6 p-4`}
+            } relative mt-12 max-h-[calc(100vh-96px)] space-y-6 p-2`}
           >
             <TitleSection />
             <Question />
