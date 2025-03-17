@@ -52,11 +52,11 @@ export const CodeEditor: React.FC<Props> = ({
   const theme = useMemo(() => {
     switch (editorSettingData?.editorSetting.editorTheme) {
       case EditorTheme.LIGHT:
-        return "vs-light";
+        return "github-light";
       case EditorTheme.DARK:
-        return "vs-dark";
+        return "github-dark";
       default:
-        return "vs-dark";
+        return "github-dark";
     }
   }, [editorSettingData]);
 
@@ -123,7 +123,7 @@ export const CodeEditor: React.FC<Props> = ({
           onMount={(_editor, monaco) => {
             (async () => {
               const highlighter = await createHighlighter({
-                themes: ["dark-plus"],
+                themes: ["github-dark", "github-light"],
                 langs: ["jsx", "tsx", "vue", "svelte"],
               });
 
@@ -131,6 +131,21 @@ export const CodeEditor: React.FC<Props> = ({
               monaco.languages.register({ id: "tsx" });
               monaco.languages.register({ id: "vue" });
               monaco.languages.register({ id: "svelte" });
+
+              monaco.editor.defineTheme("github-dark", {
+                base: "vs-dark",
+                inherit: true,
+                rules: [],
+                colors: {},
+              });
+
+              monaco.editor.defineTheme("github-light", {
+                base: "vs",
+                inherit: true,
+                rules: [],
+                colors: {},
+              });
+
               shikiToMonaco(highlighter, monaco);
             })();
           }}
