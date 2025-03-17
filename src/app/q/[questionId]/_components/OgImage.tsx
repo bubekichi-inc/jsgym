@@ -1,12 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
+import { QuestionLevel, QuestionType } from "@prisma/client";
 import React from "react";
-import { courseTextMap, lessonStyleMap, lessonTextMap } from "@/app/_constants";
+import { levelStyleMap, levelTextMap, typeTextMap } from "@/app/_constants";
 
 interface Props {
   title: string;
   content: string;
-  lessonId: number;
-  courseId: number;
+  level: QuestionLevel;
+  type: QuestionType;
   reviewer: {
     name: string;
     bio: string;
@@ -17,8 +18,8 @@ interface Props {
 export const OgImage: React.FC<Props> = ({
   title,
   content,
-  lessonId,
-  courseId,
+  level,
+  type,
   reviewer,
 }: Props) => {
   return (
@@ -44,14 +45,14 @@ export const OgImage: React.FC<Props> = ({
           <div tw="flex items-center justify-between w-full">
             <div tw="flex items-center">
               <div tw="text-[56px] mr-8 pb-4">
-                {courseTextMap[courseId as keyof typeof courseTextMap]}
+                {typeTextMap[type as keyof typeof typeTextMap]}
               </div>
               <div
                 tw={`text-[48px] font-[700] px-8 rounded-full py-2 mb-4 text-white ${
-                  lessonStyleMap[lessonId as keyof typeof lessonStyleMap]
+                  levelStyleMap[level as keyof typeof levelStyleMap]
                 }`}
               >
-                {lessonTextMap[lessonId as keyof typeof lessonTextMap]}
+                {levelTextMap[level as keyof typeof levelTextMap]}
               </div>
             </div>
             <div tw="rounded-full fixed inset-0 flex items-center justify-center relative">

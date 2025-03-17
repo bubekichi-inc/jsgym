@@ -62,8 +62,8 @@ export default async function Image({
       <OgImage
         title={data.question.title}
         content={data.question.content}
-        lessonId={data.question.lesson.id}
-        courseId={data.question.lesson.course.id}
+        level={data.question.level}
+        type={data.question.type}
         reviewer={data.question.reviewer}
       />
     ),
