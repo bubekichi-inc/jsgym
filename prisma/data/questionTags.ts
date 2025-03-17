@@ -26,4 +26,24 @@ export const questionTags: QuestionTag[] = [
     id: 5,
     name: "CLASS",
   },
+  {
+    id: 6,
+    name: "STATE",
+  },
+  {
+    id: 7,
+    name: "PROPS",
+  },
+  {
+    id: 8,
+    name: "HOOK",
+  },
+  {
+    id: 9,
+    name: "ERROR_HANDLING",
+  },
+  {
+    id: 10,
+    name: "ASYNC",
+  },
 ];
