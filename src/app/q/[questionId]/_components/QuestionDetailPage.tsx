@@ -9,7 +9,7 @@ import { PcTab } from "./PcTab";
 import { Question } from "./Question";
 import { SpTab } from "./SpTab";
 import { TitleSection } from "./TitleSection";
-import { Preview } from "@/app/_components/ReactPreview";
+import { ReactPreview } from "@/app/_components/ReactPreview";
 import { useDevice } from "@/app/_hooks/useDevice";
 import { useQuestion } from "@/app/_hooks/useQuestion";
 
@@ -41,7 +41,7 @@ export const QuestionDetailPage: React.FC = () => {
       case "REACT_TS":
         return "browser";
       default:
-        return "code";
+        return "browser";
     }
   }, [data?.question.type]);
 
@@ -108,7 +108,7 @@ export const QuestionDetailPage: React.FC = () => {
             </div>
           )}
 
-          {activeTab === "preview" && <Preview files={files} />}
+          {activeTab === "preview" && <ReactPreview files={files} />}
         </div>
 
         <div className="w-1/2">
