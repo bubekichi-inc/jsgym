@@ -220,11 +220,11 @@ REAL_WORLD
   public static buildPrompt({
     course,
     level,
-    titleList,
+    titleContentList,
   }: {
     course: NewType;
     level: QuestionLevel;
-    titleList: string[];
+    titleContentList: string[];
   }) {
     return `
 # 概要
@@ -249,7 +249,7 @@ ${level === "REAL_WORLD" && this.Lesson3Example}
 # 補足
 ・説明は、すべて日本語でお願いします。
 ・以下の問題タイトルとは全く別ジャンルで、処理内容も異なるような問題を作ってください。いろんなパターンの勉強をしてもらいたいので。
-${titleList.join("\n")}`;
+${titleContentList.join("\n")}`;
   }
 
   public static async generateQuestion({
@@ -265,14 +265,17 @@ ${titleList.join("\n")}`;
     const questions = await prisma.question.findMany({
       select: {
         title: true,
+        content: true,
       },
       orderBy: {
         createdAt: "desc",
       },
-      take: 100,
+      take: 50,
     });
 
-    const titleList = questions.map((question) => `  - ${question.title}`);
+    const titleContentList = questions.map(
+      (question) => `  - タイトル:${question.title} 内容:${question.content}`
+    );
 
     const response = await this.openai.beta.chat.completions.parse({
       model: GPT_4_5,
@@ -283,7 +286,7 @@ ${titleList.join("\n")}`;
         },
         {
           role: "user",
-          content: this.buildPrompt({ course, level, titleList }),
+          content: this.buildPrompt({ course, level, titleContentList }),
         },
       ],
       temperature: 1,
