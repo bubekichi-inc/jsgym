@@ -55,6 +55,7 @@ export const BrowserPreview: React.FC<Props> = ({ files }) => {
       // iframeがロードされてから少し待ってからDEVTOOLS_READYメッセージを確認
       setTimeout(() => {
         if (!isDevtoolsReady) {
+          handleTestLog();
           console.log(
             "デベロッパーツールの準備完了メッセージがないため、手動で設定します"
           );
@@ -110,19 +111,19 @@ export const BrowserPreview: React.FC<Props> = ({ files }) => {
   // };
 
   // テストログを送信
-  // const handleTestLog = () => {
-  //   if (previewIframeRef.current) {
-  //     evaluateJavaScript(
-  //       previewIframeRef.current,
-  //       `
-  //       console.log('テストログ');
-  //       console.warn('テスト警告');
-  //       console.error('テストエラー');
-  //       console.info('テスト情報');
-  //     `
-  //     );
-  //   }
-  // };
+  const handleTestLog = () => {
+    if (previewIframeRef.current) {
+      evaluateJavaScript(
+        previewIframeRef.current,
+        `
+        console.log('テストログ');
+        console.warn('テスト警告');
+        console.error('テストエラー');
+        console.info('テスト情報');
+      `
+      );
+    }
+  };
 
   return (
     <div className="flex h-full min-h-[500px] flex-col overflow-hidden bg-white">
@@ -139,7 +140,7 @@ export const BrowserPreview: React.FC<Props> = ({ files }) => {
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col md:flex-row">
+      <div className="flex flex-1 flex-col">
         {/* プレビュー */}
         <div className="min-h-[250px] flex-1 md:min-h-0">
           <iframe
@@ -151,7 +152,7 @@ export const BrowserPreview: React.FC<Props> = ({ files }) => {
         </div>
 
         {/* デベロッパーツール */}
-        {/* <div className="min-h-[250px] flex-1 border-t border-gray-200 md:min-h-0 md:border-l md:border-t-0">
+        <div className="min-h-[200px] flex-1 border-t border-gray-200 md:min-h-0 md:border-l md:border-t-0">
           {devtoolsUrl ? (
             <iframe
               ref={devtoolsIframeRef}
@@ -164,7 +165,7 @@ export const BrowserPreview: React.FC<Props> = ({ files }) => {
               デベロッパーツールを読み込み中...
             </div>
           )}
-        </div> */}
+        </div>
       </div>
     </div>
   );

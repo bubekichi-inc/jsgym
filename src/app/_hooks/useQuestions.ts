@@ -148,7 +148,6 @@ export const useQuestions = ({
 
       // pushStateを使用してURLを更新（ページリロードなし）
       window.history.pushState({}, "", url);
-      console.log("URL updated:", url);
     },
     []
   );

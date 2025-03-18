@@ -17,9 +17,7 @@ export const ExampleAnswerModal: React.FC<Props> = ({
   answer,
   isOpen,
   onClose,
-  language,
 }) => {
-  console.log(language);
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className="w-full max-w-[800px] space-y-4 pt-4">
