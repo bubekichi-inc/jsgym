@@ -6,7 +6,7 @@ import {
   clearConsole,
   executeCode,
   sendConsoleLog,
-} from "../_utils/simpleConsole";
+} from "../_utils/browserConsole";
 
 interface Props {
   files: Record<string, string>;
@@ -133,7 +133,7 @@ export const BrowserPreview: React.FC<Props> = ({ files }) => {
         <div className="min-h-[200px] flex-1 border-t border-gray-200 md:min-h-0 md:border-l md:border-t-0">
           <iframe
             ref={devtoolsIframeRef}
-            src="/simple-console/index.html"
+            src="/browser-console/index.html"
             className="size-full border-0"
             title="シンプルコンソール"
           />

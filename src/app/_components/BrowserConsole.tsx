@@ -7,7 +7,7 @@ import {
   clearConsole,
   executeCode,
   evaluateTSX,
-} from "../_utils/simpleConsole";
+} from "../_utils/browserConsole";
 
 interface FileContent {
   content: string;
@@ -18,7 +18,7 @@ interface Props {
   files?: Record<string, FileContent>;
 }
 
-const SimpleConsole: React.FC<Props> = ({ files = {} }) => {
+export const BrowserConsole: React.FC<Props> = ({ files = {} }) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [isConsoleReady, setIsConsoleReady] = useState(false);
   const [logCount, setLogCount] = useState(0);
@@ -151,8 +151,8 @@ const SimpleConsole: React.FC<Props> = ({ files = {} }) => {
   };
 
   return (
-    <div className="flex flex-col h-full border border-gray-300 rounded overflow-hidden bg-gray-100">
-      <div className="flex items-center justify-between p-2 bg-gray-200 border-b border-gray-300">
+    <div className="flex h-full flex-col overflow-hidden rounded border border-gray-300 bg-gray-100">
+      <div className="flex items-center justify-between border-b border-gray-300 bg-gray-200 p-2">
         <div className="text-sm font-medium text-gray-700">
           シンプルコンソール {isConsoleReady ? "✅" : "⏳"}
         </div>
@@ -160,14 +160,14 @@ const SimpleConsole: React.FC<Props> = ({ files = {} }) => {
           <button
             onClick={handleClearConsole}
             disabled={!isConsoleReady}
-            className="px-2 py-1 text-xs bg-blue-500 text-white rounded disabled:bg-blue-300 disabled:cursor-not-allowed"
+            className="rounded bg-blue-500 px-2 py-1 text-xs text-white disabled:cursor-not-allowed disabled:bg-blue-300"
           >
             コンソールをクリア
           </button>
           <button
             onClick={handleTestLog}
             disabled={!isConsoleReady}
-            className="px-2 py-1 text-xs bg-green-500 text-white rounded disabled:bg-green-300 disabled:cursor-not-allowed"
+            className="rounded bg-green-500 px-2 py-1 text-xs text-white disabled:cursor-not-allowed disabled:bg-green-300"
           >
             テストログを送信
           </button>
@@ -175,16 +175,16 @@ const SimpleConsole: React.FC<Props> = ({ files = {} }) => {
       </div>
 
       {statusMessage && (
-        <div className="px-2 py-1 text-xs text-blue-600 bg-blue-50">
+        <div className="bg-blue-50 px-2 py-1 text-xs text-blue-600">
           {statusMessage}
         </div>
       )}
 
-      <div className="flex-grow relative">
+      <div className="relative grow">
         <iframe
           ref={iframeRef}
-          src="/simple-console/index.html"
-          className="absolute inset-0 w-full h-full border-none"
+          src="/browser-console/index.html"
+          className="absolute inset-0 size-full border-none"
           sandbox="allow-scripts allow-same-origin"
           title="シンプルコンソール"
         />
@@ -192,5 +192,3 @@ const SimpleConsole: React.FC<Props> = ({ files = {} }) => {
     </div>
   );
 };
-
-export default SimpleConsole;

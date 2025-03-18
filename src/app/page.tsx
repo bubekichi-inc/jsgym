@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import SimpleConsole from "./_components/SimpleConsole";
+import { BrowserConsole } from "./_components/BrowserConsole";
 
 export default function Home() {
   const [code, setCode] =
@@ -81,7 +81,7 @@ console.log("計算結果:", 123 * 456);
 
         {/* コンソール出力 */}
         <div className="flex-1 overflow-hidden">
-          <SimpleConsole files={files} />
+          <BrowserConsole files={files} />
         </div>
       </div>
 
