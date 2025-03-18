@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export function Footer() {
   return (
     <footer className="border-t py-6">
@@ -178,13 +180,13 @@ export function Footer() {
             className="text-xs text-gray-500 transition-colors hover:text-gray-900"
           >
             利用規約
-          </a>
-          <a
-            href="#"
+          </a> */}
+          <Link
+            href="/privacy_policy"
             className="text-xs text-gray-500 transition-colors hover:text-gray-900"
           >
             プライバシーポリシー
-          </a> */}
+          </Link>
         </div>
       </div>
       <div className="container mx-auto mt-4 px-4">

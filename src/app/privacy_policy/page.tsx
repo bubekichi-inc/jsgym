@@ -1,4 +1,5 @@
 import React from "react";
+import { Footer } from "../(lp)/_components/footer";
 
 export const metadata = {
   title: "プライバシーポリシー | JS Gym",
@@ -169,6 +170,7 @@ export default function PrivacyPolicyPage() {
           </li>
         </ul>
       </div>
+      <Footer />
     </div>
   );
 }
