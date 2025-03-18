@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useDevtools } from "../_hooks/useDevtools";
 import {
   clearConsole,
@@ -15,42 +15,23 @@ interface Props {
 export const BrowserPreview: React.FC<Props> = ({ files }) => {
   const previewIframeRef = useRef<HTMLIFrameElement>(null);
   const devtoolsIframeRef = useRef<HTMLIFrameElement>(null);
-  const { isReady: isDevtoolsReady, setIframeRef } = useDevtools();
-  const [previewReady, setPreviewReady] = useState(false);
-  const [statusMessage, setStatusMessage] = useState("");
+  const { setIframeRef } = useDevtools();
 
-  // デベロッパーツールのiframe参照を設定
   useEffect(() => {
     if (devtoolsIframeRef.current) {
       setIframeRef(devtoolsIframeRef.current);
     }
   }, [setIframeRef]);
 
-  // メッセージイベントリスナーを設定
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      // プレビューからのメッセージを処理
-      if (event.data?.type === "PREVIEW_READY") {
-        setPreviewReady(true);
-        setStatusMessage("プレビュー準備完了");
-      }
-    };
-
-    window.addEventListener("message", handleMessage);
-    return () => window.removeEventListener("message", handleMessage);
-  }, []);
-
   // ファイルが変更されたときの処理
   useEffect(() => {
-    if (!previewIframeRef.current?.contentWindow || !previewReady) return;
+    if (!previewIframeRef.current?.contentWindow) return;
 
     const timer = setTimeout(() => {
-      // コンソールをクリア
-      if (isDevtoolsReady && devtoolsIframeRef.current) {
+      if (devtoolsIframeRef.current) {
         clearConsole(devtoolsIframeRef.current);
       }
 
-      // コードを更新
       previewIframeRef.current?.contentWindow?.postMessage(
         {
           type: "CODE_UPDATE",
@@ -61,14 +42,11 @@ export const BrowserPreview: React.FC<Props> = ({ files }) => {
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [files, previewReady, isDevtoolsReady]);
+  }, [files]);
 
   // テストログを送信
   const handleTestLog = () => {
-    if (!isDevtoolsReady || !devtoolsIframeRef.current) {
-      setStatusMessage("コンソールが準備できていません");
-      return;
-    }
+    if (!devtoolsIframeRef.current) return;
 
     // テストログを送信
     sendConsoleLog(devtoolsIframeRef.current, "テストログ", "log");
@@ -86,8 +64,6 @@ export const BrowserPreview: React.FC<Props> = ({ files }) => {
       console.info('テスト情報 - 実行コード');
       `
     );
-
-    setStatusMessage("テストログを送信しました");
   };
 
   return (
@@ -106,12 +82,8 @@ export const BrowserPreview: React.FC<Props> = ({ files }) => {
       </div>
 
       <div className="flex items-center justify-between border-b border-gray-200 p-2">
-        <div className="text-sm">
-          ステータス: {statusMessage || "準備中..."}
-        </div>
         <button
           onClick={handleTestLog}
-          disabled={!isDevtoolsReady}
           className="rounded bg-blue-500 px-2 py-1 text-xs text-white disabled:bg-blue-300"
         >
           テストログを送信

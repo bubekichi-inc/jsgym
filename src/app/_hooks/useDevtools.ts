@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 
 /**
  * シンプルコンソールを使用するためのカスタムフック
@@ -8,8 +8,6 @@ import { useState, useEffect, useRef } from "react";
  * @returns コンソールの状態とコントロール関数
  */
 export const useDevtools = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [isReady, setIsReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
@@ -17,22 +15,6 @@ export const useDevtools = () => {
   const setIframeRef = (ref: HTMLIFrameElement | null) => {
     iframeRef.current = ref;
   };
-
-  // メッセージイベントハンドラを設定
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      if (event.data?.type === "CONSOLE_READY") {
-        setIsLoading(false);
-        setIsReady(true);
-        setError(null);
-      }
-    };
-
-    window.addEventListener("message", handleMessage);
-    return () => {
-      window.removeEventListener("message", handleMessage);
-    };
-  }, []);
 
   // コンソールログを送信
   const sendConsoleLog = (
@@ -126,8 +108,6 @@ export const useDevtools = () => {
   };
 
   return {
-    isLoading,
-    isReady,
     error,
     setIframeRef,
     sendConsoleLog,

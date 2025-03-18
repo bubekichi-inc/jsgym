@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Reactプレビュー</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chobitsu@0.3.1/dist/chobitsu.min.js"></script>
     <script type="importmap">
       {
         "imports": {
@@ -27,91 +26,6 @@
           Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
       }
     </style>
-    <script>
-      // Chobitsuの初期化
-      window.chobitsu = chobitsu;
-
-      // コンソールAPIを初期化
-      chobitsu.sendRawMessage(
-        JSON.stringify({
-          id: 1,
-          method: "Runtime.enable",
-        })
-      );
-
-      // コンソールメソッドをオーバーライド
-      const originalConsole = {
-        log: console.log,
-        warn: console.warn,
-        error: console.error,
-        info: console.info,
-        debug: console.debug,
-      };
-
-      // コンソールメソッドをオーバーライドして、Chobitsuにも送信
-      console.log = function () {
-        originalConsole.log.apply(console, arguments);
-        sendConsoleMessage("log", arguments);
-      };
-
-      console.warn = function () {
-        originalConsole.warn.apply(console, arguments);
-        sendConsoleMessage("warning", arguments);
-      };
-
-      console.error = function () {
-        originalConsole.error.apply(console, arguments);
-        sendConsoleMessage("error", arguments);
-      };
-
-      console.info = function () {
-        originalConsole.info.apply(console, arguments);
-        sendConsoleMessage("info", arguments);
-      };
-
-      console.debug = function () {
-        originalConsole.debug.apply(console, arguments);
-        sendConsoleMessage("debug", arguments);
-      };
-
-      // コンソールメッセージをChobitsuに送信する関数
-      function sendConsoleMessage(type, args) {
-        const params = {
-          type: type,
-          args: Array.from(args).map((arg) => ({
-            type: typeof arg === "object" ? "object" : typeof arg,
-            value: typeof arg === "object" ? JSON.stringify(arg) : String(arg),
-          })),
-          executionContextId: 1,
-          timestamp: Date.now(),
-        };
-
-        chobitsu.sendRawMessage(
-          JSON.stringify({
-            method: "Runtime.consoleAPICalled",
-            params: params,
-          })
-        );
-      }
-
-      chobitsu.setOnMessage((message) => {
-        // メッセージを親ウィンドウに転送
-        window.parent.postMessage(
-          {
-            type: "CHOBITSU_MESSAGE",
-            message,
-          },
-          "*"
-        );
-      });
-
-      // 親からのメッセージを受け取る
-      window.addEventListener("message", (event) => {
-        if (event.data.type === "CHOBITSU_COMMAND") {
-          chobitsu.sendRawMessage(event.data.command);
-        }
-      });
-    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -2,10 +2,8 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import {
-  sendConsoleLog,
   sendTestLog,
   clearConsole,
-  executeCode,
   evaluateTSX,
 } from "../_utils/browserConsole";
 
@@ -20,34 +18,11 @@ interface Props {
 
 export const BrowserConsole: React.FC<Props> = ({ files = {} }) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const [isConsoleReady, setIsConsoleReady] = useState(false);
   const [logCount, setLogCount] = useState(0);
-  const [statusMessage, setStatusMessage] = useState("コンソールを初期化中...");
-
-  // コンソールの準備状態を監視
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      const { data } = event;
-      if (data && data.type === "CONSOLE_READY") {
-        setIsConsoleReady(true);
-        setStatusMessage("コンソール準備完了");
-
-        // 5秒後にステータスメッセージをクリア
-        setTimeout(() => {
-          setStatusMessage("");
-        }, 5000);
-      }
-    };
-
-    window.addEventListener("message", handleMessage);
-    return () => {
-      window.removeEventListener("message", handleMessage);
-    };
-  }, []);
 
   // ファイルの変更を監視して評価結果をコンソールに表示
   useEffect(() => {
-    if (isConsoleReady && files && Object.keys(files).length > 0) {
+    if (files && Object.keys(files).length > 0) {
       const fileNames = Object.keys(files);
       evaluateTSX(iframeRef.current, {
         fileCount: fileNames.length,
@@ -58,127 +33,42 @@ export const BrowserConsole: React.FC<Props> = ({ files = {} }) => {
             : "",
       });
     }
-  }, [isConsoleReady, files]);
-
-  // コンソールにログを送信
-  const handleSendLog = (
-    message: unknown,
-    type: "log" | "info" | "warn" | "error" = "log"
-  ) => {
-    if (!isConsoleReady) {
-      setStatusMessage("コンソールが準備できていません");
-      return;
-    }
-
-    const success = sendConsoleLog(iframeRef.current, message, type);
-
-    if (success) {
-      setStatusMessage(`${type}メッセージを送信しました`);
-    } else {
-      setStatusMessage("メッセージの送信に失敗しました");
-    }
-
-    // 5秒後にステータスメッセージをクリア
-    setTimeout(() => {
-      setStatusMessage("");
-    }, 5000);
-  };
+  }, [files]);
 
   // テストログを送信
   const handleTestLog = () => {
-    if (!isConsoleReady) {
-      setStatusMessage("コンソールが準備できていません");
-      return;
-    }
-
     const newCount = logCount + 1;
     setLogCount(newCount);
 
-    const success = sendTestLog(iframeRef.current, newCount);
-
-    if (success) {
-      setStatusMessage(`テストログ #${newCount} を送信しました`);
-    } else {
-      setStatusMessage("テストログの送信に失敗しました");
-    }
-
-    // 5秒後にステータスメッセージをクリア
-    setTimeout(() => {
-      setStatusMessage("");
-    }, 5000);
+    sendTestLog(iframeRef.current, newCount);
   };
 
   // コンソールをクリア
   const handleClearConsole = () => {
-    if (!isConsoleReady) {
-      setStatusMessage("コンソールが準備できていません");
-      return;
-    }
-
-    const success = clearConsole(iframeRef.current);
-
-    if (success) {
-      setStatusMessage("コンソールをクリアしました");
-    } else {
-      setStatusMessage("コンソールのクリアに失敗しました");
-    }
-
-    // 5秒後にステータスメッセージをクリア
-    setTimeout(() => {
-      setStatusMessage("");
-    }, 5000);
-  };
-
-  // コードを実行
-  const handleExecuteCode = (code: string) => {
-    if (!isConsoleReady) {
-      setStatusMessage("コンソールが準備できていません");
-      return;
-    }
-
-    const success = executeCode(iframeRef.current, code);
-
-    if (success) {
-      setStatusMessage("コードを実行しました");
-    } else {
-      setStatusMessage("コードの実行に失敗しました");
-    }
-
-    // 5秒後にステータスメッセージをクリア
-    setTimeout(() => {
-      setStatusMessage("");
-    }, 5000);
+    clearConsole(iframeRef.current);
   };
 
   return (
     <div className="flex h-full flex-col overflow-hidden rounded border border-gray-300 bg-gray-100">
       <div className="flex items-center justify-between border-b border-gray-300 bg-gray-200 p-2">
         <div className="text-sm font-medium text-gray-700">
-          シンプルコンソール {isConsoleReady ? "✅" : "⏳"}
+          シンプルコンソール
         </div>
         <div className="flex gap-2">
           <button
             onClick={handleClearConsole}
-            disabled={!isConsoleReady}
             className="rounded bg-blue-500 px-2 py-1 text-xs text-white disabled:cursor-not-allowed disabled:bg-blue-300"
           >
             コンソールをクリア
           </button>
           <button
             onClick={handleTestLog}
-            disabled={!isConsoleReady}
             className="rounded bg-green-500 px-2 py-1 text-xs text-white disabled:cursor-not-allowed disabled:bg-green-300"
           >
             テストログを送信
           </button>
         </div>
       </div>
-
-      {statusMessage && (
-        <div className="bg-blue-50 px-2 py-1 text-xs text-blue-600">
-          {statusMessage}
-        </div>
-      )}
 
       <div className="relative grow">
         <iframe
