@@ -10,19 +10,30 @@ export const BrowserPreview: React.FC<Props> = ({ files }) => {
   const previewIframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
-    if (!previewIframeRef.current?.contentWindow) return;
+    const iframe = previewIframeRef.current;
+    if (!iframe?.contentWindow) return;
 
-    const timer = setTimeout(() => {
-      previewIframeRef.current?.contentWindow?.postMessage(
+    const sendCode = () => {
+      iframe.contentWindow?.postMessage(
         {
           type: "CODE_UPDATE",
           code: files["/App.tsx"] || "",
         },
         "*"
       );
-    }, 1000);
+    };
 
-    return () => clearTimeout(timer);
+    // iframeがロードされたら再度コードを送信
+    const handleIframeLoad = () => sendCode();
+    iframe.addEventListener("load", handleIframeLoad);
+
+    // ファイルが変更されたらコードを送信（遅延付き）
+    const timer = setTimeout(sendCode, 1000);
+
+    return () => {
+      clearTimeout(timer);
+      iframe.removeEventListener("load", handleIframeLoad);
+    };
   }, [files]);
 
   return (

@@ -9,14 +9,10 @@
       {
         "imports": {
           "react": "https://esm.sh/react@18.2.0",
-          "react-dom": "https://esm.sh/react-dom@18.2.0",
-          "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
-          "jotai": "https://esm.sh/jotai@2.0.0",
-          "react-router-dom": "https://esm.sh/react-router-dom@6.8.0"
+          "react-dom/client": "https://esm.sh/react-dom@18.2.0/client"
         }
       }
     </script>
-    <!-- Babel Standaloneを追加 -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
       body {
@@ -24,6 +20,21 @@
         padding: 0;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
           Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      }
+      .error-container {
+        color: red;
+        padding: 16px;
+        border: 1px solid #f88;
+        background-color: #fee;
+        border-radius: 4px;
+        font-size: 13px;
+        margin: 16px;
+      }
+      .error-stack {
+        overflow: auto;
+        background: #f8f8f8;
+        padding: 10px;
+        border-radius: 4px;
       }
     </style>
   </head>
@@ -35,55 +46,59 @@
 
       let rootInstance = null;
 
-      // 親ページからのメッセージを受け取る
-      window.addEventListener("message", async (event) => {
-        if (event.data.type === "CODE_UPDATE") {
-          try {
-            const code = event.data.code;
+      const renderError = (error) => {
+        console.error("レンダリングエラー:", error);
+        document.getElementById("root").innerHTML = `
+          <div class="error-container">
+            <h2>エラーが発生しました</h2>
+            <p>${error.message}</p>
+            <pre class="error-stack">${error.stack || ""}</pre>
+          </div>
+        `;
+      };
 
-            // Babelでコードを変換
-            const transformed = Babel.transform(code, {
-              presets: ["react", "typescript"],
-              filename: "App.tsx",
-              sourceType: "module",
-            }).code;
+      const handleCodeUpdate = async (code) => {
+        let url = null;
 
-            // 動的にモジュールを作成
-            const blob = new Blob([transformed], {
-              type: "application/javascript",
-            });
-            const url = URL.createObjectURL(blob);
+        try {
+          // コードをトランスパイル
+          const transformed = Babel.transform(code, {
+            presets: ["react", "typescript"],
+            filename: "App.tsx",
+            sourceType: "module",
+          }).code;
 
-            // モジュールをインポート
-            const module = await import(url);
-            const App = module.default;
+          // モジュールを作成
+          const blob = new Blob([transformed], {
+            type: "application/javascript",
+          });
+          url = URL.createObjectURL(blob);
 
-            if (!App) {
-              throw new Error(
-                "App component not found (default export missing)"
-              );
-            }
+          // モジュールをロード
+          const module = await import(url);
+          const App = module.default;
 
-            // レンダリング
-            if (!rootInstance) {
-              rootInstance = createRoot(document.getElementById("root"));
-            }
-            rootInstance.render(React.createElement(App));
-
-            // 使用後URLを解放
-            URL.revokeObjectURL(url);
-          } catch (error) {
-            console.error("Error rendering component:", error);
-            document.getElementById("root").innerHTML = `
-              <div style="color: red; padding: 16px; border: 1px solid #f88; background-color: #fee; border-radius: 4px; font-size: 13px; margin: 16px;">
-                <h2>エラーが発生しました</h2>
-                <p>${error.message}</p>
-                <pre style="overflow: auto; background: #f8f8f8; padding: 10px; border-radius: 4px;">${
-                  error.stack || ""
-                }</pre>
-              </div>
-            `;
+          if (!App) {
+            throw new Error("default exportが見つかりません");
           }
+
+          // レンダリング
+          if (!rootInstance) {
+            rootInstance = createRoot(document.getElementById("root"));
+          }
+
+          rootInstance.render(React.createElement(App));
+        } catch (error) {
+          renderError(error);
+        } finally {
+          if (url) URL.revokeObjectURL(url);
+        }
+      };
+
+      // メッセージイベントリスナー
+      window.addEventListener("message", (event) => {
+        if (event.data?.type === "CODE_UPDATE") {
+          handleCodeUpdate(event.data.code || "");
         }
       });
     </script>
