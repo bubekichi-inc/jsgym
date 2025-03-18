@@ -2,11 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useDevtools } from "../_hooks/useDevtools";
-import {
-  clearConsole,
-  clearLocalStorage,
-  evaluateJavaScript,
-} from "../_utils/chobitsuCommands";
+import { clearConsole, evaluateJavaScript } from "../_utils/chobitsuCommands";
 
 interface Props {
   files: Record<string, string>;
@@ -105,28 +101,28 @@ export const ReactPreview: React.FC<Props> = ({ files }) => {
   }, [files]);
 
   // ツールバーのボタンハンドラー
-  const handleClearLocalStorage = () => {
-    clearLocalStorage(previewIframeRef.current);
-  };
+  // const handleClearLocalStorage = () => {
+  //   clearLocalStorage(previewIframeRef.current);
+  // };
 
-  const handleClearConsole = () => {
-    clearConsole(previewIframeRef.current);
-  };
+  // const handleClearConsole = () => {
+  //   clearConsole(previewIframeRef.current);
+  // };
 
   // テストログを送信
-  const handleTestLog = () => {
-    if (previewIframeRef.current) {
-      evaluateJavaScript(
-        previewIframeRef.current,
-        `
-        console.log('テストログ');
-        console.warn('テスト警告');
-        console.error('テストエラー');
-        console.info('テスト情報');
-      `
-      );
-    }
-  };
+  // const handleTestLog = () => {
+  //   if (previewIframeRef.current) {
+  //     evaluateJavaScript(
+  //       previewIframeRef.current,
+  //       `
+  //       console.log('テストログ');
+  //       console.warn('テスト警告');
+  //       console.error('テストエラー');
+  //       console.info('テスト情報');
+  //     `
+  //     );
+  //   }
+  // };
 
   return (
     <div className="flex h-full min-h-[500px] flex-col overflow-hidden bg-white">
@@ -139,34 +135,6 @@ export const ReactPreview: React.FC<Props> = ({ files }) => {
           </div>
           <div className="flex-1 rounded-md border border-gray-300 bg-white px-3 py-1 text-xs text-gray-500">
             localhost:3000
-          </div>
-        </div>
-
-        {/* ツールバー */}
-        <div className="flex items-center space-x-2 bg-gray-100 px-3 py-1">
-          <button
-            onClick={handleClearLocalStorage}
-            className="rounded bg-gray-200 px-2 py-1 text-xs hover:bg-gray-300"
-            title="ローカルストレージをクリア"
-          >
-            LS クリア
-          </button>
-          <button
-            onClick={handleClearConsole}
-            className="rounded bg-gray-200 px-2 py-1 text-xs hover:bg-gray-300"
-            title="コンソールをクリア"
-          >
-            コンソールクリア
-          </button>
-          <button
-            onClick={handleTestLog}
-            className="rounded bg-gray-200 px-2 py-1 text-xs hover:bg-gray-300"
-            title="テストログを送信"
-          >
-            テストログ
-          </button>
-          <div className="ml-2 text-xs text-gray-500">
-            {isDevtoolsReady ? "DevTools: 接続済み" : "DevTools: 接続中..."}
           </div>
         </div>
       </div>
@@ -183,7 +151,7 @@ export const ReactPreview: React.FC<Props> = ({ files }) => {
         </div>
 
         {/* デベロッパーツール */}
-        <div className="min-h-[250px] flex-1 border-t border-gray-200 md:min-h-0 md:border-l md:border-t-0">
+        {/* <div className="min-h-[250px] flex-1 border-t border-gray-200 md:min-h-0 md:border-l md:border-t-0">
           {devtoolsUrl ? (
             <iframe
               ref={devtoolsIframeRef}
@@ -196,7 +164,7 @@ export const ReactPreview: React.FC<Props> = ({ files }) => {
               デベロッパーツールを読み込み中...
             </div>
           )}
-        </div>
+        </div> */}
       </div>
     </div>
   );
