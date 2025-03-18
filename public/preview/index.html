@@ -72,9 +72,6 @@
 
             // 使用後URLを解放
             URL.revokeObjectURL(url);
-
-            // コンポーネントがロードされたことをコンソールに表示
-            console.log("Reactコンポーネントがロードされました");
           } catch (error) {
             console.error("Error rendering component:", error);
             document.getElementById("root").innerHTML = `
