@@ -44,6 +44,7 @@ export const BrowserPreview: React.FC<Props> = ({ files }) => {
         <div className="min-h-[250px] flex-1 md:min-h-0">
           <iframe
             ref={previewIframeRef}
+            sandbox="allow-scripts allow-modals"
             src="/preview/index.html"
             className="size-full border-0"
             title="React Preview"
