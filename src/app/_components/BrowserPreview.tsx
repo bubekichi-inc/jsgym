@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useDevtools } from "../_hooks/useDevtools";
 import {
   clearConsole,
   executeCode,
@@ -15,13 +14,6 @@ interface Props {
 export const BrowserPreview: React.FC<Props> = ({ files }) => {
   const previewIframeRef = useRef<HTMLIFrameElement>(null);
   const devtoolsIframeRef = useRef<HTMLIFrameElement>(null);
-  const { setIframeRef } = useDevtools();
-
-  useEffect(() => {
-    if (devtoolsIframeRef.current) {
-      setIframeRef(devtoolsIframeRef.current);
-    }
-  }, [setIframeRef]);
 
   // ファイルが変更されたときの処理
   useEffect(() => {
