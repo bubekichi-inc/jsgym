@@ -87,7 +87,11 @@ export const QuestionDetailPage: React.FC = () => {
   return (
     <div className="">
       {pageType === "browser" && (
-        <PcTab activeTab={activeTab} handleTabChange={handleTabChange} />
+        <PcTab
+          activeTab={activeTab}
+          handleTabChange={handleTabChange}
+          isBusy={chatBusy || reviewBusy}
+        />
       )}
 
       <div className="flex w-full justify-center">
