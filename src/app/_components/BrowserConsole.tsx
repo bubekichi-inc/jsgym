@@ -185,8 +185,8 @@ export const BrowserConsole: React.FC<Props> = ({ files = {} }) => {
           ref={iframeRef}
           src="/browser-console/index.html"
           className="absolute inset-0 size-full border-none"
-          sandbox="allow-scripts allow-same-origin"
-          title="シンプルコンソール"
+          sandbox="allow-scripts"
+          title="コンソール"
         />
       </div>
     </div>
