@@ -44,6 +44,7 @@ export const GET = async (request: NextRequest) => {
   const limit = Number(searchParams.get("limit") || "24");
   const offset = Number(searchParams.get("offset") || "0");
   const searchTitle = searchParams.get("title") || "";
+  const type = searchParams.get("type") as QuestionType | null;
   const level = searchParams.get("level") as QuestionLevel | null;
   const reviewerId = Number(searchParams.get("reviewerId") || "0");
   const status = searchParams.get("status") as
@@ -93,8 +94,12 @@ export const GET = async (request: NextRequest) => {
     };
   }
 
+  // タイプによるフィルタリング
+  if (type) {
+    whereConditions.type = type;
+  }
+
   //  レベルよるフィルタリング
-  console.log("level", level);
   if (level) {
     whereConditions.level = level;
   }

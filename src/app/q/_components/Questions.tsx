@@ -48,6 +48,8 @@ export const Questions: React.FC<Props> = ({ limit }) => {
     handleReviewerSelect,
     handleStatusChange,
     handleLoadMore,
+    selectedType,
+    handleTypeChange,
   } = useQuestions({
     limit,
     initialTitle,
@@ -83,7 +85,7 @@ export const Questions: React.FC<Props> = ({ limit }) => {
         </div>
 
         <div className="">
-          <div className="mt-6 flex flex-col items-center gap-4 md:flex-row md:flex-wrap md:justify-center">
+          <div className="mt-6 flex flex-col gap-4 md:flex-row md:flex-wrap md:justify-center">
             {/* <div className="w-full max-w-xs">
             <input
               type="text"
@@ -95,6 +97,45 @@ export const Questions: React.FC<Props> = ({ limit }) => {
           </div> */}
 
             <div className="space-y-3">
+              {/* タイプ選択タブ */}
+              <div className="flex items-center gap-4 rounded-md bg-white px-4">
+                {!isSp && (
+                  <p className="text-xs font-bold text-gray-500">ジャンル</p>
+                )}
+                <div className="flex h-10 items-center justify-center rounded-md p-1 text-gray-500">
+                  <button
+                    className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
+                      selectedType === "ALL"
+                        ? "bg-blue-100 text-blue-800 shadow-sm"
+                        : ""
+                    }`}
+                    onClick={() => handleTypeChange("ALL")}
+                  >
+                    すべて
+                  </button>
+                  <button
+                    className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
+                      selectedType === "JAVA_SCRIPT"
+                        ? "bg-blue-100 text-blue-800 shadow-sm"
+                        : ""
+                    }`}
+                    onClick={() => handleTypeChange("JAVA_SCRIPT")}
+                  >
+                    JavaScript
+                  </button>
+                  <button
+                    className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
+                      selectedType === "REACT_JS"
+                        ? "bg-blue-100 text-blue-800 shadow-sm"
+                        : ""
+                    }`}
+                    onClick={() => handleTypeChange("REACT_JS")}
+                  >
+                    React
+                  </button>
+                </div>
+              </div>
+
               {/* レベル選択タブ */}
               <div className="flex items-center gap-4 rounded-md bg-white px-4">
                 {!isSp && (

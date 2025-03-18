@@ -59,7 +59,7 @@ export default function Dashboard() {
   if (isLoading) {
     return (
       <div className="flex h-96 items-center justify-center">
-        <div className="text-center">
+        <div className="flex flex-col items-center text-center">
           <div className="mb-4 size-12 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
           <p className="text-gray-600">データを読み込み中...</p>
         </div>

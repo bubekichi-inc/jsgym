@@ -1,4 +1,4 @@
-import { UserQuestionStatus } from "@prisma/client";
+import { QuestionType, UserQuestionStatus } from "@prisma/client";
 import { useCallback, useEffect, useState } from "react";
 import useSWR from "swr";
 import { useFetch } from "./useFetch";
@@ -36,8 +36,11 @@ interface UseQuestionsReturn {
   handleReviewerSelect: (reviewerId: number) => void;
   handleStatusChange: (status: ExtendedStatus) => void;
   handleLoadMore: () => void;
+  selectedType: QuestionType | "ALL";
+  handleTypeChange: (type: QuestionType | "ALL") => void;
   updateUrl: (
     title: string,
+    type: QuestionType | "ALL",
     level: QuestionLevel | "ALL",
     reviewerId: number,
     status: ExtendedStatus
@@ -54,6 +57,7 @@ export const useQuestions = ({
   const [selectedLevel, setSelectedLevel] = useState<QuestionLevel | "ALL">(
     initialLevel
   );
+  const [selectedType, setSelectedType] = useState<QuestionType | "ALL">("ALL");
   const [searchTitle, setSearchTitle] = useState(initialTitle);
   const [selectedReviewerId, setSelectedReviewerId] =
     useState<number>(initialReviewerId);
@@ -75,6 +79,7 @@ export const useQuestions = ({
     limit: String(limit),
     offset: String(offset),
     title: searchTitle,
+    type: selectedType !== "ALL" ? selectedType : "",
     level: selectedLevel !== "ALL" ? selectedLevel : "",
     reviewerId: selectedReviewerId ? String(selectedReviewerId) : "",
     status: selectedStatus !== "ALL" ? selectedStatus : "",
@@ -111,6 +116,7 @@ export const useQuestions = ({
   const updateUrl = useCallback(
     (
       title: string,
+      type: QuestionType | "ALL",
       level: QuestionLevel | "ALL",
       reviewerId: number,
       status: ExtendedStatus
@@ -119,6 +125,10 @@ export const useQuestions = ({
 
       if (title) {
         params.append("title", title);
+      }
+
+      if (type !== "ALL") {
+        params.append("type", type);
       }
 
       if (level !== "ALL") {
@@ -148,12 +158,18 @@ export const useQuestions = ({
     (value: string) => {
       setSearchTitle(value);
       setOffset(0); // 検索時はoffsetリセット
-      updateUrl(value, selectedLevel, selectedReviewerId, selectedStatus);
+      updateUrl(
+        value,
+        selectedType,
+        selectedLevel,
+        selectedReviewerId,
+        selectedStatus
+      );
     },
-    [selectedLevel, selectedReviewerId, selectedStatus, updateUrl]
+    [selectedLevel, selectedReviewerId, selectedStatus, selectedType, updateUrl]
   );
 
-  // タブ切り替え
+  // レベルタブ切り替え
   const handleLevelChange = useCallback(
     (level: QuestionLevel | "ALL") => {
       // 同じタブを選択した場合は何もしない
@@ -163,9 +179,38 @@ export const useQuestions = ({
       setOffset(0); // タブ切替時はoffsetリセット
 
       // レビュワー選択はリセットしない（組み合わせて検索できるように）
-      updateUrl(searchTitle, level, selectedReviewerId, selectedStatus);
+      updateUrl(
+        searchTitle,
+        selectedType,
+        level,
+        selectedReviewerId,
+        selectedStatus
+      );
     },
-    [selectedLevel, searchTitle, selectedReviewerId, selectedStatus, updateUrl]
+    [
+      selectedLevel,
+      updateUrl,
+      searchTitle,
+      selectedType,
+      selectedReviewerId,
+      selectedStatus,
+    ]
+  );
+
+  // タイプタブ切り替え
+  const handleTypeChange = useCallback(
+    (type: QuestionType | "ALL") => {
+      setSelectedType(type);
+      setOffset(0); // タイプ変更時はoffsetリセット
+      updateUrl(
+        searchTitle,
+        type,
+        selectedLevel,
+        selectedReviewerId,
+        selectedStatus
+      );
+    },
+    [searchTitle, selectedLevel, selectedReviewerId, selectedStatus, updateUrl]
   );
 
   // レビュワー選択
@@ -182,9 +227,22 @@ export const useQuestions = ({
 
       setSelectedReviewerId(newReviewerId);
       setOffset(0); // レビュワー変更時はoffsetリセット
-      updateUrl(searchTitle, selectedLevel, newReviewerId, selectedStatus);
+      updateUrl(
+        searchTitle,
+        selectedType,
+        selectedLevel,
+        newReviewerId,
+        selectedStatus
+      );
     },
-    [selectedLevel, searchTitle, selectedReviewerId, selectedStatus, updateUrl]
+    [
+      selectedReviewerId,
+      updateUrl,
+      searchTitle,
+      selectedType,
+      selectedLevel,
+      selectedStatus,
+    ]
   );
 
   // ステータス選択
@@ -196,9 +254,22 @@ export const useQuestions = ({
       console.log("Status changed:", status);
       setSelectedStatus(status);
       setOffset(0); // ステータス変更時はoffsetリセット
-      updateUrl(searchTitle, selectedLevel, selectedReviewerId, status);
+      updateUrl(
+        searchTitle,
+        selectedType,
+        selectedLevel,
+        selectedReviewerId,
+        status
+      );
     },
-    [selectedLevel, searchTitle, selectedReviewerId, selectedStatus, updateUrl]
+    [
+      selectedStatus,
+      updateUrl,
+      searchTitle,
+      selectedType,
+      selectedLevel,
+      selectedReviewerId,
+    ]
   );
 
   // 追加ロード
@@ -227,5 +298,7 @@ export const useQuestions = ({
     handleStatusChange,
     handleLoadMore,
     updateUrl,
+    selectedType,
+    handleTypeChange,
   };
 };
