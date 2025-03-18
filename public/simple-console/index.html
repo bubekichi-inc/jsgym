@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ピュアJSコンソール</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .top-bar {
+        background: #f0f0f0;
+        padding: 8px;
+        border-bottom: 1px solid #ddd;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .btn {
+        background: #4a86e8;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+      }
+
+      .btn:hover {
+        background: #2a66c8;
+      }
+
+      .btn:disabled {
+        background: #9ab6e8;
+        cursor: not-allowed;
+      }
+
+      .btn-group {
+        display: flex;
+        gap: 8px;
+      }
+
+      .console-container {
+        flex: 1;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .console-output {
+        flex: 1;
+        overflow-y: auto;
+        padding: 10px;
+        background: #1e1e1e;
+        color: #f8f8f8;
+        font-family: monospace;
+        white-space: pre-wrap;
+        line-height: 1.4;
+      }
+
+      .console-input {
+        background: #2a2a2a;
+        padding: 10px;
+        display: flex;
+      }
+
+      .console-input input {
+        flex: 1;
+        background: #3a3a3a;
+        border: none;
+        color: #f8f8f8;
+        padding: 8px;
+        font-family: monospace;
+      }
+
+      .log-entry {
+        margin: 4px 0;
+        padding: 4px 0;
+        border-bottom: 1px solid #3a3a3a;
+      }
+
+      .log-entry.log {
+        color: #f8f8f8;
+      }
+
+      .log-entry.info {
+        color: #58a6ff;
+      }
+
+      .log-entry.warn {
+        color: #e2b026;
+      }
+
+      .log-entry.error {
+        color: #f85149;
+      }
+
+      .flex-row {
+        display: flex;
+        flex: 1;
+        overflow: hidden;
+      }
+
+      .timestamp {
+        color: #888;
+        font-size: 0.85em;
+        margin-right: 8px;
+      }
+
+      /* メッセージ関連 */
+      .status-bar {
+        background: #2a2a2a;
+        color: #58a6ff;
+        padding: 4px 8px;
+        font-size: 12px;
+        font-family: monospace;
+        text-align: right;
+      }
+
+      /* オブジェクト表示用 */
+      .object-preview {
+        color: #89a;
+        cursor: pointer;
+      }
+
+      .object-expanded {
+        margin-left: 20px;
+        border-left: 1px solid #444;
+        padding-left: 10px;
+      }
+
+      .object-property {
+        display: block;
+        margin: 2px 0;
+      }
+
+      .property-key {
+        color: #a48fff;
+      }
+
+      .property-value {
+        margin-left: 5px;
+      }
+
+      .string-value {
+        color: #ce9178;
+      }
+
+      .number-value {
+        color: #b5cea8;
+      }
+
+      .boolean-value {
+        color: #569cd6;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top-bar">
+      <div class="status">ピュアJSコンソール</div>
+      <div class="btn-group">
+        <button id="clear-btn" class="btn">コンソールをクリア</button>
+        <button id="test-log-btn" class="btn">テストログを送信</button>
+      </div>
+    </div>
+
+    <div class="flex-row">
+      <div class="console-container">
+        <div id="console-output" class="console-output"></div>
+        <div class="status-bar" id="status-bar"></div>
+        <div class="console-input">
+          <input
+            type="text"
+            id="console-input"
+            placeholder="JavaScriptを入力して実行（Enterキーで実行）"
+          />
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // コンソール出力要素
+      const consoleOutput = document.getElementById("console-output");
+      const consoleInput = document.getElementById("console-input");
+      const clearBtn = document.getElementById("clear-btn");
+      const testLogBtn = document.getElementById("test-log-btn");
+      const statusBar = document.getElementById("status-bar");
+
+      // ログカウンター
+      let logCounter = 0;
+
+      // 現在の時刻を取得する関数
+      function getCurrentTimestamp() {
+        const now = new Date();
+        return now.toTimeString().split(" ")[0];
+      }
+
+      // ステータスメッセージを表示
+      function showStatus(message) {
+        statusBar.textContent = message;
+
+        // 5秒後に消える
+        setTimeout(() => {
+          if (statusBar.textContent === message) {
+            statusBar.textContent = "";
+          }
+        }, 5000);
+      }
+
+      // オブジェクトをHTMLに変換
+      function formatValue(value, depth = 0, maxDepth = 2) {
+        if (value === null) {
+          return '<span class="null-value">null</span>';
+        }
+
+        if (value === undefined) {
+          return '<span class="undefined-value">undefined</span>';
+        }
+
+        if (typeof value === "string") {
+          return `<span class="string-value">"${value
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")}"</span>`;
+        }
+
+        if (typeof value === "number") {
+          return `<span class="number-value">${value}</span>`;
+        }
+
+        if (typeof value === "boolean") {
+          return `<span class="boolean-value">${value}</span>`;
+        }
+
+        if (typeof value === "function") {
+          return `<span class="function-value">ƒ ${
+            value.name || "anonymous"
+          }() {...}</span>`;
+        }
+
+        if (typeof value === "object") {
+          if (depth >= maxDepth) {
+            if (Array.isArray(value)) {
+              return `<span class="object-preview">Array(${value.length})</span>`;
+            }
+            return `<span class="object-preview">${Object.prototype.toString
+              .call(value)
+              .slice(8, -1)}</span>`;
+          }
+
+          if (Array.isArray(value)) {
+            if (value.length === 0) return "[]";
+
+            let html = `<span class="object-preview">Array(${value.length})</span><div class="object-expanded">[`;
+
+            value.forEach((item, i) => {
+              html += `<span class="object-property">${formatValue(
+                item,
+                depth + 1,
+                maxDepth
+              )}${i < value.length - 1 ? "," : ""}</span>`;
+            });
+
+            html += "]</div>";
+            return html;
+          }
+
+          try {
+            const entries = Object.entries(value);
+            if (entries.length === 0) return "{}";
+
+            let html = `<span class="object-preview">${Object.prototype.toString
+              .call(value)
+              .slice(8, -1)}</span><div class="object-expanded">{`;
+
+            entries.forEach(([key, val], i) => {
+              html += `<span class="object-property"><span class="property-key">${key}</span>: <span class="property-value">${formatValue(
+                val,
+                depth + 1,
+                maxDepth
+              )}${i < entries.length - 1 ? "," : ""}</span></span>`;
+            });
+
+            html += "}</div>";
+            return html;
+          } catch (e) {
+            return `<span class="error-value">[シリアライズエラー: ${e.message}]</span>`;
+          }
+        }
+
+        return String(value);
+      }
+
+      // コンソールログを追加する関数
+      function addLogEntry(type, args) {
+        // タイムスタンプを取得
+        const timestamp = getCurrentTimestamp();
+
+        // ログエントリ要素を作成
+        const logEntry = document.createElement("div");
+        logEntry.className = `log-entry ${type}`;
+
+        // タイムスタンプ要素
+        const timestampSpan = document.createElement("span");
+        timestampSpan.className = "timestamp";
+        timestampSpan.textContent = timestamp;
+        logEntry.appendChild(timestampSpan);
+
+        // 引数を処理してテキストとして追加
+        const argsArray = Array.from(args);
+
+        if (argsArray.length === 1) {
+          // 単一の引数の場合は直接表示
+          const contentDiv = document.createElement("div");
+          contentDiv.innerHTML = formatValue(argsArray[0]);
+          logEntry.appendChild(contentDiv);
+        } else {
+          // 複数の引数の場合は配列としてフォーマット
+          const content = argsArray.map((arg) => formatValue(arg)).join(" ");
+          const contentDiv = document.createElement("div");
+          contentDiv.innerHTML = content;
+          logEntry.appendChild(contentDiv);
+        }
+
+        // 出力領域に追加
+        consoleOutput.appendChild(logEntry);
+
+        // 自動スクロール
+        consoleOutput.scrollTop = consoleOutput.scrollHeight;
+
+        return logEntry;
+      }
+
+      // オリジナルのコンソールメソッドを保存
+      const originalConsole = {
+        log: console.log,
+        info: console.info,
+        warn: console.warn,
+        error: console.error,
+      };
+
+      // コンソールメソッドをオーバーライド
+      console.log = function () {
+        originalConsole.log.apply(console, arguments);
+        return addLogEntry("log", arguments);
+      };
+
+      console.info = function () {
+        originalConsole.info.apply(console, arguments);
+        return addLogEntry("info", arguments);
+      };
+
+      console.warn = function () {
+        originalConsole.warn.apply(console, arguments);
+        return addLogEntry("warn", arguments);
+      };
+
+      console.error = function () {
+        originalConsole.error.apply(console, arguments);
+        return addLogEntry("error", arguments);
+      };
+
+      // コンソール入力のイベントハンドラ
+      consoleInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          const code = consoleInput.value;
+
+          if (!code.trim()) return;
+
+          // 入力されたコードをログに表示
+          console.log(`> ${code}`);
+
+          try {
+            // コードを実行して結果を取得
+            const result = eval(code);
+
+            // 結果がundefinedでなければログに表示
+            if (result !== undefined) {
+              console.log("< ", result);
+            }
+          } catch (error) {
+            // エラーをログに表示
+            console.error("< ", error.message);
+          }
+
+          // 入力欄をクリア
+          consoleInput.value = "";
+        }
+      });
+
+      // クリアボタンのイベントハンドラ
+      clearBtn.addEventListener("click", () => {
+        consoleOutput.innerHTML = "";
+        showStatus("コンソールをクリアしました");
+      });
+
+      // テストログボタンのイベントハンドラ
+      testLogBtn.addEventListener("click", () => {
+        logCounter++;
+        const timestamp = new Date().toISOString();
+
+        // 様々な種類のデータを表示
+        console.log(`テストログ #${logCounter} - ${timestamp}`);
+        console.info(`テスト情報 #${logCounter} - ${timestamp}`);
+        console.warn(`テスト警告 #${logCounter} - ${timestamp}`);
+        console.error(`テストエラー #${logCounter} - ${timestamp}`);
+
+        // オブジェクト表示のテスト
+        console.log({
+          数値: 123,
+          文字列: "こんにちは",
+          配列: [1, 2, 3],
+          真偽値: true,
+          ネスト: {
+            a: 1,
+            b: {
+              c: "テスト",
+            },
+          },
+        });
+
+        showStatus(`テストログ #${logCounter} を送信しました`);
+      });
+
+      // 親からのメッセージを受け取る
+      window.addEventListener("message", (event) => {
+        const { data } = event;
+
+        if (!data || !data.type) return;
+
+        // メッセージタイプに応じた処理
+        switch (data.type) {
+          case "CONSOLE_LOG":
+            // 指定されたタイプでログを出力
+            if (data.logType && data.message) {
+              console[data.logType](data.message);
+            }
+            break;
+
+          case "TRIGGER_TEST_LOG":
+            // テストログボタンのクリックを模倣
+            const count = data.count || logCounter + 1;
+            const timestamp = new Date().toISOString();
+
+            console.log(`テストログ #${count} - ${timestamp}`);
+            console.info(`テスト情報 #${count} - ${timestamp}`);
+            console.warn(`テスト警告 #${count} - ${timestamp}`);
+            console.error(`テストエラー #${count} - ${timestamp}`);
+
+            // オブジェクト表示のテスト
+            console.log({
+              数値: count,
+              文字列: "こんにちは",
+              配列: [1, 2, 3],
+              真偽値: true,
+              ネスト: {
+                a: count,
+                b: {
+                  c: "テスト",
+                },
+              },
+            });
+
+            showStatus(`テストログ #${count} を送信しました`);
+            break;
+
+          case "CLEAR_CONSOLE":
+            // コンソールをクリア
+            consoleOutput.innerHTML = "";
+            showStatus("コンソールをクリアしました");
+            break;
+
+          case "EXECUTE_CODE":
+            // コードを実行
+            if (data.code) {
+              console.log(`> ${data.code}`);
+
+              try {
+                const result = eval(data.code);
+                if (result !== undefined) {
+                  console.log("< ", result);
+                }
+              } catch (error) {
+                console.error("< ", error.message);
+              }
+            }
+            break;
+
+          case "EVALUATE_TSX":
+            // TSXコードの評価結果を表示
+            if (data.result) {
+              console.info("Reactコンポーネントの評価結果:", data.result);
+            }
+            break;
+        }
+      });
+
+      // 親ウィンドウに準備完了を通知
+      try {
+        window.parent.postMessage({ type: "CONSOLE_READY" }, "*");
+      } catch (e) {
+        console.error("親ウィンドウへの通知に失敗しました:", e);
+      }
+
+      // 初期メッセージ
+      console.info(
+        "ピュアJSコンソールが初期化されました - Chiiは使用していません"
+      );
+      console.info("JavaScriptを入力して実行できます");
+      console.info('例: console.log("Hello, World!")');
+      console.info("例: console.log({ a: 1, b: [1,2,3] })");
+    </script>
+  </body>
+</html>
