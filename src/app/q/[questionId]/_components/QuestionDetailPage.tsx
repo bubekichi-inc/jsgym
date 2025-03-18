@@ -9,7 +9,7 @@ import { PcTab } from "./PcTab";
 import { Question } from "./Question";
 import { SpTab } from "./SpTab";
 import { TitleSection } from "./TitleSection";
-import { ReactPreview } from "@/app/_components/ReactPreview";
+import { BrowserPreview } from "@/app/_components/BrowserPreview";
 import { useDevice } from "@/app/_hooks/useDevice";
 import { useQuestion } from "@/app/_hooks/useQuestion";
 
@@ -110,7 +110,7 @@ export const QuestionDetailPage: React.FC = () => {
             </div>
           )}
 
-          {activeTab === "preview" && <ReactPreview files={files} />}
+          {activeTab === "preview" && <BrowserPreview files={files} />}
         </div>
 
         <div className="w-1/2">

@@ -8,7 +8,7 @@ interface Props {
   files: Record<string, string>;
 }
 
-export const ReactPreview: React.FC<Props> = ({ files }) => {
+export const BrowserPreview: React.FC<Props> = ({ files }) => {
   const previewIframeRef = useRef<HTMLIFrameElement>(null);
   const devtoolsIframeRef = useRef<HTMLIFrameElement>(null);
   const devtoolsUrl = useDevtools();
