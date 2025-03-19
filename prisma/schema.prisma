@@ -48,11 +48,38 @@ model Question {
   level             QuestionLevel         @default(BASIC)
   type              QuestionType          @default(JAVA_SCRIPT)
   questionBookmarks QuestionBookmark[]
+  questionFiles     QuestionFile[]
   questions         QuestionTagRelation[]
   reviewer          Reviewer              @relation(fields: [reviewerId], references: [id])
   userQuestions     UserQuestion[]
 
   @@map("questions")
+}
+
+model QuestionFile {
+  id         String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  questionId String        @map("question_id")
+  name       String
+  ext        FileExtension
+  content    String
+  createdAt  DateTime      @default(now()) @map("created_at")
+  updatedAt  DateTime      @updatedAt @map("updated_at")
+  question   Question      @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@map("question_files")
+}
+
+model AnswerFile {
+  id        String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name      String
+  ext       FileExtension
+  content   String
+  createdAt DateTime      @default(now()) @map("created_at")
+  updatedAt DateTime      @updatedAt @map("updated_at")
+  answerId  String        @map("answer_id") @db.Uuid
+  answer    Answer        @relation(fields: [answerId], references: [id], onDelete: Cascade)
+
+  @@map("answer_files")
 }
 
 model QuestionBookmark {
@@ -110,6 +137,7 @@ model Answer {
   updatedAt      DateTime     @updatedAt @map("updated_at")
   userQuestionId String       @map("user_id") @db.Uuid
   messageId      String?      @unique @map("message_id") @db.Uuid
+  answerFiles    AnswerFile[]
   message        Message?     @relation(fields: [messageId], references: [id])
   userQuestion   UserQuestion @relation(fields: [userQuestionId], references: [id], onDelete: Cascade)
 
@@ -138,10 +166,10 @@ model CodeReview {
   messageId      String?             @unique @map("message_id") @db.Uuid
   overview       String
   result         CodeReviewResult
+  score          Int
   createdAt      DateTime            @default(now()) @map("created_at")
   updatedAt      DateTime            @updatedAt @map("updated_at")
   userQuestionId String              @map("user_id") @db.Uuid
-  score          Int
   comments       CodeReviewComment[]
   message        Message?            @relation(fields: [messageId], references: [id])
   userQuestion   UserQuestion        @relation(fields: [userQuestionId], references: [id], onDelete: Cascade)
@@ -193,6 +221,16 @@ model Reviewer {
   user            User?      @relation(fields: [userId], references: [id])
 
   @@map("reviewers")
+}
+
+enum FileExtension {
+  JS
+  TS
+  CSS
+  HTML
+  JSX
+  TSX
+  JSON
 }
 
 enum UserRole {
