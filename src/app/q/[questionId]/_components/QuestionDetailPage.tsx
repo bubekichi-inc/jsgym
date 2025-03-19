@@ -9,7 +9,7 @@ import { PcTab } from "./PcTab";
 import { Question } from "./Question";
 import { SpTab } from "./SpTab";
 import { TitleSection } from "./TitleSection";
-import { ReactPreview } from "@/app/_components/ReactPreview";
+import { BrowserPreview } from "@/app/_components/BrowserPreview";
 import { useDevice } from "@/app/_hooks/useDevice";
 import { useQuestion } from "@/app/_hooks/useQuestion";
 
@@ -87,14 +87,20 @@ export const QuestionDetailPage: React.FC = () => {
   return (
     <div className="">
       {pageType === "browser" && (
-        <PcTab activeTab={activeTab} handleTabChange={handleTabChange} />
+        <PcTab
+          activeTab={activeTab}
+          handleTabChange={handleTabChange}
+          isBusy={chatBusy || reviewBusy}
+        />
       )}
 
       <div className="flex w-full justify-center">
         <div
           className={`${
-            pageType === "browser" ? "mt-10" : ""
-          } max-h-[calc(100vh-48px)] w-1/2 overflow-auto`}
+            pageType === "browser"
+              ? "mt-10 max-h-[calc(100vh-48px-40px)]"
+              : "max-h-[calc(100vh-48px)]"
+          } w-1/2 overflow-auto`}
         >
           {activeTab === "question" && (
             <div className="relative space-y-6 p-6">
@@ -108,7 +114,7 @@ export const QuestionDetailPage: React.FC = () => {
             </div>
           )}
 
-          {activeTab === "preview" && <ReactPreview files={files} />}
+          {activeTab === "preview" && <BrowserPreview files={files} />}
         </div>
 
         <div className="w-1/2">

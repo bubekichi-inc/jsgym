@@ -5,19 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Reactプレビュー</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chobitsu@0.3.1/dist/chobitsu.min.js"></script>
     <script type="importmap">
       {
         "imports": {
           "react": "https://esm.sh/react@18.2.0",
-          "react-dom": "https://esm.sh/react-dom@18.2.0",
-          "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
-          "jotai": "https://esm.sh/jotai@2.0.0",
-          "react-router-dom": "https://esm.sh/react-router-dom@6.8.0"
+          "react-dom/client": "https://esm.sh/react-dom@18.2.0/client"
         }
       }
     </script>
-    <!-- Babel Standaloneを追加 -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
       body {
@@ -26,92 +21,22 @@
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
           Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
       }
-    </style>
-    <script>
-      // Chobitsuの初期化
-      window.chobitsu = chobitsu;
-
-      // コンソールAPIを初期化
-      chobitsu.sendRawMessage(
-        JSON.stringify({
-          id: 1,
-          method: "Runtime.enable",
-        })
-      );
-
-      // コンソールメソッドをオーバーライド
-      const originalConsole = {
-        log: console.log,
-        warn: console.warn,
-        error: console.error,
-        info: console.info,
-        debug: console.debug,
-      };
-
-      // コンソールメソッドをオーバーライドして、Chobitsuにも送信
-      console.log = function () {
-        originalConsole.log.apply(console, arguments);
-        sendConsoleMessage("log", arguments);
-      };
-
-      console.warn = function () {
-        originalConsole.warn.apply(console, arguments);
-        sendConsoleMessage("warning", arguments);
-      };
-
-      console.error = function () {
-        originalConsole.error.apply(console, arguments);
-        sendConsoleMessage("error", arguments);
-      };
-
-      console.info = function () {
-        originalConsole.info.apply(console, arguments);
-        sendConsoleMessage("info", arguments);
-      };
-
-      console.debug = function () {
-        originalConsole.debug.apply(console, arguments);
-        sendConsoleMessage("debug", arguments);
-      };
-
-      // コンソールメッセージをChobitsuに送信する関数
-      function sendConsoleMessage(type, args) {
-        const params = {
-          type: type,
-          args: Array.from(args).map((arg) => ({
-            type: typeof arg === "object" ? "object" : typeof arg,
-            value: typeof arg === "object" ? JSON.stringify(arg) : String(arg),
-          })),
-          executionContextId: 1,
-          timestamp: Date.now(),
-        };
-
-        chobitsu.sendRawMessage(
-          JSON.stringify({
-            method: "Runtime.consoleAPICalled",
-            params: params,
-          })
-        );
+      .error-container {
+        color: red;
+        padding: 16px;
+        border: 1px solid #f88;
+        background-color: #fee;
+        border-radius: 4px;
+        font-size: 13px;
+        margin: 16px;
       }
-
-      chobitsu.setOnMessage((message) => {
-        // メッセージを親ウィンドウに転送
-        window.parent.postMessage(
-          {
-            type: "CHOBITSU_MESSAGE",
-            message,
-          },
-          "*"
-        );
-      });
-
-      // 親からのメッセージを受け取る
-      window.addEventListener("message", (event) => {
-        if (event.data.type === "CHOBITSU_COMMAND") {
-          chobitsu.sendRawMessage(event.data.command);
-        }
-      });
-    </script>
+      .error-stack {
+        overflow: auto;
+        background: #f8f8f8;
+        padding: 10px;
+        border-radius: 4px;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
@@ -121,58 +46,59 @@
 
       let rootInstance = null;
 
-      // 親ページからのメッセージを受け取る
-      window.addEventListener("message", async (event) => {
-        if (event.data.type === "CODE_UPDATE") {
-          try {
-            const code = event.data.code;
+      const renderError = (error) => {
+        console.error("レンダリングエラー:", error);
+        document.getElementById("root").innerHTML = `
+          <div class="error-container">
+            <h2>エラーが発生しました</h2>
+            <p>${error.message}</p>
+            <pre class="error-stack">${error.stack || ""}</pre>
+          </div>
+        `;
+      };
 
-            // Babelでコードを変換
-            const transformed = Babel.transform(code, {
-              presets: ["react", "typescript"],
-              filename: "App.tsx",
-              sourceType: "module",
-            }).code;
+      const handleCodeUpdate = async (code) => {
+        let url = null;
 
-            // 動的にモジュールを作成
-            const blob = new Blob([transformed], {
-              type: "application/javascript",
-            });
-            const url = URL.createObjectURL(blob);
+        try {
+          // コードをトランスパイル
+          const transformed = Babel.transform(code, {
+            presets: ["react", "typescript"],
+            filename: "App.tsx",
+            sourceType: "module",
+          }).code;
 
-            // モジュールをインポート
-            const module = await import(url);
-            const App = module.default;
+          // モジュールを作成
+          const blob = new Blob([transformed], {
+            type: "application/javascript",
+          });
+          url = URL.createObjectURL(blob);
 
-            if (!App) {
-              throw new Error(
-                "App component not found (default export missing)"
-              );
-            }
+          // モジュールをロード
+          const module = await import(url);
+          const App = module.default;
 
-            // レンダリング
-            if (!rootInstance) {
-              rootInstance = createRoot(document.getElementById("root"));
-            }
-            rootInstance.render(React.createElement(App));
-
-            // 使用後URLを解放
-            URL.revokeObjectURL(url);
-
-            // コンポーネントがロードされたことをコンソールに表示
-            console.log("Reactコンポーネントがロードされました");
-          } catch (error) {
-            console.error("Error rendering component:", error);
-            document.getElementById("root").innerHTML = `
-              <div style="color: red; padding: 20px; border: 1px solid #f88; background-color: #fee; border-radius: 4px;">
-                <h2>エラーが発生しました</h2>
-                <p>${error.message}</p>
-                <pre style="overflow: auto; background: #f8f8f8; padding: 10px; border-radius: 4px;">${
-                  error.stack || ""
-                }</pre>
-              </div>
-            `;
+          if (!App) {
+            throw new Error("default exportが見つかりません");
           }
+
+          // レンダリング
+          if (!rootInstance) {
+            rootInstance = createRoot(document.getElementById("root"));
+          }
+
+          rootInstance.render(React.createElement(App));
+        } catch (error) {
+          renderError(error);
+        } finally {
+          if (url) URL.revokeObjectURL(url);
+        }
+      };
+
+      // メッセージイベントリスナー
+      window.addEventListener("message", (event) => {
+        if (event.data?.type === "CODE_UPDATE") {
+          handleCodeUpdate(event.data.code || "");
         }
       });
     </script>
