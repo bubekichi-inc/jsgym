@@ -1,4 +1,5 @@
 import {
+  FileExtension,
   QuestionLevel,
   QuestionType,
   UserQuestionStatus,
@@ -20,9 +21,7 @@ export type QuestionResponse = {
     title: string;
     inputCode: string;
     outputCode: string;
-    exampleAnswer: string;
     content: string;
-    template: string;
     createdAt: Date;
     level: QuestionLevel;
     type: QuestionType;
@@ -32,6 +31,13 @@ export type QuestionResponse = {
       bio: string;
       profileImageUrl: string;
     };
+    questionFiles: {
+      id: string;
+      name: string;
+      ext: FileExtension;
+      template: string;
+      exampleAnswer: string;
+    }[];
   };
   userQuestion: {
     id: string;
@@ -72,9 +78,7 @@ export const GET = async (request: NextRequest, { params }: Props) => {
         title: true,
         inputCode: true,
         outputCode: true,
-        exampleAnswer: true,
         content: true,
-        template: true,
         createdAt: true,
         level: true,
         type: true,
@@ -84,6 +88,15 @@ export const GET = async (request: NextRequest, { params }: Props) => {
             name: true,
             bio: true,
             profileImageUrl: true,
+          },
+        },
+        questionFiles: {
+          select: {
+            id: true,
+            name: true,
+            ext: true,
+            template: true,
+            exampleAnswer: true,
           },
         },
       },
