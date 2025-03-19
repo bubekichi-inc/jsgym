@@ -57,14 +57,15 @@ model Question {
 }
 
 model QuestionFile {
-  id         String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  questionId String        @map("question_id")
-  name       String
-  ext        FileExtension
-  content    String
-  createdAt  DateTime      @default(now()) @map("created_at")
-  updatedAt  DateTime      @updatedAt @map("updated_at")
-  question   Question      @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  id            String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  questionId    String        @map("question_id")
+  name          String
+  ext           FileExtension
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+  exampleAnswer String
+  template      String
+  question      Question      @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@map("question_files")
 }
