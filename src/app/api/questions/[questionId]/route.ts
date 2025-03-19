@@ -44,10 +44,16 @@ export type QuestionResponse = {
     status: UserQuestionStatus;
   } | null;
   answer: {
-    answer: string;
     id: string;
+    answer: string;
     createdAt: Date;
     updatedAt: Date;
+    answerFiles: {
+      id: string;
+      name: string;
+      ext: FileExtension;
+      content: string;
+    }[];
   } | null;
   nextQuestion: {
     id: string;
@@ -125,6 +131,16 @@ export const GET = async (request: NextRequest, { params }: Props) => {
           },
           orderBy: {
             createdAt: "desc",
+          },
+          include: {
+            answerFiles: {
+              select: {
+                id: true,
+                name: true,
+                ext: true,
+                content: true,
+              },
+            },
           },
         })
       : null;
