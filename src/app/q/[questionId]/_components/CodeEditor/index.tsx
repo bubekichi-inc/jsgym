@@ -40,7 +40,7 @@ export const CodeEditor: React.FC<Props> = ({
     setValue,
     formState: { isDirty },
   } = useFormContext<CodeEditorFilesForm>();
-
+  const [touched, setTouched] = useState(false);
   const { isSp } = useDevice();
   const params = useParams();
   const { data: editorSettingData } = useEditorSetting();
@@ -49,7 +49,6 @@ export const CodeEditor: React.FC<Props> = ({
     questionId,
   });
   const [selectedFile, setSelectedFile] = useState<CodeEditorFile | null>(null);
-
   const { iframeRef, executeCode, executionResult, resetLogs } =
     useCodeExecutor();
 
@@ -85,21 +84,35 @@ export const CodeEditor: React.FC<Props> = ({
 
   useEffect(() => {
     if (!data) return;
-    reset({
-      files: data.question.questionFiles.map(({ id, name, template, ext }) => ({
+    const answerFiles: CodeEditorFile[] | undefined =
+      data.answer?.answerFiles.map(({ id, name, content, ext }) => ({
+        id,
+        name,
+        ext,
+        content,
+      }));
+
+    const questionFiles: CodeEditorFile[] = data.question.questionFiles.map(
+      ({ id, name, template, ext }) => ({
         id,
         name,
         ext,
         content: template,
-      })),
+      })
+    );
+
+    reset({
+      files: answerFiles || questionFiles,
     });
     const { id, name, template, ext } = data.question.questionFiles[0];
-    setSelectedFile({
-      id,
-      name,
-      ext,
-      content: template,
-    });
+    setSelectedFile(
+      answerFiles?.[0] || {
+        id,
+        name,
+        ext,
+        content: template,
+      }
+    );
   }, [data, reset]);
 
   if (!data) return null;
@@ -109,6 +122,7 @@ export const CodeEditor: React.FC<Props> = ({
 
   const change = (value?: string) => {
     if (!value) return;
+    setTouched(true);
     const fileIndex = watch("files").findIndex(
       (file) => file.id === selectedFile?.id
     );
@@ -128,7 +142,9 @@ export const CodeEditor: React.FC<Props> = ({
           height={editorHeight}
           defaultLanguage={language(selectedFile?.ext)}
           path={`${selectedFile?.name}.${selectedFile?.ext.toLowerCase()}`}
-          defaultValue={selectedFile?.content}
+          value={
+            watch("files").find((file) => file.id === selectedFile?.id)?.content
+          }
           onChange={change}
           theme={theme}
           options={{
@@ -173,7 +189,7 @@ export const CodeEditor: React.FC<Props> = ({
             onExecuteCode={() => executeCode(selectedFile?.content || "")}
             reviewBusy={reviewBusy}
             setReviewBusy={setReviewBusy}
-            touched={isDirty}
+            touched={touched}
             onReset={resetCode}
             onReviewComplete={onReviewComplete}
           />

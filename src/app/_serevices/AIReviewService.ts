@@ -47,6 +47,7 @@ export class AIReviewService {
     overview: z.string(),
     comments: z.array(
       z.object({
+        fileName: z.string(),
         targetCode: z.string(),
         level: z.enum(["GOOD", "WARN", "ERROR"]),
         message: z.string(),

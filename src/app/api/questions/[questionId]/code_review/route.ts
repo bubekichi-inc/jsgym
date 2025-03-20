@@ -110,11 +110,14 @@ export const POST = async (request: NextRequest, { params }: Props) => {
               score: parseInt(score, 10),
               comments: {
                 createMany: {
-                  data: comments.map(({ targetCode, message, level }) => ({
-                    targetCode,
-                    message,
-                    level,
-                  })),
+                  data: comments.map(
+                    ({ fileName, targetCode, message, level }) => ({
+                      fileName,
+                      targetCode,
+                      message,
+                      level,
+                    })
+                  ),
                 },
               },
             },

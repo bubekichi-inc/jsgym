@@ -23,6 +23,7 @@ interface Props {
     comments: {
       id: string;
       targetCode: string;
+      fileName: string;
       message: string;
       createdAt: Date;
       level: CodeReviewCommentLevel | null;
@@ -89,6 +90,9 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
                 key={comment.id}
                 className="space-y-1 rounded bg-orange-50 p-3"
               >
+                <span className="text-xs text-gray-600 italic">
+                  {comment.fileName}
+                </span>
                 {comment.targetCode && (
                   <pre className="rounded bg-editorDark px-3 py-1 text-gray-100">
                     {comment.targetCode}
