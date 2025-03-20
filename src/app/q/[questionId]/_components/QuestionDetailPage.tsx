@@ -2,6 +2,8 @@
 
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
+import { FormProvider } from "react-hook-form";
+import { useCodeEditor } from "../_hooks/useCodeEditor";
 import { Chat } from "./Chat";
 import { CodeEditor } from "./CodeEditor";
 import { MemoDrawer } from "./MemoDrawer";
@@ -27,9 +29,7 @@ export const QuestionDetailPage: React.FC = () => {
   const { data } = useQuestion({
     questionId,
   });
-  const [files, setFiles] = useState<Record<string, string>>({
-    "/App.tsx": "",
-  });
+  const methods = useCodeEditor();
 
   const handleTabChange = (tab: TabType) => {
     setActiveTab(tab);
@@ -47,7 +47,7 @@ export const QuestionDetailPage: React.FC = () => {
 
   if (isSp) {
     return (
-      <div className="">
+      <FormProvider {...methods}>
         <SpTab activeTab={activeTab} handleTabChange={handleTabChange} />
         <div className="flex w-full flex-col md:flex-row">
           <div
@@ -73,19 +73,18 @@ export const QuestionDetailPage: React.FC = () => {
               reviewBusy={reviewBusy}
               setReviewBusy={setReviewBusy}
               onReviewComplete={() => handleTabChange("question")}
-              setFiles={setFiles}
               showTerminal={pageType === "code"}
             />
           </div>
         </div>
 
         <MemoDrawer />
-      </div>
+      </FormProvider>
     );
   }
 
   return (
-    <div className="">
+    <FormProvider {...methods}>
       {pageType === "browser" && (
         <PcTab
           activeTab={activeTab}
@@ -122,13 +121,12 @@ export const QuestionDetailPage: React.FC = () => {
             reviewBusy={reviewBusy}
             setReviewBusy={setReviewBusy}
             onReviewComplete={() => handleTabChange("question")}
-            setFiles={setFiles}
             showTerminal={pageType === "code"}
           />
         </div>
       </div>
 
       <MemoDrawer />
-    </div>
+    </FormProvider>
   );
 };

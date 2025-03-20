@@ -12,7 +12,3 @@ type CodeReviewComment = {
   message: string;
   level: CodeReviewCommentLevel;
 };
-
-export type CodeReviewRequest = {
-  answer: string;
-};

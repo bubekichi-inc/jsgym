@@ -5,8 +5,13 @@ import { EditorTheme } from "@prisma/client";
 import { shikiToMonaco } from "@shikijs/monaco";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { useFormContext } from "react-hook-form";
 import { createHighlighter } from "shiki";
 
+import {
+  CodeEditorFile,
+  CodeEditorFilesForm,
+} from "../../_hooks/useCodeEditor";
 import { Tabs } from "./Tabs";
 import { Terminal } from "./Terminal";
 import { ToolBar } from "./ToolBar";
@@ -20,7 +25,6 @@ interface Props {
   reviewBusy: boolean;
   setReviewBusy: (busy: boolean) => void;
   onReviewComplete: () => void;
-  setFiles: (files: Record<string, string>) => void;
   showTerminal: boolean;
 }
 
@@ -28,9 +32,15 @@ export const CodeEditor: React.FC<Props> = ({
   reviewBusy,
   setReviewBusy,
   onReviewComplete,
-  setFiles,
   showTerminal,
 }) => {
+  const {
+    watch,
+    reset,
+    setValue,
+    formState: { isDirty },
+  } = useFormContext<CodeEditorFilesForm>();
+
   const { isSp } = useDevice();
   const params = useParams();
   const { data: editorSettingData } = useEditorSetting();
@@ -38,8 +48,7 @@ export const CodeEditor: React.FC<Props> = ({
   const { data } = useQuestion({
     questionId,
   });
-  const [value, setValue] = useState("");
-  const [touched, setTouched] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<CodeEditorFile | null>(null);
 
   const { iframeRef, executeCode, executionResult, resetLogs } =
     useCodeExecutor();
@@ -76,42 +85,50 @@ export const CodeEditor: React.FC<Props> = ({
 
   useEffect(() => {
     if (!data) return;
-    setValue(data.answer?.answer || data.question.template);
-    setFiles({
-      "/App.tsx": data.answer?.answer || data.question.template,
+    reset({
+      files: data.question.questionFiles.map(({ id, name, template, ext }) => ({
+        id,
+        name,
+        ext,
+        content: template,
+      })),
     });
-  }, [data, setFiles]);
-
-  useEffect(() => {
-    if (value !== data?.question.template) {
-      setTouched(true);
-    } else {
-      setTouched(false);
-    }
-  }, [value, data]);
+    const { id, name, template, ext } = data.question.questionFiles[0];
+    setSelectedFile({
+      id,
+      name,
+      ext,
+      content: template,
+    });
+  }, [data, reset]);
 
   if (!data) return null;
   if (!editorSettingData) return null;
 
-  const reset = () => setValue(data.question.template);
+  const resetCode = () => reset({ files: data.question.questionFiles });
 
   const change = (value?: string) => {
     if (!value) return;
-    setValue(value);
-    setFiles({
-      "/App.tsx": value,
+    const fileIndex = watch("files").findIndex(
+      (file) => file.id === selectedFile?.id
+    );
+    if (fileIndex === -1) return;
+    setValue(`files.${fileIndex}`, {
+      ...watch("files")[fileIndex],
+      content: value,
     });
   };
 
   return (
     <div className="">
       <div className="relative">
-        <Tabs />
+        <Tabs selectedFile={selectedFile} setSelectedFile={setSelectedFile} />
         <Editor
           className="bg-editorDark"
           height={editorHeight}
-          defaultLanguage={language(data.question.type)}
-          value={value}
+          defaultLanguage={language(selectedFile?.ext)}
+          path={`${selectedFile?.name}.${selectedFile?.ext.toLowerCase()}`}
+          defaultValue={selectedFile?.content}
           onChange={change}
           theme={theme}
           options={{
@@ -153,12 +170,11 @@ export const CodeEditor: React.FC<Props> = ({
         />
         <div className="absolute bottom-2 right-2 md:bottom-4 md:right-4">
           <ToolBar
-            answer={value}
-            onExecuteCode={() => executeCode(value)}
+            onExecuteCode={() => executeCode(selectedFile?.content || "")}
             reviewBusy={reviewBusy}
             setReviewBusy={setReviewBusy}
-            touched={touched}
-            onReset={reset}
+            touched={isDirty}
+            onReset={resetCode}
             onReviewComplete={onReviewComplete}
           />
         </div>

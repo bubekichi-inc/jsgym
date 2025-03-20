@@ -4,6 +4,7 @@ import { CodeReviewResult, Sender, UserQuestionStatus } from "@prisma/client";
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
+import { CodeEditorFilesForm } from "../../../_hooks/useCodeEditor";
 import { useMessages } from "../../../_hooks/useMessages";
 import { useRewardApprove } from "../../../_hooks/useRewardApprove";
 import { DropdownMenu } from "./DropdownMenu";
@@ -12,11 +13,11 @@ import { SinginModal } from "@/app/_components/SinginModal";
 import { useQuestion } from "@/app/_hooks/useQuestion";
 import { useQuestionDetailRedirect } from "@/app/_hooks/useQuestionDetailRedirect";
 import { api } from "@/app/_utils/api";
-import { CodeReviewRequest } from "@/app/api/questions/[questionId]/code_review/_types/CodeReview";
-import { Draft } from "@/app/api/questions/_types/Draft";
+import { useFormContext } from "react-hook-form";
+import { Draft } from "@/app/api/questions/[questionId]/draft/route";
+import { CodeReviewRequest } from "@/app/api/questions/[questionId]/code_review/route";
 
 interface Props {
-  answer: string;
   onExecuteCode: () => void;
   reviewBusy: boolean;
   setReviewBusy: (busy: boolean) => void;
@@ -26,7 +27,6 @@ interface Props {
 }
 
 export const ToolBar: React.FC<Props> = ({
-  answer,
   onExecuteCode,
   reviewBusy,
   setReviewBusy,
@@ -34,6 +34,7 @@ export const ToolBar: React.FC<Props> = ({
   onReset,
   onReviewComplete,
 }) => {
+  const { watch } = useFormContext<CodeEditorFilesForm>();
   const { setRedirectQid } = useQuestionDetailRedirect();
   const [showSinginModal, setShowSinginModal] = useState(false);
   const { data: me } = useMe();
@@ -78,12 +79,9 @@ export const ToolBar: React.FC<Props> = ({
 
   const saveDraft = async () => {
     try {
-      await api.post<Draft, { message: string }>(
-        `/api/questions/${questionId}/draft`,
-        {
-          answer,
-        }
-      );
+      await api.post<Draft>(`/api/questions/${questionId}/draft`, {
+        files: watch("files"),
+      });
       await mutateQuestion();
       toast.success("下書き保存しました");
     } catch (e) {
@@ -107,7 +105,7 @@ export const ToolBar: React.FC<Props> = ({
         CodeReviewRequest,
         { result: CodeReviewResult }
       >(`/api/questions/${questionId}/code_review`, {
-        answer,
+        files: watch("files"),
       });
 
       onReviewComplete();

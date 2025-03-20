@@ -1,23 +1,28 @@
 import { Sender, CodeReviewResult, UserQuestionStatus } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-import { CodeReviewRequest } from "./_types/CodeReview";
 import { AIReviewService } from "@/app/_serevices/AIReviewService";
 import { buildPrisma } from "@/app/_utils/prisma";
 import { buildError } from "@/app/api/_utils/buildError";
 import { getCurrentUser } from "@/app/api/_utils/getCurrentUser";
+import { CodeEditorFile } from "@/app/q/[questionId]/_hooks/useCodeEditor";
 
 interface Props {
   params: Promise<{
     questionId: string;
   }>;
 }
+
+export type CodeReviewRequest = {
+  files: CodeEditorFile[];
+};
+
 export const POST = async (request: NextRequest, { params }: Props) => {
   const prisma = await buildPrisma();
   const { questionId } = await params;
   try {
     const { id: userId } = await getCurrentUser({ request });
     const body = await request.json();
-    const { answer }: CodeReviewRequest = body;
+    const { files }: CodeReviewRequest = body;
 
     const question = await prisma.question.findUnique({
       where: {
@@ -32,7 +37,7 @@ export const POST = async (request: NextRequest, { params }: Props) => {
 
     const res = await AIReviewService.getCodeReview({
       question,
-      answer,
+      files,
       reviewer: question.reviewer,
     });
 
@@ -67,7 +72,7 @@ export const POST = async (request: NextRequest, { params }: Props) => {
         data: {
           message: AIReviewService.buildPrompt({
             question: question,
-            answer,
+            files,
           }),
           sender: Sender.USER,
           userQuestionId: userQuestion.id,
@@ -78,7 +83,16 @@ export const POST = async (request: NextRequest, { params }: Props) => {
         data: {
           userQuestionId: userQuestion.id,
           messageId: userMessage.id,
-          answer,
+          answer: "",
+          answerFiles: {
+            createMany: {
+              data: files.map((file) => ({
+                name: file.name,
+                content: file.content,
+                ext: file.ext,
+              })),
+            },
+          },
         },
       });
 
