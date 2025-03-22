@@ -3,17 +3,12 @@
 import { EditorTheme, FileExtension } from "@prisma/client";
 import Image from "next/image";
 import React, { useMemo } from "react";
-import { useFormContext } from "react-hook-form";
-import {
-  CodeEditorFile,
-  CodeEditorFilesForm,
-} from "../../../_hooks/useCodeEditor";
 import { EditorSettingsDropdown } from "./EditorSettingsDropdown";
 import { useEditorSetting } from "@/app/(member)/_hooks/useEditorSetting";
 import { useMe } from "@/app/(member)/_hooks/useMe";
 
 interface TabProps {
-  file: CodeEditorFile;
+  file: { id: string; name: string; ext: FileExtension };
   isSelected: boolean;
   onSelect: () => void;
 }
@@ -57,16 +52,10 @@ const Tab: React.FC<TabProps> = ({ file, isSelected, onSelect }) => {
 
   return (
     <li
-      className={`flex h-full w-[128px] cursor-pointer select-none items-center gap-2 px-3 border-r ${tabClass}`}
+      className={`flex h-full w-[128px] cursor-pointer select-none items-center gap-2 border-r px-3 ${tabClass}`}
       onClick={onSelect}
     >
-      <Image
-        src={icon}
-        height={80}
-        width={80}
-        alt="js-icon"
-        className="w-4"
-      />
+      <Image src={icon} height={80} width={80} alt="js-icon" className="w-4" />
       <span className={`text-sm font-semibold ${textClass}`}>
         {file.name}.{file.ext.toLowerCase()}
       </span>
@@ -75,14 +64,20 @@ const Tab: React.FC<TabProps> = ({ file, isSelected, onSelect }) => {
 };
 
 interface Props {
-  selectedFile: CodeEditorFile | null;
-  setSelectedFile: (file: CodeEditorFile) => void;
+  files: { id: string; name: string; ext: FileExtension }[];
+  selectedFileId: string | null;
+  setSelectedFileId: (fileId: string) => void;
+  showCog?: boolean;
 }
 
-export const Tabs: React.FC<Props> = ({ selectedFile, setSelectedFile }) => {
+export const FileTabs: React.FC<Props> = ({
+  selectedFileId,
+  setSelectedFileId,
+  files,
+  showCog = true,
+}) => {
   const { data } = useEditorSetting();
   const { data: me } = useMe();
-  const { watch } = useFormContext<CodeEditorFilesForm>();
 
   const headerClass = useMemo(
     () =>
@@ -98,17 +93,17 @@ export const Tabs: React.FC<Props> = ({ selectedFile, setSelectedFile }) => {
     <header
       className={`flex h-[36px] items-center justify-between ${headerClass}`}
     >
-      <ul className="h-full flex">
-        {watch("files").map((file) => (
+      <ul className="flex h-full">
+        {files.map((file) => (
           <Tab
             key={file.id}
             file={file}
-            isSelected={file.id === selectedFile?.id}
-            onSelect={() => setSelectedFile(file)}
+            isSelected={file.id === selectedFileId}
+            onSelect={() => setSelectedFileId(file.id)}
           />
         ))}
       </ul>
-      {me && <EditorSettingsDropdown />}
+      {me && showCog && <EditorSettingsDropdown />}
     </header>
   );
 };

@@ -13,7 +13,6 @@ import { CommentLevelBadge } from "./CommentLevelBadge";
 import { MarkdownWrapper } from "@/app/_components/MarkdownWrapper";
 import { levelTextMap, typeTextMap } from "@/app/_constants";
 import { useQuestion } from "@/app/_hooks/useQuestion";
-import { language } from "@/app/_utils/language";
 
 interface Props {
   codeReview: {
@@ -90,7 +89,7 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
                 key={comment.id}
                 className="space-y-1 rounded bg-orange-50 p-3"
               >
-                <span className="text-xs text-gray-600 italic">
+                <span className="text-xs italic text-gray-600">
                   {comment.fileName}
                 </span>
                 {comment.targetCode && (
@@ -174,10 +173,9 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
       {data && (
         <ExampleAnswerModal
           title={data.question.title}
-          answer={data.question.exampleAnswer}
           isOpen={showAnswerModal}
           onClose={() => setShowAnswerModal(false)}
-          language={language(data.question.type)}
+          files={data.question.questionFiles}
         />
       )}
     </div>

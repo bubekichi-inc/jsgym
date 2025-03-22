@@ -12,7 +12,7 @@ import {
   CodeEditorFile,
   CodeEditorFilesForm,
 } from "../../_hooks/useCodeEditor";
-import { Tabs } from "./Tabs";
+import { FileTabs } from "./FileTabs";
 import { Terminal } from "./Terminal";
 import { ToolBar } from "./ToolBar";
 import { useEditorSetting } from "@/app/(member)/_hooks/useEditorSetting";
@@ -43,7 +43,7 @@ export const CodeEditor: React.FC<Props> = ({
   const { data } = useQuestion({
     questionId,
   });
-  const [selectedFile, setSelectedFile] = useState<CodeEditorFile | null>(null);
+  const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
   const { iframeRef, executeCode, executionResult, resetLogs } =
     useCodeExecutor();
 
@@ -99,16 +99,15 @@ export const CodeEditor: React.FC<Props> = ({
     reset({
       files: answerFiles || questionFiles,
     });
-    const { id, name, template, ext } = data.question.questionFiles[0];
-    setSelectedFile(
-      answerFiles?.[0] || {
-        id,
-        name,
-        ext,
-        content: template,
-      }
-    );
+    setSelectedFileId(answerFiles?.[0].id || data.question.questionFiles[0].id);
   }, [data, reset]);
+
+  const selectedFile = useMemo(() => {
+    if (!data) return null;
+    return (data.answer?.answerFiles || data.question.questionFiles).find(
+      (file) => file.id === selectedFileId
+    );
+  }, [data, selectedFileId]);
 
   if (!data) return null;
   if (!editorSettingData) return null;
@@ -138,7 +137,17 @@ export const CodeEditor: React.FC<Props> = ({
   return (
     <div className="">
       <div className="relative">
-        <Tabs selectedFile={selectedFile} setSelectedFile={setSelectedFile} />
+        <FileTabs
+          files={(data.answer?.answerFiles || data.question.questionFiles).map(
+            (file) => ({
+              id: file.id,
+              name: file.name,
+              ext: file.ext,
+            })
+          )}
+          selectedFileId={selectedFileId}
+          setSelectedFileId={setSelectedFileId}
+        />
         <Editor
           className="bg-editorDark"
           height={editorHeight}
@@ -188,7 +197,12 @@ export const CodeEditor: React.FC<Props> = ({
         />
         <div className="absolute bottom-2 right-2 md:bottom-4 md:right-4">
           <ToolBar
-            onExecuteCode={() => executeCode(selectedFile?.content || "")}
+            onExecuteCode={() =>
+              executeCode(
+                watch("files").find((file) => file.id === selectedFileId)
+                  ?.content || ""
+              )
+            }
             reviewBusy={reviewBusy}
             setReviewBusy={setReviewBusy}
             touched={touched}
