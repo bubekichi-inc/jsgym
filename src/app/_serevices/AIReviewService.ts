@@ -1,4 +1,4 @@
-import { Question, Reviewer } from "@prisma/client";
+import { Question, QuestionFile, Reviewer } from "@prisma/client";
 import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
@@ -68,7 +68,7 @@ export class AIReviewService {
     question,
     files,
   }: {
-    question: Question;
+    question: Question & { questionFiles: QuestionFile[] };
     files: CodeEditorFile[];
   }) {
     return `
@@ -88,7 +88,12 @@ ${question.inputCode}
 ${question.outputCode}
 
 # 模範解答例（参考程度）
-${question.exampleAnswer}
+${question.questionFiles
+  .map(
+    (file) =>
+      `* ${file.name}.${file.ext.toLocaleLowerCase()}: ${file.exampleAnswer}`
+  )
+  .join("\n")}
 
 # ユーザーの解答
 ${files
@@ -136,7 +141,7 @@ ${files
     files,
     reviewer,
   }: {
-    question: Question;
+    question: Question & { questionFiles: QuestionFile[] };
     files: CodeEditorFile[];
     reviewer: Reviewer | null;
   }): Promise<AIReviewJsonResponse | null> {

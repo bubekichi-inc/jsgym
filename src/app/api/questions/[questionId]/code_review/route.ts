@@ -30,6 +30,7 @@ export const POST = async (request: NextRequest, { params }: Props) => {
       },
       include: {
         reviewer: true,
+        questionFiles: true,
       },
     });
 
@@ -83,7 +84,6 @@ export const POST = async (request: NextRequest, { params }: Props) => {
         data: {
           userQuestionId: userQuestion.id,
           messageId: userMessage.id,
-          answer: "",
           answerFiles: {
             createMany: {
               data: files.map((file) => ({
