@@ -54,7 +54,7 @@ export const ExampleAnswerModal: React.FC<Props> = ({
           {selectedFileId && (
             <div className="relative overflow-auto bg-gray-900 p-4">
               <pre className="text-sm text-white">
-                <code>{selectedFile?.template}</code>
+                <code>{selectedFile?.exampleAnswer}</code>
               </pre>
             </div>
           )}
@@ -62,7 +62,7 @@ export const ExampleAnswerModal: React.FC<Props> = ({
           <button
             className="absolute bottom-2 right-2 size-6 rounded-full text-gray-600"
             onClick={() => {
-              navigator.clipboard.writeText(selectedFile?.template || "");
+              navigator.clipboard.writeText(selectedFile?.exampleAnswer || "");
               toast.success("コードをコピーしました");
             }}
           >
