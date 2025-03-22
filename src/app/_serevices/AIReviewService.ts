@@ -8,6 +8,12 @@ import { buildReviewerSettingPrompt } from "../_utils/buildReviewerSettingPrompt
 import { AIReviewJsonResponse } from "../api/questions/[questionId]/code_review/_types/CodeReview";
 import { Message } from "../api/questions/[questionId]/messages/route";
 
+const CHAT_INSTRUCTIONS = `
+# 返信の際の注意
+- JSON形式のテキストは用いないでください。
+- 返信は、ユーザーの質問に対して、回答してください。
+`;
+
 export type Score =
   | "0"
   | "10"
@@ -163,7 +169,7 @@ ${answer}
     const messages: ChatCompletionMessageParam[] = [
       {
         role: "developer",
-        content: buildReviewerSettingPrompt({ reviewer }),
+        content: buildReviewerSettingPrompt({ reviewer }) + CHAT_INSTRUCTIONS,
       },
       ...openAIMessages,
     ];
@@ -197,7 +203,8 @@ ${answer}
       model: GPT_4O_MINI,
       tools: [{ type: "web_search_preview" }],
       input,
-      instructions: buildReviewerSettingPrompt({ reviewer }),
+      instructions:
+        buildReviewerSettingPrompt({ reviewer }) + CHAT_INSTRUCTIONS,
       max_output_tokens: 16384,
     });
 
