@@ -54,43 +54,42 @@ export const Question: React.FC = () => {
           </div>
         </div>
 
-        {data.question.inputCode ||
-          (data.question.outputCode && (
-            <div className="space-y-4 rounded-lg bg-orange-50 p-3">
-              {data.question.inputCode && (
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <p className="text-xs font-bold">入力例</p>
-                    <button
-                      onClick={() => copyToClipboard(data.question.inputCode)}
-                      className="text-xs"
-                    >
-                      <FontAwesomeIcon icon={faCopy} className="mr-1" />
-                    </button>
-                  </div>
-                  <div className="whitespace-pre-wrap break-words rounded bg-editorDark px-3 py-2 text-xs font-semibold text-white">
-                    {data.question.inputCode}
-                  </div>
+        {(data.question.inputCode || data.question.outputCode) && (
+          <div className="space-y-4 rounded-lg bg-orange-50 p-3">
+            {data.question.inputCode && (
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <p className="text-xs font-bold">入力例</p>
+                  <button
+                    onClick={() => copyToClipboard(data.question.inputCode)}
+                    className="text-xs"
+                  >
+                    <FontAwesomeIcon icon={faCopy} className="mr-1" />
+                  </button>
                 </div>
-              )}
-              {data.question.outputCode && (
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <p className="text-xs font-bold">出力例</p>
-                    <button
-                      onClick={() => copyToClipboard(data.question.outputCode)}
-                      className="text-xs"
-                    >
-                      <FontAwesomeIcon icon={faCopy} className="mr-1" />
-                    </button>
-                  </div>
-                  <div className="whitespace-pre-wrap break-words rounded bg-editorDark px-3 py-2 text-xs font-semibold text-white">
-                    {data.question.outputCode}
-                  </div>
+                <div className="whitespace-pre-wrap break-words rounded bg-editorDark px-3 py-2 text-xs font-semibold text-white">
+                  {data.question.inputCode}
                 </div>
-              )}
-            </div>
-          ))}
+              </div>
+            )}
+            {data.question.outputCode && (
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <p className="text-xs font-bold">出力例</p>
+                  <button
+                    onClick={() => copyToClipboard(data.question.outputCode)}
+                    className="text-xs"
+                  >
+                    <FontAwesomeIcon icon={faCopy} className="mr-1" />
+                  </button>
+                </div>
+                <div className="whitespace-pre-wrap break-words rounded bg-editorDark px-3 py-2 text-xs font-semibold text-white">
+                  {data.question.outputCode}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <ReviewerModal
