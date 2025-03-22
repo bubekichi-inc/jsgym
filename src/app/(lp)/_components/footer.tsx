@@ -1,55 +1,12 @@
 import Link from "next/link";
+import { Logo } from "./logo";
 
 export function Footer() {
   return (
     <footer className="border-t py-6">
       <div className="container mx-auto flex flex-col items-center justify-between gap-4 px-4">
         <div className="flex items-center gap-2">
-          <div className="flex items-center justify-center rounded-md bg-yellow-400 p-1">
-            <svg
-              className="size-6 text-gray-900"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M6.5 6.5H17.5V17.5H6.5V6.5Z"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M5 20L19 20"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M5 4L19 4"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M10 10V14"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M14 10V14"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
-          <span className="text-xl font-bold">JS Gym</span>
+          <Logo />
         </div>
         <div className="flex flex-wrap items-center justify-center gap-4">
           <a
