@@ -5,9 +5,10 @@ interface Props {
 }
 
 export function Logo({ width = 80 }: Props) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const widthClass = `w-[${width}px]`;
   return (
-    <div className={`${widthClass} aspect-[90/27]`}>
+    <div className={`aspect-[90/27] w-[80px]`}>
       <Image
         src="/images/logo.png"
         alt="logo"
