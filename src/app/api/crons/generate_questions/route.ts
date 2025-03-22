@@ -55,11 +55,9 @@ const generage = async () => {
     data: {
       id: nanoid(10),
       content: response.content,
-      template: response.template,
       title: response.title,
       inputCode: response.inputCode,
       outputCode: response.outputCode,
-      exampleAnswer: response.exampleAnswer,
       level: response.level,
       reviewerId: reviewer.id,
       questionFiles: {
