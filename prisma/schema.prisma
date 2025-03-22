@@ -25,7 +25,6 @@ model User {
   receiveReminderNotification    Boolean            @default(true) @map("receive_reminder_notification")
   receiveUsefulInfoNotification  Boolean            @default(true) @map("receive_useful_info_notification")
   role                           UserRole           @default(USER) @map("role")
-  memo                           String?            @default("")
   pointTransactions              PointTransaction[]
   questionBookmarks              QuestionBookmark[]
   reviewer                       Reviewer?

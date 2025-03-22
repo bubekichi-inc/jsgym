@@ -6,7 +6,6 @@ import { FormProvider } from "react-hook-form";
 import { useCodeEditor } from "../_hooks/useCodeEditor";
 import { Chat } from "./Chat";
 import { CodeEditor } from "./CodeEditor";
-import { MemoDrawer } from "./MemoDrawer";
 import { PcTab } from "./PcTab";
 import { Question } from "./Question";
 import { SpTab } from "./SpTab";
@@ -77,8 +76,6 @@ export const QuestionDetailPage: React.FC = () => {
             />
           </div>
         </div>
-
-        <MemoDrawer />
       </FormProvider>
     );
   }
