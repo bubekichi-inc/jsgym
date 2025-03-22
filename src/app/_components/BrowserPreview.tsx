@@ -1,14 +1,12 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { CodeEditorFile } from "../q/[questionId]/_hooks/useCodeEditor";
+import { useFormContext } from "react-hook-form";
+import { CodeEditorFilesForm } from "../q/[questionId]/_hooks/useCodeEditor";
 
-interface Props {
-  files: CodeEditorFile[];
-}
-
-export const BrowserPreview: React.FC<Props> = ({ files }) => {
+export const BrowserPreview: React.FC = () => {
   const previewIframeRef = useRef<HTMLIFrameElement>(null);
+  const { watch } = useFormContext<CodeEditorFilesForm>();
 
   useEffect(() => {
     const iframe = previewIframeRef.current;
@@ -18,7 +16,7 @@ export const BrowserPreview: React.FC<Props> = ({ files }) => {
       iframe.contentWindow?.postMessage(
         {
           type: "CODE_UPDATE",
-          code: files[0].content || "",
+          code: watch("files")[0].content || "",
         },
         "*"
       );
@@ -35,7 +33,7 @@ export const BrowserPreview: React.FC<Props> = ({ files }) => {
       clearTimeout(timer);
       iframe.removeEventListener("load", handleIframeLoad);
     };
-  }, [files]);
+  }, [watch]);
 
   return (
     <div className="flex h-full min-h-[500px] flex-col overflow-hidden bg-white">
