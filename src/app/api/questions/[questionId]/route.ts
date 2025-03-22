@@ -1,5 +1,6 @@
 import {
   FileExtension,
+  QuestionFile,
   QuestionLevel,
   QuestionType,
   UserQuestionStatus,
@@ -31,13 +32,7 @@ export type QuestionResponse = {
       bio: string;
       profileImageUrl: string;
     };
-    questionFiles: {
-      id: string;
-      name: string;
-      ext: FileExtension;
-      template: string;
-      exampleAnswer: string;
-    }[];
+    questionFiles: QuestionFile[];
   };
   userQuestion: {
     id: string;
@@ -96,15 +91,7 @@ export const GET = async (request: NextRequest, { params }: Props) => {
             profileImageUrl: true,
           },
         },
-        questionFiles: {
-          select: {
-            id: true,
-            name: true,
-            ext: true,
-            template: true,
-            exampleAnswer: true,
-          },
-        },
+        questionFiles: true,
       },
     });
     if (!question)

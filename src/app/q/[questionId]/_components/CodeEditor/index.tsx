@@ -34,12 +34,7 @@ export const CodeEditor: React.FC<Props> = ({
   onReviewComplete,
   showTerminal,
 }) => {
-  const {
-    watch,
-    reset,
-    setValue,
-    formState: { isDirty },
-  } = useFormContext<CodeEditorFilesForm>();
+  const { watch, reset, setValue } = useFormContext<CodeEditorFilesForm>();
   const [touched, setTouched] = useState(false);
   const { isSp } = useDevice();
   const params = useParams();

@@ -9,7 +9,6 @@ import { DropdownMenu } from "./DropdownMenu";
 import { Skeleton } from "@/app/_components/Skeleton";
 import { levelStyleMap, levelTextMap } from "@/app/_constants";
 import { useQuestion } from "@/app/_hooks/useQuestion";
-import { language } from "@/app/_utils/language";
 
 export const TitleSection: React.FC = () => {
   const [showAnswerModal, setShowAnswerModal] = useState(false);
@@ -47,10 +46,9 @@ export const TitleSection: React.FC = () => {
 
       <ExampleAnswerModal
         title={data.question.title}
-        answer={data.question.exampleAnswer}
         isOpen={showAnswerModal}
         onClose={() => setShowAnswerModal(false)}
-        language={language(data.question.type)}
+        files={data.question.questionFiles}
       />
     </>
   );
