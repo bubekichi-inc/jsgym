@@ -107,7 +107,7 @@ export const ChatInput: React.FC<Props> = ({ chatBusy, setChatBusy }) => {
               type="checkbox"
               id="isWebSearch"
               className="size-4 cursor-pointer"
-              checked={watch("isWebSearch")}
+              checked={watch("isWebSearch") || false}
               onChange={(e) => setValue("isWebSearch", e.target.checked)}
               disabled={chatBusy}
             />
