@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Draft } from "../../_types/Draft";
 import { buildPrisma } from "@/app/_utils/prisma";
 import { buildError } from "@/app/api/_utils/buildError";
 import { getCurrentUser } from "@/app/api/_utils/getCurrentUser";
@@ -17,13 +16,26 @@ export const DELETE = async (request: NextRequest, { params }: Props) => {
   try {
     const { id: userId } = await getCurrentUser({ request });
 
+    const userQuestion = await prisma.userQuestion.findUnique({
+      where: {
+        userId_questionId: { userId, questionId },
+      },
+    });
+
+    if (!userQuestion) {
+      return NextResponse.json(
+        { message: "no user question" },
+        { status: 200 }
+      );
+    }
+
     await prisma.userQuestion.delete({
       where: {
         userId_questionId: { userId, questionId },
       },
     });
 
-    return NextResponse.json<Draft>({ answer: "success!" }, { status: 200 });
+    return NextResponse.json({ answer: "success!" }, { status: 200 });
   } catch (e) {
     return await buildError(e);
   }
