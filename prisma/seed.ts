@@ -15,40 +15,40 @@ const seedData = async () => {
   const prisma = await buildPrisma();
 
   // 全てのquestionに対してquestionFileを生成
-  const createQuestionFiles = async () => {
-    const questions = await prisma.question.findMany();
-    console.log(`${questions.length}個の問題に対してファイルを生成します...`);
+  // const createQuestionFiles = async () => {
+  //   const questions = await prisma.question.findMany();
+  //   console.log(`${questions.length}個の問題に対してファイルを生成します...`);
 
-    for (const question of questions) {
-      // 既存のquestionFileを確認
-      const existingFile = await prisma.questionFile.findFirst({
-        where: {
-          questionId: question.id,
-          name: "index",
-          ext: "JS",
-        },
-      });
+  //   for (const question of questions) {
+  //     // 既存のquestionFileを確認
+  //     const existingFile = await prisma.questionFile.findFirst({
+  //       where: {
+  //         questionId: question.id,
+  //         name: "index",
+  //         ext: "JS",
+  //       },
+  //     });
 
-      // 既存のファイルがなければ作成
-      if (!existingFile) {
-        await prisma.questionFile.create({
-          data: {
-            questionId: question.id,
-            name: "index",
-            ext: "JS",
-            template: question.template || "// デフォルトのテンプレートコード",
-            exampleAnswer:
-              question.exampleAnswer || "// デフォルトの回答コード",
-          },
-        });
-        console.log(`問題ID: ${question.id} にファイルを作成しました`);
-      } else {
-        console.log(`問題ID: ${question.id} には既にファイルが存在します`);
-      }
-    }
+  //     // 既存のファイルがなければ作成
+  //     if (!existingFile) {
+  //       await prisma.questionFile.create({
+  //         data: {
+  //           questionId: question.id,
+  //           name: "index",
+  //           ext: "JS",
+  //           template: question.template || "// デフォルトのテンプレートコード",
+  //           exampleAnswer:
+  //             question.exampleAnswer || "// デフォルトの回答コード",
+  //         },
+  //       });
+  //       console.log(`問題ID: ${question.id} にファイルを作成しました`);
+  //     } else {
+  //       console.log(`問題ID: ${question.id} には既にファイルが存在します`);
+  //     }
+  //   }
 
-    console.log("ファイル生成が完了しました");
-  };
+  //   console.log("ファイル生成が完了しました");
+  // };
 
   // 全てのanswerに対してanswerFileを生成
   const createAnswerFiles = async () => {
