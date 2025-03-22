@@ -4,9 +4,9 @@ import { Logo } from "./logo";
 export function Footer() {
   return (
     <footer className="border-t py-6">
-      <div className="container mx-auto flex flex-col items-center justify-between gap-4 px-4">
-        <div className="flex items-center gap-2">
-          <Logo />
+      <div className="container mx-auto flex flex-col items-center justify-between gap-6 px-4">
+        <div className="flex items-center">
+          <Logo width={120} />
         </div>
         <div className="flex flex-wrap items-center justify-center gap-4">
           <a
