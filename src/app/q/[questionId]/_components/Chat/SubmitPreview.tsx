@@ -1,23 +1,28 @@
 import { faCaretDown, faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
+import { AnswerFile } from "@prisma/client";
+import React, { useMemo, useState } from "react";
 import { toast } from "react-toastify";
+import { FileTabs } from "../CodeEditor/FileTabs";
 
 interface Props {
-  answer: {
-    id: string;
-    answer: string;
-    createdAt: Date;
-  };
+  files: AnswerFile[];
 }
 
-export const SubmitPreview: React.FC<Props> = ({ answer }) => {
+export const SubmitPreview: React.FC<Props> = ({ files }) => {
   const [show, setShow] = useState(false);
+  const [selectedFileId, setSelectedFileId] = useState<string | null>(
+    files[0]?.id || null
+  );
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(answer.answer);
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text);
     toast.success("コードをコピーしました");
   };
+
+  const selectedFile = useMemo(() => {
+    return files.find((file) => file.id === selectedFileId);
+  }, [files, selectedFileId]);
 
   return (
     <div className="space-y-2 pb-4 pl-4">
@@ -37,15 +42,33 @@ export const SubmitPreview: React.FC<Props> = ({ answer }) => {
 
       {show && (
         <div className="relative w-full overflow-auto">
-          <button
-            className="absolute right-4 top-4 text-gray-200"
-            onClick={handleCopy}
-          >
-            <FontAwesomeIcon icon={faCopy} className="size-5" />
-          </button>
-          <pre className="w-full overflow-auto rounded bg-editorDark p-4 text-sm text-white">
-            <code>{answer.answer}</code>
-          </pre>
+          <div className="relative">
+            <FileTabs
+              files={files.map((file) => ({
+                id: file.id,
+                name: file.name,
+                content: file.content,
+                ext: file.ext,
+              }))}
+              selectedFileId={selectedFileId}
+              setSelectedFileId={setSelectedFileId}
+              showCog={false}
+            />
+            {selectedFileId && (
+              <div className="relative overflow-auto bg-gray-900 p-4">
+                <pre className="text-sm text-white">
+                  <code>{selectedFile?.content}</code>
+                </pre>
+              </div>
+            )}
+
+            <button
+              className="absolute bottom-2 right-2 size-6 rounded-full text-gray-600"
+              onClick={() => handleCopy(selectedFile?.content || "")}
+            >
+              <FontAwesomeIcon icon={faCopy} className="size-4" />
+            </button>
+          </div>
         </div>
       )}
     </div>
