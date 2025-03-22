@@ -118,7 +118,14 @@ export const CodeEditor: React.FC<Props> = ({
   if (!data) return null;
   if (!editorSettingData) return null;
 
-  const resetCode = () => reset({ files: data.question.questionFiles });
+  const resetCode = () => {
+    reset({
+      files: data.question.questionFiles.map((f) => ({
+        ...f,
+        content: f.template,
+      })),
+    });
+  };
 
   const change = (value?: string) => {
     if (!value) return;
