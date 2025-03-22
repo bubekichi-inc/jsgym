@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { CodeEditorFile } from "../q/[questionId]/_hooks/useCodeEditor";
 
 interface Props {
-  files: Record<string, string>;
+  files: CodeEditorFile[];
 }
 
 export const BrowserPreview: React.FC<Props> = ({ files }) => {
@@ -17,7 +18,7 @@ export const BrowserPreview: React.FC<Props> = ({ files }) => {
       iframe.contentWindow?.postMessage(
         {
           type: "CODE_UPDATE",
-          code: files["/App.tsx"] || "",
+          code: files[0].content || "",
         },
         "*"
       );

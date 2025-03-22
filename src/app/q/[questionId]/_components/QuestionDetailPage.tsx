@@ -30,6 +30,8 @@ export const QuestionDetailPage: React.FC = () => {
   });
   const methods = useCodeEditor();
 
+  const { watch } = methods;
+
   const handleTabChange = (tab: TabType) => {
     setActiveTab(tab);
   };
@@ -110,7 +112,7 @@ export const QuestionDetailPage: React.FC = () => {
             </div>
           )}
 
-          {activeTab === "preview" && <BrowserPreview files={files} />}
+          {activeTab === "preview" && <BrowserPreview files={watch("files")} />}
         </div>
 
         <div className="w-1/2">
