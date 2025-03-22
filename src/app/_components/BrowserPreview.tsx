@@ -1,13 +1,16 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useFormContext, useWatch } from "react-hook-form";
+import { CodeEditorFilesForm } from "../q/[questionId]/_hooks/useCodeEditor";
 
-interface Props {
-  files: Record<string, string>;
-}
-
-export const BrowserPreview: React.FC<Props> = ({ files }) => {
+export const BrowserPreview: React.FC = () => {
   const previewIframeRef = useRef<HTMLIFrameElement>(null);
+  const { control } = useFormContext<CodeEditorFilesForm>();
+  const files = useWatch({
+    control,
+    name: "files",
+  });
 
   useEffect(() => {
     const iframe = previewIframeRef.current;
@@ -17,7 +20,7 @@ export const BrowserPreview: React.FC<Props> = ({ files }) => {
       iframe.contentWindow?.postMessage(
         {
           type: "CODE_UPDATE",
-          code: files["/App.tsx"] || "",
+          code: files[0]?.content || "", // FIXME: 複数ファイル問題になったら、filex[0]でなく考える
         },
         "*"
       );

@@ -7,6 +7,13 @@ import { GPT_4O_MINI } from "../_constants/openAI";
 import { buildReviewerSettingPrompt } from "../_utils/buildReviewerSettingPrompt";
 import { AIReviewJsonResponse } from "../api/questions/[questionId]/code_review/_types/CodeReview";
 import { Message } from "../api/questions/[questionId]/messages/route";
+import { CodeEditorFile } from "../q/[questionId]/_hooks/useCodeEditor";
+
+const CHAT_INSTRUCTIONS = `
+# 返信の際の注意
+- JSON形式のテキストは用いないでください。
+- 返信は、ユーザーの質問に対して、回答してください。
+`;
 
 export type Score =
   | "0"
@@ -46,6 +53,7 @@ export class AIReviewService {
     overview: z.string(),
     comments: z.array(
       z.object({
+        fileName: z.string(),
         targetCode: z.string(),
         level: z.enum(["GOOD", "WARN", "ERROR"]),
         message: z.string(),
@@ -58,10 +66,10 @@ export class AIReviewService {
 
   public static buildPrompt({
     question,
-    answer,
+    files,
   }: {
     question: Question;
-    answer: string;
+    files: CodeEditorFile[];
   }) {
     return `
 # 概要
@@ -83,22 +91,26 @@ ${question.outputCode}
 ${question.exampleAnswer}
 
 # ユーザーの解答
-${answer}
+${files
+  .map(
+    (file) => `* ${file.name}.${file.ext.toLocaleLowerCase()}: ${file.content}`
+  )
+  .join("\n")}
 
 # レビューの方針
-・正しく動作すること
-・「//」以降のコメント文はレビュー対象に入れないでください。
-・関数名や定数名や変数名の命名はこだわらなくて良いです。
-・関数の引数の命名はこだわらなくて良いです。
-・模範解答は参考程度として、細かく比較しなくて良いです。
+* 正しく動作すること
+* 「//」以降のコメント文はレビュー対象に入れないでください。
+* 関数名や定数名や変数名の命名はこだわらなくて良いです。
+* 関数の引数の命名はこだわらなくて良いです。
+* 模範解答は参考程度として、細かく比較しなくて良いです。
 
 # 補足
-・stringで返すものは、適切に改行コードも含めてください。
-・"レビューの方針"というワードは使ってほしくないです。
-・模範解答はユーザーに見せたくないので、解答には含めないでください。
-・JSONのcommentsは、良くない箇所だけコメントしてください。targetCodeは必ず入れてください。targetCodeには、ユーザーの解答コード以外のコードは入れないでください。
-・resultがAPPROVEDの場合、commentsは空の配列で返してください。
-・すべて日本語でお願いします。`;
+* stringで返すものは、適切に改行コードも含めてください。
+* "レビューの方針"というワードは使ってほしくないです。
+* 模範解答はユーザーに見せたくないので、解答には含めないでください。
+* JSONのcommentsは、良くない箇所だけコメントしてください。targetCodeは必ず入れてください。targetCodeには、ユーザーの解答コード以外のコードは入れないでください。
+* resultがAPPROVEDの場合、commentsは空の配列で返してください。
+* すべて日本語でお願いします。`;
   }
 
   public static buildSystemMessageContent({
@@ -121,11 +133,11 @@ ${answer}
 
   public static async getCodeReview({
     question,
-    answer,
+    files,
     reviewer,
   }: {
     question: Question;
-    answer: string;
+    files: CodeEditorFile[];
     reviewer: Reviewer | null;
   }): Promise<AIReviewJsonResponse | null> {
     const response = await this.openai.beta.chat.completions.parse({
@@ -137,7 +149,7 @@ ${answer}
         },
         {
           role: "user",
-          content: this.buildPrompt({ question, answer }),
+          content: this.buildPrompt({ question, files }),
         },
       ],
       temperature: 1,
@@ -163,7 +175,7 @@ ${answer}
     const messages: ChatCompletionMessageParam[] = [
       {
         role: "developer",
-        content: buildReviewerSettingPrompt({ reviewer }),
+        content: buildReviewerSettingPrompt({ reviewer }) + CHAT_INSTRUCTIONS,
       },
       ...openAIMessages,
     ];
@@ -197,7 +209,8 @@ ${answer}
       model: GPT_4O_MINI,
       tools: [{ type: "web_search_preview" }],
       input,
-      instructions: buildReviewerSettingPrompt({ reviewer }),
+      instructions:
+        buildReviewerSettingPrompt({ reviewer }) + CHAT_INSTRUCTIONS,
       max_output_tokens: 16384,
     });
 

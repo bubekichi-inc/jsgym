@@ -33,6 +33,7 @@ export type Message = {
       message: string;
       createdAt: Date;
       level: CodeReviewCommentLevel | null;
+      fileName: string;
     }[];
   } | null;
   reviewer: {

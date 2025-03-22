@@ -14,9 +14,6 @@ export const api = {
         },
       });
 
-      if (response.status !== 200)
-        throw new Error("データの取得に失敗しました。");
-
       const data: ResponseType = await response.json();
 
       return data;
@@ -38,12 +35,6 @@ export const api = {
         },
         body: JSON.stringify(payload),
       });
-
-      if (response.status !== 200) {
-        const errorData = await response.json();
-        const errorMessage = errorData.message || "登録に失敗しました。";
-        throw new Error(errorMessage);
-      }
 
       const data: ResponseType = await response.json();
 
@@ -68,8 +59,6 @@ export const api = {
         body: JSON.stringify(payload),
       });
 
-      if (response.status !== 200) throw new Error("更新に失敗しました。");
-
       const data: ResponseType = await response.json();
 
       return data;
@@ -87,8 +76,6 @@ export const api = {
           Authorization: await getAccessToken(),
         },
       });
-
-      if (response.status !== 200) throw new Error("削除に失敗しました。");
 
       const data: ResponseType = await response.json();
 

@@ -11,8 +11,5 @@ type CodeReviewComment = {
   targetCode: string;
   message: string;
   level: CodeReviewCommentLevel;
-};
-
-export type CodeReviewRequest = {
-  answer: string;
+  fileName: string;
 };

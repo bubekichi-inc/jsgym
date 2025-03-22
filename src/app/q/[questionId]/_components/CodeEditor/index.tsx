@@ -5,9 +5,14 @@ import { EditorTheme } from "@prisma/client";
 import { shikiToMonaco } from "@shikijs/monaco";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { useFormContext } from "react-hook-form";
 import { createHighlighter } from "shiki";
 
-import { Tabs } from "./Tabs";
+import {
+  CodeEditorFile,
+  CodeEditorFilesForm,
+} from "../../_hooks/useCodeEditor";
+import { FileTabs } from "./FileTabs";
 import { Terminal } from "./Terminal";
 import { ToolBar } from "./ToolBar";
 import { useEditorSetting } from "@/app/(member)/_hooks/useEditorSetting";
@@ -20,7 +25,6 @@ interface Props {
   reviewBusy: boolean;
   setReviewBusy: (busy: boolean) => void;
   onReviewComplete: () => void;
-  setFiles: (files: Record<string, string>) => void;
   showTerminal: boolean;
 }
 
@@ -28,9 +32,10 @@ export const CodeEditor: React.FC<Props> = ({
   reviewBusy,
   setReviewBusy,
   onReviewComplete,
-  setFiles,
   showTerminal,
 }) => {
+  const { watch, reset, setValue } = useFormContext<CodeEditorFilesForm>();
+  const [touched, setTouched] = useState(false);
   const { isSp } = useDevice();
   const params = useParams();
   const { data: editorSettingData } = useEditorSetting();
@@ -38,9 +43,7 @@ export const CodeEditor: React.FC<Props> = ({
   const { data } = useQuestion({
     questionId,
   });
-  const [value, setValue] = useState("");
-  const [touched, setTouched] = useState(false);
-
+  const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
   const { iframeRef, executeCode, executionResult, resetLogs } =
     useCodeExecutor();
 
@@ -76,42 +79,83 @@ export const CodeEditor: React.FC<Props> = ({
 
   useEffect(() => {
     if (!data) return;
-    setValue(data.answer?.answer || data.question.template);
-    setFiles({
-      "/App.tsx": data.answer?.answer || data.question.template,
-    });
-  }, [data, setFiles]);
+    const answerFiles: CodeEditorFile[] | undefined =
+      data.answer?.answerFiles.map(({ id, name, content, ext }) => ({
+        id,
+        name,
+        ext,
+        content,
+      }));
 
-  useEffect(() => {
-    if (value !== data?.question.template) {
-      setTouched(true);
-    } else {
-      setTouched(false);
-    }
-  }, [value, data]);
+    const questionFiles: CodeEditorFile[] = data.question.questionFiles.map(
+      ({ id, name, template, ext }) => ({
+        id,
+        name,
+        ext,
+        content: template,
+      })
+    );
+
+    reset({
+      files: answerFiles || questionFiles,
+    });
+    setSelectedFileId(answerFiles?.[0].id || data.question.questionFiles[0].id);
+  }, [data, reset]);
+
+  const selectedFile = useMemo(() => {
+    if (!data) return null;
+    return (data.answer?.answerFiles || data.question.questionFiles).find(
+      (file) => file.id === selectedFileId
+    );
+  }, [data, selectedFileId]);
 
   if (!data) return null;
   if (!editorSettingData) return null;
 
-  const reset = () => setValue(data.question.template);
+  const resetCode = () => {
+    reset({
+      files: data.question.questionFiles.map((f) => ({
+        ...f,
+        content: f.template,
+      })),
+    });
+  };
 
   const change = (value?: string) => {
     if (!value) return;
-    setValue(value);
-    setFiles({
-      "/App.tsx": value,
+    setTouched(true);
+    const fileIndex = watch("files").findIndex(
+      (file) => file.id === selectedFile?.id
+    );
+    if (fileIndex === -1) return;
+    setValue(`files.${fileIndex}`, {
+      ...watch("files")[fileIndex],
+      content: value,
     });
   };
 
   return (
     <div className="">
       <div className="relative">
-        <Tabs />
+        <FileTabs
+          files={(data.answer?.answerFiles || data.question.questionFiles).map(
+            (file) => ({
+              id: file.id,
+              name: file.name,
+              ext: file.ext,
+            })
+          )}
+          selectedFileId={selectedFileId}
+          setSelectedFileId={setSelectedFileId}
+        />
         <Editor
           className="bg-editorDark"
           height={editorHeight}
-          defaultLanguage={language(data.question.type)}
-          value={value}
+          defaultLanguage={language(selectedFile?.ext)}
+          path={`${selectedFile?.name}.${selectedFile?.ext.toLowerCase()}`}
+          value={
+            watch("files").find((file) => file.id === selectedFile?.id)?.content
+          }
           onChange={change}
           theme={theme}
           options={{
@@ -153,12 +197,16 @@ export const CodeEditor: React.FC<Props> = ({
         />
         <div className="absolute bottom-2 right-2 md:bottom-4 md:right-4">
           <ToolBar
-            answer={value}
-            onExecuteCode={() => executeCode(value)}
+            onExecuteCode={() =>
+              executeCode(
+                watch("files").find((file) => file.id === selectedFileId)
+                  ?.content || ""
+              )
+            }
             reviewBusy={reviewBusy}
             setReviewBusy={setReviewBusy}
             touched={touched}
-            onReset={reset}
+            onReset={resetCode}
             onReviewComplete={onReviewComplete}
           />
         </div>

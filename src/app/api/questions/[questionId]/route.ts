@@ -1,4 +1,6 @@
 import {
+  FileExtension,
+  QuestionFile,
   QuestionLevel,
   QuestionType,
   UserQuestionStatus,
@@ -20,9 +22,7 @@ export type QuestionResponse = {
     title: string;
     inputCode: string;
     outputCode: string;
-    exampleAnswer: string;
     content: string;
-    template: string;
     createdAt: Date;
     level: QuestionLevel;
     type: QuestionType;
@@ -32,16 +32,23 @@ export type QuestionResponse = {
       bio: string;
       profileImageUrl: string;
     };
+    questionFiles: QuestionFile[];
   };
   userQuestion: {
     id: string;
     status: UserQuestionStatus;
   } | null;
   answer: {
-    answer: string;
     id: string;
+    answer: string;
     createdAt: Date;
     updatedAt: Date;
+    answerFiles: {
+      id: string;
+      name: string;
+      ext: FileExtension;
+      content: string;
+    }[];
   } | null;
   nextQuestion: {
     id: string;
@@ -72,9 +79,7 @@ export const GET = async (request: NextRequest, { params }: Props) => {
         title: true,
         inputCode: true,
         outputCode: true,
-        exampleAnswer: true,
         content: true,
-        template: true,
         createdAt: true,
         level: true,
         type: true,
@@ -86,6 +91,7 @@ export const GET = async (request: NextRequest, { params }: Props) => {
             profileImageUrl: true,
           },
         },
+        questionFiles: true,
       },
     });
     if (!question)
@@ -112,6 +118,16 @@ export const GET = async (request: NextRequest, { params }: Props) => {
           },
           orderBy: {
             createdAt: "desc",
+          },
+          include: {
+            answerFiles: {
+              select: {
+                id: true,
+                name: true,
+                ext: true,
+                content: true,
+              },
+            },
           },
         })
       : null;

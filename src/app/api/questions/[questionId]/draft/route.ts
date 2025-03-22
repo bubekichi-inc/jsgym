@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Draft } from "../../_types/Draft";
 import { buildPrisma } from "@/app/_utils/prisma";
 import { buildError } from "@/app/api/_utils/buildError";
 import { getCurrentUser } from "@/app/api/_utils/getCurrentUser";
+import { CodeEditorFile } from "@/app/q/[questionId]/_hooks/useCodeEditor";
+
+export type Draft = {
+  files: CodeEditorFile[];
+};
 
 interface Props {
   params: Promise<{
@@ -27,11 +31,18 @@ export const POST = async (request: NextRequest, { params }: Props) => {
     await prisma.answer.create({
       data: {
         userQuestionId: userQuestion.id,
-        answer: body.answer,
+        answerFiles: {
+          create: body.files.map((file) => ({
+            name: file.name,
+            content: file.content,
+            ext: file.ext,
+          })),
+        },
+        answer: "",
       },
     });
 
-    return NextResponse.json<Draft>({ answer: "success!" }, { status: 200 });
+    return NextResponse.json({ message: "success!" }, { status: 200 });
   } catch (e) {
     return await buildError(e);
   }

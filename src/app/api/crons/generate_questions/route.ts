@@ -1,4 +1,4 @@
-import { QuestionType } from "@prisma/client";
+import { FileExtension, QuestionType } from "@prisma/client";
 import { nanoid } from "nanoid";
 import { NextResponse } from "next/server";
 import { buildError } from "../../_utils/buildError";
@@ -62,6 +62,14 @@ const generage = async () => {
       exampleAnswer: response.exampleAnswer,
       level: response.level,
       reviewerId: reviewer.id,
+      questionFiles: {
+        create: [response].map((file) => ({
+          name: "index",
+          template: file.template,
+          ext: FileExtension.JS, // FIXME: 複数ファイル問題になったら、FileExtension.JSでなく考える
+          exampleAnswer: file.exampleAnswer,
+        })),
+      },
     },
   });
 
