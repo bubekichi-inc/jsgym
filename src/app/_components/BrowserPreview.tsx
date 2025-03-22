@@ -20,7 +20,7 @@ export const BrowserPreview: React.FC = () => {
       iframe.contentWindow?.postMessage(
         {
           type: "CODE_UPDATE",
-          code: files[0]?.content || "",
+          code: files[0]?.content || "", // FIXME: 複数ファイル問題になったら、filex[0]でなく考える
         },
         "*"
       );
