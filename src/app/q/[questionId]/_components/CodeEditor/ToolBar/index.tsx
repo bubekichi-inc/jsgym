@@ -66,8 +66,8 @@ export const ToolBar: React.FC<Props> = ({
             createdAt: new Date(),
             answer: {
               id: Math.random().toString(),
-              answer: "",
               createdAt: new Date(),
+              answerFiles: [],
             },
             reviewer: null,
           },

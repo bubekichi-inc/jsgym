@@ -38,7 +38,6 @@ export const POST = async (request: NextRequest, { params }: Props) => {
             ext: file.ext,
           })),
         },
-        answer: "",
       },
     });
 
