@@ -122,8 +122,6 @@ export const QuestionDetailPage: React.FC = () => {
           />
         </div>
       </div>
-
-      <MemoDrawer />
     </FormProvider>
   );
 };
