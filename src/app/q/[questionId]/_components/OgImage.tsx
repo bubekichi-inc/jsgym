@@ -8,11 +8,6 @@ interface Props {
   content: string;
   level: QuestionLevel;
   type: QuestionType;
-  reviewer: {
-    name: string;
-    bio: string;
-    profileImageUrl: string;
-  };
 }
 
 export const OgImage: React.FC<Props> = ({
@@ -20,7 +15,6 @@ export const OgImage: React.FC<Props> = ({
   content,
   level,
   type,
-  reviewer,
 }: Props) => {
   return (
     <div
@@ -55,23 +49,17 @@ export const OgImage: React.FC<Props> = ({
                 {levelTextMap[level as keyof typeof levelTextMap]}
               </div>
             </div>
-            <div tw="rounded-full fixed inset-0 flex items-center justify-center relative">
-              <img
-                src={`https://jsgym.shiftb.dev${reviewer.profileImageUrl}`}
-                alt="reviewer"
-                tw="w-full h-full rounded-full"
-                width={100}
-                height={100}
-              />
-            </div>
+            <img
+              src={`https://jsgym.shiftb.dev/images/logo.png`}
+              alt="reviewer"
+              width={271}
+              height={81}
+            />
           </div>
           <p tw="text-[64px] font-[700]">{title}</p>
           <p tw="text-[32px] font-[400] text-gray-500">{content}</p>
         </div>
       </div>
-      <span tw="text-[20px] absolute bottom-1 right-4 font-[700] text-gray-700">
-        JS Gym
-      </span>
     </div>
   );
 };

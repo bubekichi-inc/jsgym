@@ -50,7 +50,7 @@ export default async function Image({
       getUniqueChars(
         data.question.title +
           data.question.content +
-          "JS Gym 基礎 応用 実務模擬 JavaScript"
+          "JS Gym 基礎 応用 実務模擬 JavaScript React"
       )
     )}`
   ).then((res) => res.text());
@@ -64,7 +64,6 @@ export default async function Image({
         content={data.question.content}
         level={data.question.level}
         type={data.question.type}
-        reviewer={data.question.reviewer}
       />
     ),
     {
