@@ -1,4 +1,5 @@
 import {
+  AnswerFile,
   CodeReviewCommentLevel,
   CodeReviewResult,
   Sender,
@@ -44,8 +45,8 @@ export type Message = {
   } | null;
   answer: {
     id: string;
-    answer: string;
     createdAt: Date;
+    answerFiles: AnswerFile[];
   } | null;
 };
 
@@ -97,8 +98,8 @@ export const GET = async (request: NextRequest, { params }: Props) => {
             answer: {
               select: {
                 id: true,
-                answer: true,
                 createdAt: true,
+                answerFiles: true,
               },
             },
           },
@@ -183,8 +184,8 @@ export const POST = async (request: NextRequest, { params }: Props) => {
         answer: {
           select: {
             id: true,
-            answer: true,
             createdAt: true,
+            answerFiles: true,
           },
         },
       },

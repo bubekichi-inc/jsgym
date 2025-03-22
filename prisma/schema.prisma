@@ -36,8 +36,6 @@ model User {
 model Question {
   title             String
   content           String
-  template          String
-  exampleAnswer     String
   createdAt         DateTime              @default(now()) @map("created_at")
   updatedAt         DateTime              @updatedAt @map("updated_at")
   id                String                @id
@@ -132,7 +130,6 @@ model UserQuestion {
 
 model Answer {
   id             String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  answer         String
   createdAt      DateTime     @default(now()) @map("created_at")
   updatedAt      DateTime     @updatedAt @map("updated_at")
   userQuestionId String       @map("user_id") @db.Uuid
