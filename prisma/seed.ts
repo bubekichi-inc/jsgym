@@ -52,7 +52,13 @@ const seedData = async () => {
 
   // 全てのanswerに対してanswerFileを生成
   const createAnswerFiles = async () => {
-    const answers = await prisma.answer.findMany();
+    const answers = await prisma.answer.findMany({
+      where: {
+        answerFiles: {
+          none: {},
+        },
+      },
+    });
     console.log(`${answers.length}個の回答に対してファイルを生成します...`);
 
     for (const answer of answers) {
@@ -85,7 +91,7 @@ const seedData = async () => {
   };
 
   try {
-    await createQuestionFiles();
+    // await createQuestionFiles();
     await createAnswerFiles();
   } catch (error) {
     console.error(`QuestionFile生成中にエラーが発生しました: ${error}`);
