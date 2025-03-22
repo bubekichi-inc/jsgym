@@ -40,7 +40,6 @@ export type QuestionResponse = {
   } | null;
   answer: {
     id: string;
-    answer: string;
     createdAt: Date;
     updatedAt: Date;
     answerFiles: {
