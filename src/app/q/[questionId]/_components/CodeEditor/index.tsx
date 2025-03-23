@@ -48,7 +48,10 @@ export const CodeEditor: React.FC<Props> = ({
     useCodeExecutor();
 
   const editorHeight = useMemo(() => {
-    if (!showTerminal) return "calc(100vh - 48px - 36px)";
+    if (!showTerminal) {
+      if (isSp) return "calc(100vh - 48px - 44px - 36px)";
+      return "calc(100vh - 48px - 36px)";
+    }
     if (isSp) return "calc(60vh)";
     return "calc(100vh - 48px - 288px - 36px)";
   }, [isSp, showTerminal]);

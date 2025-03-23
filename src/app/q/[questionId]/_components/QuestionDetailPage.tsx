@@ -47,7 +47,11 @@ export const QuestionDetailPage: React.FC = () => {
   if (isSp) {
     return (
       <FormProvider {...methods}>
-        <SpTab activeTab={activeTab} handleTabChange={handleTabChange} />
+        <SpTab
+          activeTab={activeTab}
+          handleTabChange={handleTabChange}
+          showPreview={pageType === "browser"}
+        />
         <div className="flex w-full flex-col md:flex-row">
           <div
             className={`w-full ${
@@ -61,6 +65,14 @@ export const QuestionDetailPage: React.FC = () => {
               chatBusy={chatBusy}
               setChatBusy={setChatBusy}
             />
+          </div>
+
+          <div
+            className={`mt-11 w-full ${
+              activeTab === "preview" ? "block" : "hidden"
+            }`}
+          >
+            <BrowserPreview />
           </div>
 
           <div
