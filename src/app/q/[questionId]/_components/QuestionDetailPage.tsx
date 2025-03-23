@@ -51,6 +51,7 @@ export const QuestionDetailPage: React.FC = () => {
           activeTab={activeTab}
           handleTabChange={handleTabChange}
           showPreview={pageType === "browser"}
+          isBusy={chatBusy || reviewBusy}
         />
         <div className="flex w-full flex-col md:flex-row">
           <div

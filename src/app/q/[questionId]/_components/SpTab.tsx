@@ -5,12 +5,14 @@ interface Props {
   activeTab: TabType;
   handleTabChange: (tab: TabType) => void;
   showPreview: boolean;
+  isBusy: boolean;
 }
 
 export const SpTab: React.FC<Props> = ({
   activeTab,
   handleTabChange,
   showPreview,
+  isBusy,
 }) => {
   const getTabButtonClass = (tabType: TabType) => {
     return `py-3 text-center duration-150 relative font-bold ${
@@ -43,10 +45,17 @@ export const SpTab: React.FC<Props> = ({
         />
         <div className="flex">
           <button
-            className={getTabButtonClass("question")}
+            className={`${getTabButtonClass("question")} relative`}
             onClick={() => handleTabChange("question")}
           >
             問題・レビュー
+            {isBusy && activeTab !== "question" && (
+              <div
+                className={`absolute top-1/2 ml-2 size-2 -translate-y-1/2 animate-pulse rounded-full bg-blue-600 ${
+                  showPreview ? "right-0" : "right-6"
+                }`}
+              />
+            )}
           </button>
           {showPreview && (
             <button
