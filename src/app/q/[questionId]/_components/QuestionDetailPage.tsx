@@ -44,6 +44,8 @@ export const QuestionDetailPage: React.FC = () => {
     }
   }, [data?.question.type]);
 
+  if (isSp === undefined) return null;
+
   if (isSp) {
     return (
       <FormProvider {...methods}>
