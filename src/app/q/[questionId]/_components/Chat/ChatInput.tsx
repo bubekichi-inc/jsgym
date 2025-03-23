@@ -86,7 +86,7 @@ export const ChatInput: React.FC<Props> = ({ chatBusy, setChatBusy }) => {
     >
       <div className="relative size-full">
         <textarea
-          className={`size-full resize-none rounded-lg border border-gray-200 px-3 py-2 text-sm shadow-lg outline-none ${
+          className={`size-full resize-none rounded-lg border border-gray-200 px-3 py-2 text-base shadow-lg outline-none ${
             chatBusy && "cursor-not-allowed text-gray-600"
           }`}
           style={{ overflow: "hidden" }}

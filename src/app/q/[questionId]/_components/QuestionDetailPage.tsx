@@ -54,40 +54,36 @@ export const QuestionDetailPage: React.FC = () => {
           isBusy={chatBusy || reviewBusy}
         />
         <div className="flex w-full flex-col md:flex-row">
-          <div
-            className={`w-full ${
-              activeTab === "question" ? "block" : "hidden"
-            } relative mt-12 max-h-[calc(100vh-96px)] space-y-6 p-2`}
-          >
-            <TitleSection />
-            <Question />
-            <Chat
-              reviewBusy={reviewBusy}
-              chatBusy={chatBusy}
-              setChatBusy={setChatBusy}
-            />
-          </div>
+          {activeTab === "question" && (
+            <div
+              className={`relative mt-12 max-h-[calc(100vh-96px)] w-full space-y-6 p-2`}
+            >
+              <TitleSection />
+              <Question />
+              <Chat
+                reviewBusy={reviewBusy}
+                chatBusy={chatBusy}
+                setChatBusy={setChatBusy}
+              />
+            </div>
+          )}
 
-          <div
-            className={`mt-11 w-full ${
-              activeTab === "preview" ? "block" : "hidden"
-            }`}
-          >
-            <BrowserPreview />
-          </div>
+          {activeTab === "preview" && (
+            <div className={`mt-11 w-full`}>
+              <BrowserPreview />
+            </div>
+          )}
 
-          <div
-            className={`mt-11 w-full ${
-              activeTab === "editor" ? "block" : "hidden"
-            }`}
-          >
-            <CodeEditor
-              reviewBusy={reviewBusy}
-              setReviewBusy={setReviewBusy}
-              onReviewComplete={() => handleTabChange("question")}
-              showTerminal={pageType === "code"}
-            />
-          </div>
+          {activeTab === "editor" && (
+            <div className={`mt-11 w-full`}>
+              <CodeEditor
+                reviewBusy={reviewBusy}
+                setReviewBusy={setReviewBusy}
+                onReviewComplete={() => handleTabChange("question")}
+                showTerminal={pageType === "code"}
+              />
+            </div>
+          )}
         </div>
       </FormProvider>
     );
