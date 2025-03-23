@@ -74,16 +74,16 @@ export const QuestionDetailPage: React.FC = () => {
             </div>
           )}
 
-          {activeTab === "editor" && (
-            <div className={`mt-11 w-full`}>
-              <CodeEditor
-                reviewBusy={reviewBusy}
-                setReviewBusy={setReviewBusy}
-                onReviewComplete={() => handleTabChange("question")}
-                showTerminal={pageType === "code"}
-              />
-            </div>
-          )}
+          <div
+            className={`mt-11 w-full ${activeTab === "editor" ? "" : "hidden"}`}
+          >
+            <CodeEditor
+              reviewBusy={reviewBusy}
+              setReviewBusy={setReviewBusy}
+              onReviewComplete={() => handleTabChange("question")}
+              showTerminal={pageType === "code"}
+            />
+          </div>
         </div>
       </FormProvider>
     );
