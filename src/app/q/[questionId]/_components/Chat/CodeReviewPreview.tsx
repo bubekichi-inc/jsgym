@@ -93,7 +93,7 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
                   {comment.fileName}
                 </span>
                 {comment.targetCode && (
-                  <pre className="rounded bg-editorDark px-3 py-1 text-gray-100">
+                  <pre className="overflow-auto rounded bg-editorDark px-3 py-2 text-gray-100">
                     {comment.targetCode}
                   </pre>
                 )}
