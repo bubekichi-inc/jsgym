@@ -171,7 +171,7 @@ export const CodeEditor: React.FC<Props> = ({
           onMount={(_editor, monaco) => {
             (async () => {
               const highlighter = await createHighlighter({
-                themes: ["github-dark", "github-light"],
+                themes: ["slack-dark", "slack-ochin"],
                 langs: ["jsx", "tsx", "vue", "svelte"],
               });
 
@@ -180,14 +180,14 @@ export const CodeEditor: React.FC<Props> = ({
               monaco.languages.register({ id: "vue" });
               monaco.languages.register({ id: "svelte" });
 
-              monaco.editor.defineTheme("github-dark", {
+              monaco.editor.defineTheme("slack-dark", {
                 base: "vs-dark",
                 inherit: true,
                 rules: [],
                 colors: {},
               });
 
-              monaco.editor.defineTheme("github-light", {
+              monaco.editor.defineTheme("slack-ochin", {
                 base: "vs",
                 inherit: true,
                 rules: [],
