@@ -152,7 +152,6 @@ export const CodeEditor: React.FC<Props> = ({
           setSelectedFileId={setSelectedFileId}
         />
         <Editor
-          className="bg-editorDark"
           height={editorHeight}
           defaultLanguage={language(selectedFile?.ext)}
           path={`${selectedFile?.name}.${selectedFile?.ext.toLowerCase()}`}
