@@ -10,7 +10,7 @@ import {
 export const useAdminQuestions = () => {
   const [queryParams, setQueryParams] = useState<AdminQuestionsQuery>({
     page: "1",
-    limit: "10",
+    limit: "25",
     search: "",
     level: "",
     type: "",

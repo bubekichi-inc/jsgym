@@ -76,7 +76,7 @@ export const Pagination: React.FC<PaginationProps> = ({
           </span>{" "}
           -
           <span className="font-medium">
-            {Math.min(currentPage * parseInt(queryParams.limit || "10"), total)}
+            {Math.min(currentPage * parseInt(queryParams.limit || "25"), total)}
           </span>{" "}
           件を表示
         </p>
