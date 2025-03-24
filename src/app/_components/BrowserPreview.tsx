@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 import { CodeEditorFilesForm } from "../q/[questionId]/_hooks/useCodeEditor";
 
 export const BrowserPreview: React.FC = () => {
+  const [isUpdating, setIsUpdating] = useState(false);
   const previewIframeRef = useRef<HTMLIFrameElement>(null);
   const { control } = useFormContext<CodeEditorFilesForm>();
   const files = useWatch({
@@ -24,11 +25,15 @@ export const BrowserPreview: React.FC = () => {
         },
         "*"
       );
+      setIsUpdating(false);
     };
 
     // iframeがロードされたら再度コードを送信
     const handleIframeLoad = () => sendCode();
     iframe.addEventListener("load", handleIframeLoad);
+
+    // ファイルが変更されたらisUpdatingをtrueにする
+    setIsUpdating(true);
 
     // ファイルが変更されたらコードを送信（遅延付き）
     const timer = setTimeout(sendCode, 1000);
@@ -42,8 +47,8 @@ export const BrowserPreview: React.FC = () => {
   return (
     <div className="flex h-full min-h-[500px] flex-col overflow-hidden bg-white">
       <div className="flex flex-col border-b border-gray-200">
-        <div className="flex items-center bg-gray-50 px-3 py-2">
-          <div className="mr-2 flex items-center space-x-2">
+        <div className="flex items-center gap-2 bg-gray-50 px-3 py-2">
+          <div className="flex items-center space-x-2">
             <div className="size-3 rounded-full bg-gray-300"></div>
             <div className="size-3 rounded-full bg-gray-300"></div>
             <div className="size-3 rounded-full bg-gray-300"></div>
@@ -51,6 +56,11 @@ export const BrowserPreview: React.FC = () => {
           <div className="flex-1 rounded-md border border-gray-300 bg-white px-3 py-1 text-xs text-gray-500">
             localhost:3000
           </div>
+          <div
+            className={`size-3 rounded-full ${
+              isUpdating ? "animate-pulse bg-blue-500" : "bg-gray-200"
+            }`}
+          />
         </div>
       </div>
 
