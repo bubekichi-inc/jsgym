@@ -24,7 +24,7 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: "Access-Control-Allow-Origin",
-            value: "https://jsgym.shiftb.dev",
+            value: "https://jsgym.shiftb.dev/",
           },
           {
             key: "Access-Control-Allow-Credentials",
