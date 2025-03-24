@@ -9,30 +9,34 @@ export const generateMetadata = async ({
   params: Promise<{ questionId: string }>;
 }): Promise<Metadata> => {
   const { questionId } = await params;
-  const { data } = await api.get<QuestionResponse>(
-    `${process.env.NEXT_PUBLIC_APP_BASE_URL}/api/questions/${questionId}`
-  );
+  try {
+    const { data } = await api.get<QuestionResponse>(
+      `${process.env.NEXT_PUBLIC_APP_BASE_URL}/api/questions/${questionId}`
+    );
 
-  if (!data.question) return { title: "Not Found" };
+    if (!data.question) return { title: "Not Found" };
 
-  const { title, content } = data.question;
+    const { title, content } = data.question;
 
-  return {
-    title: title + "｜JS Gym",
-    description: content,
-    openGraph: {
+    return {
       title: title + "｜JS Gym",
       description: content,
-      siteName: "JS Gym",
-      locale: "ja_JP",
-      type: "website",
-    },
-    twitter: {
-      title: title + "｜JS Gym",
-      description: content,
-      card: "summary_large_image",
-    },
-  };
+      openGraph: {
+        title: title + "｜JS Gym",
+        description: content,
+        siteName: "JS Gym",
+        locale: "ja_JP",
+        type: "website",
+      },
+      twitter: {
+        title: title + "｜JS Gym",
+        description: content,
+        card: "summary_large_image",
+      },
+    };
+  } catch {
+    return { title: "Not Found" };
+  }
 };
 
 export default async function Page() {
