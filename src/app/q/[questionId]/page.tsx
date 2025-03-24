@@ -10,7 +10,7 @@ export const generateMetadata = async ({
 }): Promise<Metadata> => {
   const { questionId } = await params;
   try {
-    const { data } = await api.get<QuestionResponse>(
+    const data = await api.get<QuestionResponse>(
       `${process.env.NEXT_PUBLIC_APP_BASE_URL}/api/questions/${questionId}`
     );
 
