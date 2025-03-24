@@ -1,87 +1,15 @@
+import axios from "axios";
 import { supabase } from "./supabase";
+const baseURL = process.env.NEXT_PUBLIC_APP_BASE_URL;
 
-const getAccessToken = async () => {
-  const { data } = await supabase.auth.getSession();
-  return data.session?.access_token || "";
-};
-export const api = {
-  get: async <ResponseType>(endpoint: string) => {
-    try {
-      const response = await fetch(endpoint, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: await getAccessToken(),
-        },
-      });
+export const api = axios.create({ baseURL });
 
-      const data: ResponseType = await response.json();
-
-      return data;
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  post: async <RequestType, ResponseType = undefined>(
-    endpoint: string,
-    payload: RequestType
-  ) => {
-    try {
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: await getAccessToken(),
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const data: ResponseType = await response.json();
-
-      return data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  },
-
-  put: async <RequestType, ResponseType>(
-    endpoint: string,
-    payload: RequestType
-  ) => {
-    try {
-      const response = await fetch(endpoint, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: await getAccessToken(),
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const data: ResponseType = await response.json();
-
-      return data;
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  del: async <ResponseType>(endpoint: string) => {
-    try {
-      const response = await fetch(endpoint, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: await getAccessToken(),
-        },
-      });
-
-      const data: ResponseType = await response.json();
-
-      return data;
-    } catch (error) {
-      throw error;
-    }
-  },
-};
+// tokenが取得できる状態の場合はAuthrizationに追加
+supabase.auth.onAuthStateChange((_event, session) => {
+  const token = session?.access_token;
+  if (token) {
+    api.defaults.headers.common["Authorization"] = token;
+  } else {
+    delete api.defaults.headers.common["Authorization"];
+  }
+});
