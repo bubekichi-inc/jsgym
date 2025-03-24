@@ -24,6 +24,7 @@ interface Props {
   touched: boolean;
   onReset: () => void;
   onReviewComplete: () => void;
+  showExecuteButton: boolean;
 }
 
 export const ToolBar: React.FC<Props> = ({
@@ -33,6 +34,7 @@ export const ToolBar: React.FC<Props> = ({
   touched,
   onReset,
   onReviewComplete,
+  showExecuteButton,
 }) => {
   const { watch } = useFormContext<CodeEditorFilesForm>();
   const { setRedirectQid } = useQuestionDetailRedirect();
@@ -128,14 +130,16 @@ export const ToolBar: React.FC<Props> = ({
   return (
     <>
       <div className="flex items-center gap-4 rounded-full border border-gray-700 bg-black px-4 py-2 text-white md:py-3">
-        <button
-          type="button"
-          onClick={onExecuteCode}
-          className="flex items-center gap-2 whitespace-nowrap rounded-full bg-gray-400 px-4 py-[10px] text-xs font-bold text-textMain md:text-sm"
-        >
-          <span className="hidden md:block">コードを実行</span>
-          <FontAwesomeIcon icon={faPlay} className="size-3" />
-        </button>
+        {showExecuteButton && (
+          <button
+            type="button"
+            onClick={onExecuteCode}
+            className="flex items-center gap-2 whitespace-nowrap rounded-full bg-gray-400 px-4 py-[10px] text-xs font-bold text-textMain md:text-sm"
+          >
+            <span className="hidden md:block">コードを実行</span>
+            <FontAwesomeIcon icon={faPlay} className="size-3" />
+          </button>
+        )}
         <button
           type="button"
           onClick={review}

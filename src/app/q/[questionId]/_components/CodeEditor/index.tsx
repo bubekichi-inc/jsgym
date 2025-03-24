@@ -211,6 +211,7 @@ export const CodeEditor: React.FC<Props> = ({
             touched={touched}
             onReset={resetCode}
             onReviewComplete={onReviewComplete}
+            showExecuteButton={showTerminal}
           />
         </div>
       </div>
