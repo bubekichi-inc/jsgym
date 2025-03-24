@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { FormProvider } from "react-hook-form";
 import { CodeEditor } from "../../../_components/CodeEditor";
@@ -20,12 +20,13 @@ export type TabType = "question" | "editor" | "preview";
 
 export const QuestionDetailPage: React.FC = () => {
   const params = useParams();
+  const router = useRouter();
   const [reviewBusy, setReviewBusy] = useState(false);
   const [chatBusy, setChatBusy] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>("question");
   const { isSp } = useDevice();
   const questionId = params.questionId as string;
-  const { data } = useQuestion({
+  const { data, error } = useQuestion({
     questionId,
   });
   const methods = useCodeEditor();
@@ -43,6 +44,10 @@ export const QuestionDetailPage: React.FC = () => {
         return "code";
     }
   }, [data?.question.type]);
+
+  if (error) {
+    router.replace("/not-found");
+  }
 
   if (isSp === undefined) return null;
 
