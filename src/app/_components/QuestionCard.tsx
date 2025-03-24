@@ -2,13 +2,14 @@
 
 import { faBookmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { QuestionLevel, QuestionType } from "@prisma/client";
+import { QuestionLevel } from "@prisma/client";
 import dayjs from "dayjs";
 import Image from "next/image";
 import Link from "next/link";
 import {
   levelTextMap,
   questionTagTextMap,
+  questionTypeTextMap,
   userQuestionColorMap,
   userQuestionTextMap,
 } from "@/app/_constants";
@@ -53,11 +54,11 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question }) => {
                   : "border-transparent bg-red-500 text-white"
               }`}
             >
-              {question.type === QuestionType.JAVA_SCRIPT
-                ? "JavaScript"
-                : question.type === QuestionType.REACT_JS
-                ? "React"
-                : ""}{" "}
+              {
+                questionTypeTextMap[
+                  question.type as keyof typeof questionTypeTextMap
+                ]
+              }{" "}
               {levelTextMap[question.level as keyof typeof levelTextMap]}
             </span>
           </div>

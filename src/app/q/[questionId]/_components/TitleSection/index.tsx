@@ -7,7 +7,11 @@ import { ExampleAnswerModal } from "../ExampleAnswerModal";
 import { StatusBadge } from "../StatusBadge";
 import { DropdownMenu } from "./DropdownMenu";
 import { Skeleton } from "@/app/_components/Skeleton";
-import { levelStyleMap, levelTextMap } from "@/app/_constants";
+import {
+  levelStyleMap,
+  levelTextMap,
+  questionTypeTextMap,
+} from "@/app/_constants";
 import { useQuestion } from "@/app/_hooks/useQuestion";
 
 export const TitleSection: React.FC = () => {
@@ -29,6 +33,11 @@ export const TitleSection: React.FC = () => {
               levelStyleMap[data.question.level as keyof typeof levelStyleMap]
             }`}
           >
+            {
+              questionTypeTextMap[
+                data.question.type as keyof typeof questionTypeTextMap
+              ]
+            }{" "}
             {levelTextMap[data.question.level as keyof typeof levelTextMap]}
           </span>
           <h1 className="text-sm font-bold md:text-lg">

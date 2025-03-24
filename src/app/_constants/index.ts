@@ -1,5 +1,12 @@
 import { UserQuestionStatus } from "@prisma/client";
 
+export const questionTypeTextMap = {
+  REACT_JS: "React",
+  REACT_TS: "React(TS)",
+  JAVA_SCRIPT: "JavaScript",
+  TYPE_SCRIPT: "TypeScript",
+};
+
 export const levelTextMap = {
   BASIC: "基礎",
   ADVANCED: "応用",
