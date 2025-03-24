@@ -39,7 +39,7 @@ export default async function Image({
   params: Promise<{ questionId: string }>;
 }) {
   const { questionId } = await params;
-  const data = await api.get<QuestionResponse>(
+  const { data } = await api.get<QuestionResponse>(
     `${process.env.NEXT_PUBLIC_APP_BASE_URL}/api/questions/${questionId}`
   );
 
