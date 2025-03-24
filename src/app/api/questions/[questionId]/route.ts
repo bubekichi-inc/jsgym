@@ -47,6 +47,7 @@ export type QuestionResponse = {
       name: string;
       ext: FileExtension;
       content: string;
+      isRoot: boolean;
     }[];
   } | null;
   nextQuestion: {
@@ -125,6 +126,7 @@ export const GET = async (request: NextRequest, { params }: Props) => {
                 name: true,
                 ext: true,
                 content: true,
+                isRoot: true,
               },
             },
           },

@@ -66,6 +66,7 @@ const generage = async () => {
           template: file.template,
           ext: FileExtension.JS, // FIXME: 複数ファイル問題になったら、FileExtension.JSでなく考える
           exampleAnswer: file.exampleAnswer,
+          isRoot: true, // FIXME: 複数ファイル問題になったら、isRoot: trueでなく考える
         })),
       },
     },

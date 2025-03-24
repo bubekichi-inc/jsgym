@@ -6,6 +6,7 @@ export type CodeEditorFile = {
   name: string;
   content: string;
   ext: FileExtension;
+  isRoot: boolean;
 };
 
 export type CodeEditorFilesForm = {

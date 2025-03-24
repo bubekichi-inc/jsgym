@@ -36,6 +36,7 @@ export const POST = async (request: NextRequest, { params }: Props) => {
             name: file.name,
             content: file.content,
             ext: file.ext,
+            isRoot: file.isRoot,
           })),
         },
       },

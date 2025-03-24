@@ -68,19 +68,21 @@ export const CodeEditor: React.FC<Props> = ({
   useEffect(() => {
     if (!data) return;
     const answerFiles: CodeEditorFile[] | undefined =
-      data.answer?.answerFiles.map(({ id, name, content, ext }) => ({
+      data.answer?.answerFiles.map(({ id, name, content, ext, isRoot }) => ({
         id,
         name,
         ext,
         content,
+        isRoot,
       }));
 
     const questionFiles: CodeEditorFile[] = data.question.questionFiles.map(
-      ({ id, name, template, ext }) => ({
+      ({ id, name, template, ext, isRoot }) => ({
         id,
         name,
         ext,
         content: template,
+        isRoot,
       })
     );
 
