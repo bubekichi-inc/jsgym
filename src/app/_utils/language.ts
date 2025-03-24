@@ -1,6 +1,7 @@
 import { FileExtension } from "@prisma/client";
-import { Language } from "../_types/Language";
-export const language = (type: FileExtension | undefined): Language => {
+import { EditorLanguage } from "../_types/EditorLanguage";
+
+export const language = (type: FileExtension | undefined): EditorLanguage => {
   if (!type) return "javascript";
   switch (type) {
     case FileExtension.JS:

@@ -2,14 +2,15 @@ import { Editor as MonacoEditor } from "@monaco-editor/react";
 import { shikiToMonaco } from "@shikijs/monaco";
 import React from "react";
 import { createHighlighter } from "shiki";
+import { EditorLanguage } from "@/app/_types/EditorLanguage";
 
 interface Props {
   fontSize: number;
   height: string;
   value: string | undefined;
   onChange: (value: string | undefined) => void;
-  theme: string;
-  language: string;
+  theme?: string;
+  language: EditorLanguage;
   fileName: string;
 }
 
@@ -18,7 +19,7 @@ export const Editor: React.FC<Props> = ({
   height,
   value,
   onChange,
-  theme,
+  theme = "slack-dark",
   language,
   fileName,
 }) => {
