@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AnswerFile } from "@prisma/client";
 import React, { useMemo, useState } from "react";
 import { toast } from "react-toastify";
-import { FileTabs } from "../CodeEditor/FileTabs";
+import { FileTabs } from "../../../../_components/CodeEditor/FileTabs";
 
 interface Props {
   files: AnswerFile[];

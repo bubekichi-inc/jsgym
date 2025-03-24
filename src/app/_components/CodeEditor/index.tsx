@@ -1,17 +1,15 @@
 "use client";
 
-import { Editor } from "@monaco-editor/react";
 import { EditorTheme } from "@prisma/client";
-import { shikiToMonaco } from "@shikijs/monaco";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
-import { createHighlighter } from "shiki";
 
 import {
   CodeEditorFile,
   CodeEditorFilesForm,
-} from "../../_hooks/useCodeEditor";
+} from "../../q/[questionId]/_hooks/useCodeEditor";
+import { Editor } from "./Editor";
 import { FileTabs } from "./FileTabs";
 import { Terminal } from "./Terminal";
 import { ToolBar } from "./ToolBar";
@@ -59,24 +57,11 @@ export const CodeEditor: React.FC<Props> = ({
   const theme = useMemo(() => {
     switch (editorSettingData?.editorSetting.editorTheme) {
       case EditorTheme.LIGHT:
-        return "github-light";
+        return "slack-ochin";
       case EditorTheme.DARK:
-        return "github-dark";
+        return "slack-dark";
       default:
-        return "github-dark";
-    }
-  }, [editorSettingData]);
-
-  const fontSize = useMemo(() => {
-    switch (editorSettingData?.editorSetting.editorFontSize) {
-      case "SMALL":
-        return 14;
-      case "MEDIUM":
-        return 16;
-      case "LARGE":
-        return 18;
-      default:
-        return 16;
+        return "slack-dark";
     }
   }, [editorSettingData]);
 
@@ -111,6 +96,19 @@ export const CodeEditor: React.FC<Props> = ({
       (file) => file.id === selectedFileId
     );
   }, [data, selectedFileId]);
+
+  const fontSize = useMemo(() => {
+    switch (editorSettingData?.editorSetting.editorFontSize) {
+      case "SMALL":
+        return 14;
+      case "MEDIUM":
+        return 16;
+      case "LARGE":
+        return 18;
+      default:
+        return 16;
+    }
+  }, [editorSettingData]);
 
   if (!data) return null;
   if (!editorSettingData) return null;
@@ -153,49 +151,14 @@ export const CodeEditor: React.FC<Props> = ({
         />
         <Editor
           height={editorHeight}
-          defaultLanguage={language(selectedFile?.ext)}
-          path={`${selectedFile?.name}.${selectedFile?.ext.toLowerCase()}`}
+          fontSize={fontSize}
+          language={language(selectedFile?.ext)}
+          theme={theme}
           value={
             watch("files").find((file) => file.id === selectedFile?.id)?.content
           }
           onChange={change}
-          theme={theme}
-          options={{
-            fontSize,
-            tabSize: 2,
-          }}
-          loading={
-            <div className="text-sm font-bold text-gray-400">Loading...</div>
-          }
-          onMount={(_editor, monaco) => {
-            (async () => {
-              const highlighter = await createHighlighter({
-                themes: ["slack-dark", "slack-ochin"],
-                langs: ["jsx", "tsx", "vue", "svelte"],
-              });
-
-              monaco.languages.register({ id: "jsx" });
-              monaco.languages.register({ id: "tsx" });
-              monaco.languages.register({ id: "vue" });
-              monaco.languages.register({ id: "svelte" });
-
-              monaco.editor.defineTheme("slack-dark", {
-                base: "vs-dark",
-                inherit: true,
-                rules: [],
-                colors: {},
-              });
-
-              monaco.editor.defineTheme("slack-ochin", {
-                base: "vs",
-                inherit: true,
-                rules: [],
-                colors: {},
-              });
-
-              shikiToMonaco(highlighter, monaco);
-            })();
-          }}
+          fileName={`${selectedFile?.name}.${selectedFile?.ext.toLowerCase()}`}
         />
         <div className="absolute bottom-2 right-2 md:bottom-4 md:right-4">
           <ToolBar

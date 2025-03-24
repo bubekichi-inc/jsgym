@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { FormProvider } from "react-hook-form";
 import { useCodeEditor } from "../_hooks/useCodeEditor";
 import { Chat } from "./Chat";
-import { CodeEditor } from "./CodeEditor";
+import { CodeEditor } from "../../../_components/CodeEditor";
 import { PcTab } from "./PcTab";
 import { Question } from "./Question";
 import { SpTab } from "./SpTab";

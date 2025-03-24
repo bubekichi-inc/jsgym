@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { QuestionFile } from "@prisma/client";
 import React, { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
-import { FileTabs } from "./CodeEditor/FileTabs";
+import { FileTabs } from "../../../_components/CodeEditor/FileTabs";
 import { Modal } from "@/app/_components/Modal";
 
 interface Props {
