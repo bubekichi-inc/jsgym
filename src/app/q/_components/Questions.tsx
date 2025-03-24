@@ -100,7 +100,7 @@ export const Questions: React.FC<Props> = ({ limit }) => {
               {/* タイプ選択タブ */}
               <div className="flex items-center gap-4 rounded-md bg-white px-4">
                 {!isSp && (
-                  <p className="text-xs font-bold text-gray-500">ジャンル</p>
+                  <p className="text-xs font-bold text-gray-500">タイプ</p>
                 )}
                 <div className="flex h-10 items-center justify-center rounded-md p-1 text-gray-500">
                   <button
