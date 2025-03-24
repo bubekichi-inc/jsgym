@@ -57,9 +57,7 @@ export default function AdminDashboard() {
     ) * 1.2;
 
   return (
-    <div className="mx-auto px-4 py-8">
-      <h1 className="mb-8 text-3xl font-bold">管理者ダッシュボード</h1>
-
+    <div className="mx-auto">
       <div className="mb-6">
         <label htmlFor="month" className="mb-2 block text-sm font-medium">
           月を選択:
