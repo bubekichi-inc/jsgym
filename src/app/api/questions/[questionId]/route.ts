@@ -134,6 +134,7 @@ export const GET = async (request: NextRequest, { params }: Props) => {
     const nextQuestion = await prisma.question.findFirst({
       where: {
         level: question.level,
+        type: question.type,
         userQuestions: {
           none: {
             userId: currentUser?.id,
