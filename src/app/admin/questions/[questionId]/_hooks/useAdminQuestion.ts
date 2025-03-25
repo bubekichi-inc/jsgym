@@ -97,7 +97,7 @@ export const useAdminQuestion = (questionId: string) => {
     setIsDeleting(true);
     setError(null);
     try {
-      await api.delete(`/api/admin/questions/${questionId}`);
+      await api.del(`/api/admin/questions/${questionId}`);
       router.push("/admin/questions");
       toast.success("問題を削除しました");
       return true;

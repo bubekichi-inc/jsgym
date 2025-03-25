@@ -56,7 +56,7 @@ export const useCreateQuestion = () => {
     setIsCreating(true);
     setError(null);
     try {
-      const response = await api.post<{ questionId: string }>(
+      const response = await api.post<QuestionFormData, { questionId: string }>(
         "/api/admin/questions",
         formData
       );

@@ -27,10 +27,7 @@ export default function CreateQuestionPage() {
     return (
       <div className="p-6">
         <div className="mb-4 rounded-md bg-red-50 p-4 text-red-700">
-          <p>
-            エラーが発生しました:{" "}
-            {error instanceof Error ? error.message : String(error)}
-          </p>
+          <p>エラーが発生しました: </p>
         </div>
       </div>
     );
