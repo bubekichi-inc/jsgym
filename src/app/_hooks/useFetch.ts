@@ -8,7 +8,7 @@ export const useFetch = <T>(path: string, configuration?: SWRConfiguration) => {
   const fetcher = async () => {
     try {
       const res = await api.get<T>(path);
-      return res.data;
+      return res;
     } catch (error) {
       throw error;
     }

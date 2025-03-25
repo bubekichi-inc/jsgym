@@ -21,7 +21,7 @@ export const BookmarkButton: React.FC = () => {
     try {
       setIsLoading(true);
       if (isBookmarked) {
-        await api.delete(`/api/questions/${questionId}/bookmark`);
+        await api.del(`/api/questions/${questionId}/bookmark`);
       } else {
         await api.post(`/api/questions/${questionId}/bookmark`, {});
       }

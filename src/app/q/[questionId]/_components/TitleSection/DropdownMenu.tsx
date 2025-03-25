@@ -30,7 +30,7 @@ export const DropdownMenu: React.FC<Props> = ({ onShowAnswer }) => {
   const handleClickRset = async () => {
     if (!confirm("解答とレビュー履歴が削除されます。宜しいですか？")) return;
     try {
-      await api.delete(`/api/questions/${questionId}/reset`);
+      await api.del(`/api/questions/${questionId}/reset`);
       mutateQuestion();
       mutateMessages();
       toast.success("リセットしました");
