@@ -5,16 +5,16 @@ import React from "react";
 export default function UsersPage() {
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-800">ユーザー一覧</h1>
         <div className="relative">
           <input
             type="text"
             placeholder="ユーザーを検索..."
-            className="px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="rounded-lg border border-gray-300 px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <svg
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
             width="20"
             height="20"
             fill="none"
@@ -31,7 +31,7 @@ export default function UsersPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="rounded-lg bg-white p-6 shadow">
         <p className="text-gray-600">ここにユーザー一覧が表示されます。</p>
       </div>
     </div>
