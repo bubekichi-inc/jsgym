@@ -1,12 +1,12 @@
 "use client";
 
-import { PanelResizeHandle } from "react-resizable-panels";
 import React from "react";
+import { PanelResizeHandle } from "react-resizable-panels";
 
 export const ResizeHandle: React.FC = () => {
   return (
-    <PanelResizeHandle className="group flex items-center justify-center w-2 mx-1 transition-colors duration-150 hover:bg-blue-500 active:bg-blue-600 cursor-col-resize">
-      <div className="w-0.5 h-16 bg-gray-300 group-hover:bg-white group-active:bg-white rounded" />
+    <PanelResizeHandle className="group mx-1 flex w-2 cursor-col-resize items-center justify-center transition-colors duration-150 hover:bg-blue-500 active:bg-blue-600">
+      <div className="h-16 w-0.5 rounded bg-gray-300 group-hover:bg-white group-active:bg-white" />
     </PanelResizeHandle>
   );
 };

@@ -95,7 +95,7 @@ export const QuestionFileEditor = ({
     ) {
       notifyChange();
     }
-  }, [fileName, fileExt, isRoot, template, exampleAnswer, file]);
+  }, [fileName, fileExt, isRoot, template, exampleAnswer, file, notifyChange]);
 
   // エディタで使用する言語を拡張子から決定
   const getEditorLanguage = (ext: FileExtension): EditorLanguage => {
