@@ -92,7 +92,7 @@ export const QuestionForm: React.FC<QuestionFormProps> = ({
   };
 
   return (
-    <div className="mx-auto max-w-6xl p-6">
+    <div className="">
       <div className="mb-6 flex items-center justify-between">
         <Link
           href="/admin/questions"
