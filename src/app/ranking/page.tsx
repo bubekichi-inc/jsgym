@@ -9,8 +9,8 @@ export const metadata: Metadata = {
 
 export default function RankingPage() {
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="mb-6 text-2xl font-bold">ユーザーランキング</h1>
+    <div className="mx-auto w-full max-w-[600px] px-4 py-8">
+      <h1 className="mb-6 text-2xl font-bold">ランキング</h1>
       <RankingTabs />
     </div>
   );
