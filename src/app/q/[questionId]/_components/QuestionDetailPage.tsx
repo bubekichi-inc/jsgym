@@ -3,15 +3,18 @@
 import { useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { FormProvider } from "react-hook-form";
+import { Panel, PanelGroup } from "react-resizable-panels";
 import { CodeEditor } from "../../../_components/CodeEditor";
 import { useCodeEditor } from "../_hooks/useCodeEditor";
 import { Chat } from "./Chat";
 import { PcTab } from "./PcTab";
 import { Question } from "./Question";
+import { ResizeHandle } from "./ResizeHandle";
 import { SpTab } from "./SpTab";
 import { TitleSection } from "./TitleSection";
 import { BrowserPreview } from "@/app/_components/BrowserPreview";
 import { useDevice } from "@/app/_hooks/useDevice";
+import { useLocalStorage } from "@/app/_hooks/useLocalStorage";
 import { useQuestion } from "@/app/_hooks/useQuestion";
 
 export type PageType = "browser" | "code";
@@ -30,6 +33,12 @@ export const QuestionDetailPage: React.FC = () => {
     questionId,
   });
   const methods = useCodeEditor();
+
+  // パネルのレイアウトをuseLocalStorageで管理
+  const [panelLayout, setPanelLayout] = useLocalStorage<number[]>(
+    "question-panel-layout",
+    [50, 50]
+  );
 
   const handleTabChange = (tab: TabType) => {
     setActiveTab(tab);
@@ -106,38 +115,51 @@ export const QuestionDetailPage: React.FC = () => {
         />
       )}
 
-      <div className="flex w-full justify-center">
-        <div
-          className={`${
-            pageType === "browser"
-              ? "mt-10 max-h-[calc(100vh-48px-40px)]"
-              : "max-h-[calc(100vh-48px)]"
-          } w-1/2 overflow-auto`}
-        >
-          {activeTab === "question" && (
-            <div className="relative space-y-6 p-6">
-              <TitleSection />
-              <Question />
-              <Chat
-                reviewBusy={reviewBusy}
-                chatBusy={chatBusy}
-                setChatBusy={setChatBusy}
-              />
-            </div>
-          )}
+      <PanelGroup
+        direction="horizontal"
+        className="w-full"
+        id="question-detail-panels"
+        onLayout={(sizes) => {
+          setPanelLayout(sizes);
+        }}
+      >
+        <Panel defaultSize={panelLayout[0]} minSize={10} id="question-panel">
+          <div
+            className={`${
+              pageType === "browser"
+                ? "mt-10 max-h-[calc(100vh-48px-40px)]"
+                : "max-h-[calc(100vh-48px)]"
+            } w-full overflow-auto`}
+          >
+            {activeTab === "question" && (
+              <div className="relative space-y-6 p-6">
+                <TitleSection />
+                <Question />
+                <Chat
+                  reviewBusy={reviewBusy}
+                  chatBusy={chatBusy}
+                  setChatBusy={setChatBusy}
+                />
+              </div>
+            )}
 
-          {activeTab === "preview" && <BrowserPreview />}
-        </div>
+            {activeTab === "preview" && <BrowserPreview />}
+          </div>
+        </Panel>
 
-        <div className="w-1/2">
-          <CodeEditor
-            reviewBusy={reviewBusy}
-            setReviewBusy={setReviewBusy}
-            onReviewComplete={() => handleTabChange("question")}
-            showTerminal={pageType === "code"}
-          />
-        </div>
-      </div>
+        <ResizeHandle />
+
+        <Panel defaultSize={panelLayout[1]} minSize={10} id="editor-panel">
+          <div className="w-full">
+            <CodeEditor
+              reviewBusy={reviewBusy}
+              setReviewBusy={setReviewBusy}
+              onReviewComplete={() => handleTabChange("question")}
+              showTerminal={pageType === "code"}
+            />
+          </div>
+        </Panel>
+      </PanelGroup>
     </FormProvider>
   );
 };
