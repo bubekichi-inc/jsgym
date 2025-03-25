@@ -10,3 +10,4 @@
 - Iconは、fontawesomeを用いてください。例: <FontAwesomeIcon icon={faUser} />
 - useContextなど、Providerは使わないでください。
 - any型は使わないでください。
+- バックエンドのroute.tsでparamsを受け取る際は、Promise<{param: string}>の型を用いてください。（Next.js v15以降の仕様です。）
