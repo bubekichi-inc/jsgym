@@ -70,9 +70,9 @@ export const Terminal: React.FC<Props> = ({
   };
 
   return (
-    <div className="border-t border-gray-700">
+    <div className="h-full border-t border-gray-700">
       <Header onClear={onClear} />
-      <div className="h-[240px] overflow-y-scroll bg-black">
+      <div className="h-full overflow-y-scroll bg-black">
         <div className="w-full px-4 text-white">
           {executionResult.map((item, index) => {
             return (
