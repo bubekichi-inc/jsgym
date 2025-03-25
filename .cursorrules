@@ -9,3 +9,4 @@
 - APIのリクエストボディとレスポンスボディのTypeScriptの型情報は、バックエンドのroute.ts内で定義して、フロントエンドでもその型を参照する様にして、型を常に共通化してください。
 - Iconは、fontawesomeを用いてください。例: <FontAwesomeIcon icon={faUser} />
 - useContextなど、Providerは使わないでください。
+- any型は使わないでください。
