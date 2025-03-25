@@ -1,38 +1,52 @@
 "use client";
 
 import React from "react";
+import { Pagination } from "./_components/Pagination";
+import { SearchFilter } from "./_components/SearchFilter";
+import { UserTable } from "./_components/UserTable";
+import { useAdminUsers } from "./_hooks/useAdminUsers";
 
 export default function UsersPage() {
+  const {
+    users,
+    total,
+    isLoading,
+    queryParams,
+    currentPage,
+    maxPage,
+    changePage,
+    changeSearch,
+    changeSort,
+    changeLimit,
+    clearFilters,
+  } = useAdminUsers();
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-800">ユーザー一覧</h1>
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="ユーザーを検索..."
-            className="rounded-lg border border-gray-300 px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <svg
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
-            width="20"
-            height="20"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M8.5 14A5.5 5.5 0 108.5 3a5.5 5.5 0 000 11zM17 17l-4.35-4.35"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </div>
       </div>
 
       <div className="rounded-lg bg-white p-6 shadow">
-        <p className="text-gray-600">ここにユーザー一覧が表示されます。</p>
+        <SearchFilter
+          queryParams={queryParams}
+          changeSearch={changeSearch}
+          clearFilters={clearFilters}
+        />
+        <UserTable
+          users={users}
+          queryParams={queryParams}
+          changeSort={changeSort}
+          isLoading={isLoading}
+        />
+        <Pagination
+          currentPage={currentPage}
+          maxPage={maxPage}
+          changePage={changePage}
+          changeLimit={changeLimit}
+          total={total}
+          queryParams={queryParams}
+        />
       </div>
     </div>
   );
