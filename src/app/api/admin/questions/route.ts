@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Prisma } from "@prisma/client";
+import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { getCurrentUser } from "../../_utils/getCurrentUser";
 import { buildPrisma } from "@/app/_utils/prisma";
 
@@ -34,6 +36,29 @@ export interface AdminQuestionsQuery {
   sortBy?: string;
   sortOrder?: "asc" | "desc";
 }
+
+// 問題ファイルのスキーマ定義
+const questionFileSchema = z.object({
+  id: z.string().optional(),
+  name: z.string().min(1),
+  ext: z.enum(["JS", "TS", "CSS", "HTML", "JSX", "TSX", "JSON"]),
+  exampleAnswer: z.string(),
+  template: z.string(),
+  isRoot: z.boolean().default(false),
+});
+
+// 問題作成リクエストのスキーマ定義
+const createQuestionSchema = z.object({
+  title: z.string().min(1),
+  content: z.string().min(1),
+  inputCode: z.string(),
+  outputCode: z.string(),
+  level: z.enum(["BASIC", "ADVANCED", "REAL_WORLD"]),
+  type: z.enum(["JAVA_SCRIPT", "TYPE_SCRIPT", "REACT_JS", "REACT_TS"]),
+  reviewerId: z.number().int().positive(),
+  questionFiles: z.array(questionFileSchema).min(1),
+  tagIds: z.array(z.number().int().positive()),
+});
 
 export async function GET(request: NextRequest) {
   try {
@@ -147,6 +172,89 @@ export async function GET(request: NextRequest) {
     console.error(error);
     return NextResponse.json(
       { error: "問題一覧の取得に失敗しました" },
+      { status: 500 }
+    );
+  }
+}
+
+// 問題を新規作成するPOSTエンドポイント
+export async function POST(request: NextRequest) {
+  try {
+    // 管理者権限の確認
+    const user = await getCurrentUser({ request });
+    if (user.role !== "ADMIN") {
+      return NextResponse.json(
+        { error: "管理者権限が必要です" },
+        { status: 403 }
+      );
+    }
+
+    // リクエストデータの検証
+    const body = await request.json();
+    const validationResult = createQuestionSchema.safeParse(body);
+
+    if (!validationResult.success) {
+      return NextResponse.json(
+        {
+          error: "無効なリクエストデータです",
+          details: validationResult.error.format(),
+        },
+        { status: 400 }
+      );
+    }
+
+    const data = validationResult.data;
+    const prisma = await buildPrisma();
+
+    // トランザクションを使用して問題と関連データを作成
+    const newQuestion = await prisma.$transaction(async (tx) => {
+      // 1. 問題本体の作成
+      const question = await tx.question.create({
+        data: {
+          id: nanoid(10),
+          title: data.title,
+          content: data.content,
+          inputCode: data.inputCode,
+          outputCode: data.outputCode,
+          level: data.level,
+          type: data.type,
+          reviewerId: data.reviewerId,
+        },
+      });
+
+      // 2. タグリレーションの作成
+      if (data.tagIds.length > 0) {
+        await tx.questionTagRelation.createMany({
+          data: data.tagIds.map((tagId) => ({
+            questionId: question.id,
+            tagId,
+          })),
+        });
+      }
+
+      // 3. 問題ファイルの作成
+      await tx.questionFile.createMany({
+        data: data.questionFiles.map((file) => ({
+          questionId: question.id,
+          name: file.name,
+          ext: file.ext,
+          exampleAnswer: file.exampleAnswer,
+          template: file.template,
+          isRoot: file.isRoot,
+        })),
+      });
+
+      return question;
+    });
+
+    return NextResponse.json({
+      message: "問題が正常に作成されました",
+      questionId: newQuestion.id,
+    });
+  } catch (error) {
+    console.error("問題の作成に失敗しました:", error);
+    return NextResponse.json(
+      { error: "問題の作成に失敗しました" },
       { status: 500 }
     );
   }
