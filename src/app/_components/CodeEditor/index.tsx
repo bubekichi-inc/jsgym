@@ -204,7 +204,7 @@ export const CodeEditor: React.FC<Props> = ({
             </div>
           </Panel>
 
-          <PanelResizeHandle className="flex h-1 cursor-row-resize items-center justify-center bg-gray-800 hover:bg-blue-500">
+          <PanelResizeHandle className="flex h-1 cursor-row-resize select-none items-center justify-center bg-gray-800 hover:bg-blue-500">
             <div className="h-1 w-8 rounded-full bg-gray-400"></div>
           </PanelResizeHandle>
 
