@@ -70,7 +70,7 @@ export const Header: React.FC = () => {
         <div className="mx-auto flex h-[48px] w-full items-center justify-between px-4 md:px-6">
           <div className="flex h-full items-center gap-2 md:gap-4">
             <div className="flex items-center gap-2 md:gap-4">
-              <Link className="font-bold" href="/">
+              <Link className="font-bold" href={data ? "/q" : "/"}>
                 <Logo width={80} />
               </Link>
               <span className="pt-1 text-xs font-black text-green-600 md:text-sm">
