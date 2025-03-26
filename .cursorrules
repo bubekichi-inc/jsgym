@@ -4,7 +4,7 @@
 - その他のAPIリクエスト（PUT, POST, DELTE）は、src/app/_utils/api.tsを用いてください。
 - UIはTailwindCSSを用いてください。
 - バックエンドのroute.tsで、ログインユーザーの認可処理は、src/app/api/_utils/getCurrentUser.tsを用いてください。
-- できるだけコンポーネントは細かく分割し、同ディレクトリ内に、_componentsディレクトリや、_hooks、_utilsディレクトリを作成してください。
+- できるだけコンポーネントやカスタムhookは細かく分割し、同ディレクトリ内に、_components、_hooks、_utilsディレクトリを作成してください。
 - バックエンド実装時は、常に prisma/schema.prisma を参照してください。
 - APIのリクエストボディとレスポンスボディのTypeScriptの型情報は、バックエンドのroute.ts内で定義して、フロントエンドでもその型を参照する様にして、型を常に共通化してください。
 - Iconは、fontawesomeを用いてください。例: <FontAwesomeIcon icon={faUser} />
