@@ -1,7 +1,7 @@
-import { QuestionLevel, QuestionType } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "../_utils/getCurrentUser";
 import { buildPrisma } from "@/app/_utils/prisma";
+import { calculateScore } from "@/app/_utils/score";
 
 // レスポンスの型を定義
 export type RankingResponse = {
@@ -19,32 +19,6 @@ export type RankingUser = {
 
 // 期間タイプの定義
 export type PeriodType = "daily" | "weekly" | "all";
-
-// 点数計算関数
-const calculateScore = (level: QuestionLevel, type: QuestionType): number => {
-  let baseScore = 0;
-
-  // レベルによるスコア
-  switch (level) {
-    case QuestionLevel.BASIC:
-      baseScore = 1;
-      break;
-    case QuestionLevel.ADVANCED:
-      baseScore = 2;
-      break;
-    case QuestionLevel.REAL_WORLD:
-      baseScore = 3;
-      break;
-  }
-
-  // タイプによる倍率
-  let multiplier = 1;
-  if (type === QuestionType.REACT_JS) {
-    multiplier = 2;
-  }
-
-  return baseScore * multiplier;
-};
 
 export async function GET(request: NextRequest) {
   try {

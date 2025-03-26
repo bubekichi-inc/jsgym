@@ -13,6 +13,7 @@ import { CommentLevelBadge } from "./CommentLevelBadge";
 import { MarkdownWrapper } from "@/app/_components/MarkdownWrapper";
 import { levelTextMap, typeTextMap } from "@/app/_constants";
 import { useQuestion } from "@/app/_hooks/useQuestion";
+import { calculateScore } from "@/app/_utils/score";
 
 interface Props {
   codeReview: {
@@ -80,6 +81,12 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
             {resultText}
           </span>
           <span className="text-sm font-bold">です {icon}</span>
+          {data && codeReview.result === "APPROVED" && (
+            <span className="text-sm font-bold">
+              ({calculateScore(data.question.level, data.question.type)}
+              点獲得)
+            </span>
+          )}
         </div>
         <MarkdownWrapper>{codeReview?.overview}</MarkdownWrapper>
         {codeReview.result === "REJECTED" && (
