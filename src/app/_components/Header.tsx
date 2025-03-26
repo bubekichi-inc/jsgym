@@ -78,7 +78,7 @@ export const Header: React.FC = () => {
               </span>
             </div>
             <nav className="flex h-full items-center">
-              <MenuItem href="/q" label="問題一覧" />
+              {/* <MenuItem href="/q" label="問題一覧" /> */}
               <MenuItem href="/ranking" label="ランキング" />
             </nav>
           </div>
