@@ -121,7 +121,7 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
                 成果をシェアしよう！
               </span>
               <a
-                href={`https://twitter.com/intent/tweet?text=${shareText}`}
+                href={`https://twitter.com/intent/tweet?text=${shareText}&hashtags=JSGym`}
                 target="_blank"
                 className=""
               >
