@@ -107,14 +107,6 @@ export const QuestionDetailPage: React.FC = () => {
 
   return (
     <FormProvider {...methods}>
-      {pageType === "browser" && (
-        <PcTab
-          activeTab={activeTab}
-          handleTabChange={handleTabChange}
-          isBusy={chatBusy || reviewBusy}
-        />
-      )}
-
       <PanelGroup
         direction="horizontal"
         className="w-full"
@@ -124,10 +116,17 @@ export const QuestionDetailPage: React.FC = () => {
         }}
       >
         <Panel defaultSize={panelLayout[0]} minSize={10} id="question-panel">
+          {pageType === "browser" && (
+            <PcTab
+              activeTab={activeTab}
+              handleTabChange={handleTabChange}
+              isBusy={chatBusy || reviewBusy}
+            />
+          )}
           <div
             className={`${
               pageType === "browser"
-                ? "mt-10 max-h-[calc(100vh-48px-40px)]"
+                ? "max-h-[calc(100vh-48px-40px)]"
                 : "max-h-[calc(100vh-48px)]"
             } w-full overflow-auto`}
           >

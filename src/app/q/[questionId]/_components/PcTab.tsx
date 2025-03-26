@@ -17,7 +17,7 @@ export const PcTab: React.FC<Props> = ({
   const activeButtonClass = "bg-blue-100 text-blue-600";
   const inactiveButtonClass = "bg-white text-gray-600";
   return (
-    <div className="fixed top-[48px] z-10 flex w-[50vw] items-center border-b border-gray-300 bg-white shadow-card">
+    <div className="sticky top-0 z-10 flex w-full items-center border-b border-gray-300 bg-white shadow-card">
       <div
         className={`${baseButtonClass} ${
           activeTab === "question" ? activeButtonClass : inactiveButtonClass
