@@ -165,10 +165,10 @@ model CodeReview {
   messageId      String?             @unique @map("message_id") @db.Uuid
   overview       String
   result         CodeReviewResult
+  score          Int
   createdAt      DateTime            @default(now()) @map("created_at")
   updatedAt      DateTime            @updatedAt @map("updated_at")
   userQuestionId String              @map("user_id") @db.Uuid
-  score          Int
   comments       CodeReviewComment[]
   message        Message?            @relation(fields: [messageId], references: [id])
   userQuestion   UserQuestion        @relation(fields: [userQuestionId], references: [id], onDelete: Cascade)
@@ -216,6 +216,7 @@ model Reviewer {
   updatedAt       DateTime   @updatedAt @map("updated_at")
   id              Int        @id @default(autoincrement())
   hiddenProfile   String     @map("hidden_profile")
+  fired           Boolean    @default(false) @map("fired")
   messages        Message[]
   questions       Question[]
   user            User?      @relation(fields: [userId], references: [id])
