@@ -15,6 +15,7 @@ export type ReviewerRequest = {
   hiddenProfile: string;
   profileImageUrl?: string;
   userId?: string;
+  fired: boolean;
 };
 
 // リクエストのレスポンスの型定義
@@ -66,7 +67,7 @@ export async function POST(
     }
 
     const data: ReviewerRequest = await request.json();
-    const { name, bio, hiddenProfile, profileImageUrl, userId } = data;
+    const { name, bio, hiddenProfile, profileImageUrl, userId, fired } = data;
 
     // バリデーション
     if (!name || !bio || !hiddenProfile) {
@@ -104,6 +105,7 @@ export async function POST(
         hiddenProfile,
         profileImageUrl: profileImageUrl || "",
         userId: userId || null,
+        fired: fired || false,
       },
     });
 

@@ -67,7 +67,7 @@ export async function PUT(
     }
 
     const data: ReviewerRequest = await request.json();
-    const { name, bio, hiddenProfile, profileImageUrl, userId } = data;
+    const { name, bio, hiddenProfile, profileImageUrl, userId, fired } = data;
 
     // バリデーション
     if (!name || !bio || !hiddenProfile) {
@@ -121,6 +121,7 @@ export async function PUT(
         hiddenProfile,
         profileImageUrl: profileImageUrl || existingReviewer.profileImageUrl,
         userId: userId || null,
+        fired: fired,
       },
     });
 

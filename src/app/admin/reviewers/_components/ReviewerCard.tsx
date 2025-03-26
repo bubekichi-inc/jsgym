@@ -33,6 +33,11 @@ export const ReviewerCard = ({ reviewer }: ReviewerCardProps) => {
           <div>
             <h3 className="text-xl font-semibold">{reviewer.name}</h3>
             <p className="text-sm text-gray-500">ID: {reviewer.id}</p>
+            {reviewer.fired && (
+              <span className="mt-1 inline-block rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-800">
+                退職済み
+              </span>
+            )}
           </div>
         </div>
 

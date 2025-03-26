@@ -15,6 +15,7 @@ export default function ReviewersPage() {
   const router = useRouter();
   const { reviewers: initialReviewers, isLoading, error } = useReviewers();
   const [reviewers, setReviewers] = useState<Reviewer[]>([]);
+  const [showFired, setShowFired] = useState(true);
 
   useEffect(() => {
     if (initialReviewers?.length > 0) {
@@ -26,6 +27,16 @@ export default function ReviewersPage() {
   const handleCreateNew = () => {
     router.push("/admin/reviewers/new");
   };
+
+  // 退職済みレビュワーの表示/非表示を切り替え
+  const handleToggleFired = () => {
+    setShowFired((prev) => !prev);
+  };
+
+  // 表示するレビュワーのフィルタリング
+  const filteredReviewers = showFired
+    ? reviewers
+    : reviewers.filter((reviewer) => !reviewer.fired);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -79,11 +90,39 @@ export default function ReviewersPage() {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {reviewers.map((reviewer) => (
-            <ReviewerCard key={reviewer.id} reviewer={reviewer} />
-          ))}
-        </div>
+        <>
+          <div className="mb-6 flex justify-end">
+            <div className="flex items-center">
+              <label htmlFor="showFired" className="mr-2 text-sm text-gray-700">
+                退職済みレビュワーを表示
+              </label>
+              <label className="relative inline-flex cursor-pointer items-center">
+                <input
+                  type="checkbox"
+                  id="showFired"
+                  className="peer sr-only"
+                  checked={showFired}
+                  onChange={handleToggleFired}
+                />
+                <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:size-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300"></div>
+              </label>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {filteredReviewers.map((reviewer) => (
+              <ReviewerCard key={reviewer.id} reviewer={reviewer} />
+            ))}
+          </div>
+
+          {showFired && reviewers.some((r) => r.fired) && (
+            <div className="mt-6 text-center text-sm text-gray-500">
+              <p>
+                退職済みのレビュワーは赤いラベルが表示されています。表示を切り替えるには、上部のトグルボタンを使用してください。
+              </p>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

@@ -18,6 +18,9 @@ export const GET = async () => {
   try {
     // レビュワー一覧を取得し、各レビュワーが持つ問題数もカウント
     const reviewers = await prisma.reviewer.findMany({
+      where: {
+        fired: false,
+      },
       select: {
         id: true,
         name: true,

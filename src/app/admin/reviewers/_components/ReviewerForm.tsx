@@ -19,6 +19,7 @@ export type ReviewerFormData = {
   hiddenProfile: string;
   profileImageUrl: string;
   userId?: string;
+  fired: boolean;
 };
 
 type ReviewerFormProps = {
@@ -37,6 +38,7 @@ export const ReviewerForm = ({
     hiddenProfile: initialData?.hiddenProfile || "",
     profileImageUrl: initialData?.profileImageUrl || "",
     userId: initialData?.userId || "",
+    fired: initialData?.fired || false,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -128,6 +130,15 @@ export const ReviewerForm = ({
     setFormData((prev) => ({
       ...prev,
       [name]: value,
+    }));
+  };
+
+  // チェックボックス変更ハンドラー
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: checked,
     }));
   };
 
@@ -256,7 +267,7 @@ export const ReviewerForm = ({
           </p>
         </div>
 
-        <div className="mb-6">
+        <div className="mb-4">
           <label
             className="mb-2 block font-semibold text-gray-700"
             htmlFor="userId"
@@ -273,6 +284,28 @@ export const ReviewerForm = ({
           />
           <p className="mt-1 text-xs text-gray-500">
             システム上のユーザーと紐付ける場合はIDを入力（オプション）
+          </p>
+        </div>
+
+        <div className="mb-6">
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              id="fired"
+              name="fired"
+              checked={formData.fired}
+              onChange={handleCheckboxChange}
+              className="size-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            />
+            <label
+              className="ml-2 block font-semibold text-gray-700"
+              htmlFor="fired"
+            >
+              退職済み
+            </label>
+          </div>
+          <p className="mt-1 pl-6 text-xs text-gray-500">
+            退職したレビュワーはこのチェックを入れてください
           </p>
         </div>
 
