@@ -8,8 +8,10 @@ import { useState } from "react";
 
 type TrendDataPoint = {
   month: string;
-  retention7d: number;
-  retention30d: number;
+  retentionSameDay: number;
+  retention1to7d: number;
+  retention8to14d: number;
+  retention15to30d: number;
   wau: number;
   mau: number;
   submissionsPerUser: number;
@@ -32,8 +34,10 @@ const generateDummyData = (): TrendDataPoint[] => {
 
     return {
       month: format(month, "yyyy年M月", { locale: ja }),
-      retention7d: Math.round(20 + baseValue * 20), // 20% → 40%
-      retention30d: Math.round(15 + baseValue * 15), // 15% → 30%
+      retentionSameDay: Math.round(60 + baseValue * 20), // 60% → 80%
+      retention1to7d: Math.round(35 + baseValue * 25), // 35% → 60%
+      retention8to14d: Math.round(25 + baseValue * 20), // 25% → 45%
+      retention15to30d: Math.round(15 + baseValue * 15), // 15% → 30%
       wau: 100 + Math.round(baseValue * 150), // 100 → 250
       mau: 250 + Math.round(baseValue * 450), // 250 → 700
       submissionsPerUser: 1 + baseValue, // 1 → 2
@@ -67,10 +71,14 @@ export default function KpiTrends() {
             <tr className="border-b border-gray-200 text-left">
               <th className="p-2 text-sm font-medium text-gray-600">月</th>
               <th className="p-2 text-sm font-medium text-gray-600">
-                7日リテンション
+                登録当日
+              </th>
+              <th className="p-2 text-sm font-medium text-gray-600">1-7日後</th>
+              <th className="p-2 text-sm font-medium text-gray-600">
+                8-14日後
               </th>
               <th className="p-2 text-sm font-medium text-gray-600">
-                30日リテンション
+                15-30日後
               </th>
               <th className="p-2 text-sm font-medium text-gray-600">WAU</th>
               <th className="p-2 text-sm font-medium text-gray-600">MAU</th>
@@ -93,22 +101,44 @@ export default function KpiTrends() {
                 <td className="p-2 font-medium">{data.month}</td>
                 <td className="p-2">
                   <div className="flex items-center">
-                    <span className="mr-2">{data.retention7d}%</span>
+                    <span className="mr-2">{data.retentionSameDay}%</span>
                     <div className="h-1.5 w-16 overflow-hidden rounded-full bg-gray-200">
                       <div
                         className="h-full rounded-full bg-indigo-500"
-                        style={{ width: `${data.retention7d}%` }}
+                        style={{ width: `${data.retentionSameDay}%` }}
                       ></div>
                     </div>
                   </div>
                 </td>
                 <td className="p-2">
                   <div className="flex items-center">
-                    <span className="mr-2">{data.retention30d}%</span>
+                    <span className="mr-2">{data.retention1to7d}%</span>
                     <div className="h-1.5 w-16 overflow-hidden rounded-full bg-gray-200">
                       <div
                         className="h-full rounded-full bg-indigo-500"
-                        style={{ width: `${data.retention30d}%` }}
+                        style={{ width: `${data.retention1to7d}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                </td>
+                <td className="p-2">
+                  <div className="flex items-center">
+                    <span className="mr-2">{data.retention8to14d}%</span>
+                    <div className="h-1.5 w-16 overflow-hidden rounded-full bg-gray-200">
+                      <div
+                        className="h-full rounded-full bg-indigo-500"
+                        style={{ width: `${data.retention8to14d}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                </td>
+                <td className="p-2">
+                  <div className="flex items-center">
+                    <span className="mr-2">{data.retention15to30d}%</span>
+                    <div className="h-1.5 w-16 overflow-hidden rounded-full bg-gray-200">
+                      <div
+                        className="h-full rounded-full bg-indigo-500"
+                        style={{ width: `${data.retention15to30d}%` }}
                       ></div>
                     </div>
                   </div>

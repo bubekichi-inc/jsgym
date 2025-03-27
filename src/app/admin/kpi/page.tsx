@@ -66,10 +66,33 @@ export default function KpiDashboard() {
                 <div>
                   <div className="mb-1 flex items-end justify-between">
                     <span className="text-sm text-gray-600">
-                      7日リテンション
+                      登録当日の活動
                     </span>
                     <span className="text-2xl font-bold">
-                      {data.retention.sevenDays.rate}%
+                      {data.retention.sameDay.rate}%
+                    </span>
+                  </div>
+                  <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
+                    <div
+                      className="h-full rounded-full bg-indigo-500"
+                      style={{
+                        width: `${Math.min(data.retention.sameDay.rate, 100)}%`,
+                      }}
+                    ></div>
+                  </div>
+                  <div className="mt-1 text-xs text-gray-500">
+                    {data.retention.sameDay.retained} /{" "}
+                    {data.retention.sameDay.total} ユーザー
+                  </div>
+                </div>
+
+                <div>
+                  <div className="mb-1 flex items-end justify-between">
+                    <span className="text-sm text-gray-600">
+                      登録1日後〜7日後
+                    </span>
+                    <span className="text-2xl font-bold">
+                      {data.retention.oneToSevenDays.rate}%
                     </span>
                   </div>
                   <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
@@ -77,7 +100,7 @@ export default function KpiDashboard() {
                       className="h-full rounded-full bg-indigo-500"
                       style={{
                         width: `${Math.min(
-                          data.retention.sevenDays.rate,
+                          data.retention.oneToSevenDays.rate,
                           100
                         )}%`,
                       }}
@@ -87,18 +110,18 @@ export default function KpiDashboard() {
                     目標値: 30% → 50%（3ヶ月以内）
                   </div>
                   <div className="mt-1 text-xs text-gray-500">
-                    {data.retention.sevenDays.retained} /{" "}
-                    {data.retention.sevenDays.total} ユーザー
+                    {data.retention.oneToSevenDays.retained} /{" "}
+                    {data.retention.oneToSevenDays.total} ユーザー
                   </div>
                 </div>
 
                 <div>
                   <div className="mb-1 flex items-end justify-between">
                     <span className="text-sm text-gray-600">
-                      30日リテンション
+                      登録8日後〜14日後
                     </span>
                     <span className="text-2xl font-bold">
-                      {data.retention.thirtyDays.rate}%
+                      {data.retention.eightToFourteenDays.rate}%
                     </span>
                   </div>
                   <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
@@ -106,7 +129,36 @@ export default function KpiDashboard() {
                       className="h-full rounded-full bg-indigo-500"
                       style={{
                         width: `${Math.min(
-                          data.retention.thirtyDays.rate,
+                          data.retention.eightToFourteenDays.rate,
+                          100
+                        )}%`,
+                      }}
+                    ></div>
+                  </div>
+                  <div className="mt-1 text-xs text-gray-500">
+                    目標値: 25% → 40%（3ヶ月以内）
+                  </div>
+                  <div className="mt-1 text-xs text-gray-500">
+                    {data.retention.eightToFourteenDays.retained} /{" "}
+                    {data.retention.eightToFourteenDays.total} ユーザー
+                  </div>
+                </div>
+
+                <div>
+                  <div className="mb-1 flex items-end justify-between">
+                    <span className="text-sm text-gray-600">
+                      登録15日後〜30日後
+                    </span>
+                    <span className="text-2xl font-bold">
+                      {data.retention.fifteenToThirtyDays.rate}%
+                    </span>
+                  </div>
+                  <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
+                    <div
+                      className="h-full rounded-full bg-indigo-500"
+                      style={{
+                        width: `${Math.min(
+                          data.retention.fifteenToThirtyDays.rate,
                           100
                         )}%`,
                       }}
@@ -116,8 +168,8 @@ export default function KpiDashboard() {
                     目標値: 20% → 35%（3〜6ヶ月以内）
                   </div>
                   <div className="mt-1 text-xs text-gray-500">
-                    {data.retention.thirtyDays.retained} /{" "}
-                    {data.retention.thirtyDays.total} ユーザー
+                    {data.retention.fifteenToThirtyDays.retained} /{" "}
+                    {data.retention.fifteenToThirtyDays.total} ユーザー
                   </div>
                 </div>
               </div>
@@ -289,10 +341,22 @@ export default function KpiDashboard() {
                     ベータ版で課金がなくても「継続利用」が高いほど、提携先や投資家に対して「価値のあるサービス」と説明しやすい。
                   </p>
                   <div className="rounded-lg bg-indigo-50 p-4">
-                    <h4 className="font-medium">目標：</h4>
+                    <h4 className="font-medium">説明：</h4>
+                    <p className="mb-2">
+                      ユーザーが登録した日を起点として、以下の期間でのアクティビティ（問題への取り組み）を測定します：
+                    </p>
                     <ul className="ml-4 list-disc">
-                      <li>7日リテンション率: 30% → 50%（3ヶ月以内）</li>
-                      <li>30日リテンション率: 20% → 35%（3〜6ヶ月以内）</li>
+                      <li>登録当日：初期体験の満足度を測る指標</li>
+                      <li>1〜7日後：短期的な継続率の指標</li>
+                      <li>8〜14日後：中期的な継続率の指標</li>
+                      <li>15〜30日後：長期的な継続率の指標</li>
+                    </ul>
+                    <h4 className="mt-3 font-medium">目標：</h4>
+                    <ul className="ml-4 list-disc">
+                      <li>登録当日：80%以上（初期体験の最適化）</li>
+                      <li>1〜7日後：50%以上（3ヶ月以内）</li>
+                      <li>8〜14日後：40%以上（3ヶ月以内）</li>
+                      <li>15〜30日後：35%以上（3〜6ヶ月以内）</li>
                     </ul>
                   </div>
                 </div>

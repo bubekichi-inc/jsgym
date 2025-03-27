@@ -14,7 +14,7 @@ import { buildPrisma } from "@/app/_utils/prisma";
 
 // APIレスポンスの型定義
 export type RetentionData = {
-  period: "7days" | "30days";
+  period: "same_day" | "1_7_days" | "8_14_days" | "15_30_days";
   rate: number;
   total: number;
   retained: number;
@@ -36,8 +36,10 @@ export type SubmissionData = {
 
 export type KPIResponse = {
   retention: {
-    sevenDays: RetentionData;
-    thirtyDays: RetentionData;
+    sameDay: RetentionData;
+    oneToSevenDays: RetentionData;
+    eightToFourteenDays: RetentionData;
+    fifteenToThirtyDays: RetentionData;
   };
   activeUsers: {
     weekly: ActiveUsersData;
@@ -63,95 +65,122 @@ export async function GET(request: NextRequest) {
     const prisma = await buildPrisma();
     const now = new Date();
 
-    // 7日リテンション率計算
-    const sevenDaysAgo = subDays(now, 7);
-    const sevenDaysStart = startOfDay(sevenDaysAgo);
-    const sevenDaysEnd = endOfDay(sevenDaysAgo);
+    // リテンションデータを計算する関数
+    const calculateRetention = async (
+      startDaysAgo: number,
+      endDaysAgo: number,
+      periodName: "same_day" | "1_7_days" | "8_14_days" | "15_30_days"
+    ): Promise<RetentionData> => {
+      const startDate = subDays(now, startDaysAgo);
+      const endDate = subDays(now, endDaysAgo);
+      const periodStart = startOfDay(startDate);
+      const periodEnd = endOfDay(endDate);
 
-    // 7日前に登録したユーザーを取得
-    const sevenDaysUsers = await prisma.user.findMany({
-      where: {
-        createdAt: {
-          gte: sevenDaysStart,
-          lte: sevenDaysEnd,
+      // 対象期間に登録したユーザーを取得
+      const users = await prisma.user.findMany({
+        where: {
+          createdAt: {
+            gte: periodStart,
+            lte: periodEnd,
+          },
         },
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    const sevenDaysUserIds = sevenDaysUsers.map((user) => user.id);
-    const sevenDaysTotal = sevenDaysUserIds.length;
-
-    // 7日以内にuserQuestionの記録があるユーザー数を計算
-    const sevenDaysRetainedCount =
-      sevenDaysTotal > 0
-        ? await prisma.userQuestion
-            .groupBy({
-              by: ["userId"],
-              where: {
-                userId: {
-                  in: sevenDaysUserIds,
-                },
-                createdAt: {
-                  gte: sevenDaysStart,
-                  lte: now,
-                },
-              },
-            })
-            .then((results) => results.length)
-        : 0;
-
-    const sevenDaysRetention =
-      sevenDaysTotal > 0
-        ? Math.round((sevenDaysRetainedCount / sevenDaysTotal) * 100)
-        : 0;
-
-    // 30日リテンション率計算
-    const thirtyDaysAgo = subDays(now, 30);
-    const thirtyDaysStart = startOfDay(thirtyDaysAgo);
-    const thirtyDaysEnd = endOfDay(thirtyDaysAgo);
-
-    // 30日前に登録したユーザーを取得
-    const thirtyDaysUsers = await prisma.user.findMany({
-      where: {
-        createdAt: {
-          gte: thirtyDaysStart,
-          lte: thirtyDaysEnd,
+        select: {
+          id: true,
+          createdAt: true,
         },
-      },
-      select: {
-        id: true,
-      },
-    });
+      });
 
-    const thirtyDaysUserIds = thirtyDaysUsers.map((user) => user.id);
-    const thirtyDaysTotal = thirtyDaysUserIds.length;
+      const total = users.length;
 
-    // 30日以内にuserQuestionの記録があるユーザー数を計算
-    const thirtyDaysRetainedCount =
-      thirtyDaysTotal > 0
-        ? await prisma.userQuestion
-            .groupBy({
-              by: ["userId"],
-              where: {
-                userId: {
-                  in: thirtyDaysUserIds,
-                },
-                createdAt: {
-                  gte: thirtyDaysStart,
-                  lte: now,
-                },
+      // 各ユーザーについて登録日から指定期間内にuserQuestionを作成したかを確認
+      let retainedCount = 0;
+
+      if (total > 0) {
+        // 各ユーザーごとにチェック
+        for (const user of users) {
+          // ユーザーの登録日
+          const userCreatedAt = user.createdAt;
+
+          let activityCheckStartDate, activityCheckEndDate;
+
+          if (periodName === "same_day") {
+            // 登録当日
+            activityCheckStartDate = startOfDay(userCreatedAt);
+            activityCheckEndDate = endOfDay(userCreatedAt);
+          } else if (periodName === "1_7_days") {
+            // 登録1日後〜7日後
+            activityCheckStartDate = startOfDay(
+              new Date(userCreatedAt.getTime() + 24 * 60 * 60 * 1000)
+            );
+            activityCheckEndDate = endOfDay(
+              new Date(userCreatedAt.getTime() + 7 * 24 * 60 * 60 * 1000)
+            );
+          } else if (periodName === "8_14_days") {
+            // 登録8日後〜14日後
+            activityCheckStartDate = startOfDay(
+              new Date(userCreatedAt.getTime() + 8 * 24 * 60 * 60 * 1000)
+            );
+            activityCheckEndDate = endOfDay(
+              new Date(userCreatedAt.getTime() + 14 * 24 * 60 * 60 * 1000)
+            );
+          } else if (periodName === "15_30_days") {
+            // 登録15日後〜30日後
+            activityCheckStartDate = startOfDay(
+              new Date(userCreatedAt.getTime() + 15 * 24 * 60 * 60 * 1000)
+            );
+            activityCheckEndDate = endOfDay(
+              new Date(userCreatedAt.getTime() + 30 * 24 * 60 * 60 * 1000)
+            );
+          }
+
+          // 該当期間内にユーザーがアクティビティを行ったか確認
+          const userActivity = await prisma.userQuestion.findFirst({
+            where: {
+              userId: user.id,
+              createdAt: {
+                gte: activityCheckStartDate,
+                lte: activityCheckEndDate,
               },
-            })
-            .then((results) => results.length)
-        : 0;
+            },
+          });
 
-    const thirtyDaysRetention =
-      thirtyDaysTotal > 0
-        ? Math.round((thirtyDaysRetainedCount / thirtyDaysTotal) * 100)
-        : 0;
+          if (userActivity) {
+            retainedCount++;
+          }
+        }
+      }
+
+      const retentionRate =
+        total > 0 ? Math.round((retainedCount / total) * 100) : 0;
+
+      return {
+        period: periodName,
+        rate: retentionRate,
+        total,
+        retained: retainedCount,
+      };
+    };
+
+    // 各期間のリテンションを計算
+    // 登録当日
+    const sameDayRetention = await calculateRetention(30, 1, "same_day");
+
+    // 登録1日後〜7日後
+    const oneToSevenDaysRetention = await calculateRetention(30, 1, "1_7_days");
+
+    // 登録8日後〜14日後
+    const eightToFourteenDaysRetention = await calculateRetention(
+      30,
+      1,
+      "8_14_days"
+    );
+
+    // 登録15日後〜30日後
+    const fifteenToThirtyDaysRetention = await calculateRetention(
+      30,
+      1,
+      "15_30_days"
+    );
 
     // WAU(Weekly Active Users)の計算
     const weekStart = startOfWeek(now, { weekStartsOn: 1 }); // 月曜日から始まる週
@@ -211,18 +240,10 @@ export async function GET(request: NextRequest) {
     // レスポンスデータを構築
     const response: KPIResponse = {
       retention: {
-        sevenDays: {
-          period: "7days",
-          rate: sevenDaysRetention,
-          total: sevenDaysTotal,
-          retained: sevenDaysRetainedCount,
-        },
-        thirtyDays: {
-          period: "30days",
-          rate: thirtyDaysRetention,
-          total: thirtyDaysTotal,
-          retained: thirtyDaysRetainedCount,
-        },
+        sameDay: sameDayRetention,
+        oneToSevenDays: oneToSevenDaysRetention,
+        eightToFourteenDays: eightToFourteenDaysRetention,
+        fifteenToThirtyDays: fifteenToThirtyDaysRetention,
       },
       activeUsers: {
         weekly: {
