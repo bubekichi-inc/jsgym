@@ -5,10 +5,10 @@ import RankingList from "./RankingList";
 import { PeriodType } from "@/app/api/ranking/route";
 
 export default function RankingTabs() {
-  const [activeTab, setActiveTab] = useState<PeriodType>("daily");
+  const [activeTab, setActiveTab] = useState<PeriodType>("weekly");
 
   const tabs: { label: string; value: PeriodType }[] = [
-    { label: "本日", value: "daily" },
+    // { label: "本日", value: "daily" },
     { label: "週間", value: "weekly" },
     { label: "全期間", value: "all" },
   ];
