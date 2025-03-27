@@ -2,7 +2,6 @@
 
 import { faBookmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { QuestionLevel } from "@prisma/client";
 import dayjs from "dayjs";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,6 +9,7 @@ import {
   levelTextMap,
   questionTagTextMap,
   questionTypeTextMap,
+  typeStyleMap,
   userQuestionColorMap,
   userQuestionTextMap,
 } from "@/app/_constants";
@@ -21,12 +21,24 @@ interface QuestionCardProps {
 
 export const QuestionCard: React.FC<QuestionCardProps> = ({ question }) => {
   return (
-    <div className="relative flex h-full flex-col rounded-lg border bg-white p-6 py-8 shadow-sm">
-      <div className="space-y-2 pb-4">
+    <div className="relative flex h-full flex-col rounded-lg border bg-white p-6 pb-5 pt-10 shadow-sm">
+      <div className="space-y-1 pb-4">
         <div className="flex items-center justify-between">
-          <div className="mb-1 text-sm">
-            <span className="text-gray-600">
+          <div className="text-sm">
+            {/* <span className="text-gray-600">
               {dayjs(question.createdAt).format("YYYY/MM/DD_HH:mm")}
+            </span> */}
+            <span
+              className={`inline-flex items-center whitespace-nowrap rounded-full border border-transparent px-2.5 py-0.5 text-sm font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 ${
+                typeStyleMap[question.type as keyof typeof typeStyleMap]
+              } text-white`}
+            >
+              {
+                questionTypeTextMap[
+                  question.type as keyof typeof questionTypeTextMap
+                ]
+              }{" "}
+              {levelTextMap[question.level as keyof typeof levelTextMap]}
             </span>
             <span>
               {dayjs(question.createdAt).isSame(dayjs(), "day") && (
@@ -45,22 +57,6 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question }) => {
                 />
               </div>
             )}
-            <span
-              className={`inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-sm font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 ${
-                question.level === QuestionLevel.BASIC
-                  ? "border-transparent bg-blue-500 text-white"
-                  : question.level === QuestionLevel.ADVANCED
-                  ? "border-transparent bg-yellow-500 text-white"
-                  : "border-transparent bg-red-500 text-white"
-              }`}
-            >
-              {
-                questionTypeTextMap[
-                  question.type as keyof typeof questionTypeTextMap
-                ]
-              }{" "}
-              {levelTextMap[question.level as keyof typeof levelTextMap]}
-            </span>
           </div>
         </div>
         <h3 className="text-xl font-bold">{question.title}</h3>

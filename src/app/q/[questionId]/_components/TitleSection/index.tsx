@@ -8,9 +8,9 @@ import { StatusBadge } from "../StatusBadge";
 import { DropdownMenu } from "./DropdownMenu";
 import { Skeleton } from "@/app/_components/Skeleton";
 import {
-  levelStyleMap,
   levelTextMap,
   questionTypeTextMap,
+  typeStyleMap,
 } from "@/app/_constants";
 import { useQuestion } from "@/app/_hooks/useQuestion";
 
@@ -30,7 +30,7 @@ export const TitleSection: React.FC = () => {
         <div className="flex items-center gap-1 md:gap-3">
           <span
             className={`whitespace-nowrap rounded-full px-2 py-1 text-xs font-bold text-white ${
-              levelStyleMap[data.question.level as keyof typeof levelStyleMap]
+              typeStyleMap[data.question.type as keyof typeof typeStyleMap]
             }`}
           >
             {
