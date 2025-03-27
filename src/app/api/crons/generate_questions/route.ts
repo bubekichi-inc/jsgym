@@ -37,7 +37,11 @@ export const maxDuration = 180;
 
 const generage = async () => {
   const prisma = await buildPrisma();
-  const reviewes = await prisma.reviewer.findMany();
+  const reviewes = await prisma.reviewer.findMany({
+    where: {
+      fired: false,
+    },
+  });
   // ランダムにレビュワーを選択
   const reviewer = reviewes[Math.floor(Math.random() * reviewes.length)];
 
