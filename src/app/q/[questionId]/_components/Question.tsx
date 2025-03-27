@@ -7,6 +7,7 @@ import { useParams } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { ReviewerModal } from "./ReviewerModal";
+import { MarkdownWrapper } from "@/app/_components/MarkdownWrapper";
 import { Skeleton } from "@/app/_components/Skeleton";
 import { useQuestion } from "@/app/_hooks/useQuestion";
 
@@ -49,9 +50,7 @@ export const Question: React.FC = () => {
             )}
             <p className="font-bold">お題</p>
           </div>
-          <div className="whitespace-pre-wrap break-words text-sm md:text-base">
-            {data.question.content}
-          </div>
+          <MarkdownWrapper>{data.question.content}</MarkdownWrapper>
         </div>
 
         {(data.question.inputCode || data.question.outputCode) && (

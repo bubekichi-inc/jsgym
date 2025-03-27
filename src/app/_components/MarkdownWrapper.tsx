@@ -52,14 +52,8 @@ export const MarkdownWrapper: React.FC<Props> = ({ children }) => {
             node?.tagName === "code" && node?.children[0].position;
           return isInline ? (
             <code
-              className={className}
+              className={`${className} mx-1 rounded border border-gray-200 bg-gray-50 px-2 py-1 text-xs font-bold text-orange-600`}
               {...props}
-              style={{
-                backgroundColor: "oklch(0.901 0.076 70.697)",
-                margin: "0 2px",
-                padding: "1px 4px",
-                borderRadius: "2px",
-              }}
             >
               {codeChildren}
             </code>
