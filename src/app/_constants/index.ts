@@ -14,10 +14,10 @@ export const levelTextMap = {
 };
 
 export const typeStyleMap = {
-  REACT_JS: "bg-blue-600",
+  REACT_JS: "bg-sky-400",
   REACT_TS: "bg-blue-600",
-  JAVA_SCRIPT: "bg-yellow-600",
-  TYPE_SCRIPT: "bg-yellow-600",
+  JAVA_SCRIPT: "bg-amber-400",
+  TYPE_SCRIPT: "bg-blue-600",
 };
 
 export const typeTextMap = {
