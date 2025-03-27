@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { Editor } from "@/app/_components/CodeEditor/Editor";
 import { QuestionFileEditor } from "@/app/admin/questions/[questionId]/_components/QuestionFileEditor";
+import { TagMultiSelect } from "@/app/admin/questions/_components/TagMultiSelect";
 
 // QuestionFileの型定義
 export type QuestionFile = {
@@ -200,6 +201,14 @@ export const QuestionForm: React.FC<QuestionFormProps> = ({
               onChange={(e) => handleChange("content", e.target.value)}
               className="h-32 w-full rounded border border-gray-300 px-3 py-2"
               required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="mb-1 block text-sm font-medium">タグ</label>
+            <TagMultiSelect
+              selectedTagIds={formData.tagIds}
+              onChange={(tagIds) => handleChange("tagIds", tagIds)}
             />
           </div>
 
