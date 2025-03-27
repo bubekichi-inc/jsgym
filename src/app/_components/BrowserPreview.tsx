@@ -70,7 +70,7 @@ export const BrowserPreview: React.FC = () => {
             ref={previewIframeRef}
             sandbox="allow-scripts allow-modals"
             src="/preview/index.html"
-            className="size-full border-0"
+            className="size-full h-screen border-0"
             title="React Preview"
           />
         </div>
