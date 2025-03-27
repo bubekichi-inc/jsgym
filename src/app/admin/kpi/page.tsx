@@ -10,7 +10,6 @@ import {
   faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import KpiTrends from "./_components/KpiTrends";
 import { useKpi } from "@/app/_hooks/useKpi";
 
 export default function KpiDashboard() {
@@ -302,9 +301,6 @@ export default function KpiDashboard() {
               </div>
             </div>
           </div>
-
-          {/* KPI推移 */}
-          <KpiTrends />
 
           {/* KPI詳細情報 */}
           <div className="rounded-lg bg-white p-6 shadow-md">
