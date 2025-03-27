@@ -17,6 +17,11 @@ const menuItems = [
     icon: faChartLine,
   },
   {
+    title: "KPI",
+    href: "/admin/kpi",
+    icon: faChartLine,
+  },
+  {
     title: "問題一覧",
     href: "/admin/questions",
     icon: faClipboardList,
