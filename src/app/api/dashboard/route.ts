@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { buildError } from "../_utils/buildError";
 import { getCurrentUser } from "../_utils/getCurrentUser";
 import { buildPrisma } from "@/app/_utils/prisma";
+import { eachDayOfInterval, format, subMonths } from "date-fns";
 
 export type DashboardResponse = {
   // 基本的な学習統計
@@ -50,6 +51,12 @@ export type DashboardResponse = {
     date: string;
     questionsCompleted: number;
     answersSubmitted: number;
+  }[];
+
+  // 過去6ヶ月間の活動データ
+  activityHistory: {
+    date: string;
+    count: number;
   }[];
 };
 
@@ -251,6 +258,34 @@ export async function GET(request: NextRequest) {
       };
     });
 
+    // 過去6ヶ月間の活動データを取得
+    const endDate = new Date();
+    const startDate = subMonths(endDate, 6);
+
+    // 日付の範囲を生成
+    const dateRange = eachDayOfInterval({ start: startDate, end: endDate });
+
+    // 各日付の活動数を初期化
+    const activityHistory = dateRange.map((date) => ({
+      date: format(date, "yyyy-MM-dd"),
+      count: 0,
+    }));
+
+    // 完了した問題の日付ごとにカウント
+    userQuestions.forEach((uq) => {
+      if (
+        uq.status === "PASSED" &&
+        uq.updatedAt >= startDate &&
+        uq.updatedAt <= endDate
+      ) {
+        const dateStr = format(uq.updatedAt, "yyyy-MM-dd");
+        const dayData = activityHistory.find((day) => day.date === dateStr);
+        if (dayData) {
+          dayData.count += 1;
+        }
+      }
+    });
+
     const responseData: DashboardResponse = {
       totalQuestions,
       completedQuestions,
@@ -261,6 +296,7 @@ export async function GET(request: NextRequest) {
       questionsByTag,
       recentActivities,
       weeklyStats,
+      activityHistory,
     };
 
     return NextResponse.json(responseData);
