@@ -1,8 +1,8 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useRef, useState } from "react";
 import { useQuestionTags } from "../_hooks/useQuestionTags";
 
 interface TagMultiSelectProps {
@@ -80,7 +80,7 @@ export const TagMultiSelect: React.FC<TagMultiSelectProps> = ({
                 onClick={() => toggleTag(tag.id)}
                 className="flex cursor-pointer items-center px-4 py-2 hover:bg-gray-100"
               >
-                <div className="mr-2 flex h-5 w-5 items-center justify-center rounded border border-gray-300">
+                <div className="mr-2 flex size-5 items-center justify-center rounded border border-gray-300">
                   {selectedTagIds.includes(tag.id) && (
                     <FontAwesomeIcon
                       icon={faCheck}
