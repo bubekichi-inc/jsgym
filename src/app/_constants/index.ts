@@ -13,6 +13,12 @@ export const levelTextMap = {
   REAL_WORLD: "実務模擬",
 };
 
+export const levelStyleMap = {
+  BASIC: "bg-sky-400",
+  ADVANCED: "bg-amber-400",
+  REAL_WORLD: "bg-orange-600",
+};
+
 export const typeStyleMap = {
   REACT_JS: "bg-sky-400",
   REACT_TS: "bg-blue-600",
