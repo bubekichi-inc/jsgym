@@ -1,11 +1,13 @@
 "use client";
 
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
 import { BookmarkButton } from "../BookmarkButton";
 import { ExampleAnswerModal } from "../ExampleAnswerModal";
 import { StatusBadge } from "../StatusBadge";
 import { DropdownMenu } from "./DropdownMenu";
+import { useMe } from "@/app/(member)/_hooks/useMe";
 import { Skeleton } from "@/app/_components/Skeleton";
 import {
   levelTextMap,
@@ -18,6 +20,7 @@ export const TitleSection: React.FC = () => {
   const [showAnswerModal, setShowAnswerModal] = useState(false);
   const params = useParams();
   const questionId = params.questionId as string;
+  const { data: me } = useMe();
   const { data } = useQuestion({
     questionId,
   });
@@ -43,6 +46,11 @@ export const TitleSection: React.FC = () => {
           <h1 className="text-sm font-bold md:text-lg">
             {data.question.title}
           </h1>
+          {me?.role === "ADMIN" && (
+            <Link href={`/admin/questions/${data.question.id}`}>
+              管理画面で編集
+            </Link>
+          )}
         </div>
         <div className="flex items-center md:gap-1">
           <div className="px-1">
