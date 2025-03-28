@@ -5,12 +5,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRef, useState } from "react";
 import { useQuestionTags } from "../_hooks/useQuestionTags";
 
-interface TagMultiSelectProps {
+interface Props {
   selectedTagIds: number[];
   onChange: (selectedTagIds: number[]) => void;
 }
 
-export const TagMultiSelect: React.FC<TagMultiSelectProps> = ({
+export const TagMultiSelect: React.FC<Props> = ({
   selectedTagIds,
   onChange,
 }) => {
