@@ -5,6 +5,7 @@ import {
   faClipboardList,
   faUsers,
   faUserGroup,
+  faTags,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
@@ -25,6 +26,11 @@ const menuItems = [
     title: "問題一覧",
     href: "/admin/questions",
     icon: faClipboardList,
+  },
+  {
+    title: "問題タグ管理",
+    href: "/admin/question_tags",
+    icon: faTags,
   },
   {
     title: "ユーザー一覧",
