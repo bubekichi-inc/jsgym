@@ -55,7 +55,7 @@ export default function LessonList({
         >
           <div className="border-b border-gray-200 bg-gray-50 p-4">
             <h3 className="text-xl font-semibold">
-              <span className="mr-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-blue-500 text-sm font-medium text-white">
+              <span className="mr-2 inline-flex size-7 items-center justify-center rounded-full bg-blue-500 text-sm font-medium text-white">
                 {lessonIndex + 1}
               </span>
               レッスン{lessonIndex + 1}: {lesson.title}
@@ -81,7 +81,7 @@ export default function LessonList({
                   >
                     <div className="flex-1">
                       <div className="flex items-center">
-                        <span className="mr-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-gray-200 text-xs font-medium text-gray-700">
+                        <span className="mr-2 inline-flex size-5 items-center justify-center rounded-full bg-gray-200 text-xs font-medium text-gray-700">
                           {questionIndex + 1}
                         </span>
                         <h4 className="font-medium">
