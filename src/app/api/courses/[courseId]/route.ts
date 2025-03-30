@@ -1,7 +1,7 @@
-import { NextResponse, NextRequest } from "next/server";
-import { buildPrisma } from "@/app/_utils/prisma";
-import { getCurrentUser } from "../../_utils/getCurrentUser";
 import { UserQuestionStatus } from "@prisma/client";
+import { NextResponse, NextRequest } from "next/server";
+import { getCurrentUser } from "../../_utils/getCurrentUser";
+import { buildPrisma } from "@/app/_utils/prisma";
 
 export type CourseResponse = {
   course: {
@@ -37,7 +37,7 @@ export async function GET(
     let currentUser = null;
     try {
       currentUser = await getCurrentUser({ request });
-    } catch (error) {
+    } catch {
       // 認証情報がない場合は匿名ユーザーとして処理を続行
       console.log("Anonymous user accessing course details");
     }
