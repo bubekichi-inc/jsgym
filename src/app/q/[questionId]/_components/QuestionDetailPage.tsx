@@ -86,7 +86,9 @@ export const QuestionDetailPage: React.FC = () => {
 
           {activeTab === "preview" && (
             <div className={`mt-11 w-full`}>
-              <BrowserPreview />
+              <BrowserPreview
+                questionFiles={data?.question.questionFiles || []}
+              />
             </div>
           )}
 
@@ -142,7 +144,11 @@ export const QuestionDetailPage: React.FC = () => {
               </div>
             )}
 
-            {activeTab === "preview" && <BrowserPreview />}
+            {activeTab === "preview" && (
+              <BrowserPreview
+                questionFiles={data?.question.questionFiles || []}
+              />
+            )}
           </div>
         </Panel>
 

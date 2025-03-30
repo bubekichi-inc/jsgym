@@ -85,7 +85,9 @@ export const GET = async (request: NextRequest) => {
 
   // フィルタリング条件を構築
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const whereConditions: any = {};
+  const whereConditions: any = {
+    lessonId: null,
+  };
 
   // タイトル検索
   if (searchTitle) {

@@ -1,10 +1,15 @@
 "use client";
 
+import { QuestionFile } from "@prisma/client";
 import { useEffect, useRef, useState } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 import { CodeEditorFilesForm } from "../q/[questionId]/_hooks/useCodeEditor";
 
-export const BrowserPreview: React.FC = () => {
+type Props = {
+  questionFiles: QuestionFile[];
+};
+
+export const BrowserPreview: React.FC<Props> = ({ questionFiles }) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const previewIframeRef = useRef<HTMLIFrameElement>(null);
   const { control } = useFormContext<CodeEditorFilesForm>();
@@ -12,6 +17,9 @@ export const BrowserPreview: React.FC = () => {
     control,
     name: "files",
   });
+  const [tab, setTab] = useState<"EXAMPLE_ANSWER" | "USER_ANSWER">(
+    "USER_ANSWER"
+  );
 
   useEffect(() => {
     const iframe = previewIframeRef.current;
@@ -21,7 +29,10 @@ export const BrowserPreview: React.FC = () => {
       iframe.contentWindow?.postMessage(
         {
           type: "CODE_UPDATE",
-          code: files[0]?.content || "", // FIXME: 複数ファイル問題になったら、filex[0]でなく考える
+          code:
+            tab === "USER_ANSWER"
+              ? files[0]?.content || ""
+              : questionFiles[0]?.exampleAnswer || "",
         },
         "*"
       );
@@ -42,20 +53,44 @@ export const BrowserPreview: React.FC = () => {
       clearTimeout(timer);
       iframe.removeEventListener("load", handleIframeLoad);
     };
-  }, [files]);
+  }, [files, questionFiles, tab]);
 
   return (
     <div className="flex h-full min-h-[500px] flex-col overflow-hidden bg-white">
       <div className="flex flex-col border-b border-gray-200">
         <div className="flex items-center gap-2 bg-gray-50 px-3 py-2">
-          <div className="flex items-center space-x-2">
-            <div className="size-3 rounded-full bg-gray-300"></div>
-            <div className="size-3 rounded-full bg-gray-300"></div>
-            <div className="size-3 rounded-full bg-gray-300"></div>
+          <div className="flex items-center space-x-1">
+            <div className="size-2 rounded-full bg-gray-300"></div>
+            <div className="size-2 rounded-full bg-gray-300"></div>
+            <div className="size-2 rounded-full bg-gray-300"></div>
           </div>
           <div className="flex-1 rounded-md border border-gray-300 bg-white px-3 py-1 text-xs text-gray-500">
             localhost:3000
           </div>
+          {questionFiles[0]?.exampleAnswer && (
+            <div className="flex overflow-hidden rounded-md border border-gray-300">
+              <button
+                onClick={() => setTab("USER_ANSWER")}
+                className={`px-3 py-1 text-xs ${
+                  tab === "USER_ANSWER"
+                    ? "bg-blue-500 text-white"
+                    : "bg-white text-gray-700"
+                }`}
+              >
+                あなたのコード
+              </button>
+              <button
+                onClick={() => setTab("EXAMPLE_ANSWER")}
+                className={`px-3 py-1 text-xs ${
+                  tab === "EXAMPLE_ANSWER"
+                    ? "bg-blue-500 text-white"
+                    : "bg-white text-gray-700"
+                }`}
+              >
+                解答例
+              </button>
+            </div>
+          )}
           <div
             className={`size-3 rounded-full ${
               isUpdating ? "animate-pulse bg-blue-500" : "bg-gray-200"

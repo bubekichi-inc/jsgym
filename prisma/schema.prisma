@@ -33,6 +33,27 @@ model User {
   @@map("users")
 }
 
+model Course {
+  id           String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  title        String
+  description  String
+  thumbnailUrl String   @map("thumbnail_url")
+  lessons      Lesson[]
+
+  @@map("courses")
+}
+
+model Lesson {
+  id          String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  title       String
+  description String
+  courseId    String     @map("course_id") @db.Uuid
+  course      Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  questions   Question[]
+
+  @@map("lessons")
+}
+
 model Question {
   title             String
   content           String
@@ -44,9 +65,11 @@ model Question {
   outputCode        String
   level             QuestionLevel         @default(BASIC)
   type              QuestionType          @default(JAVA_SCRIPT)
+  lessonId          String?               @map("lesson_id") @db.Uuid
   questionBookmarks QuestionBookmark[]
   questionFiles     QuestionFile[]
   questions         QuestionTagRelation[]
+  lesson            Lesson?               @relation(fields: [lessonId], references: [id], onDelete: Cascade)
   reviewer          Reviewer              @relation(fields: [reviewerId], references: [id])
   userQuestions     UserQuestion[]
 
