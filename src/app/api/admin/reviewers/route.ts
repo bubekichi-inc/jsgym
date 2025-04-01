@@ -10,6 +10,7 @@ export type ReviewerListResponse = {
 
 // 新規作成・更新時のリクエストの型定義
 export type ReviewerRequest = {
+  id: number;
   name: string;
   bio: string;
   hiddenProfile: string;
@@ -67,7 +68,8 @@ export async function POST(
     }
 
     const data: ReviewerRequest = await request.json();
-    const { name, bio, hiddenProfile, profileImageUrl, userId, fired } = data;
+    const { id, name, bio, hiddenProfile, profileImageUrl, userId, fired } =
+      data;
 
     // バリデーション
     if (!name || !bio || !hiddenProfile) {
@@ -100,6 +102,7 @@ export async function POST(
     // レビュワーを作成
     const reviewer = await prisma.reviewer.create({
       data: {
+        id: Number(id),
         name,
         bio,
         hiddenProfile,
