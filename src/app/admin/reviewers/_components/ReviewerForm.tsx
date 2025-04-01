@@ -14,6 +14,7 @@ import { api } from "@/app/_utils/api";
 import { updateSupabaseImage } from "@/app/_utils/updateSupabaseImage";
 
 export type ReviewerFormData = {
+  id: number;
   name: string;
   bio: string;
   hiddenProfile: string;
@@ -33,6 +34,7 @@ export const ReviewerForm = ({
 }: ReviewerFormProps) => {
   const router = useRouter();
   const [formData, setFormData] = useState<ReviewerFormData>({
+    id: initialData?.id || 0,
     name: initialData?.name || "",
     bio: initialData?.bio || "",
     hiddenProfile: initialData?.hiddenProfile || "",
@@ -205,6 +207,25 @@ export const ReviewerForm = ({
               </p>
             </div>
           </div>
+        </div>
+
+        <div className="mb-4">
+          <label
+            className="mb-2 block font-semibold text-gray-700"
+            htmlFor="name"
+          >
+            ID <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="id"
+            name="id"
+            value={formData.id}
+            onChange={handleChange}
+            className="w-full rounded-md border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+            disabled={!isNew}
+          />
         </div>
 
         <div className="mb-4">
