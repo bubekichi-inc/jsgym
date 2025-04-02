@@ -107,6 +107,7 @@ export const BrowserPreview: React.FC<Props> = ({ questionFiles }) => {
             src="/preview/index.html"
             className="size-full h-screen border-0"
             title="React Preview"
+            allow="clipboard-write"
           />
         </div>
       </div>
