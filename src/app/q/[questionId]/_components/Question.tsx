@@ -9,6 +9,11 @@ import { toast } from "react-toastify";
 import { ReviewerModal } from "./ReviewerModal";
 import { MarkdownWrapper } from "@/app/_components/MarkdownWrapper";
 import { Skeleton } from "@/app/_components/Skeleton";
+import {
+  levelTextMap,
+  questionTypeTextMap,
+  typeStyleMap,
+} from "@/app/_constants";
 import { useQuestion } from "@/app/_hooks/useQuestion";
 
 export const Question: React.FC = () => {
@@ -49,6 +54,18 @@ export const Question: React.FC = () => {
               </button>
             )}
             <p className="font-bold">お題</p>
+            <span
+              className={`whitespace-nowrap rounded-full px-2 py-1 text-xs font-bold text-white ${
+                typeStyleMap[data.question.type as keyof typeof typeStyleMap]
+              }`}
+            >
+              {
+                questionTypeTextMap[
+                  data.question.type as keyof typeof questionTypeTextMap
+                ]
+              }{" "}
+              {levelTextMap[data.question.level as keyof typeof levelTextMap]}
+            </span>
           </div>
           <MarkdownWrapper>{data.question.content}</MarkdownWrapper>
         </div>
