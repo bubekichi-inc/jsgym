@@ -34,7 +34,7 @@ export default function LessonList({
   lessons,
 }: {
   lessons: LessonWithQuestions[];
-  courseId: string;
+  slug: string;
 }) {
   if (lessons.length === 0) {
     return (
