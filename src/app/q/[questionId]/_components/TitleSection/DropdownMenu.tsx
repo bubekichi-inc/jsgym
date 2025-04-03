@@ -1,10 +1,12 @@
 import {
   faEllipsis,
   faEye,
+  faPencil,
   faRefresh,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { toast } from "react-toastify";
 import { useMessages } from "../../_hooks/useMessages";
@@ -19,7 +21,7 @@ interface Props {
 export const DropdownMenu: React.FC<Props> = ({ onShowAnswer }) => {
   const params = useParams();
   const questionId = params.questionId as string;
-  const { mutate: mutateQuestion } = useQuestion({
+  const { data, mutate: mutateQuestion } = useQuestion({
     questionId,
   });
   const { mutate: mutateMessages } = useMessages({
@@ -71,6 +73,17 @@ export const DropdownMenu: React.FC<Props> = ({ onShowAnswer }) => {
                 <FontAwesomeIcon icon={faRefresh} />
                 解答をリセット
               </button>
+            </MenuItem>
+          )}
+          {me?.role === "ADMIN" && (
+            <MenuItem>
+              <Link
+                href={`/admin/questions/${data?.question.id}`}
+                className="group flex w-full items-center gap-3 rounded-lg p-3 font-bold data-[focus]:bg-gray-100"
+              >
+                <FontAwesomeIcon icon={faPencil} />
+                管理画面で編集
+              </Link>
             </MenuItem>
           )}
         </MenuItems>
