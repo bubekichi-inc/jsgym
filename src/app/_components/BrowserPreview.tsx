@@ -87,7 +87,7 @@ export const BrowserPreview: React.FC<Props> = ({ questionFiles }) => {
                     : "bg-white text-gray-700"
                 }`}
               >
-                解答例
+                完成形
               </button>
             </div>
           )}
