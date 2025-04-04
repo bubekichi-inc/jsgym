@@ -8,12 +8,14 @@
     <script type="importmap">
       {
         "imports": {
-          "react": "https://esm.sh/react@18.2.0",
-          "react-dom/client": "https://esm.sh/react-dom@18.2.0/client"
+          "react": "https://esm.sh/stable/react@18.2.0/es2022/react.js",
+          "react-dom": "https://esm.sh/stable/react-dom@18.2.0/es2022/react-dom.js",
+          "react-dom/client": "https://esm.sh/stable/react-dom@18.2.0/es2022/client.js",
+          "jotai": "https://esm.sh/stable/jotai@2.6.0/es2022/jotai.js",
+          "react-router-dom": "https://esm.sh/stable/react-router-dom@6.20.0/es2022/react-router-dom.js"
         }
       }
     </script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
       body {
         margin: 0;
@@ -42,9 +44,10 @@
     <div id="root"></div>
     <script type="module">
       import React from "react";
-      import { createRoot } from "react-dom/client";
+      import * as ReactDOM from "react-dom/client";
 
       let rootInstance = null;
+      let currentKey = 0;
 
       const renderError = (error) => {
         console.error("レンダリングエラー:", error);
@@ -57,48 +60,67 @@
         `;
       };
 
-      const handleCodeUpdate = async (code) => {
-        let url = null;
-
+      const renderApp = async () => {
         try {
-          // コードをトランスパイル
-          const transformed = Babel.transform(code, {
-            presets: ["react", "typescript"],
-            filename: "App.tsx",
-            sourceType: "module",
-          }).code;
-
-          // モジュールを作成
-          const blob = new Blob([transformed], {
-            type: "application/javascript",
-          });
-          url = URL.createObjectURL(blob);
-
-          // モジュールをロード
-          const module = await import(url);
-          const App = module.default;
-
-          if (!App) {
-            throw new Error("default exportが見つかりません");
+          if (!navigator.serviceWorker.controller) {
+            throw new Error(
+              "Service Workerが登録されていません。ページを再読み込みしてください。"
+            );
           }
 
-          // レンダリング
+          // 念のため、ReactとReactDOMが正しく読み込まれていることを確認
+          console.log("React:", React);
+          console.log("ReactDOM.client:", ReactDOM);
+
+          // Reactルートコンポーネントをロード
+          const App = await import("./App.mjs");
+          console.log("App loaded:", App);
+
+          if (!App.default) {
+            throw new Error("App.mjsにdefault exportが見つかりません");
+          }
+
           if (!rootInstance) {
-            rootInstance = createRoot(document.getElementById("root"));
+            rootInstance = ReactDOM.createRoot(document.getElementById("root"));
           }
 
-          rootInstance.render(React.createElement(App));
+          // コンポーネントをレンダリング
+          currentKey++;
+          rootInstance.render(
+            React.createElement(App.default, { key: currentKey })
+          );
         } catch (error) {
           renderError(error);
-        } finally {
-          if (url) URL.revokeObjectURL(url);
         }
       };
 
-      // メッセージイベントリスナー
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", async () => {
+          try {
+            const registration = await navigator.serviceWorker.ready;
+            console.log("Service Worker準備完了:", registration.scope);
+
+            navigator.serviceWorker.addEventListener("message", (event) => {
+              if (event.data && event.data.type === "RELOAD_APP") {
+                renderApp();
+              }
+            });
+
+            renderApp();
+          } catch (error) {
+            console.error("Service Worker初期化エラー:", error);
+            renderError(error);
+          }
+        });
+      } else {
+        renderError(
+          new Error("このブラウザはService Workerをサポートしていません。")
+        );
+      }
+
       window.addEventListener("message", (event) => {
-        if (event.data?.type === "CODE_UPDATE") {
-          handleCodeUpdate(event.data.code || "");
+        if (event.data?.type === "RELOAD_APP") {
+          renderApp();
         }
       });
     </script>
