@@ -4,6 +4,7 @@ import { buildPrisma } from "../src/app/_utils/prisma";
 // コースデータ定義
 const blogCourse = {
   title: "ブログサイトのフロントエンドを実装しよう",
+  slug: "blog-course",
   description:
     "JavaScriptとReactを使ってブログサイトのフロントエンドを実装する方法を学びます。",
   thumbnailUrl: "https://placehold.jp/1200x630.png",
@@ -188,6 +189,7 @@ const seedCourseData = async () => {
     const course = await prisma.course.create({
       data: {
         title: blogCourse.title,
+        slug: blogCourse.slug,
         description: blogCourse.description,
         thumbnailUrl: blogCourse.thumbnailUrl,
       },

@@ -27,10 +27,10 @@ export type CourseResponse = {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ courseId: string }> }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const { courseId } = await params;
+    const { slug } = await params;
     const prisma = await buildPrisma();
 
     // ユーザー情報の取得を試みる（認証エラーの場合はnullとして処理）
@@ -43,7 +43,7 @@ export async function GET(
     }
 
     const course = await prisma.course.findUnique({
-      where: { id: courseId },
+      where: { slug },
       include: {
         lessons: {
           include: {

@@ -3,9 +3,9 @@ import CourseDetailPage from "./_components/CourseDetailPage";
 export default async function CoursePage({
   params,
 }: {
-  params: Promise<{ courseId: string }>;
+  params: Promise<{ slug: string }>;
 }) {
-  const { courseId } = await params;
+  const { slug } = await params;
 
-  return <CourseDetailPage courseId={courseId} />;
+  return <CourseDetailPage slug={slug} />;
 }
