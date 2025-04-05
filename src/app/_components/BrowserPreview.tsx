@@ -3,9 +3,9 @@
 import { QuestionFile } from "@prisma/client";
 import { useEffect, useRef, useState } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
+import { usePreviewFiles } from "../_hooks/usePreviewFiles";
 import { CodeEditorFilesForm } from "../q/[questionId]/_hooks/useCodeEditor";
 import { ServiceWorkerRegistration } from "./ServiceWorkerRegistration";
-import { usePreviewFiles } from "../_hooks/usePreviewFiles";
 
 type Props = {
   questionFiles: QuestionFile[];
