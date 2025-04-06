@@ -33,7 +33,7 @@ export const usePreviewFiles = () => {
         } else {
           setTimeout(checkServiceWorker, 100);
         }
-      } catch (err) {
+      } catch {
         setError("Service Workerの準備ができていません。");
       }
     };
@@ -43,7 +43,7 @@ export const usePreviewFiles = () => {
 
   // Service Workerにメッセージを送信
   const sendMessageToSW = useCallback(
-    async <T extends Record<string, unknown>>(message: T): Promise<any> => {
+    async <T extends Record<string, unknown>>(message: T): Promise<void> => {
       if (
         !("serviceWorker" in navigator) ||
         !navigator.serviceWorker.controller
@@ -53,7 +53,7 @@ export const usePreviewFiles = () => {
 
       return new Promise((resolve, reject) => {
         // メッセージを送信
-        navigator.serviceWorker.controller.postMessage(message);
+        navigator.serviceWorker.controller?.postMessage(message);
 
         // レスポンスリスナーをセットアップ
         const messageHandler = (event: MessageEvent) => {
