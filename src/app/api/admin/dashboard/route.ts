@@ -17,6 +17,7 @@ export type DailyStats = {
   submittedAnswers: number;
   clearedQuestions: number;
   activeUsers: number;
+  clicks: number;
 };
 
 export type UserDailyStats = {
@@ -126,12 +127,21 @@ export async function GET(request: NextRequest) {
 
         const activeUsers = Number(activeUsersResult[0]?.count || 0);
 
+        const clicksResult = await prisma.$queryRaw<{ count: bigint }[]>`
+          SELECT COUNT(*) as count
+          FROM clicks
+          WHERE created_at >= ${dayStart} AND created_at <= ${dayEnd}
+        `;
+        
+        const clicks = Number(clicksResult[0]?.count || 0);
+
         return {
           date: format(date, "yyyy-MM-dd"),
           newUsers,
           submittedAnswers,
           clearedQuestions,
           activeUsers,
+          clicks,
         };
       })
     );

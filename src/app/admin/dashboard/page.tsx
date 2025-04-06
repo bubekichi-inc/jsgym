@@ -50,7 +50,8 @@ export default function AdminDashboard() {
           item.newUsers,
           item.submittedAnswers,
           item.clearedQuestions,
-          item.activeUsers
+          item.activeUsers,
+          item.clicks
         )
       ),
       10 // 最低値を10に設定
@@ -121,6 +122,15 @@ export default function AdminDashboard() {
               </p>
               <p className="text-sm text-gray-500">今月の最大</p>
             </div>
+          </div>
+          
+          {/* クリック数カード */}
+          <div className="mt-4 rounded-lg bg-teal-50 p-4 shadow">
+            <h3 className="mb-2 text-lg font-semibold">クリック数</h3>
+            <p className="text-3xl font-bold">
+              {chartData.reduce((sum, item) => sum + item.clicks, 0)}
+            </p>
+            <p className="text-sm text-gray-500">今月の合計</p>
           </div>
 
           {/* グラフ */}
@@ -199,6 +209,18 @@ export default function AdminDashboard() {
                           アクティブ: {item.activeUsers}
                         </div>
                       </div>
+                      
+                      {/* クリック数 */}
+                      <div
+                        className="group relative mx-0.5 w-2 bg-teal-500"
+                        style={{
+                          height: `${(item.clicks / maxValue) * 100}%`,
+                        }}
+                      >
+                        <div className="absolute bottom-full left-1/2 mb-2 -translate-x-1/2 rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 group-hover:opacity-100">
+                          クリック: {item.clicks}
+                        </div>
+                      </div>
 
                       {/* X軸ラベル */}
                       <div className="mt-2 origin-top-left -rotate-45 text-xs">
@@ -230,6 +252,10 @@ export default function AdminDashboard() {
                 <div className="mr-2 size-4 bg-amber-500"></div>
                 <span className="text-sm">アクティブユーザー</span>
               </div>
+              <div className="flex items-center">
+                <div className="mr-2 size-4 bg-teal-500"></div>
+                <span className="text-sm">クリック数</span>
+              </div>
             </div>
           </div>
 
@@ -243,6 +269,7 @@ export default function AdminDashboard() {
                   <th className="px-4 py-3 text-left">解答提出数</th>
                   <th className="px-4 py-3 text-left">クリアした問題数</th>
                   <th className="px-4 py-3 text-left">アクティブユーザー</th>
+                  <th className="px-4 py-3 text-left">クリック数</th>
                 </tr>
               </thead>
               <tbody>
@@ -253,6 +280,7 @@ export default function AdminDashboard() {
                     <td className="px-4 py-3">{item.submittedAnswers}</td>
                     <td className="px-4 py-3">{item.clearedQuestions}</td>
                     <td className="px-4 py-3">{item.activeUsers}</td>
+                    <td className="px-4 py-3">{item.clicks}</td>
                   </tr>
                 ))}
               </tbody>
