@@ -1,6 +1,6 @@
 "use client";
 
-import { UserQuestionStatus } from "@prisma/client";
+import { QuestionType, UserQuestionStatus } from "@prisma/client";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useRef, useState } from "react";
@@ -25,6 +25,8 @@ export const Questions: React.FC<Props> = ({ limit }) => {
   const initialTitle = searchParams.get("title") || "";
   const initialLevel =
     (searchParams.get("level") as QuestionLevel | "ALL") || "ALL";
+  const initialType =
+    (searchParams.get("type") as QuestionType | "ALL") || "ALL";
   const initialReviewerId = Number(searchParams.get("reviewerId") || "0");
   const initialStatus = (searchParams.get("status") as ExtendedStatus) || "ALL";
 
@@ -53,6 +55,7 @@ export const Questions: React.FC<Props> = ({ limit }) => {
   } = useQuestions({
     limit,
     initialTitle,
+    initialType,
     initialLevel,
     initialReviewerId,
     initialStatus,
