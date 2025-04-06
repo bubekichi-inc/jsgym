@@ -190,10 +190,10 @@ model CodeReview {
   messageId      String?             @unique @map("message_id") @db.Uuid
   overview       String
   result         CodeReviewResult
+  score          Int
   createdAt      DateTime            @default(now()) @map("created_at")
   updatedAt      DateTime            @updatedAt @map("updated_at")
   userQuestionId String              @map("user_id") @db.Uuid
-  score          Int
   comments       CodeReviewComment[]
   message        Message?            @relation(fields: [messageId], references: [id])
   userQuestion   UserQuestion        @relation(fields: [userQuestionId], references: [id], onDelete: Cascade)
@@ -254,8 +254,8 @@ model Click {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   type      String
-  userId    String   @map("user_id") @db.Uuid
-  user      User     @relation(fields: [userId], references: [id])
+  userId    String?  @map("user_id") @db.Uuid
+  user      User?    @relation(fields: [userId], references: [id])
 
   @@map("clicks")
 }
