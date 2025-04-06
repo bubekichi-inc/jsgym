@@ -13,6 +13,7 @@ import { CommentLevelBadge } from "./CommentLevelBadge";
 import { MarkdownWrapper } from "@/app/_components/MarkdownWrapper";
 import { levelTextMap, typeTextMap } from "@/app/_constants";
 import { useQuestion } from "@/app/_hooks/useQuestion";
+import { clickButton } from "@/app/_utils/clickButton";
 import { calculateScore } from "@/app/_utils/score";
 
 interface Props {
@@ -165,6 +166,9 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
                 {data?.nextQuestion && (
                   <Link
                     href={`/q/${data.nextQuestion.id}`}
+                    onClick={async () =>
+                      await clickButton({ type: "NEXT_QUESTION" })
+                    }
                     className="flex items-center gap-2 rounded border border-blue-500 bg-white px-3 py-2 text-sm font-bold text-blue-500 duration-150 hover:bg-blue-50"
                   >
                     <span>次の問題へ</span>
