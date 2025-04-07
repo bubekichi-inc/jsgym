@@ -123,15 +123,6 @@ export default function AdminDashboard() {
               <p className="text-sm text-gray-500">今月の最大</p>
             </div>
           </div>
-          
-          {/* クリック数カード */}
-          <div className="mt-4 rounded-lg bg-teal-50 p-4 shadow">
-            <h3 className="mb-2 text-lg font-semibold">クリック数</h3>
-            <p className="text-3xl font-bold">
-              {chartData.reduce((sum, item) => sum + item.clicks, 0)}
-            </p>
-            <p className="text-sm text-gray-500">今月の合計</p>
-          </div>
 
           {/* グラフ */}
           <div className="rounded-lg bg-white p-6 shadow-lg">
@@ -209,7 +200,7 @@ export default function AdminDashboard() {
                           アクティブ: {item.activeUsers}
                         </div>
                       </div>
-                      
+
                       {/* クリック数 */}
                       <div
                         className="group relative mx-0.5 w-2 bg-teal-500"
@@ -254,7 +245,7 @@ export default function AdminDashboard() {
               </div>
               <div className="flex items-center">
                 <div className="mr-2 size-4 bg-teal-500"></div>
-                <span className="text-sm">クリック数</span>
+                <span className="text-sm">「次の問題へ」クリック数</span>
               </div>
             </div>
           </div>
