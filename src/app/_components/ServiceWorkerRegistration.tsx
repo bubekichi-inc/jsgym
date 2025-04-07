@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 
 export const ServiceWorkerRegistration: React.FC = () => {
-  const [isRegistered, setIsRegistered] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -35,7 +34,6 @@ export const ServiceWorkerRegistration: React.FC = () => {
           await registration.navigationPreload.enable();
         }
 
-        setIsRegistered(true);
         console.log("Service Workerの登録が完了しました:", registration.scope);
       } catch (error) {
         const errorMessage =
