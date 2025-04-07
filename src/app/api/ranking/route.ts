@@ -1,3 +1,4 @@
+import { UserRole } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "../_utils/getCurrentUser";
 import { buildPrisma } from "@/app/_utils/prisma";
@@ -7,6 +8,7 @@ import { calculateScore } from "@/app/_utils/score";
 export type RankingResponse = {
   rankings: RankingUser[];
   currentUserRank: number | null;
+  totalUsers: number;
 };
 
 export type RankingUser = {
@@ -148,9 +150,16 @@ export async function GET(request: NextRequest) {
       }
     }
 
+    const totalUsers = await prisma.user.count({
+      where: {
+        role: UserRole.USER,
+      },
+    });
+
     const response: RankingResponse = {
       rankings,
       currentUserRank,
+      totalUsers,
     };
 
     return NextResponse.json(response);
