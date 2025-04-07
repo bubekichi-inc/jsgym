@@ -248,8 +248,7 @@ export default function ErrorComponent() {
     }
 
     console.log(`[SW] ルートファイルを見つけました: ${rootFile.name}`);
-    const allFiles = await getAllFiles();
-    const compiledCode = await compileFile(rootFile, allFiles);
+    const compiledCode = await compileFile(rootFile);
 
     return new Response(compiledCode, {
       status: 200,
@@ -311,7 +310,7 @@ export default {};`,
     }
 
     console.log(`[SW] ファイルをコンパイルします: ${matchedFile.name}`);
-    const compiledCode = await compileFile(matchedFile, allFiles);
+    const compiledCode = await compileFile(matchedFile);
 
     return new Response(compiledCode, {
       status: 200,
