@@ -51,15 +51,14 @@ export async function GET(request: NextRequest) {
       };
     } else if (periodType === "weekly") {
       // 今週のデータ（月曜始まり）
-      const startOfWeek = new Date(now);
-      const day = startOfWeek.getDay();
-      const diff = day === 0 ? 6 : day - 1; // 月曜始まりの調整
-      startOfWeek.setDate(startOfWeek.getDate() - diff);
-      startOfWeek.setHours(0, 0, 0, 0);
+      // 過去1週間のデータ
+      const oneWeekAgo = new Date(now);
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      oneWeekAgo.setHours(0, 0, 0, 0);
 
       dateFilter = {
         createdAt: {
-          gte: startOfWeek,
+          gte: oneWeekAgo,
         },
       };
     }
