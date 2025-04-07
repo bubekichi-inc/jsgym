@@ -160,12 +160,16 @@ export async function GET(request: NextRequest) {
         name: true,
       },
       take: 100, // ユーザー数を制限
-      orderBy: {
-        userQuestions: {
-          _count: "desc",
+      orderBy: [
+        {
+          userQuestions: {
+            _count: "desc",
+          },
         },
-        createdAt: "desc",
-      },
+        {
+          createdAt: "desc",
+        },
+      ],
     });
 
     // 月全体のユーザー活動データを一括取得
