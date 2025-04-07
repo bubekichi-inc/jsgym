@@ -11,6 +11,7 @@ export const useRanking = (period: PeriodType) => {
   return {
     rankings: data?.rankings || [],
     currentUserRank: data?.currentUserRank,
+    totalUsers: data?.totalUsers || 0,
     error,
     isLoading,
     mutate,
