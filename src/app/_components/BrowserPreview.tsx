@@ -25,43 +25,54 @@ export const BrowserPreview: React.FC<Props> = ({ questionFiles }) => {
   const [refreshKey, setRefreshKey] = useState(0);
   const { saveFiles, isSaving, error, isReady } = usePreviewFiles();
 
+  // 前回の保存操作のタイマーを保持するRef
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
   useEffect(() => {
+    // 既存のタイマーをクリア
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
     // ファイルが変更されたらisUpdatingをtrueにする
     setIsUpdating(true);
 
-    // ファイルが変更されたらファイルを保存して更新
-    const timer = setTimeout(async () => {
+    // ファイルが変更されたらファイルを保存して更新（ディバウンス処理）
+    timerRef.current = setTimeout(async () => {
       if (!isReady) {
-        // Service Workerが準備できていない場合は再試行
+        // Service Workerが準備できていない場合は処理を中止
         setIsUpdating(false);
         return;
       }
 
       try {
-        if (tab === "USER_ANSWER") {
-          // ユーザーの回答ファイルを保存
-          await saveFiles(files);
-        } else {
-          // 模範解答ファイルを保存
-          const exampleFiles = questionFiles.map((file) => ({
-            id: file.id,
-            name: file.name,
-            content: file.exampleAnswer,
-            ext: file.ext,
-            isRoot: file.isRoot,
-          }));
-          await saveFiles(exampleFiles);
-        }
+        const filesToSave =
+          tab === "USER_ANSWER"
+            ? // ユーザーの回答ファイルを保存
+              files
+            : // 模範解答ファイルを保存
+              questionFiles.map((file) => ({
+                id: file.id,
+                name: file.name,
+                content: file.exampleAnswer,
+                ext: file.ext,
+                isRoot: file.isRoot,
+              }));
+
+        await saveFiles(filesToSave);
 
         // iframeをリフレッシュするためにkeyを更新
         setRefreshKey((prev) => prev + 1);
       } finally {
         setIsUpdating(false);
       }
-    }, 1000);
+    }, 500); // ディバウンス時間を500msに短縮
 
     return () => {
-      clearTimeout(timer);
+      // コンポーネントのアンマウント時やファイルの変更時に前回のタイマーをクリア
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
     };
   }, [files, questionFiles, tab, saveFiles, isReady]);
 

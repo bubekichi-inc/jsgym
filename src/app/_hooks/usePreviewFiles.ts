@@ -10,6 +10,11 @@ type PreviewFile = {
   isRoot: boolean;
 };
 
+type ServiceWorkerMessageResponse = {
+  type: string;
+  error?: string;
+};
+
 /**
  * プレビューファイルを管理するカスタムフック
  */
@@ -43,7 +48,9 @@ export const usePreviewFiles = () => {
 
   // Service Workerにメッセージを送信
   const sendMessageToSW = useCallback(
-    async <T extends Record<string, unknown>>(message: T): Promise<void> => {
+    async <T extends Record<string, unknown>>(
+      message: T
+    ): Promise<ServiceWorkerMessageResponse> => {
       if (
         !("serviceWorker" in navigator) ||
         !navigator.serviceWorker.controller

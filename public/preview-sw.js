@@ -137,7 +137,7 @@ async function compileFile(file) {
       });
 
       // 相対パスのimportを.mjs拡張子に変換
-      return transformImports(result.code, file.name);
+      return transformImports(result.code);
     }
     // TypeScriptファイルのトランスパイル
     else if (ext === "ts") {
@@ -147,7 +147,7 @@ async function compileFile(file) {
         format: "esm",
       });
 
-      return transformImports(result.code, file.name);
+      return transformImports(result.code);
     }
     // CSS, HTML, JSONは変換不要
     else {
@@ -340,27 +340,49 @@ async function handleCssRequest(filename) {
   }
 }
 
+// IndexedDBの操作を一元化したヘルパー関数
+async function clearFileStore() {
+  const db = await openDB();
+  const transaction = db.transaction([STORE_NAME], "readwrite");
+  const store = transaction.objectStore(STORE_NAME);
+
+  return new Promise((resolve, reject) => {
+    const request = store.clear();
+    request.onsuccess = () => resolve();
+    request.onerror = (error) => reject(error);
+  });
+}
+
+async function saveFileToStore(file) {
+  const db = await openDB();
+  const transaction = db.transaction([STORE_NAME], "readwrite");
+  const store = transaction.objectStore(STORE_NAME);
+
+  const fileName = file.name + (file.ext ? `.${file.ext}` : "");
+
+  return new Promise((resolve, reject) => {
+    const request = store.put({
+      name: fileName,
+      content: file.content,
+      ext: file.ext,
+      isRoot: file.isRoot,
+    });
+
+    request.onsuccess = () => resolve();
+    request.onerror = (e) => {
+      console.error(`[SW] ファイル保存エラー: ${fileName}`, e);
+      reject(e);
+    };
+  });
+}
+
 // メッセージハンドラー
 self.addEventListener("message", async (event) => {
   if (event.data.type === "CLEAR_FILES") {
     // ファイルのクリア
     try {
-      const db = await openDB();
-      const transaction = db.transaction([STORE_NAME], "readwrite");
-      const store = transaction.objectStore(STORE_NAME);
-      const request = store.clear();
-
-      request.onsuccess = () => {
-        event.source.postMessage({ type: "CLEAR_FILES_SUCCESS" });
-      };
-
-      request.onerror = (error) => {
-        console.error("[SW] ファイルクリア中にエラーが発生しました:", error);
-        event.source.postMessage({
-          type: "CLEAR_FILES_ERROR",
-          error: error.toString(),
-        });
-      };
+      await clearFileStore();
+      event.source.postMessage({ type: "CLEAR_FILES_SUCCESS" });
     } catch (error) {
       console.error("[SW] ファイルクリア中にエラーが発生しました:", error);
       event.source.postMessage({
@@ -371,40 +393,14 @@ self.addEventListener("message", async (event) => {
   } else if (event.data.type === "SAVE_FILES") {
     // ファイルの保存
     try {
-      const db = await openDB();
-      const transaction = db.transaction([STORE_NAME], "readwrite");
-      const store = transaction.objectStore(STORE_NAME);
-
       // 既存のファイルをクリア
-      await new Promise((resolve, reject) => {
-        const clearRequest = store.clear();
-        clearRequest.onsuccess = resolve;
-        clearRequest.onerror = reject;
-      });
+      await clearFileStore();
 
       const files = event.data.files;
 
       // ファイルを順番に保存
       for (const file of files) {
-        await new Promise((resolve, reject) => {
-          const fileName = file.name + (file.ext ? `.${file.ext}` : "");
-
-          const request = store.put({
-            name: fileName,
-            content: file.content,
-            ext: file.ext,
-            isRoot: file.isRoot,
-          });
-
-          request.onsuccess = () => {
-            resolve();
-          };
-
-          request.onerror = (e) => {
-            console.error(`[SW] ファイル保存エラー: ${fileName}`, e);
-            reject(e);
-          };
-        });
+        await saveFileToStore(file);
       }
 
       event.source.postMessage({ type: "SAVE_FILES_SUCCESS" });
