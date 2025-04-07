@@ -50,7 +50,6 @@ export async function GET(request: NextRequest) {
         },
       };
     } else if (periodType === "weekly") {
-      // 今週のデータ（月曜始まり）
       // 過去1週間のデータ
       const oneWeekAgo = new Date(now);
       oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
