@@ -12,7 +12,7 @@ export default function TotalUsersCount() {
 
   return (
     <span className="ml-2 text-sm text-gray-500">
-      {totalUsers}人中
+      {totalUsers.toLocaleString()}人中
     </span>
   );
 }
