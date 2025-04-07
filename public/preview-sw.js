@@ -91,24 +91,8 @@ async function getRootFile() {
   return allFiles.find((file) => file.isRoot === true);
 }
 
-// ファイル拡張子に基づいて適切なContent-Typeを返す
-function getContentType(ext) {
-  const contentTypeMap = {
-    js: "application/javascript",
-    mjs: "application/javascript",
-    jsx: "application/javascript",
-    ts: "application/javascript",
-    tsx: "application/javascript",
-    css: "text/css",
-    html: "text/html",
-    json: "application/json",
-  };
-
-  return contentTypeMap[ext.toLowerCase()] || "text/plain";
-}
-
 // 相対パスのimportを.mjs拡張子に変換する
-function transformImports(code, filePath) {
+function transformImports(code) {
   // 単純な相対パスの変換: './Component' -> './Component.mjs'
   const importRegex =
     /import\s+(?:(?:{[^}]*}|\*\s+as\s+[^,]+|[^,{}\s*]+)(?:\s*,\s*(?:{[^}]*}|\*\s+as\s+[^,]+|[^,{}\s*]+))*\s+from\s+)?['"]([^'"]+)['"]/g;
@@ -136,7 +120,7 @@ function transformImports(code, filePath) {
 }
 
 // ファイルをコンパイルする
-async function compileFile(file, files) {
+async function compileFile(file) {
   await initEsbuild();
 
   try {
@@ -186,7 +170,7 @@ export default function ErrorComponent() {
 }
 
 // Service Workerのインストールとアクティベート
-self.addEventListener("install", (event) => {
+self.addEventListener("install", () => {
   console.log("[SW] インストール中");
   self.skipWaiting();
 });
