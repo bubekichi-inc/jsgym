@@ -171,12 +171,10 @@ export default function ErrorComponent() {
 
 // Service Workerのインストールとアクティベート
 self.addEventListener("install", () => {
-  console.log("[SW] インストール中");
   self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
-  console.log("[SW] アクティベート中");
   event.waitUntil(clients.claim());
 });
 
@@ -209,8 +207,6 @@ self.addEventListener("fetch", (event) => {
 
     // その他の.mjsファイルのリクエスト処理
     if (url.pathname.endsWith(".mjs")) {
-      const filename = url.pathname.split("/").pop().replace(".mjs", "");
-      console.log(`[SW] .mjsファイルリクエスト: ${filename}`);
       event.respondWith(handleMjsRequest(url));
       return;
     }
@@ -230,7 +226,6 @@ self.addEventListener("fetch", (event) => {
 // ルートファイルのリクエスト処理
 async function handleRootFileRequest() {
   try {
-    console.log("[SW] ルートファイルのリクエスト処理中");
     const rootFile = await getRootFile();
 
     if (!rootFile) {
@@ -247,7 +242,6 @@ export default function ErrorComponent() {
       );
     }
 
-    console.log(`[SW] ルートファイルを見つけました: ${rootFile.name}`);
     const compiledCode = await compileFile(rootFile);
 
     return new Response(compiledCode, {
@@ -275,11 +269,6 @@ async function handleMjsRequest(url) {
     const filename = url.pathname.split("/").pop().replace(".mjs", "");
     const allFiles = await getAllFiles();
 
-    console.log(
-      `[SW] 検索しているファイル: ${filename}`,
-      allFiles.map((f) => f.name)
-    );
-
     // 完全な一致でファイルを検索
     let matchedFile = allFiles.find((f) => f.name === filename);
 
@@ -288,10 +277,8 @@ async function handleMjsRequest(url) {
       const possibleExts = ["js", "jsx", "tsx", "ts"];
       for (const ext of possibleExts) {
         const fullName = `${filename}.${ext}`;
-        console.log(`[SW] 検索: ${fullName}`);
         matchedFile = allFiles.find((f) => f.name === fullName);
         if (matchedFile) {
-          console.log(`[SW] 見つかりました: ${matchedFile.name}`);
           break;
         }
       }
@@ -309,7 +296,6 @@ export default {};`,
       );
     }
 
-    console.log(`[SW] ファイルをコンパイルします: ${matchedFile.name}`);
     const compiledCode = await compileFile(matchedFile);
 
     return new Response(compiledCode, {
@@ -356,8 +342,6 @@ async function handleCssRequest(filename) {
 
 // メッセージハンドラー
 self.addEventListener("message", async (event) => {
-  console.log(`[SW] メッセージを受信: ${event.data.type}`);
-
   if (event.data.type === "CLEAR_FILES") {
     // ファイルのクリア
     try {
@@ -367,7 +351,6 @@ self.addEventListener("message", async (event) => {
       const request = store.clear();
 
       request.onsuccess = () => {
-        console.log("[SW] すべてのファイルをクリアしました");
         event.source.postMessage({ type: "CLEAR_FILES_SUCCESS" });
       };
 
@@ -388,8 +371,6 @@ self.addEventListener("message", async (event) => {
   } else if (event.data.type === "SAVE_FILES") {
     // ファイルの保存
     try {
-      console.log(`[SW] ${event.data.files.length}ファイルを保存します`);
-
       const db = await openDB();
       const transaction = db.transaction([STORE_NAME], "readwrite");
       const store = transaction.objectStore(STORE_NAME);
@@ -402,13 +383,11 @@ self.addEventListener("message", async (event) => {
       });
 
       const files = event.data.files;
-      let savedCount = 0;
 
       // ファイルを順番に保存
       for (const file of files) {
         await new Promise((resolve, reject) => {
           const fileName = file.name + (file.ext ? `.${file.ext}` : "");
-          console.log(`[SW] ファイルを保存: ${fileName}`);
 
           const request = store.put({
             name: fileName,
@@ -418,10 +397,6 @@ self.addEventListener("message", async (event) => {
           });
 
           request.onsuccess = () => {
-            savedCount++;
-            console.log(
-              `[SW] ファイル保存成功 (${savedCount}/${files.length}): ${fileName}`
-            );
             resolve();
           };
 
@@ -432,7 +407,6 @@ self.addEventListener("message", async (event) => {
         });
       }
 
-      console.log("[SW] すべてのファイルを保存しました");
       event.source.postMessage({ type: "SAVE_FILES_SUCCESS" });
     } catch (error) {
       console.error("[SW] ファイル保存中にエラーが発生しました:", error);

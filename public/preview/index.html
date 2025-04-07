@@ -68,13 +68,8 @@
             );
           }
 
-          // 念のため、ReactとReactDOMが正しく読み込まれていることを確認
-          console.log("React:", React);
-          console.log("ReactDOM.client:", ReactDOM);
-
           // Reactルートコンポーネントをロード
           const App = await import("./App.mjs");
-          console.log("App loaded:", App);
 
           if (!App.default) {
             throw new Error("App.mjsにdefault exportが見つかりません");
@@ -98,7 +93,6 @@
         window.addEventListener("load", async () => {
           try {
             const registration = await navigator.serviceWorker.ready;
-            console.log("Service Worker準備完了:", registration.scope);
 
             navigator.serviceWorker.addEventListener("message", (event) => {
               if (event.data && event.data.type === "RELOAD_APP") {
