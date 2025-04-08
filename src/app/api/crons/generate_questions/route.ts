@@ -15,8 +15,9 @@ import { buildPrisma } from "@/app/_utils/prisma";
  * @returns {("BASIC"|"ADVANCED"|"REAL_WORLD")} ランダムに選ばれた難易度
  */
 const getRandomLevel = (): QuestionLevel => {
-  const basicRate = 0.5;
-  const advancedRate = 0.4;
+  const basicRate = 0.7;
+  const advancedRate = 0.3;
+  // 一旦REAL_WORLDは出さない
 
   const random = Math.random();
 
@@ -96,7 +97,7 @@ export const GET = async () => {
   try {
     const question1 = await generage();
     const question2 = await generage();
-    const question3 = await generage();
+    // const question3 = await generage();
 
     const question1Text = `[${getLevelName(question1.level)}] ${
       question1.title
@@ -104,9 +105,9 @@ export const GET = async () => {
     const question2Text = `[${getLevelName(question2.level)}] ${
       question2.title
     }\nhttps://jsgym.shiftb.dev/q/${question2.id}\n\n`;
-    const question3Text = `[${getLevelName(question3.level)}] ${
-      question3.title
-    }\nhttps://jsgym.shiftb.dev/q/${question3.id}\n\n`;
+    // const question3Text = `[${getLevelName(question3.level)}] ${
+    //   question3.title
+    // }\nhttps://jsgym.shiftb.dev/q/${question3.id}\n\n`;
 
     const slack = new SlackService();
     await slack.postMessage({
@@ -115,8 +116,8 @@ export const GET = async () => {
 
 
 ${question1Text}
-${question2Text}
-${question3Text}`,
+${question2Text}`,
+      // ${question3Text}
     });
 
     return NextResponse.json({ message: "success." }, { status: 200 });
