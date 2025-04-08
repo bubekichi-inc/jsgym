@@ -2,7 +2,7 @@ import { QuestionType, UserQuestionStatus } from "@prisma/client";
 import { useCallback, useEffect, useState } from "react";
 import useSWR from "swr";
 import { useFetch } from "./useFetch";
-import { QuestionLevel } from "@/app/_serevices/AIQuestionGenerateService";
+import { QuestionLevel } from "@/app/_serevices/JsQuestionGenerateService";
 import { api } from "@/app/_utils/api";
 import { Question } from "@/app/api/questions/route";
 import { Reviewer } from "@/app/api/reviewers/route";

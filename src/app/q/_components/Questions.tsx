@@ -9,7 +9,7 @@ import { QuestionCard } from "@/app/_components/QuestionCard";
 import { Skeleton } from "@/app/_components/Skeleton";
 import { useDevice } from "@/app/_hooks/useDevice";
 import { useQuestions } from "@/app/_hooks/useQuestions";
-import { QuestionLevel } from "@/app/_serevices/AIQuestionGenerateService";
+import { QuestionLevel } from "@/app/_serevices/JsQuestionGenerateService";
 
 // 拡張ステータス型
 type ExtendedStatus = UserQuestionStatus | "NOT_SUBMITTED" | "ALL";

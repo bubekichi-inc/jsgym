@@ -4,9 +4,9 @@ import { NextResponse } from "next/server";
 import { buildError } from "../../_utils/buildError";
 import { levelTextMap } from "@/app/_constants";
 import {
-  AIQuestionGenerateService,
+  JsQuestionGenerateService,
   QuestionLevel,
-} from "@/app/_serevices/AIQuestionGenerateService";
+} from "@/app/_serevices/JsQuestionGenerateService";
 import { SlackService } from "@/app/_serevices/SlackService";
 import { buildPrisma } from "@/app/_utils/prisma";
 
@@ -45,7 +45,7 @@ const generage = async () => {
   // ランダムにレビュワーを選択
   const reviewer = reviewes[Math.floor(Math.random() * reviewes.length)];
 
-  const response = await AIQuestionGenerateService.generateQuestion({
+  const response = await JsQuestionGenerateService.generateQuestion({
     type: QuestionType.JAVA_SCRIPT,
     level: getRandomLevel(),
     reviewer,
@@ -68,9 +68,9 @@ const generage = async () => {
         create: [response].map((file) => ({
           name: "index",
           template: file.template,
-          ext: FileExtension.JS, // FIXME: 複数ファイル問題になったら、FileExtension.JSでなく考える
+          ext: FileExtension.JS,
           exampleAnswer: file.exampleAnswer,
-          isRoot: true, // FIXME: 複数ファイル問題になったら、isRoot: trueでなく考える
+          isRoot: true,
         })),
       },
     },

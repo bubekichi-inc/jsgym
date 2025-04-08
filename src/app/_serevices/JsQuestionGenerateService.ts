@@ -24,7 +24,7 @@ type GenerateQuestionJsonResponse = {
 
 export type QuestionLevel = "BASIC" | "ADVANCED" | "REAL_WORLD";
 
-export class AIQuestionGenerateService {
+export class JsQuestionGenerateService {
   private static openai = new OpenAI({
     apiKey: process.env.OPENAI_SECRET_KEY,
   });
@@ -100,7 +100,8 @@ ${titleContentList.join("\n")}
 1. 実務でよく遭遇する具体的なユースケースを取り入れる
 2. 複数の概念を組み合わせた問題にする
 3. エッジケースや例外処理を意識させる問題にする
-4. 特定のJavaScriptの新機能を活用した問題にする`}
+4. 特定のJavaScriptの新機能を活用した問題にする`;
+  }
 
   public static async generateQuestion({
     type,
