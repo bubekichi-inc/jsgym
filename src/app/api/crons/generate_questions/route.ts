@@ -2,11 +2,12 @@ import { FileExtension, QuestionType } from "@prisma/client";
 import { nanoid } from "nanoid";
 import { NextResponse } from "next/server";
 import { buildError } from "../../_utils/buildError";
-import { levelTextMap } from "@/app/_constants";
+import { levelTextMap, typeTextMap } from "@/app/_constants";
 import {
   JsQuestionGenerateService,
   QuestionLevel,
 } from "@/app/_serevices/JsQuestionGenerateService";
+import { ReactJsQuestionGenerateService } from "@/app/_serevices/ReactJsQuestionGenerateService";
 import { SlackService } from "@/app/_serevices/SlackService";
 import { buildPrisma } from "@/app/_utils/prisma";
 
@@ -34,31 +35,57 @@ const getLevelName = (level: QuestionLevel) => {
   return levelTextMap[level as keyof typeof levelTextMap];
 };
 
-export const maxDuration = 180;
+const getTypeName = (type: QuestionType) => {
+  return typeTextMap[type as keyof typeof typeTextMap];
+};
 
-const generage = async () => {
+const randomReviewer = async () => {
   const prisma = await buildPrisma();
   const reviewes = await prisma.reviewer.findMany({
     where: {
       fired: false,
     },
   });
-  // ランダムにレビュワーを選択
-  const reviewer = reviewes[Math.floor(Math.random() * reviewes.length)];
+  return reviewes[Math.floor(Math.random() * reviewes.length)];
+};
+
+const createQuestionTagRelations = async (
+  questionId: string,
+  tags: string[]
+) => {
+  const prisma = await buildPrisma();
+  const allTags = await prisma.questionTag.findMany();
+  await Promise.all(
+    tags.map(async (tag) => {
+      const tagId = allTags.find((t) => t.name === tag)?.id;
+      if (!tagId) return;
+      await prisma.questionTagRelation.create({
+        data: {
+          questionId,
+          tagId,
+        },
+      });
+    })
+  );
+};
+
+export const maxDuration = 180;
+
+const generageJsQuestion = async () => {
+  const prisma = await buildPrisma();
+  const reviewer = await randomReviewer();
 
   const response = await JsQuestionGenerateService.generateQuestion({
-    type: QuestionType.JAVA_SCRIPT,
     level: getRandomLevel(),
     reviewer,
   });
 
   if (!response) throw new Error("Failed to generate question.");
 
-  const allTags = await prisma.questionTag.findMany();
-
   const question = await prisma.question.create({
     data: {
       id: nanoid(10),
+      type: QuestionType.JAVA_SCRIPT,
       content: response.content,
       title: response.title,
       inputCode: response.inputCode,
@@ -77,37 +104,70 @@ const generage = async () => {
     },
   });
 
-  await Promise.all(
-    response.tags.map(async (tag) => {
-      const tagId = allTags.find((t) => t.name === tag)?.id;
-      if (!tagId) return;
-      await prisma.questionTagRelation.create({
-        data: {
-          questionId: question.id,
-          tagId,
-        },
-      });
-    })
-  );
+  await createQuestionTagRelations(question.id, response.tags);
+
+  return question;
+};
+
+const generageReactJsQuestion = async () => {
+  const prisma = await buildPrisma();
+  const reviewer = await randomReviewer();
+
+  const response = await ReactJsQuestionGenerateService.generateQuestion({
+    level: "BASIC", // Reactは一旦BASICのみ出す
+    reviewer,
+  });
+
+  if (!response) throw new Error("Failed to generate question.");
+
+  const question = await prisma.question.create({
+    data: {
+      id: nanoid(10),
+      type: QuestionType.REACT_JS,
+      content: response.content,
+      title: response.title,
+      inputCode: "",
+      outputCode: "",
+      level: response.level,
+      reviewerId: reviewer.id,
+      questionFiles: {
+        create: [response].map((file) => ({
+          name: "index",
+          template: file.template,
+          ext: FileExtension.JSX,
+          exampleAnswer: file.exampleAnswer,
+          isRoot: true,
+        })),
+      },
+    },
+  });
+
+  await createQuestionTagRelations(question.id, response.tags);
 
   return question;
 };
 
 export const GET = async () => {
   try {
-    const question1 = await generage();
-    const question2 = await generage();
-    // const question3 = await generage();
+    const [question1, question2, question3, question4] = await Promise.all([
+      generageJsQuestion(),
+      generageJsQuestion(),
+      generageReactJsQuestion(),
+      generageReactJsQuestion(),
+    ]);
 
-    const question1Text = `[${getLevelName(question1.level)}] ${
-      question1.title
-    }\nhttps://jsgym.shiftb.dev/q/${question1.id}\n\n`;
-    const question2Text = `[${getLevelName(question2.level)}] ${
-      question2.title
-    }\nhttps://jsgym.shiftb.dev/q/${question2.id}\n\n`;
-    // const question3Text = `[${getLevelName(question3.level)}] ${
-    //   question3.title
-    // }\nhttps://jsgym.shiftb.dev/q/${question3.id}\n\n`;
+    const question1Text = `[${getTypeName(question1.type)} ${getLevelName(
+      question1.level
+    )}] ${question1.title}\nhttps://jsgym.shiftb.dev/q/${question1.id}\n\n`;
+    const question2Text = `[${getTypeName(question2.type)} ${getLevelName(
+      question2.level
+    )}] ${question2.title}\nhttps://jsgym.shiftb.dev/q/${question2.id}\n\n`;
+    const question3Text = `[${getTypeName(question3.type)} ${getLevelName(
+      question3.level
+    )}] ${question3.title}\nhttps://jsgym.shiftb.dev/q/${question3.id}\n\n`;
+    const question4Text = `[${getTypeName(question4.type)} ${getLevelName(
+      question4.level
+    )}] ${question4.title}\nhttps://jsgym.shiftb.dev/q/${question4.id}\n\n`;
 
     const slack = new SlackService();
     await slack.postMessage({
@@ -116,8 +176,9 @@ export const GET = async () => {
 
 
 ${question1Text}
-${question2Text}`,
-      // ${question3Text}
+${question2Text}
+${question3Text}
+${question4Text}`,
     });
 
     return NextResponse.json({ message: "success." }, { status: 200 });

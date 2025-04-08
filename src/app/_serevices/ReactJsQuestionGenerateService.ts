@@ -7,14 +7,12 @@ import {
   lesson1Example,
   lesson2Example,
   lesson3Example,
-} from "../_constants/questionExamples/javascript";
+} from "../_constants/questionExamples/react";
 import { buildReviewerSettingPrompt } from "../_utils/buildReviewerSettingPrompt";
 import { buildPrisma } from "../_utils/prisma";
 
 type GenerateQuestionJsonResponse = {
   title: string;
-  inputCode: string;
-  outputCode: string;
   content: string;
   template: string;
   level: QuestionLevel;
@@ -24,15 +22,13 @@ type GenerateQuestionJsonResponse = {
 
 export type QuestionLevel = "BASIC" | "ADVANCED" | "REAL_WORLD";
 
-export class JsQuestionGenerateService {
+export class ReactJsQuestionGenerateService {
   private static openai = new OpenAI({
     apiKey: process.env.OPENAI_SECRET_KEY,
   });
 
   private static Question = z.object({
     title: z.string(),
-    inputCode: z.string(),
-    outputCode: z.string(),
     template: z.string(),
     content: z.string(),
     level: z.enum(["BASIC", "ADVANCED", "REAL_WORLD"]),
@@ -62,8 +58,8 @@ export class JsQuestionGenerateService {
   }) {
     return `
 # 概要
-JavaScriptの問題を作成してください。
-これから、JavaScriptを自走して書けるようになるための問題です。
+React(JavaScript)の問題を作成してください。
+これから、Reactを自走して書けるようになるための問題です。
 アプリケーションのユーザーが、その問題を解いて、提出して、判定を得ることで、学習を進めることができます。
 
 ${level === "BASIC" && lesson1Example}
@@ -72,12 +68,10 @@ ${level === "REAL_WORLD" && lesson3Example}
 
 # 出力型の説明
 * title: 問題のタイトル
-* inputCode: 入力コード
-* outputCode: 出力コード
 * content: 問題の内容。マークダウン形式で、見出しは、1.やりたいこと 2.実装の条件 3.学べること の順で書いてください。
 * level: 問題の難易度
 * template: ユーザーが回答するコードのテンプレートです。デフォルト値として表示します。#のコメント文で、次行に何を書いたら良いのかの説明をしてください。
-* exampleAnswer: 模範的な解答
+* exampleAnswer: 模範的な解答（CSSはTailwindCSSを使用してください）
 * tags: 問題のタグ（複数可）
 
 # 補足
@@ -96,9 +90,7 @@ ${titleContentList.join("\n")}
 
 # 新規性を高めるヒント
 1. 実務でよく遭遇する具体的なユースケースを取り入れる
-2. 複数の概念を組み合わせた問題にする
-3. エッジケースや例外処理を意識させる問題にする
-4. 特定のJavaScriptの新機能を活用した問題にする`;
+2. 複数の概念を組み合わせた問題にする`;
   }
 
   public static async generateQuestion({
@@ -111,7 +103,7 @@ ${titleContentList.join("\n")}
     const prisma = await buildPrisma();
     const questions = await prisma.question.findMany({
       where: {
-        type: QuestionType.JAVA_SCRIPT,
+        type: QuestionType.REACT_JS,
       },
       select: {
         title: true,

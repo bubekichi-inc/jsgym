@@ -33,6 +33,17 @@ export const MarkdownWrapper: React.FC<Props> = ({ children }) => {
             {children}
           </h2>
         ),
+        h3: ({ children }) => (
+          <h2
+            style={{
+              fontSize: "1rem",
+              fontWeight: "bold",
+              margin: "1rem 0",
+            }}
+          >
+            {children}
+          </h2>
+        ),
         ul: ({ children }) => (
           <ul
             style={{
