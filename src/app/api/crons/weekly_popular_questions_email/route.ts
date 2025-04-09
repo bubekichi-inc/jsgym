@@ -120,7 +120,7 @@ https://jsgym.shiftb.dev/q/${question.id}`
               </a>
             </div>
             <div style="position: absolute; top: 0; left: 0; border-top-left-radius: 8px; border-bottom-right-radius: 8px; padding: 4px 8px; font-size: 14px; color: white; background-color: #4b5563;">
-              取り組んだユーザー数: ${question._count.userQuestions}人
+              ${question._count.userQuestions}人が挑戦
             </div>
           </div>
         `
