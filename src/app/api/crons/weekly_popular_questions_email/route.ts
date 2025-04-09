@@ -5,7 +5,7 @@ import { SendGridService } from "../../../_serevices/SendGridService";
 import { buildPrisma } from "../../../_utils/prisma";
 import { buildError } from "../../_utils/buildError";
 
-export const maxDuration = 180;
+export const maxDuration = 300;
 
 // タイプごとの背景色をTailwindクラス名からCSS色コードに変換
 const typeStyleColorMap: Record<string, string> = {
