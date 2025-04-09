@@ -5,7 +5,6 @@ import {
   faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 
@@ -78,17 +77,9 @@ export default function UnsubscribePage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 p-4">
       <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-md">
-        <div className="mb-6 text-center">
-          <Image
-            src="/images/logo.png"
-            alt="JS Gym"
-            width={180}
-            height={180}
-            className="mx-auto mb-4 h-12"
-          />
-          <h1 className="text-2xl font-bold text-gray-800">メール通知設定</h1>
-        </div>
-
+        <h1 className="mb-6 text-center text-2xl font-bold text-gray-800">
+          メール通知設定
+        </h1>
         {isLoading ? (
           <div className="py-8 text-center">
             <div className="mx-auto size-12 animate-spin rounded-full border-b-2 border-gray-900"></div>
