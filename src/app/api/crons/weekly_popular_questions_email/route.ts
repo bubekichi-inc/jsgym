@@ -202,6 +202,8 @@ export const GET = async () => {
 
     await Promise.all(emailPromises);
 
+    console.log(`${usersWithNotifications.length}人に「人気の問題」メールを送信しました。`);
+
     return NextResponse.json({ message: "success." }, { status: 200 });
   } catch (e) {
     return await buildError(e);
