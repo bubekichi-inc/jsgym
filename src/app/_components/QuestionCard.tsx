@@ -100,9 +100,6 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question }) => {
               <p className="mt-1 whitespace-pre-line text-xs text-gray-300">
                 {question.reviewer.bio}
               </p>
-              <p className="mt-1 text-xs text-blue-300">
-                クリックしてこのレビュワーの問題をフィルター
-              </p>
             </div>
           </div>
         )}
