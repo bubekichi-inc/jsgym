@@ -52,7 +52,7 @@ const Tab: React.FC<TabProps> = ({ file, isSelected, onSelect }) => {
 
   return (
     <li
-      className={`flex h-full w-[128px] cursor-pointer select-none items-center gap-2 border-r px-3 ${tabClass}`}
+      className={`flex h-full min-w-[128px] cursor-pointer select-none items-center gap-2 border-r px-3 ${tabClass}`}
       onClick={onSelect}
     >
       <Image src={icon} height={80} width={80} alt="js-icon" className="w-4" />

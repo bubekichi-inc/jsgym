@@ -1,15 +1,13 @@
 "use client";
 
-import { UserQuestionStatus } from "@prisma/client";
-import Image from "next/image";
+import { QuestionType, UserQuestionStatus } from "@prisma/client";
 import { useSearchParams } from "next/navigation";
-import { useRef, useState } from "react";
 import { useMe } from "@/app/(member)/_hooks/useMe";
 import { QuestionCard } from "@/app/_components/QuestionCard";
 import { Skeleton } from "@/app/_components/Skeleton";
 import { useDevice } from "@/app/_hooks/useDevice";
 import { useQuestions } from "@/app/_hooks/useQuestions";
-import { QuestionLevel } from "@/app/_serevices/AIQuestionGenerateService";
+import { QuestionLevel } from "@/app/_serevices/JsQuestionGenerateService";
 
 // 拡張ステータス型
 type ExtendedStatus = UserQuestionStatus | "NOT_SUBMITTED" | "ALL";
@@ -25,27 +23,20 @@ export const Questions: React.FC<Props> = ({ limit }) => {
   const initialTitle = searchParams.get("title") || "";
   const initialLevel =
     (searchParams.get("level") as QuestionLevel | "ALL") || "ALL";
-  const initialReviewerId = Number(searchParams.get("reviewerId") || "0");
+  const initialType =
+    (searchParams.get("type") as QuestionType | "ALL") || "ALL";
   const initialStatus = (searchParams.get("status") as ExtendedStatus) || "ALL";
-
-  const [hoveredReviewerId, setHoveredReviewerId] = useState<number | null>(
-    null
-  );
-  const hoverTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const { isSp } = useDevice();
   const { data: me } = useMe();
 
   const {
     questions,
-    reviewers,
     selectedLevel,
-    selectedReviewerId,
     selectedStatus,
     hasMore,
     isLoading,
     handleLevelChange,
-    handleReviewerSelect,
     handleStatusChange,
     handleLoadMore,
     selectedType,
@@ -53,24 +44,10 @@ export const Questions: React.FC<Props> = ({ limit }) => {
   } = useQuestions({
     limit,
     initialTitle,
+    initialType,
     initialLevel,
-    initialReviewerId,
     initialStatus,
   });
-
-  const handleReviewerMouseEnter = (reviewerId: number) => {
-    hoverTimerRef.current = setTimeout(() => {
-      setHoveredReviewerId(reviewerId);
-    }, 800);
-  };
-
-  const handleReviewerMouseLeave = () => {
-    if (hoverTimerRef.current) {
-      clearTimeout(hoverTimerRef.current);
-      hoverTimerRef.current = null;
-    }
-    setHoveredReviewerId(null);
-  };
 
   return (
     <section className="mx-auto max-w-screen-xl bg-gray-100/50 py-4 md:py-20">
@@ -247,63 +224,6 @@ export const Questions: React.FC<Props> = ({ limit }) => {
                   </div>
                 </div>
               )}
-            </div>
-
-            <div className="flex max-w-[100vw] flex-col items-center gap-2 overflow-auto rounded-md bg-white py-2 md:flex-row md:px-4">
-              {!isSp && (
-                <p className="text-xs font-bold text-gray-500">レビュワー</p>
-              )}
-              <div className="flex pb-2 pt-1 md:max-w-screen-md">
-                <div className="flex gap-3 px-2">
-                  {reviewers.map((reviewer) => (
-                    <button
-                      key={reviewer.id}
-                      onClick={() => handleReviewerSelect(reviewer.id)}
-                      className={`group relative flex min-w-[60px] flex-col items-center space-y-1 transition-transform hover:scale-110 ${
-                        selectedReviewerId === reviewer.id ? "scale-110" : ""
-                      }`}
-                      onMouseEnter={() => handleReviewerMouseEnter(reviewer.id)}
-                      onMouseLeave={handleReviewerMouseLeave}
-                    >
-                      <div
-                        className={`relative size-12 overflow-hidden rounded-full border-2 ${
-                          selectedReviewerId === reviewer.id
-                            ? "border-[3px] border-blue-500"
-                            : "border-transparent"
-                        }`}
-                      >
-                        <Image
-                          src={reviewer.profileImageUrl}
-                          alt={reviewer.name}
-                          fill
-                          sizes="48px"
-                          className="object-cover"
-                        />
-                      </div>
-                      <span className="whitespace-nowrap text-center text-xs font-medium">
-                        {reviewer.name}
-                      </span>
-                      {!isSp && (
-                        <div
-                          className={`absolute bottom-[105%] z-10 mb-2 w-[320px] whitespace-pre-wrap break-words rounded-lg bg-gray-900 p-3 text-left text-xs text-white transition-opacity duration-200 ${
-                            hoveredReviewerId === reviewer.id
-                              ? "visible opacity-100"
-                              : "invisible opacity-0"
-                          }`}
-                        >
-                          <p className="font-bold">{reviewer.name}</p>
-                          <p className="mt-1 line-clamp-[9] text-xs text-gray-300">
-                            {reviewer.bio}
-                          </p>
-                          <p className="mt-1 text-xs text-blue-300">
-                            問題数: {reviewer.questionCount}
-                          </p>
-                        </div>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              </div>
             </div>
           </div>
         </div>

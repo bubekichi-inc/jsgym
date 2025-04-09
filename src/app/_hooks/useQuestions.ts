@@ -2,7 +2,7 @@ import { QuestionType, UserQuestionStatus } from "@prisma/client";
 import { useCallback, useEffect, useState } from "react";
 import useSWR from "swr";
 import { useFetch } from "./useFetch";
-import { QuestionLevel } from "@/app/_serevices/AIQuestionGenerateService";
+import { QuestionLevel } from "@/app/_serevices/JsQuestionGenerateService";
 import { api } from "@/app/_utils/api";
 import { Question } from "@/app/api/questions/route";
 import { Reviewer } from "@/app/api/reviewers/route";
@@ -13,6 +13,7 @@ type ExtendedStatus = UserQuestionStatus | "NOT_SUBMITTED" | "ALL";
 interface UseQuestionsProps {
   limit: number;
   initialTitle?: string;
+  initialType?: QuestionType | "ALL";
   initialLevel?: QuestionLevel | "ALL";
   initialReviewerId?: number;
   initialStatus?: ExtendedStatus;
@@ -50,6 +51,7 @@ interface UseQuestionsReturn {
 export const useQuestions = ({
   limit,
   initialTitle = "",
+  initialType = "ALL",
   initialLevel = "ALL",
   initialReviewerId = 0,
   initialStatus = "ALL",
@@ -57,7 +59,9 @@ export const useQuestions = ({
   const [selectedLevel, setSelectedLevel] = useState<QuestionLevel | "ALL">(
     initialLevel
   );
-  const [selectedType, setSelectedType] = useState<QuestionType | "ALL">("ALL");
+  const [selectedType, setSelectedType] = useState<QuestionType | "ALL">(
+    initialType
+  );
   const [searchTitle, setSearchTitle] = useState(initialTitle);
   const [selectedReviewerId, setSelectedReviewerId] =
     useState<number>(initialReviewerId);

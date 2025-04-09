@@ -25,6 +25,7 @@ model User {
   receiveReminderNotification    Boolean            @default(true) @map("receive_reminder_notification")
   receiveUsefulInfoNotification  Boolean            @default(true) @map("receive_useful_info_notification")
   role                           UserRole           @default(USER) @map("role")
+  clicks                         Click[]
   pointTransactions              PointTransaction[]
   questionBookmarks              QuestionBookmark[]
   reviewer                       Reviewer?
@@ -38,6 +39,7 @@ model Course {
   title        String
   description  String
   thumbnailUrl String   @map("thumbnail_url")
+  slug         String   @unique
   lessons      Lesson[]
 
   @@map("courses")
@@ -188,10 +190,10 @@ model CodeReview {
   messageId      String?             @unique @map("message_id") @db.Uuid
   overview       String
   result         CodeReviewResult
+  score          Int
   createdAt      DateTime            @default(now()) @map("created_at")
   updatedAt      DateTime            @updatedAt @map("updated_at")
   userQuestionId String              @map("user_id") @db.Uuid
-  score          Int
   comments       CodeReviewComment[]
   message        Message?            @relation(fields: [messageId], references: [id])
   userQuestion   UserQuestion        @relation(fields: [userQuestionId], references: [id], onDelete: Cascade)
@@ -245,6 +247,17 @@ model Reviewer {
   user            User?      @relation(fields: [userId], references: [id])
 
   @@map("reviewers")
+}
+
+model Click {
+  id        String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  type      String
+  userId    String?  @map("user_id") @db.Uuid
+  user      User?    @relation(fields: [userId], references: [id])
+
+  @@map("clicks")
 }
 
 enum FileExtension {

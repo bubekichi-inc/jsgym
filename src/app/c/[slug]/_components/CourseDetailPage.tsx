@@ -3,11 +3,11 @@
 import { faBook, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CourseHeader from "./CourseHeader";
-// import LessonList from "./LessonList";
+import LessonList from "./LessonList";
 import { useCourse } from "@/app/_hooks/useCourse";
 
-export default function CourseDetailPage({ courseId }: { courseId: string }) {
-  const { course, isLoading, error } = useCourse(courseId);
+export default function CourseDetailPage({ slug }: { slug: string }) {
+  const { course, lessons, isLoading, error } = useCourse(slug);
 
   // ローディング中の表示
   if (isLoading) {
@@ -52,7 +52,7 @@ export default function CourseDetailPage({ courseId }: { courseId: string }) {
           <FontAwesomeIcon icon={faBook} className="mr-3 text-blue-500" />
           レッスン一覧
         </h2>
-        {/* <LessonList lessons={lessons} /> */}
+        <LessonList lessons={lessons} slug={slug} />
       </div>
     </div>
   );
