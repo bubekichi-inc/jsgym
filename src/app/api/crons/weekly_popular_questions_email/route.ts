@@ -27,12 +27,8 @@ export const GET = async () => {
 
     const popularQuestions = await prisma.question.findMany({
       where: {
-        userQuestions: {
-          some: {
-            createdAt: {
-              gte: oneWeekAgo,
-            },
-          },
+        createdAt: {
+          gte: oneWeekAgo,
         },
       },
       include: {
