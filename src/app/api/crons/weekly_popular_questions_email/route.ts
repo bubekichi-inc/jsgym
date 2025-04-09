@@ -115,7 +115,7 @@ https://jsgym.shiftb.dev/q/${question.id}`
             <div>
               <a href="https://jsgym.shiftb.dev/q/${
                 question.id
-              }" style="display: inline-flex; width: 100%; justify-content: center; align-items: center; border-radius: 6px; background-color: black; padding: 8px 16px; font-size: 14px; font-weight: 500; color: white; text-decoration: none;">
+              }" style="display: block; text-align: center; max-width: 100%; border-radius: 6px; background-color: black; padding: 8px 16px; font-size: 14px; font-weight: 500; color: white; text-decoration: none;">
                 問題に挑戦する
               </a>
             </div>
