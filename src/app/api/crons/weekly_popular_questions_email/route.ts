@@ -88,7 +88,7 @@ ${questionTexts}
 
     const usersWithNotifications = await prisma.user.findMany({
       where: {
-        receiveUsefulInfoNotification: true,
+        receiveNewQuestionNotification: true,
         email: { not: null },
       },
       select: {
