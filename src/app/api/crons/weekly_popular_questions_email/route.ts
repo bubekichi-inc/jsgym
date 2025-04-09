@@ -146,7 +146,7 @@ export const GET = async () => {
           <div style="margin: 24px 0; text-align: center;">
             <a href="${appBaseUrl}/unsubscribe?user_id=${encodeURIComponent(
           user.id
-        )}&amp;notification_type=receive_new_question_notification" style="display: inline-block; padding: 8px 16px; background-color: #f3f4f6; color: #4b5563; border-radius: 6px; text-decoration: none; font-size: 14px;">メール配信を停止する</a>
+        )}&amp;notification_type=receive_new_question_notification" style="display: inline-block; padding: 8px 16px; background-color: #f3f4f6; color: #4b5563; border-radius: 6px; text-decoration: none; font-size: 12px;">このメール配信を停止する</a>
           </div>
 
           <!-- フッター -->
