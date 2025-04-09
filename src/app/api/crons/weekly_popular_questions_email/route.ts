@@ -90,8 +90,11 @@ https://jsgym.shiftb.dev/q/${question.id}`
     const emailPromises = usersWithNotifications.map((user) => {
       if (user.email) {
         const htmlContent = `
+          <div style="text-align: center; margin-bottom: 24px;">
+            <img src="https://jsgym.shiftb.dev/images/logo.png" alt="JS Gym" width="180" style="max-width: 180px;" />
+          </div>
           <h1 style="font-size: 24px; font-weight: bold; margin-bottom: 16px;">JS Gymの今週の人気問題</h1>
-          <p style="margin-bottom: 24px;">直近1週間のJS Gymで人気のあった問題をお届けします！</p>
+          <p style="margin-bottom: 24px;">いつもJS Gymをご利用いただきありがとうございます。直近1週間のJS Gymで人気のあった問題をお届けします！</p>
           <div style="display: grid; gap: 24px;">
             ${popularQuestions
               .map(
@@ -200,6 +203,7 @@ https://jsgym.shiftb.dev/q/${question.id}`
         const textContent = `
 JS Gymの今週の人気問題
 
+いつもJS Gymをご利用いただきありがとうございます。
 直近1週間のJS Gymで人気のあった問題をお届けします！
 
 ${questionTexts}
