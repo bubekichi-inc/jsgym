@@ -51,10 +51,12 @@ export class ReactJsQuestionGenerateService {
 
   public static buildPrompt({
     level,
-    titleContentList,
+    recentTitleContentList,
+    popularTitleContentList,
   }: {
     level: QuestionLevel;
-    titleContentList: string[];
+    recentTitleContentList: string[];
+    popularTitleContentList: string[];
   }) {
     return `
 # 概要
@@ -80,7 +82,11 @@ ${level === "REAL_WORLD" && lesson3Example}
 ・すでに出題された概念の単純な変形や類似問題は避け、新しい視点や学びがある問題を作成してください。
 ・これまでに出題されていない概念や応用方法を取り入れてください。
 ・以下に、これまでに出題された問題のタイトルと内容を示します。
-${titleContentList.join("\n")}
+${recentTitleContentList.join("\n")}
+
+# 人気問題の特徴
+・以下は、ユーザーから人気のある問題のタイトルと内容です。この特徴を参考にして、同様に人気が出そうな問題を作成してください。
+${popularTitleContentList.join("\n")}
 
 # 特に避けるべき類似パターン
 1. 単純に変数名や値を変えただけの問題
@@ -101,7 +107,8 @@ ${titleContentList.join("\n")}
     reviewer: Reviewer;
   }): Promise<GenerateQuestionJsonResponse | null> {
     const prisma = await buildPrisma();
-    const questions = await prisma.question.findMany({
+    
+    const recentQuestions = await prisma.question.findMany({
       where: {
         type: QuestionType.REACT_JS,
       },
@@ -115,7 +122,32 @@ ${titleContentList.join("\n")}
       take: 50,
     });
 
-    const titleContentList = questions.map(
+    const popularQuestions = await prisma.question.findMany({
+      where: {
+        type: QuestionType.REACT_JS,
+      },
+      select: {
+        title: true,
+        content: true,
+        _count: {
+          select: {
+            userQuestions: true
+          }
+        }
+      },
+      orderBy: {
+        userQuestions: {
+          _count: 'desc'
+        }
+      },
+      take: 10,
+    });
+
+    const recentTitleContentList = recentQuestions.map(
+      (question) => `  - タイトル:${question.title} 内容:${question.content}`
+    );
+    
+    const popularTitleContentList = popularQuestions.map(
       (question) => `  - タイトル:${question.title} 内容:${question.content}`
     );
 
@@ -128,7 +160,7 @@ ${titleContentList.join("\n")}
         },
         {
           role: "user",
-          content: this.buildPrompt({ level, titleContentList }),
+          content: this.buildPrompt({ level, recentTitleContentList, popularTitleContentList }),
         },
       ],
       temperature: 1,
