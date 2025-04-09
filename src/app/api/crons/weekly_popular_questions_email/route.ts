@@ -62,14 +62,6 @@ export const GET = async () => {
       take: 7,
     });
 
-    const questionTexts = popularQuestions
-      .map(
-        (question) =>
-          `[${getLevelName(question.level)}] ${question.title}
-https://jsgym.shiftb.dev/q/${question.id}`
-      )
-      .join("\n\n");
-
     const usersWithNotifications = await prisma.user.findMany({
       where: {
         receiveNewQuestionNotification: true,
@@ -90,10 +82,9 @@ https://jsgym.shiftb.dev/q/${question.id}`
     const emailPromises = usersWithNotifications.map((user) => {
       if (user.email) {
         const htmlContent = `
-          <div style="text-align: center; margin-bottom: 24px;">
+          <div style="text-align: center; margin-bottom: 32px;">
             <img src="https://jsgym.shiftb.dev/images/logo.png" alt="JS Gym" width="180" style="max-width: 180px;" />
           </div>
-          <h1 style="font-size: 24px; font-weight: bold; margin-bottom: 16px;">JS Gymの今週の人気問題</h1>
           <p style="margin-bottom: 24px;">いつもJS Gymをご利用いただきありがとうございます。直近1週間のJS Gymで人気のあった問題をお届けします！</p>
           <div style="display: grid; gap: 24px;">
             ${popularQuestions
@@ -200,26 +191,9 @@ https://jsgym.shiftb.dev/q/${question.id}`
           </div>
         `;
 
-        const textContent = `
-JS Gymの今週の人気問題
-
-いつもJS Gymをご利用いただきありがとうございます。
-直近1週間のJS Gymで人気のあった問題をお届けします！
-
-${questionTexts}
-
-引き続きJS Gymでスキルアップしましょう！
-
-■ メール配信を停止する
-${appBaseUrl}/email_settings/receive_new_question_notification/?user_id=${user.id}
-
-© 2025 JS Gym. All rights reserved.
-        `;
-
         return sendGrid.sendEmail({
           to: user.email,
           subject: "【JS Gym】今週の人気問題をお届けします",
-          text: textContent,
           html: htmlContent,
         });
       }

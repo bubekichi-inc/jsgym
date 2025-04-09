@@ -11,21 +11,18 @@ export class SendGridService {
   async sendEmail({
     to,
     subject,
-    text,
     html,
   }: {
     to: string;
     subject: string;
-    text: string;
-    html?: string;
+    html: string;
   }) {
     try {
       await this.mailService.send({
         to,
         from: "noreply.jsgym@bubekichi.com",
         subject,
-        text,
-        html: html || text,
+        html,
       });
     } catch (error) {
       console.error("SendGridAPIError: ", error);
