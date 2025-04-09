@@ -65,10 +65,10 @@ const Notification: React.FC = () => {
             })}
             disabled={false}
           />
-          <p>新しい問題の通知を受け取る</p>
+          <p>週に1回、人気の新着問題をお届けします</p>
         </div>
 
-        <div>
+        {/* <div>
           <CheckBoxWithLabel
             label="お役立ち情報"
             id="useful-information"
@@ -79,9 +79,9 @@ const Notification: React.FC = () => {
             disabled={false}
           />
           <p>プログラミングに関する役立つ情報を受け取る</p>
-        </div>
+        </div> */}
 
-        <div>
+        {/* <div>
           <CheckBoxWithLabel
             label="リマインダー＆その他"
             id="reminder"
@@ -92,7 +92,7 @@ const Notification: React.FC = () => {
             disabled={false}
           />
           <p>学習のリマインド、その他のニュースを受け取る</p>
-        </div>
+        </div> */}
 
         <div>
           <CheckBoxWithLabel
