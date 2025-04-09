@@ -107,7 +107,7 @@ ${popularTitleContentList.join("\n")}
     reviewer: Reviewer;
   }): Promise<GenerateQuestionJsonResponse | null> {
     const prisma = await buildPrisma();
-    
+
     const recentQuestions = await prisma.question.findMany({
       where: {
         type: QuestionType.REACT_JS,
@@ -131,14 +131,14 @@ ${popularTitleContentList.join("\n")}
         content: true,
         _count: {
           select: {
-            userQuestions: true
-          }
-        }
+            userQuestions: true,
+          },
+        },
       },
       orderBy: {
         userQuestions: {
-          _count: 'desc'
-        }
+          _count: "desc",
+        },
       },
       take: 10,
     });
@@ -146,7 +146,7 @@ ${popularTitleContentList.join("\n")}
     const recentTitleContentList = recentQuestions.map(
       (question) => `  - タイトル:${question.title} 内容:${question.content}`
     );
-    
+
     const popularTitleContentList = popularQuestions.map(
       (question) => `  - タイトル:${question.title} 内容:${question.content}`
     );
@@ -160,7 +160,11 @@ ${popularTitleContentList.join("\n")}
         },
         {
           role: "user",
-          content: this.buildPrompt({ level, recentTitleContentList, popularTitleContentList }),
+          content: this.buildPrompt({
+            level,
+            recentTitleContentList,
+            popularTitleContentList,
+          }),
         },
       ],
       temperature: 1,
