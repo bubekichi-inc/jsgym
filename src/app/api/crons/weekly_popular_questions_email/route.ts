@@ -82,15 +82,15 @@ export const GET = async () => {
     const emailPromises = usersWithNotifications.map((user) => {
       if (user.email) {
         const htmlContent = `
-          <div style="text-align: center; margin-bottom: 32px;">
+          <div style="text-align: center; margin: 32px 0;">
             <img src="https://jsgym.shiftb.dev/images/logo.png" alt="JS Gym" width="180" style="max-width: 180px;" />
           </div>
-          <p style="margin-bottom: 24px;">いつもJS Gymをご利用いただきありがとうございます。直近1週間のJS Gymで人気のあった問題をお届けします！</p>
-          <div style="display: grid; gap: 24px;">
+          <p style="margin-bottom: 24px; max-width: 480px; margin: 24px auto;">いつもJS Gymをご利用いただきありがとうございます。直近1週間のJS Gymで人気のあった問題をお届けします！</p>
+          <div style="display: grid; gap: 24px; justify-content: center;">
             ${popularQuestions
               .map(
                 (question) => `
-              <div style="position: relative; display: flex; flex-direction: column; border-radius: 8px; border: 1px solid #e5e7eb; background-color: white; padding: 24px; padding-top: 40px; padding-bottom: 20px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);">
+              <div style="position: relative; display: flex; flex-direction: column; border-radius: 8px; border: 1px solid #e5e7eb; background-color: white; padding: 24px; padding-top: 40px; padding-bottom: 20px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); max-width: 400px;">
                 <div style="margin-bottom: 16px;">
                   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                     <div style="font-size: 14px;">
@@ -140,7 +140,7 @@ export const GET = async () => {
               )
               .join("")}
           </div>
-          <p style="margin-top: 24px; margin-bottom: 24px;">引き続きJS Gymでスキルアップしましょう！</p>
+          <p style="margin-top: 24px; margin-bottom: 24px; max-width: 480px; margin: 24px auto;">引き続きJS Gymでスキルアップしましょう！</p>
 
           <!-- 配信停止ボタン -->
           <div style="margin: 24px 0; text-align: center;">
