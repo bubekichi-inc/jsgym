@@ -3,6 +3,10 @@
     {
       "path": "/api/crons/generate_questions",
       "schedule": "0 20 * * *"
+    },
+    {
+      "path": "/api/crons/weekly_popular_questions_email",
+      "schedule": "0 10 * * 1"
     }
   ]
 }
