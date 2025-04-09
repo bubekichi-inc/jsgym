@@ -184,13 +184,6 @@ https://jsgym.shiftb.dev/q/${question.id}`
                   </svg>
                   bube.code
                 </a>
-                <a href="mailto:info@bubekichi.com" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; gap: 4px; font-size: 12px; color: #6b7280; text-decoration: none;">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 12px; height: 12px;">
-                    <path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                    <path d="M22 6L12 13L2 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                  </svg>
-                  お問い合わせ
-                </a>
                 <a href="${appBaseUrl}/privacy_policy" style="font-size: 12px; color: #6b7280; text-decoration: none;">
                   プライバシーポリシー
                 </a>
