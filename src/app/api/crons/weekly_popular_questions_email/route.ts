@@ -14,56 +14,65 @@ const getLevelName = (level: string) => {
 export const GET = async () => {
   try {
     const prisma = await buildPrisma();
-    
+
     const oneWeekAgo = subDays(new Date(), 7);
-    
+
     const popularQuestions = await prisma.question.findMany({
       where: {
         userQuestions: {
           some: {
             createdAt: {
-              gte: oneWeekAgo
-            }
-          }
-        }
+              gte: oneWeekAgo,
+            },
+          },
+        },
       },
       include: {
         _count: {
           select: {
-            userQuestions: true
-          }
+            userQuestions: true,
+          },
         },
         userQuestions: {
           where: {
             createdAt: {
-              gte: oneWeekAgo
-            }
-          }
-        }
+              gte: oneWeekAgo,
+            },
+          },
+        },
       },
       orderBy: {
         userQuestions: {
-          _count: "desc"
-        }
+          _count: "desc",
+        },
       },
-      take: 7
+      take: 7,
     });
 
-    const questionTexts = popularQuestions.map(question => 
-      `[${getLevelName(question.level)}] ${question.title}
+    const questionTexts = popularQuestions
+      .map(
+        (question) =>
+          `[${getLevelName(question.level)}] ${question.title}
 https://jsgym.shiftb.dev/q/${question.id}`
-    ).join('\n\n');
+      )
+      .join("\n\n");
 
     const htmlContent = `
       <h1>JS Gymの今週の人気問題</h1>
       <p>直近1週間のJS Gymで人気のあった問題をお届けします！</p>
-      ${popularQuestions.map(question => `
+      ${popularQuestions
+        .map(
+          (question) => `
         <div style="margin-bottom: 20px;">
           <h2>[${getLevelName(question.level)}] ${question.title}</h2>
           <p>取り組んだユーザー数: ${question._count.userQuestions}人</p>
-          <a href="https://jsgym.shiftb.dev/q/${question.id}" style="display: inline-block; padding: 10px 15px; background-color: #4b5563; color: white; text-decoration: none; border-radius: 4px;">問題を見る</a>
+          <a href="https://jsgym.shiftb.dev/q/${
+            question.id
+          }" style="display: inline-block; padding: 10px 15px; background-color: #4b5563; color: white; text-decoration: none; border-radius: 4px;">問題を見る</a>
         </div>
-      `).join('')}
+      `
+        )
+        .join("")}
       <p>引き続きJS Gymでスキルアップしましょう！</p>
     `;
 
@@ -80,24 +89,24 @@ ${questionTexts}
     const usersWithNotifications = await prisma.user.findMany({
       where: {
         receiveUsefulInfoNotification: true,
-        email: { not: null }
+        email: { not: null },
       },
       select: {
         id: true,
         email: true,
-        name: true
-      }
+        name: true,
+      },
     });
 
     const sendGrid = new SendGridService();
 
-    const emailPromises = usersWithNotifications.map(user => {
+    const emailPromises = usersWithNotifications.map((user) => {
       if (user.email) {
         return sendGrid.sendEmail({
           to: user.email,
-          subject: '【JS Gym】今週の人気問題をお届けします',
+          subject: "【JS Gym】今週の人気問題をお届けします",
           text: textContent,
-          html: htmlContent
+          html: htmlContent,
         });
       }
       return Promise.resolve();
