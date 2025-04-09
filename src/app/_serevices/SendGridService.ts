@@ -22,7 +22,7 @@ export class SendGridService {
     try {
       await this.mailService.send({
         to,
-        from: process.env.SENDGRID_FROM_EMAIL || "noreply@jsgym.shiftb.dev",
+        from: "noreply.jsgym@bubekichi.com",
         subject,
         text,
         html: html || text,
