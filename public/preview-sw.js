@@ -134,6 +134,8 @@ async function compileFile(file) {
         jsxFragment: "React.Fragment",
         target: "es2020",
         format: "esm",
+        sourcemap: "inline",
+        sourcefile: file.name,
       });
 
       // 相対パスのimportを.mjs拡張子に変換
@@ -145,6 +147,8 @@ async function compileFile(file) {
         loader: "ts",
         target: "es2020",
         format: "esm",
+        sourcemap: "inline",
+        sourcefile: file.name,
       });
 
       return transformImports(result.code);
@@ -155,15 +159,53 @@ async function compileFile(file) {
     }
   } catch (error) {
     console.error("コンパイル中にエラーが発生しました:", error);
-    // コンパイルエラーを表示できるようにエラーコードを返す
-    return `console.error("コンパイルエラー: ${error.message.replace(
-      /"/g,
-      '\\"'
-    )}");
+
+    // より詳細なエラーメッセージを含むJavaScriptコードを返す
+    return `
+// コンパイルエラー: ${error.message.replace(/"/g, '\\"')}
+console.error("コンパイルエラー:", ${JSON.stringify(error.message)});
+
 export default function ErrorComponent() {
   return {
-    message: "${error.message.replace(/"/g, '\\"')}",
-    stack: "${(error.stack || "").replace(/"/g, '\\"').replace(/\n/g, "\\n")}"
+    $$typeof: Symbol.for('react.element'),
+    type: 'div',
+    props: {
+      style: {
+        color: 'red',
+        padding: '16px',
+        border: '1px solid #f88',
+        backgroundColor: '#fee',
+        borderRadius: '4px',
+        margin: '16px',
+        fontFamily: 'monospace',
+        whiteSpace: 'pre-wrap'
+      },
+      children: [
+        {
+          $$typeof: Symbol.for('react.element'),
+          type: 'h2',
+          props: { children: 'コンパイルエラーが発生しました' }
+        },
+        {
+          $$typeof: Symbol.for('react.element'),
+          type: 'p',
+          props: { children: ${JSON.stringify(error.message)} }
+        },
+        {
+          $$typeof: Symbol.for('react.element'),
+          type: 'pre',
+          props: {
+            style: {
+              overflow: 'auto',
+              background: '#f8f8f8',
+              padding: '10px',
+              borderRadius: '4px'
+            },
+            children: ${JSON.stringify(error.stack || "")}
+          }
+        }
+      ]
+    }
   };
 }`;
   }

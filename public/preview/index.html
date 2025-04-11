@@ -8,9 +8,9 @@
     <script type="importmap">
       {
         "imports": {
-          "react": "https://esm.sh/react@19.0.0",
-          "react-dom": "https://esm.sh/react-dom@19.0.0",
-          "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
+          "react": "https://esm.sh/react@19.0.0?dev",
+          "react-dom": "https://esm.sh/react-dom@19.0.0?dev",
+          "react-dom/client": "https://esm.sh/react-dom@19.0.0/client?dev",
           "jotai": "https://esm.sh/jotai@2.6.0",
           "react-router-dom": "https://esm.sh/react-router-dom@6.20.0"
         }
@@ -37,6 +37,13 @@
         background: #f8f8f8;
         padding: 10px;
         border-radius: 4px;
+        max-height: 200px;
+        white-space: pre-wrap;
+        font-family: monospace;
+      }
+      .error-highlight {
+        background-color: #ffff80;
+        font-weight: bold;
       }
     </style>
   </head>
@@ -49,16 +56,274 @@
       let rootInstance = null;
       let currentKey = 0;
 
+      // カスタムエラーの検出と強化
+      class ErrorDetector {
+        constructor() {
+          this.originalConsoleError = console.error;
+          this.pendingErrors = [];
+          this.errorCallback = null;
+          this.isHandlingError = false; // エラー処理中かどうかのフラグ
+          this.errorCount = 0; // 短時間に発生したエラー数をカウント
+          this.lastErrorTime = 0; // 最後にエラーが発生した時間
+        }
+
+        install(callback) {
+          this.errorCallback = callback;
+
+          // コンソールエラーをフック
+          console.error = (...args) => {
+            // 処理中のエラーは無視して無限ループを防止
+            if (this.isHandlingError) {
+              this.originalConsoleError.apply(console, args);
+              return;
+            }
+
+            // エラー回数制限チェック - 短時間に多数のエラーが発生した場合
+            const now = Date.now();
+            if (now - this.lastErrorTime < 1000) {
+              this.errorCount++;
+              if (this.errorCount > 5) {
+                // エラーが多すぎる場合は一時的に無効化
+                this.originalConsoleError.apply(console, [
+                  "エラーが多すぎるため、エラー検出を一時停止します",
+                ]);
+                setTimeout(() => {
+                  this.errorCount = 0;
+                }, 5000);
+                return;
+              }
+            } else {
+              this.errorCount = 1;
+              this.lastErrorTime = now;
+            }
+
+            this.originalConsoleError.apply(console, args);
+
+            try {
+              this.isHandlingError = true;
+              // Reactのエラーメッセージをキャプチャ
+              const errorText = args.join(" ");
+              if (
+                errorText.includes("エラー") ||
+                errorText.includes("Error") ||
+                errorText.includes("not defined") ||
+                errorText.includes("undefined")
+              ) {
+                let errorObj = new Error(errorText);
+                this.handleError(errorObj);
+              }
+            } finally {
+              this.isHandlingError = false;
+            }
+          };
+        }
+
+        handleError(error) {
+          if (this.isHandlingError) return; // 処理中の場合は無視
+
+          try {
+            this.isHandlingError = true;
+            if (this.errorCallback) {
+              this.errorCallback(error);
+            } else {
+              this.pendingErrors.push(error);
+            }
+          } finally {
+            this.isHandlingError = false;
+          }
+        }
+
+        processPendingErrors() {
+          if (this.isHandlingError) return; // 処理中の場合は無視
+
+          try {
+            this.isHandlingError = true;
+            if (this.errorCallback && this.pendingErrors.length > 0) {
+              // コピーしてから処理することで処理中の追加に対応
+              const errorsToProcess = [...this.pendingErrors];
+              this.pendingErrors = [];
+
+              errorsToProcess.forEach((error) => this.errorCallback(error));
+            }
+          } finally {
+            this.isHandlingError = false;
+          }
+        }
+      }
+
+      const errorDetector = new ErrorDetector();
+
+      // カスタムエラーバウンダリコンポーネントを定義
+      class ErrorBoundary extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = { hasError: false, error: null };
+        }
+
+        static getDerivedStateFromError(error) {
+          // エラー発生時にエラー状態を更新
+          return { hasError: true, error };
+        }
+
+        componentDidCatch(error, errorInfo) {
+          // エラー情報をログに出力
+          console.error("コンポーネントエラー:", error);
+          console.error("コンポーネントスタック:", errorInfo.componentStack);
+
+          // カスタムエラー処理を呼び出す
+          errorDetector.handleError(error);
+        }
+
+        render() {
+          if (this.state.hasError) {
+            // カスタムエラー画面を表示
+            return React.createElement(
+              "div",
+              {
+                style: {
+                  color: "red",
+                  padding: "16px",
+                  border: "1px solid #f88",
+                  backgroundColor: "#fee",
+                  borderRadius: "4px",
+                  fontSize: "13px",
+                  margin: "16px",
+                },
+              },
+              React.createElement(
+                "h2",
+                {},
+                "コンポーネントエラーが発生しました"
+              ),
+              React.createElement(
+                "p",
+                {},
+                this.state.error?.message || "不明なエラー"
+              ),
+              React.createElement(
+                "pre",
+                {
+                  style: {
+                    overflow: "auto",
+                    background: "#f8f8f8",
+                    padding: "10px",
+                    borderRadius: "4px",
+                    maxHeight: "200px",
+                    whiteSpace: "pre-wrap",
+                    fontFamily: "monospace",
+                  },
+                },
+                this.state.error?.stack || ""
+              ),
+              React.createElement(
+                "div",
+                {
+                  style: {
+                    marginTop: "12px",
+                    fontSize: "12px",
+                  },
+                },
+                React.createElement("strong", {}, "ヒント:"),
+                React.createElement(
+                  "ul",
+                  {},
+                  React.createElement(
+                    "li",
+                    {},
+                    "コンポーネント内のロジックを確認してください"
+                  ),
+                  React.createElement(
+                    "li",
+                    {},
+                    "useStateなどのフック名が正しいか確認してください"
+                  ),
+                  React.createElement(
+                    "li",
+                    {},
+                    "onMouseEnterなどのイベントハンドラの関数名が正しいか確認してください"
+                  ),
+                  React.createElement(
+                    "li",
+                    {},
+                    "関数コンポーネントの最上位でのみフックを呼び出しているか確認してください"
+                  )
+                )
+              )
+            );
+          }
+
+          return this.props.children;
+        }
+      }
+
       const renderError = (error) => {
-        console.error("レンダリングエラー:", error);
-        document.getElementById("root").innerHTML = `
-          <div class="error-container">
-            <h2>エラーが発生しました</h2>
-            <p>${error.message}</p>
-            <pre class="error-stack">${error.stack || ""}</pre>
-          </div>
-        `;
+        // エラー処理の無限ループを防止するための静的変数
+        if (renderError.isRendering) {
+          console.error("エラー処理中に別のエラーが発生しました:", error);
+          return;
+        }
+
+        try {
+          renderError.isRendering = true;
+          console.error("レンダリングエラー:", error);
+
+          // エラーメッセージ内の特定のパターンをハイライト
+          let errorMessage = error.message || String(error);
+          let errorStack = error.stack || "";
+
+          // 特定のエラーメッセージパターンをハイライト
+          const errorPatterns = [
+            {
+              pattern: /use(\p{L}+)State/u,
+              replace: (match, p1) =>
+                `<span class="error-highlight">${match}</span>`,
+            },
+            {
+              pattern: /ReferenceError: ([^\s]+) is not defined/i,
+              replace: (match, p1) =>
+                `ReferenceError: <span class="error-highlight">${p1}</span> is not defined`,
+            },
+            {
+              pattern: /([A-Za-z0-9_$]+[A-Za-z0-9_$あ-ん]*) is not defined/i,
+              replace: (match, p1) =>
+                `<span class="error-highlight">${p1}</span> is not defined`,
+            },
+            {
+              pattern: /\b(set[A-Z][A-Za-z0-9_$あ-ん]*)\b/g,
+              replace: (match) =>
+                `<span class="error-highlight">${match}</span>`,
+            },
+          ];
+
+          try {
+            errorPatterns.forEach(({ pattern, replace }) => {
+              errorMessage = errorMessage.replace(pattern, replace);
+            });
+          } catch (patternError) {
+            console.error("エラーパターン処理中にエラーが発生:", patternError);
+          }
+
+          document.getElementById("root").innerHTML = `
+            <div class="error-container">
+              <h2>エラーが発生しました</h2>
+              <p>${errorMessage}</p>
+              <pre class="error-stack">${errorStack}</pre>
+              <div style="margin-top: 12px; font-size: 12px;">
+                <strong>ヒント:</strong>
+                <ul>
+                  <li>変数名や関数名のスペルが正しいか確認してください</li>
+                  <li>イベントハンドラ（onMouseEnterなど）の中で使われている関数名を確認してください</li>
+                  <li>必要なライブラリをインポートしているか確認してください</li>
+                  <li>構文エラーがないか確認してください</li>
+                </ul>
+              </div>
+            </div>
+          `;
+        } finally {
+          renderError.isRendering = false;
+        }
       };
+      renderError.isRendering = false; // 静的プロパティの初期化
 
       const renderApp = async () => {
         try {
@@ -79,10 +344,115 @@
             rootInstance = ReactDOM.createRoot(document.getElementById("root"));
           }
 
-          // コンポーネントをレンダリング
+          // 開発モードを有効化
+          window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = { isDisabled: true };
+
+          // React特有のエラーハンドリングを向上させる
+          window.__REACT_ERROR_OVERLAY_GLOBAL_HOOK__ = {
+            reportRuntimeError: (error) => {
+              renderError(error);
+              return false;
+            },
+          };
+
+          // React 19の開発モードのエラー処理を強化
+          if (React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED) {
+            const ReactInternals =
+              React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+            // Reactの内部エラーハンドラにフックを追加
+            if (
+              ReactInternals.ReactErrorUtils &&
+              ReactInternals.ReactErrorUtils.invokeGuardedCallback
+            ) {
+              const originalInvokeGuardedCallback =
+                ReactInternals.ReactErrorUtils.invokeGuardedCallback;
+              ReactInternals.ReactErrorUtils.invokeGuardedCallback = function (
+                name,
+                func,
+                context,
+                ...args
+              ) {
+                try {
+                  return originalInvokeGuardedCallback.apply(this, [
+                    name,
+                    func,
+                    context,
+                    ...args,
+                  ]);
+                } catch (error) {
+                  // エラーカウントが一定以上の場合は処理しない（無限ループ防止）
+                  if (window._reactErrorCount > 5) return;
+                  window._reactErrorCount = (window._reactErrorCount || 0) + 1;
+                  setTimeout(() => {
+                    window._reactErrorCount--;
+                  }, 1000);
+
+                  renderError(error);
+                  throw error;
+                }
+              };
+            }
+          }
+
+          // イベントハンドラのエラーを捕捉するためのグローバルラッパー
+          window._wrapEventHandler = function (handler) {
+            if (typeof handler !== "function") return handler;
+
+            return function wrappedEventHandler(...args) {
+              try {
+                return handler.apply(this, args);
+              } catch (error) {
+                console.error("イベントハンドラでエラーが発生しました:", error);
+                renderError(error);
+                // エラーが発生しても処理を続行できるようにする
+                return undefined;
+              }
+            };
+          };
+
+          // Reactのイベントハンドラ関数をラップして、エラーをキャッチ
+          const originalCreateElement = React.createElement;
+          React.createElement = function wrappedCreateElement(
+            type,
+            props,
+            ...children
+          ) {
+            if (props && typeof props === "object") {
+              // イベントハンドラをラップ
+              const newProps = { ...props };
+              Object.keys(newProps).forEach((key) => {
+                if (
+                  key.startsWith("on") &&
+                  typeof newProps[key] === "function"
+                ) {
+                  newProps[key] = window._wrapEventHandler(newProps[key]);
+                }
+              });
+              return originalCreateElement.apply(this, [
+                type,
+                newProps,
+                ...children,
+              ]);
+            }
+            return originalCreateElement.apply(this, [
+              type,
+              props,
+              ...children,
+            ]);
+          };
+
+          // エラー検出をインストール
+          errorDetector.install(renderError);
+          errorDetector.processPendingErrors();
+
+          // コンポーネントをエラーバウンダリでラップしてレンダリング
           currentKey++;
           rootInstance.render(
-            React.createElement(App.default, { key: currentKey })
+            React.createElement(
+              ErrorBoundary,
+              { key: `error-boundary-${currentKey}` },
+              React.createElement(App.default, { key: currentKey })
+            )
           );
         } catch (error) {
           renderError(error);
@@ -106,6 +476,91 @@
 
             // windowからのメッセージもリッスン
             window.addEventListener("message", handleMessage);
+
+            // グローバルエラーハンドラを設定
+            window.addEventListener("error", (event) => {
+              event.preventDefault();
+              // エラーの頻度を制限
+              if (
+                !window._lastErrorTime ||
+                Date.now() - window._lastErrorTime > 500
+              ) {
+                window._lastErrorTime = Date.now();
+                renderError(event.error || new Error(event.message));
+              }
+              return true; // エラーを処理済みとしてマーク
+            });
+
+            // 未処理のPromiseエラーを捕捉
+            window.addEventListener("unhandledrejection", (event) => {
+              event.preventDefault();
+              // エラーの頻度を制限
+              if (
+                !window._lastRejectionTime ||
+                Date.now() - window._lastRejectionTime > 500
+              ) {
+                window._lastRejectionTime = Date.now();
+                renderError(event.reason || new Error("未処理のPromiseエラー"));
+              }
+              return true; // エラーを処理済みとしてマーク
+            });
+
+            // エラー検出器のセットアップ
+            let errorLoggingEnabled = true;
+            let errorCount = 0;
+            let lastResetTime = Date.now();
+
+            // Reactの警告やエラーを捕捉するためのパッチ
+            const originalConsoleError = console.error;
+            console.error = (...args) => {
+              // 元のconsole.errorを呼び出す
+              originalConsoleError.apply(console, args);
+
+              // エラーが無効化されている場合は終了
+              if (!errorLoggingEnabled) return;
+
+              // エラー頻度の制限
+              const now = Date.now();
+              errorCount++;
+
+              // 5秒ごとにカウンタをリセット
+              if (now - lastResetTime > 5000) {
+                errorCount = 1;
+                lastResetTime = now;
+              }
+
+              // エラーが多すぎる場合は一時的に無効化
+              if (errorCount > 10) {
+                errorLoggingEnabled = false;
+                originalConsoleError.call(
+                  console,
+                  "エラーが多すぎるため、エラー検出を一時停止します"
+                );
+                setTimeout(() => {
+                  errorLoggingEnabled = true;
+                  errorCount = 0;
+                }, 5000);
+                return;
+              }
+
+              const errorText = args.join(" ");
+              if (
+                errorText.includes(
+                  "React will try to recreate this component tree from scratch"
+                ) ||
+                errorText.includes("Invalid hook call") ||
+                errorText.includes("not defined in")
+              ) {
+                // 頻度制限を設定
+                if (
+                  !window._lastConsoleErrorTime ||
+                  now - window._lastConsoleErrorTime > 1000
+                ) {
+                  window._lastConsoleErrorTime = now;
+                  renderError(new Error(errorText));
+                }
+              }
+            };
 
             renderApp();
           } catch (error) {
