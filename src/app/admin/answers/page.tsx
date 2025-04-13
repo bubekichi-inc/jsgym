@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
+import { AnswerTable } from "./_components/AnswerTable";
 import { Pagination } from "./_components/Pagination";
 import { SearchFilter } from "./_components/SearchFilter";
-import { AnswerTable } from "./_components/AnswerTable";
 import { useAdminAnswers } from "./_hooks/useAdminAnswers";
 
 export default function AnswersPage() {

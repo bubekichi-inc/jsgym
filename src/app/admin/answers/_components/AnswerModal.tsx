@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { Modal } from "@/app/_components/Modal";
 import { SimpleCodeViewer } from "./SimpleCodeViewer";
+import { Modal } from "@/app/_components/Modal";
 
 interface AnswerModalProps {
   isOpen: boolean;
@@ -40,7 +40,7 @@ export const AnswerModal: React.FC<AnswerModalProps> = ({
 }) => {
   if (!answer) return null;
 
-  const handleClose = (e: React.MouseEvent<HTMLElement>) => {
+  const handleClose = () => {
     onClose();
   };
 
@@ -51,7 +51,7 @@ export const AnswerModal: React.FC<AnswerModalProps> = ({
     <Modal isOpen={isOpen} onClose={handleClose} maxWidth="1200px">
       <div className="p-6">
         <h2 className="mb-4 text-xl font-bold">{answer.question.title}</h2>
-        
+
         <div className="mb-6">
           <div className="mb-2 flex items-center">
             <span className="mr-2 font-bold">ステータス:</span>

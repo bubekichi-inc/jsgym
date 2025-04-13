@@ -53,7 +53,9 @@ export const AnswerTable: React.FC<AnswerTableProps> = ({
   changeSort,
   isLoading,
 }) => {
-  const [selectedAnswer, setSelectedAnswer] = useState<AnswerTableProps["answers"][0] | null>(null);
+  const [selectedAnswer, setSelectedAnswer] = useState<
+    AnswerTableProps["answers"][0] | null
+  >(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSort = (sortBy: string) => {
@@ -86,7 +88,7 @@ export const AnswerTable: React.FC<AnswerTableProps> = ({
 
   const getStatusBadge = (result: "APPROVED" | "REJECTED" | undefined) => {
     if (!result) return null;
-    
+
     return result === "APPROVED" ? (
       <span className="inline-flex rounded-full bg-green-100 px-2 py-1 text-xs font-semibold text-green-800">
         合格
