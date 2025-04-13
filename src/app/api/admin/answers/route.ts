@@ -81,7 +81,7 @@ export async function GET(request: NextRequest) {
 
     if (query.result) {
       where.userQuestion = {
-        ...(where.userQuestion as Prisma.UserQuestionWhereInput || {}),
+        ...((where.userQuestion as Prisma.UserQuestionWhereInput) || {}),
         codeReviews: {
           some: {
             result: query.result as "APPROVED" | "REJECTED",
@@ -94,7 +94,7 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(query.limit ?? "50");
     const skip = (page - 1) * limit;
 
-    const orderBy: any = {};
+    const orderBy: Record<string, "asc" | "desc"> = {};
     orderBy[query.sortBy ?? "createdAt"] = query.sortOrder ?? "desc";
 
     const total = await prisma.answer.count({ where });
