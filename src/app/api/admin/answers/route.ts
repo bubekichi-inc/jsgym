@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { CodeReviewResult, Prisma } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "../../_utils/getCurrentUser";
 import { buildPrisma } from "@/app/_utils/prisma";
@@ -84,7 +84,7 @@ export async function GET(request: NextRequest) {
         ...((where.userQuestion as Prisma.UserQuestionWhereInput) || {}),
         codeReviews: {
           some: {
-            result: query.result as "APPROVED" | "REJECTED",
+            result: query.result as CodeReviewResult,
           },
         },
       };
