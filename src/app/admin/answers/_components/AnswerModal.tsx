@@ -46,6 +46,7 @@ export const AnswerModal: React.FC<AnswerModalProps> = ({
 
   const exampleFile = answer.questionFiles[0] || null;
   const userFile = answer.answerFiles[0] || null;
+  console.log(userFile);
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} maxWidth="1200px">
@@ -78,7 +79,7 @@ export const AnswerModal: React.FC<AnswerModalProps> = ({
             {exampleFile && (
               <SimpleCodeViewer
                 code={exampleFile.exampleAnswer}
-                fileName={exampleFile.name}
+                fileName={exampleFile.name + "question"}
                 ext={exampleFile.ext}
               />
             )}
@@ -91,7 +92,7 @@ export const AnswerModal: React.FC<AnswerModalProps> = ({
             {userFile && (
               <SimpleCodeViewer
                 code={userFile.content}
-                fileName={userFile.name}
+                fileName={userFile.name + "answer"}
                 ext={userFile.ext}
               />
             )}
