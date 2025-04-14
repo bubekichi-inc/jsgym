@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  faFile,
   faSort,
   faSortUp,
   faSortDown,
@@ -56,7 +55,11 @@ export const AnswerFileTable: React.FC<AnswerFileTableProps> = ({
     changeSort(field, newOrder);
   };
 
-  const handleViewCode = (fileName: string, fileExt: string, content: string) => {
+  const handleViewCode = (
+    fileName: string,
+    fileExt: string,
+    content: string
+  ) => {
     setSelectedFile({ fileName, fileExt, content });
     setIsModalOpen(true);
   };
@@ -213,7 +216,9 @@ export const AnswerFileTable: React.FC<AnswerFileTableProps> = ({
             </thead>
             <tbody className="divide-y divide-gray-200 bg-white">
               {answerFiles.map((answerFile) => {
-                const level = getLevelLabel(answerFile.answer.userQuestion.question.level);
+                const level = getLevelLabel(
+                  answerFile.answer.userQuestion.question.level
+                );
                 return (
                   <tr key={answerFile.id} className="hover:bg-gray-50">
                     <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
@@ -235,7 +240,9 @@ export const AnswerFileTable: React.FC<AnswerFileTableProps> = ({
                         href={`/admin/questions/${answerFile.answer.userQuestion.question.id}`}
                         className="hover:text-blue-600"
                       >
-                        <p className="w-64 truncate">{answerFile.answer.userQuestion.question.title}</p>
+                        <p className="w-64 truncate">
+                          {answerFile.answer.userQuestion.question.title}
+                        </p>
                       </Link>
                     </td>
                     <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
@@ -246,7 +253,9 @@ export const AnswerFileTable: React.FC<AnswerFileTableProps> = ({
                       </span>
                     </td>
                     <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                      {getTypeLabel(answerFile.answer.userQuestion.question.type)}
+                      {getTypeLabel(
+                        answerFile.answer.userQuestion.question.type
+                      )}
                     </td>
                     <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
                       {answerFile.answer.userQuestion.user.name || "名前なし"}
@@ -256,21 +265,29 @@ export const AnswerFileTable: React.FC<AnswerFileTableProps> = ({
                         className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
                           answerFile.answer.userQuestion.status === "PASSED"
                             ? "bg-green-100 text-green-800"
-                            : answerFile.answer.userQuestion.status === "REVISION_REQUIRED"
+                            : answerFile.answer.userQuestion.status ===
+                              "REVISION_REQUIRED"
                             ? "bg-red-100 text-red-800"
                             : "bg-gray-100 text-gray-800"
                         }`}
                       >
                         {answerFile.answer.userQuestion.status === "PASSED"
                           ? "合格"
-                          : answerFile.answer.userQuestion.status === "REVISION_REQUIRED"
+                          : answerFile.answer.userQuestion.status ===
+                            "REVISION_REQUIRED"
                           ? "要修正"
                           : "下書き"}
                       </span>
                     </td>
                     <td className="whitespace-nowrap px-6 py-4 text-center text-sm text-gray-500">
                       <button
-                        onClick={() => handleViewCode(answerFile.name, answerFile.ext, answerFile.content)}
+                        onClick={() =>
+                          handleViewCode(
+                            answerFile.name,
+                            answerFile.ext,
+                            answerFile.content
+                          )
+                        }
                         className="text-blue-600 hover:text-blue-800"
                       >
                         <FontAwesomeIcon icon={faEye} />

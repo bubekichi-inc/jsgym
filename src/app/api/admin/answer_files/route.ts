@@ -1,4 +1,3 @@
-import { Prisma } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "../../_utils/getCurrentUser";
 import { buildPrisma } from "@/app/_utils/prisma";
@@ -62,7 +61,7 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(query.limit ?? "50");
     const skip = (page - 1) * limit;
 
-    const orderBy: any = {};
+    const orderBy: Record<string, "asc" | "desc"> = {};
     orderBy[query.sortBy ?? "createdAt"] = query.sortOrder ?? "desc";
 
     const total = await prisma.answerFile.count();
@@ -90,7 +89,7 @@ export async function GET(request: NextRequest) {
                   select: {
                     id: true,
                     name: true,
-                  }
+                  },
                 },
                 question: {
                   select: {
@@ -98,12 +97,12 @@ export async function GET(request: NextRequest) {
                     title: true,
                     level: true,
                     type: true,
-                  }
-                }
-              }
-            }
-          }
-        }
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
 
