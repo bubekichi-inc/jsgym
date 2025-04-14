@@ -10,7 +10,7 @@ import {
 export const useAdminAnswerFiles = () => {
   const [queryParams, setQueryParams] = useState<AdminAnswerFilesQuery>({
     page: "1",
-    limit: "50",  // デフォルトで50件表示
+    limit: "50", // デフォルトで50件表示
     sortBy: "createdAt",
     sortOrder: "desc",
   });
