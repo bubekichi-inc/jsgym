@@ -37,11 +37,6 @@ const menuItems = [
     icon: faTags,
   },
   {
-    title: "回答一覧",
-    href: "/admin/answers",
-    icon: faClipboardList,
-  },
-  {
     title: "ユーザー一覧",
     href: "/admin/users",
     icon: faUsers,
