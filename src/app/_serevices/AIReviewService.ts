@@ -3,7 +3,7 @@ import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { z } from "zod";
-import { GPT_4O_MINI } from "../_constants/openAI";
+import { GPT_41_MINI, GPT_41_NANO } from "../_constants/openAI";
 import { buildReviewerSettingPrompt } from "../_utils/buildReviewerSettingPrompt";
 import { AIReviewJsonResponse } from "../api/questions/[questionId]/code_review/_types/CodeReview";
 import { Message } from "../api/questions/[questionId]/messages/route";
@@ -147,7 +147,7 @@ ${files
     reviewer: Reviewer | null;
   }): Promise<AIReviewJsonResponse | null> {
     const response = await this.openai.beta.chat.completions.parse({
-      model: GPT_4O_MINI,
+      model: GPT_41_NANO,
       messages: [
         {
           role: "developer",
@@ -187,7 +187,7 @@ ${files
     ];
 
     const response = await this.openai.beta.chat.completions.parse({
-      model: GPT_4O_MINI,
+      model: GPT_41_NANO,
       messages,
       temperature: 1,
       max_tokens: 16384,
@@ -212,7 +212,7 @@ ${files
       .join("\n");
 
     const response = await this.openai.responses.create({
-      model: GPT_4O_MINI,
+      model: GPT_41_MINI,
       tools: [{ type: "web_search_preview" }],
       input,
       instructions:
