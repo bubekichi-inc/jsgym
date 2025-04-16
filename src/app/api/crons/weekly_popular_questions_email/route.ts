@@ -62,6 +62,15 @@ export const GET = async () => {
       where: {
         receiveNewQuestionNotification: true,
         email: { not: null },
+        NOT: {
+          userQuestions: {
+            some: {
+              createdAt: {
+                gte: oneWeekAgo
+              }
+            }
+          }
+        }
       },
       select: {
         id: true,
