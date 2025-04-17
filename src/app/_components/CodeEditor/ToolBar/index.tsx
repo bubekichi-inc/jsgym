@@ -1,6 +1,11 @@
 import { faPaperPlane, faPlay } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { CodeReviewResult, Sender, UserQuestionStatus } from "@prisma/client";
+import {
+  CodeReviewResult,
+  EventType,
+  Sender,
+  UserQuestionStatus,
+} from "@prisma/client";
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
 import { useFormContext } from "react-hook-form";
@@ -15,6 +20,7 @@ import { SinginModal } from "@/app/_components/SinginModal";
 import { useQuestion } from "@/app/_hooks/useQuestion";
 import { useQuestionDetailRedirect } from "@/app/_hooks/useQuestionDetailRedirect";
 import { api } from "@/app/_utils/api";
+import { saveEvents } from "@/app/_utils/saveEvents";
 import { CodeReviewRequest } from "@/app/api/questions/[questionId]/code_review/route";
 import { Draft } from "@/app/api/questions/[questionId]/draft/route";
 
@@ -124,7 +130,13 @@ export const ToolBar: React.FC<Props> = ({
         const showCongratsModal =
           passedUserQuestionsCount >= 0 && passedUserQuestionsCount % 10 === 0;
         setPassedUserQuestionsCount(passedUserQuestionsCount);
-        if (showCongratsModal) setShowCongratsModal(true);
+        if (showCongratsModal) {
+          await saveEvents({
+            type: EventType.VIEW,
+            name: "SHOW_CONGRATULATION_MODAL",
+          });
+          setShowCongratsModal(true);
+        }
       }
     } catch {
       toast.error("提出に失敗しました");
