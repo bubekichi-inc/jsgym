@@ -1,9 +1,11 @@
 "use client";
 import { faCheck, faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { EventType } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import React, { FC } from "react";
+import { saveEvents } from "../_utils/saveEvents";
 import { Modal } from "./Modal";
 
 interface Props {
@@ -76,6 +78,12 @@ export const CongratsModal: FC<Props> = ({ count, isOpen, onClose }) => {
                 href="https://timerex.net/s/shuhei.tusx_7f57/08de5700/"
                 target="_blank"
                 className="mb-4 inline-flex items-center gap-2 rounded-full bg-blue-600 px-6 py-3 font-bold text-white transition-all hover:bg-blue-700"
+                onClick={async () =>
+                  await saveEvents({
+                    type: EventType.CLICK,
+                    name: "LINK_TO_TIMEREX_FROM_CONGRATULATION_MODAL",
+                  })
+                }
               >
                 無料相談を予約する
                 <FontAwesomeIcon icon={faExternalLinkAlt} className="size-4" />
@@ -86,6 +94,12 @@ export const CongratsModal: FC<Props> = ({ count, isOpen, onClose }) => {
                   href="https://shiftb.dev"
                   target="_blank"
                   className="text-blue-500 hover:underline"
+                  onClick={async () =>
+                    await saveEvents({
+                      type: EventType.CLICK,
+                      name: "LINK_TO_SHIFTB_OFFICIAL_SITE_FROM_CONGRATULATION_MODAL",
+                    })
+                  }
                 >
                   公式サイトはこちら
                 </Link>
