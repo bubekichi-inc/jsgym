@@ -50,8 +50,7 @@ export default function AdminDashboard() {
           item.newUsers,
           item.submittedAnswers,
           item.clearedQuestions,
-          item.activeUsers,
-          item.clicks
+          item.activeUsers
         )
       ),
       10 // 最低値を10に設定
@@ -201,18 +200,6 @@ export default function AdminDashboard() {
                         </div>
                       </div>
 
-                      {/* クリック数 */}
-                      <div
-                        className="group relative mx-0.5 w-2 bg-teal-500"
-                        style={{
-                          height: `${(item.clicks / maxValue) * 100}%`,
-                        }}
-                      >
-                        <div className="absolute bottom-full left-1/2 mb-2 -translate-x-1/2 rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 group-hover:opacity-100">
-                          クリック: {item.clicks}
-                        </div>
-                      </div>
-
                       {/* X軸ラベル */}
                       <div className="mt-2 origin-top-left -rotate-45 text-xs">
                         {formattedDates[index]}
@@ -271,7 +258,6 @@ export default function AdminDashboard() {
                     <td className="px-4 py-3">{item.submittedAnswers}</td>
                     <td className="px-4 py-3">{item.clearedQuestions}</td>
                     <td className="px-4 py-3">{item.activeUsers}</td>
-                    <td className="px-4 py-3">{item.clicks}</td>
                   </tr>
                 ))}
               </tbody>

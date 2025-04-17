@@ -3,7 +3,11 @@ import {
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { CodeReviewCommentLevel, CodeReviewResult } from "@prisma/client";
+import {
+  CodeReviewCommentLevel,
+  CodeReviewResult,
+  EventType,
+} from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -13,7 +17,7 @@ import { CommentLevelBadge } from "./CommentLevelBadge";
 import { MarkdownWrapper } from "@/app/_components/MarkdownWrapper";
 import { levelTextMap, typeTextMap } from "@/app/_constants";
 import { useQuestion } from "@/app/_hooks/useQuestion";
-import { saveButtonClick } from "@/app/_utils/saveButtonClick";
+import { saveEvents } from "@/app/_utils/saveEvents";
 import { calculateScore } from "@/app/_utils/score";
 
 interface Props {
@@ -167,7 +171,10 @@ export const CodeReviewPreview: React.FC<Props> = ({ codeReview }) => {
                   <Link
                     href={`/q/${data.nextQuestion.id}`}
                     onClick={async () =>
-                      await saveButtonClick({ type: "NEXT_QUESTION" })
+                      await saveEvents({
+                        type: EventType.CLICK,
+                        name: "NEXT_QUESTION",
+                      })
                     }
                     className="flex items-center gap-2 rounded border border-blue-500 bg-white px-3 py-2 text-sm font-bold text-blue-500 duration-150 hover:bg-blue-50"
                   >

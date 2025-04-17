@@ -8,7 +8,7 @@ export const POST = async (request: NextRequest) => {
   try {
     const token = request.headers.get("Authorization") ?? "";
     const body = await request.json();
-    const { type } = body;
+    const { type, name } = body;
     const { data } = await supabase.auth.getUser(token);
     const currentUser = data.user
       ? await prisma.user.findUnique({
@@ -18,10 +18,11 @@ export const POST = async (request: NextRequest) => {
         })
       : null;
 
-    await prisma.click.create({
+    await prisma.event.create({
       data: {
         type,
         userId: currentUser?.id,
+        name,
       },
     });
 
