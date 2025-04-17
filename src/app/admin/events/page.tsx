@@ -29,19 +29,23 @@ export default function AdminEvents() {
     }
   };
 
-  const monthOptions: Array<{ value: string; label: string }> = React.useMemo(() => {
-    const options: Array<{ value: string; label: string }> = [];
-    const now = new Date();
-    for (let i = 0; i < 12; i++) {
-      const month = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      const value = format(month, "yyyy/M");
-      const label = format(month, "yyyy年M月");
-      options.push({ value, label });
-    }
-    return options;
-  }, []);
+  const monthOptions: Array<{ value: string; label: string }> =
+    React.useMemo(() => {
+      const options: Array<{ value: string; label: string }> = [];
+      const now = new Date();
+      for (let i = 0; i < 12; i++) {
+        const month = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        const value = format(month, "yyyy/M");
+        const label = format(month, "yyyy年M月");
+        options.push({ value, label });
+      }
+      return options;
+    }, []);
 
-  const { events, totalCount, error, isLoading } = useEvents(selectedMonth, isAllPeriods);
+  const { events, totalCount, error, isLoading } = useEvents(
+    selectedMonth,
+    isAllPeriods
+  );
 
   return (
     <div className="mx-auto">

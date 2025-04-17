@@ -30,9 +30,7 @@ export const useEvents = (monthParam: string, isAllPeriods: boolean) => {
     };
   }, [monthParam]);
 
-  const queryParam = isAllPeriods 
-    ? `all=true` 
-    : `month=${debouncedMonth}`;
+  const queryParam = isAllPeriods ? `all=true` : `month=${debouncedMonth}`;
 
   const { data, error, isLoading } = useFetch<EventsResponse>(
     `/api/admin/events?${queryParam}`
