@@ -7,11 +7,13 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
-import { UserRole } from "@prisma/client";
+import { EventType, UserRole } from "@prisma/client";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useMe } from "../(member)/_hooks/useMe";
+import { saveEvents } from "../_utils/saveEvents";
 import { supabase } from "../_utils/supabase";
 
 export const UserDropdownMenu: React.FC = () => {
@@ -51,7 +53,7 @@ export const UserDropdownMenu: React.FC = () => {
       <MenuItems
         transition
         anchor={{ to: "bottom end", gap: "4px" }}
-        className="z-[999] w-[170px] origin-top-right rounded-xl border border-gray-100 bg-white p-1 text-sm shadow-md transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-50 data-[closed]:opacity-0"
+        className="z-[999] w-[220px] origin-top-right rounded-xl border border-gray-100 bg-white p-1 text-sm shadow-md transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-50 data-[closed]:opacity-0"
       >
         <MenuItem>
           <button
@@ -92,6 +94,30 @@ export const UserDropdownMenu: React.FC = () => {
             <FontAwesomeIcon icon={faSignOut} />
             ログアウト
           </button>
+        </MenuItem>
+        <MenuItem>
+          <Link
+            href="https://shiftb.dev"
+            target="_blank"
+            className="group flex w-full flex-col items-start gap-2 rounded-lg p-3 font-bold text-gray-500 data-[focus]:bg-gray-100"
+            onClick={async () =>
+              await saveEvents({
+                type: EventType.CLICK,
+                name: "USER_DROPDOWN_MENU_SHIFTB",
+              })
+            }
+          >
+            <div className="text-[10px] font-semibold text-gray-500">
+              実務につながる実力を身につける
+            </div>
+            <Image
+              src="/images/shiftb_logo.png"
+              alt="管理者"
+              width={200}
+              height={200}
+              className="w-[120px]"
+            />
+          </Link>
         </MenuItem>
         {data.role === UserRole.ADMIN && (
           <MenuItem>
