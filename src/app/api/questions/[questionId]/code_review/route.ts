@@ -127,6 +127,16 @@ export const POST = async (request: NextRequest, { params }: Props) => {
       });
     });
 
+    const passedUserQuestionsCount =
+      result === CodeReviewResult.APPROVED
+        ? await prisma.userQuestion.count({
+            where: {
+              userId,
+              status: UserQuestionStatus.PASSED,
+            },
+          })
+        : 0;
+
     // const slack = new SlackService();
     // await slack.postMessage({
     //   channel: "js-gym通知",
@@ -137,6 +147,7 @@ export const POST = async (request: NextRequest, { params }: Props) => {
       {
         message: "success",
         result,
+        passedUserQuestionsCount,
       },
       { status: 200 }
     );

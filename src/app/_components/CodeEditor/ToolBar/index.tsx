@@ -10,6 +10,7 @@ import { useMessages } from "../../../q/[questionId]/_hooks/useMessages";
 import { useRewardApprove } from "../../../q/[questionId]/_hooks/useRewardApprove";
 import { DropdownMenu } from "./DropdownMenu";
 import { useMe } from "@/app/(member)/_hooks/useMe";
+import { CongratsModal } from "@/app/_components/CongratsModal";
 import { SinginModal } from "@/app/_components/SinginModal";
 import { useQuestion } from "@/app/_hooks/useQuestion";
 import { useQuestionDetailRedirect } from "@/app/_hooks/useQuestionDetailRedirect";
@@ -39,6 +40,8 @@ export const ToolBar: React.FC<Props> = ({
   const { watch } = useFormContext<CodeEditorFilesForm>();
   const { setRedirectQid } = useQuestionDetailRedirect();
   const [showSinginModal, setShowSinginModal] = useState(false);
+  const [showCongratsModal, setShowCongratsModal] = useState(false);
+  const [passedUserQuestionsCount, setPassedUserQuestionsCount] = useState(0);
   const { data: me } = useMe();
   const { reward } = useRewardApprove();
   const params = useParams();
@@ -103,9 +106,9 @@ export const ToolBar: React.FC<Props> = ({
       await optimisticPushMessage();
       onExecuteCode();
       setReviewBusy(true);
-      const { result } = await api.post<
+      const { result, passedUserQuestionsCount } = await api.post<
         CodeReviewRequest,
-        { result: CodeReviewResult }
+        { result: CodeReviewResult; passedUserQuestionsCount: number }
       >(`/api/questions/${questionId}/code_review`, {
         files: watch("files"),
       });
@@ -114,7 +117,15 @@ export const ToolBar: React.FC<Props> = ({
 
       await Promise.all([mutateQuestion(), mutateMessages()]);
 
-      if (result === CodeReviewResult.APPROVED) reward();
+      if (result === CodeReviewResult.APPROVED) {
+        reward();
+
+        // 10問目ごとに congratulation モーダルを表示
+        const showCongratsModal =
+          passedUserQuestionsCount >= 0 && passedUserQuestionsCount % 10 === 0;
+        setPassedUserQuestionsCount(passedUserQuestionsCount);
+        if (showCongratsModal) setShowCongratsModal(true);
+      }
     } catch {
       toast.error("提出に失敗しました");
     } finally {
@@ -163,6 +174,12 @@ export const ToolBar: React.FC<Props> = ({
       <SinginModal
         open={showSinginModal}
         onClose={() => setShowSinginModal(false)}
+      />
+
+      <CongratsModal
+        count={passedUserQuestionsCount}
+        isOpen={showCongratsModal}
+        onClose={() => setShowCongratsModal(false)}
       />
     </>
   );
