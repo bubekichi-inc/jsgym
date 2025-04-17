@@ -51,6 +51,11 @@ const menuItems = [
     href: "/admin/reviewers",
     icon: faUserGroup,
   },
+  {
+    title: "イベント集計",
+    href: "/admin/events",
+    icon: faChartLine,
+  },
 ];
 
 export default function Sidebar() {
