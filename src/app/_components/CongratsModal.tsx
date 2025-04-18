@@ -108,7 +108,7 @@ export const CongratsModal: FC<Props> = ({ count, isOpen, onClose }) => {
 
             <p className="text-xs font-medium text-red-500">
               今月の相談会の残り枠:{" "}
-              {Math.max(3, Math.round(new Date().getDate() / 2))}名
+              {Math.max(3, Math.round(new Date().getDate() / 3))}名
             </p>
           </div>
         </div>
