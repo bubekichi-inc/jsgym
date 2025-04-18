@@ -283,8 +283,12 @@ export default function AdminDashboard() {
                       </div>
                     </th>
                   ))}
-                  <th className="px-4 py-3 text-center">合計提出数</th>
-                  <th className="px-4 py-3 text-center">合計クリア数</th>
+                  <th className="whitespace-nowrap px-4 py-3 text-center">
+                    合計提出数
+                  </th>
+                  <th className="whitespace-nowrap px-4 py-3 text-center">
+                    合計クリア数
+                  </th>
                 </tr>
               </thead>
               <tbody>
