@@ -17,6 +17,7 @@ import { DropdownMenu } from "./DropdownMenu";
 import { useMe } from "@/app/(member)/_hooks/useMe";
 import { CongratsModal } from "@/app/_components/CongratsModal";
 import { SinginModal } from "@/app/_components/SinginModal";
+import { useDevice } from "@/app/_hooks/useDevice";
 import { useQuestion } from "@/app/_hooks/useQuestion";
 import { useQuestionDetailRedirect } from "@/app/_hooks/useQuestionDetailRedirect";
 import { api } from "@/app/_utils/api";
@@ -44,6 +45,7 @@ export const ToolBar: React.FC<Props> = ({
   showExecuteButton,
 }) => {
   const { watch } = useFormContext<CodeEditorFilesForm>();
+  const { isSp } = useDevice();
   const { setRedirectQid } = useQuestionDetailRedirect();
   const [showSinginModal, setShowSinginModal] = useState(false);
   const [showCongratsModal, setShowCongratsModal] = useState(false);
@@ -128,7 +130,9 @@ export const ToolBar: React.FC<Props> = ({
 
         // 10問目ごとに congratulation モーダルを表示
         const showCongratsModal =
-          passedUserQuestionsCount >= 0 && passedUserQuestionsCount % 10 === 0;
+          passedUserQuestionsCount >= 0 &&
+          passedUserQuestionsCount % 10 === 0 &&
+          !isSp;
         setPassedUserQuestionsCount(passedUserQuestionsCount);
         if (showCongratsModal) {
           await saveEvents({
