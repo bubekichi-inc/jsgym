@@ -1,9 +1,5 @@
 import { UserRole } from "@prisma/client";
-import {
-  parse,
-  startOfMonth,
-  endOfMonth,
-} from "date-fns";
+import { parse, startOfMonth, endOfMonth } from "date-fns";
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "../../_utils/getCurrentUser";
 import { buildPrisma } from "@/app/_utils/prisma";
@@ -48,70 +44,98 @@ export async function GET(request: NextRequest) {
     const prisma = await buildPrisma();
 
     // 日付範囲の設定
-    let dateCondition = "";
     let startDate: Date | null = null;
     let endDate: Date | null = null;
-    
+
     if (!isAllPeriods && monthParam) {
       // 月のフォーマットを解析 (例: 2025/3)
       const parsedDate = parse(monthParam, "yyyy/M", new Date());
       startDate = startOfMonth(parsedDate);
       endDate = endOfMonth(parsedDate);
-      dateCondition = "AND created_at >= $1 AND created_at <= $2";
     }
 
-    // イベント名ごとの集計を取得
-    const queryParams = !isAllPeriods && monthParam ? [startDate, endDate] : [];
-    
     // イベント名ごとの集計を取得
     const eventCountsQuery = `
       SELECT name, COUNT(*) as count
       FROM events
-      WHERE 1=1 ${dateCondition}
+      WHERE 1=1 ${
+        !isAllPeriods && monthParam && startDate && endDate
+          ? "AND created_at >= $1::timestamp AND created_at <= $2::timestamp"
+          : ""
+      }
       GROUP BY name
       ORDER BY count DESC
     `;
-    
-    const eventCounts = await prisma.$queryRawUnsafe(eventCountsQuery, ...queryParams);
+
+    const queryParams =
+      !isAllPeriods && monthParam && startDate && endDate
+        ? [startDate.toISOString(), endDate.toISOString()]
+        : [];
+
+    const eventCounts = await prisma.$queryRawUnsafe(
+      eventCountsQuery,
+      ...queryParams
+    );
 
     // イベント名ごとの詳細情報を取得
-    type EventCount = { name: string; count: string | number };
-    const events: EventCountByName[] = await Promise.all(
-      (eventCounts as EventCount[]).map(async (event) => {
+    const events: EventCountByName[] = [];
+
+    if (eventCounts && Array.isArray(eventCounts)) {
+      type EventCount = { name: string; count: string | number };
+      for (const event of eventCounts as EventCount[]) {
         // そのイベント名におけるタイプ別の集計
-        const typeBreakdownQuery = `
+        let typeBreakdownQuery = `
           SELECT type, COUNT(*) as count
           FROM events
-          WHERE name = $1 ${dateCondition}
-          GROUP BY type
+          WHERE name = $1
         `;
-        
-        const typeBreakdownParams: Array<string | Date> = [event.name];
-        if (!isAllPeriods && monthParam) {
-          typeBreakdownParams.push(startDate!, endDate!);
-        }
-        
-        const typeBreakdown = await prisma.$queryRawUnsafe(typeBreakdownQuery, ...typeBreakdownParams);
 
-        return {
+        const typeBreakdownParams: Array<string> = [event.name];
+
+        if (!isAllPeriods && monthParam && startDate && endDate) {
+          typeBreakdownQuery +=
+            " AND created_at >= $2::timestamp AND created_at <= $3::timestamp";
+          typeBreakdownParams.push(
+            startDate.toISOString(),
+            endDate.toISOString()
+          );
+        }
+
+        typeBreakdownQuery += " GROUP BY type";
+
+        const typeBreakdown = await prisma.$queryRawUnsafe(
+          typeBreakdownQuery,
+          ...typeBreakdownParams
+        );
+
+        events.push({
           name: event.name,
           count: Number(event.count),
-          typeBreakdown: (typeBreakdown as Array<{ type: string; count: string | number }>).map((tb) => ({
+          typeBreakdown: (
+            typeBreakdown as Array<{ type: string; count: string | number }>
+          ).map((tb) => ({
             type: tb.type as EventType,
-            count: Number(tb.count)
-          }))
-        };
-      })
-    );
+            count: Number(tb.count),
+          })),
+        });
+      }
+    }
 
     // 合計イベント数
     const totalCount = events.reduce((sum, event) => sum + event.count, 0);
 
     return NextResponse.json({ events, totalCount });
   } catch (error) {
-    console.error("イベントデータの取得中にエラーが発生しました:", error);
+    if (error instanceof Error) {
+      console.log("イベントデータの取得中にエラーが発生しました:", error.stack);
+    } else {
+      console.log("イベントデータの取得中にエラーが発生しました:", error);
+    }
     return NextResponse.json(
-      { error: "データの取得中にエラーが発生しました" },
+      {
+        error: "データの取得中にエラーが発生しました",
+        details: error instanceof Error ? error.message : String(error),
+      },
       { status: 500 }
     );
   }
