@@ -39,7 +39,7 @@ export default function AdminDashboard() {
   // 日付を日本語表示用にフォーマット
   const formattedDates = chartData.map((item) => {
     const date = parse(item.date, "yyyy-MM-dd", new Date());
-    return format(date, "M/d", { locale: ja });
+    return format(date, "d(E)", { locale: ja });
   });
 
   // グラフの最大値を計算（少し余裕を持たせる）
