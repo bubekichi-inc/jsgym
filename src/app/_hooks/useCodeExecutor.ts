@@ -1,6 +1,5 @@
 "use client";
 
-import DOMPurify from "dompurify";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 type LogType = "normal" | "error" | "warn" | "table" | "info" | "debug";
@@ -43,7 +42,6 @@ export const useCodeExecutor = () => {
   const executeCode = (code: string) => {
     if (!iframeRef.current) return;
     const iframe = iframeRef.current;
-    const sanitizedCode = DOMPurify.sanitize(code);
 
     iframe.srcdoc = `
       <!DOCTYPE html>
@@ -186,7 +184,7 @@ export const useCodeExecutor = () => {
 
               try {
                 const userCode = () => {
-                  ${sanitizedCode}
+                  ${code}
                 }
                 userCode();
               } catch (error) {

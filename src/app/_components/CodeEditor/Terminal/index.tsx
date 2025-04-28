@@ -91,7 +91,7 @@ export const Terminal: React.FC<Props> = ({
                     className="terminal-html-content"
                   />
                 ) : (
-                  item.message
+                  item.message.replace(/</g, "&lt;").replace(/>/g, "&gt;")
                 )}
               </div>
             );
