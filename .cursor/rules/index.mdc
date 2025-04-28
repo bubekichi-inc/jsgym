@@ -1,3 +1,8 @@
+---
+description:
+globs:
+alwaysApply: true
+---
 - Next.jsのV15で、App Routerを使ってください。
 - 基本的にコンポーネントはすべて "user client" で作成し、バックエンドはRouteHandlerで実行してください。
 - APIのデータフェッチとステート管理は、src/app/_hooks/useFetch.tsを用いて、それをラップした、useHoge.tsを作成してください。例: src/app/_hooks/useQuestion.ts
