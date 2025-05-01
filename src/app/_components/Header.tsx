@@ -73,9 +73,6 @@ export const Header: React.FC = () => {
               <Link className="font-bold" href={data ? "/q" : "/"}>
                 <Logo width={80} />
               </Link>
-              <span className="pt-1 text-xs font-black text-green-600">
-                β版
-              </span>
             </div>
             <nav className="flex h-full items-center">
               {/* <MenuItem href="/q" label="問題一覧" /> */}
