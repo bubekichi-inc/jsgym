@@ -57,3 +57,15 @@ export const userQuestionTextMap: Record<UserQuestionStatus, string> = {
   REVISION_REQUIRED: "再提出 🙏",
   DRAFT: "下書き ✏️",
 };
+
+export const userQuestionStatusColorMap: Record<UserQuestionStatus, string> = {
+  PASSED: "bg-yellow-400",
+  REVISION_REQUIRED: "bg-gray-500 text-blueGray",
+  DRAFT: "bg-lightGray",
+};
+
+export const userQuestionStatusTextMap: Record<UserQuestionStatus, string> = {
+  PASSED: "合格",
+  REVISION_REQUIRED: "再提出",
+  DRAFT: "下書き",
+};
