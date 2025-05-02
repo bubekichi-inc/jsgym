@@ -15,6 +15,8 @@ export default {
         buttonMain: "#333333",
         editorDark: "#1e1e1e",
         bgMain: "#f5f8fa",
+        lightGray: "#EDEDED",
+        blueGray: "#F5F8FA",
       },
       boxShadow: {
         popup: "4px 4px 20px 0px #ECECEC",
