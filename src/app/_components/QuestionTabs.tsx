@@ -28,7 +28,7 @@ export const QuestionTabs: React.FC<Props> = ({
   const { isSp } = useDevice();
   const { data: me } = useMe();
   return (
-    <div className='mt-8 flex flex-col gap-4 md:mt-12 md:flex-row md:flex-wrap md:justify-center'>
+    <div className='mt-8 flex flex-col gap-4 px-4 md:mt-12 md:flex-row md:flex-wrap md:justify-center'>
       <div className='space-y-3'>
         {/* タイプ選択タブ */}
         <div className='flex items-center gap-4 rounded-md bg-white px-4'>
