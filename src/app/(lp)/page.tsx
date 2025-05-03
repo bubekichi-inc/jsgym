@@ -1,21 +1,17 @@
-import { Footer } from "./_components/footer";
-import { Questions } from "@/app/(lp)/_components/Questions";
-import { BenefitsSection } from "@/app/(lp)/_components/benefits-section";
-import { CtaSection } from "@/app/(lp)/_components/cta-section";
-import { FaqSection } from "@/app/(lp)/_components/faq-section";
-import { FeaturesSection } from "@/app/(lp)/_components/features-section";
-import { HeroSection } from "@/app/(lp)/_components/hero-section";
+'use client';
+
+import { useDevice } from '../_hooks/useDevice';
+import { Footer } from './_components/footer';
+import { Questions } from '@/app/(lp)/_components/Questions';
+import { HeroSection } from '@/app/(lp)/_components/hero-section';
 
 export default function Home() {
+  const { isSp } = useDevice();
   return (
-    <div className="flex min-h-screen flex-col">
-      <main className="flex-1">
+    <div className='flex min-h-screen flex-col'>
+      <main className='flex-1'>
         <HeroSection />
-        <BenefitsSection />
-        <FeaturesSection />
-        <Questions limit={6} />
-        <FaqSection />
-        <CtaSection />
+        {isSp ? <Questions limit={9} /> : <Questions limit={12} />}
       </main>
       <Footer />
     </div>

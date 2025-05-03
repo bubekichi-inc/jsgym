@@ -21,6 +21,7 @@ export default {
       boxShadow: {
         popup: "4px 4px 20px 0px #ECECEC",
         card: "0px 10px 30px rgba(0, 0, 0, 0.03)",
+        blue: "0px 0px 24px 0px #C3E4FA80",
       },
     },
   },
