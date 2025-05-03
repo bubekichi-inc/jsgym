@@ -1,5 +1,7 @@
 'use client';
 
+import { faBookmark } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -65,13 +67,18 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question }) => {
             )}
           </div>
         </div>
-        {status && (
-          <span
-            className={`inline-flex h-12 w-20 items-center justify-center rounded-md text-base/[1] font-bold ${userQuestionStatusColorMap[status]}`}
-          >
-            {userQuestionStatusTextMap[status]}
-          </span>
-        )}
+        <div className='flex gap-4'>
+          {status && (
+            <span
+              className={`inline-flex h-12 w-20 items-center justify-center rounded-md text-base/[1] font-bold ${userQuestionStatusColorMap[status]}`}
+            >
+              {userQuestionStatusTextMap[status]}
+            </span>
+          )}
+          {question.questionBookmarks?.length > 0 && (
+            <FontAwesomeIcon icon={faBookmark} className='text-yellow-500' />
+          )}
+        </div>
       </div>
       <div className='grid gap-2'>
         <p className='text-lg/[1.5] font-bold md:text-xl/[1.5]'>
