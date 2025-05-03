@@ -70,8 +70,8 @@ export const Questions: React.FC<Props> = ({ limit }) => {
         <div className='px-6'>
           <div className='mx-auto mt-8 grid max-w-[1152px] grid-cols-1 gap-5 md:mt-10 md:grid-cols-2 md:gap-6 xl:grid-cols-3'>
             {Array.from({ length: 12 }).map((_, index) => (
-              <div key={index} className='shadow-blue'>
-                <div className='flex flex-col gap-y-4 rounded-2xl bg-white p-6'>
+              <div key={index}>
+                <div className='flex flex-col gap-y-4 rounded-2xl bg-white p-6 shadow-blue'>
                   <div className='flex justify-between'>
                     <div className='flex flex-col gap-y-2'>
                       <Skeleton width={150} height={16} />
@@ -110,7 +110,6 @@ export const Questions: React.FC<Props> = ({ limit }) => {
             )}
           </div>
 
-          {/* TODO:もっと見るボタン修正 */}
           <div className='flex justify-center'>
             <Link
               href='/q'
