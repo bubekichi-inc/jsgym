@@ -89,9 +89,9 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question }) => {
         </p>
       </div>
       <ul className='flex flex-wrap gap-2'>
-        {question.questions.map((q) => (
+        {question.questions.map((q, i) => (
           <li
-            key={q.tag.name}
+            key={`${q.tag.name}-${i}`}
             className='rounded-md border border-gray-500 px-1.5 py-[3px] text-xs/[1] text-gray-500'
           >
             {questionTagTextMap[q.tag.name as keyof typeof questionTagTextMap]}
