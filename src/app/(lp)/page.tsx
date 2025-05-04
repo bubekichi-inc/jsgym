@@ -1,4 +1,4 @@
-import { Footer } from './_components/footer';
+import { Footer } from '../_components/footer';
 import { Questions } from '@/app/(lp)/_components/Questions';
 import { HeroSection } from '@/app/(lp)/_components/hero-section';
 
