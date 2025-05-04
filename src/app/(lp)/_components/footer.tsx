@@ -1,156 +1,96 @@
-import Link from "next/link";
-import { Logo } from "./logo";
+import Image from 'next/image';
+import Link from 'next/link';
+
+const FooterLink = ({
+  href,
+  text,
+  beforeIconSrc,
+  beforeIconAlt,
+  afterIconSrc,
+  afterIconAlt,
+}: {
+  href: string;
+  text: string;
+  beforeIconSrc?: string;
+  beforeIconAlt?: string;
+  afterIconSrc?: string;
+  afterIconAlt?: string;
+}) => {
+  return (
+    <li>
+      <a
+        href={href}
+        target='_blank'
+        rel='noopener noreferrer'
+        className='flex items-center gap-1'
+      >
+        {beforeIconSrc && (
+          <Image
+            src={beforeIconSrc}
+            alt={beforeIconAlt ?? ''}
+            width={20}
+            height={20}
+            className='size-5 object-contain'
+          />
+        )}
+        {text}
+        {afterIconSrc && (
+          <Image
+            src={afterIconSrc}
+            alt={afterIconAlt ?? ''}
+            width={20}
+            height={20}
+            className='size-5 object-contain'
+          />
+        )}
+      </a>
+    </li>
+  );
+};
 
 export function Footer() {
   return (
-    <footer className="border-t py-6">
-      <div className="container mx-auto flex flex-col items-center justify-between gap-6 px-4">
-        <div className="flex items-center">
-          <Logo width={120} />
-        </div>
-        <div className="flex flex-wrap items-center justify-center gap-4">
-          <a
-            href="https://bubekichi.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1 text-xs text-gray-500 transition-colors hover:text-gray-900"
-          >
-            運営会社
-            <svg
-              className="size-3"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M7 17L17 7"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M7 7H17V17"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </a>
-          <a
-            href="https://shiftb.dev"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1 text-xs text-gray-500 transition-colors hover:text-gray-900 "
-          >
-            運営スクール
-            <svg
-              className="size-3"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M7 17L17 7"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M7 7H17V17"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </a>
-          <a
-            href="https://www.instagram.com/bube.code"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1 text-xs text-gray-500 transition-colors hover:text-gray-900"
-          >
-            <svg
-              className="size-3"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <rect
-                x="2"
-                y="2"
-                width="20"
-                height="20"
-                rx="5"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <circle
-                cx="12"
-                cy="12"
-                r="4"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <circle cx="18" cy="6" r="1" fill="currentColor" />
-            </svg>
-            bube.code
-          </a>
-          <a
-            href="https://www.instagram.com/bube.code"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1 text-xs text-gray-500 transition-colors hover:text-gray-900"
-          >
-            <svg
-              className="size-3"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M22 6L12 13L2 6"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            お問い合わせ
-          </a>
-          {/* <a
-            href="#"
-            className="text-xs text-gray-500 transition-colors hover:text-gray-900"
-          >
-            利用規約
-          </a> */}
-          <Link
-            href="/privacy_policy"
-            className="text-xs text-gray-500 transition-colors hover:text-gray-900"
-          >
-            プライバシーポリシー
-          </Link>
-        </div>
-      </div>
-      <div className="container mx-auto mt-4 px-4">
-        <p className="text-center text-xs text-gray-500">
-          © 2025 JS Gym. All rights reserved.
-        </p>
-      </div>
+    <footer className='grid justify-items-center bg-baseBlack pb-6 pt-12 text-sm/[1] font-medium text-white'>
+      <Link href='/'>
+        <Image
+          src='/images/logo_white.svg'
+          alt='JS Gymロゴ'
+          width={140}
+          height={42}
+          className='h-auto w-[140px] object-contain md:w-40'
+        />
+      </Link>
+      <ul className='mt-10 flex flex-col flex-wrap items-center gap-8 md:flex-row'>
+        <FooterLink
+          href='https://bubekichi.com'
+          text='運営会社'
+          afterIconSrc='/images/external_link.svg'
+          afterIconAlt='外部リンクアイコン'
+        />
+        <FooterLink
+          href='https://shiftb.dev'
+          text='運営スクール'
+          afterIconSrc='/images/external_link.svg'
+          afterIconAlt='外部リンクアイコン'
+        />
+        <FooterLink
+          href='https://www.instagram.com/bube.code'
+          text='bube.code'
+          beforeIconSrc='/images/instagram_icon.svg'
+          beforeIconAlt='インスタグラムアイコン'
+        />
+        <FooterLink
+          href='https://www.instagram.com/bube.code'
+          text='お問い合わせ'
+          beforeIconSrc='/images/mail_icon.svg'
+          beforeIconAlt='メールアイコン'
+        />
+        <FooterLink href='/terms' text='利用規約' />
+        <FooterLink href='/privacy_policy' text='プライバシーポリシー' />
+      </ul>
+      <p className='mt-14 text-[0.625rem]/[1.4] md:mt-8'>
+        &copy; 2025 JS Gym. All rights reserved.
+      </p>
     </footer>
   );
 }

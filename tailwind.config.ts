@@ -13,6 +13,7 @@ export default {
         foreground: "var(--foreground)",
         textMain: "#333333",
         buttonMain: "#333333",
+				baseBlack: "#333333",
         editorDark: "#1e1e1e",
         bgMain: "#f5f8fa",
         lightGray: "#EDEDED",
