@@ -10,8 +10,8 @@ export function HeroSection() {
 
   return (
     <section className='px-6 py-8 md:py-16'>
-      <div className='mx-auto flex max-w-fit flex-col items-start justify-center md:flex-row md:items-center md:gap-x-16 md:rounded-2xl md:bg-white md:px-[72px] md:py-[100px] md:shadow-card'>
-        <div className='contents md:flex md:max-w-96 md:flex-col md:justify-center'>
+      <div className='mx-auto flex max-w-fit flex-col items-start justify-center md:flex-row md:items-center md:gap-x-16 md:rounded-2xl md:bg-white md:px-[72px] md:py-[100px] md:shadow-blue'>
+        <div className='contents md:flex md:w-96 md:flex-col md:justify-center'>
           <h1 className='text-4xl/normal font-bold md:text-5xl/[1.3]'>
             <div>JavaScriptの</div>
             <div>自走力を鍛える</div>
@@ -42,8 +42,8 @@ export function HeroSection() {
             </Link>
           </div>
         </div>
-        <div className='mt-8 flex max-w-[560px] items-center justify-center md:mt-0'>
-          <div className='overflow-hidden rounded-lg border bg-gray-50 shadow-card'>
+        <div className='mt-8 flex w-full flex-1 items-center justify-center md:mt-0 md:max-w-[560px]'>
+          <div className='overflow-hidden rounded-lg border bg-gray-50'>
             <video
               className='size-full object-cover'
               src='/images/demo.mov'
