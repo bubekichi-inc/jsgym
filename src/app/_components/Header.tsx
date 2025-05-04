@@ -4,11 +4,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import { useState } from "react";
-import { Logo } from "../(lp)/_components/logo";
 import { useMe } from "../(member)/_hooks/useMe";
 import { useQuestionDetailRedirect } from "../_hooks/useQuestionDetailRedirect";
 import { SinginModal } from "./SinginModal";
 import { UserDropdownMenu } from "./UserDropdownMenu";
+import { Logo } from "./logo";
 
 const MenuItem: React.FC<{ href: string; label: string }> = ({
   href,
