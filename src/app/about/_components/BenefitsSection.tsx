@@ -22,7 +22,7 @@ const benefits: Benefit[] = [
 
 export function BenefitsSection() {
   return (
-    <section className="px-6 py-8 md:py-20">
+    <section className="mt-8 px-6 md:mt-20">
       <SectionTitle>JS Gymなら、こんな自分になれる。</SectionTitle>
       <div className="mx-auto mt-8 grid w-full max-w-[1152px] gap-5 text-base md:mt-12 md:gap-8 md:text-center">
         {benefits.map((benefit, index) => (
