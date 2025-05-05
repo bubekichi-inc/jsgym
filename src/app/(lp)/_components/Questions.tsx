@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { QuestionCard } from "@/app/_components/QuestionCard";
 import { QuestionTabs } from "@/app/_components/QuestionTabs";
 import { QuestionsSkelton } from "@/app/_components/QuestionsSkelton";
+import { SectionTitle } from "@/app/_components/SectionTitle";
 import { useQuestions } from "@/app/_hooks/useQuestions";
 import { QuestionLevel } from "@/app/_serevices/JsQuestionGenerateService";
 
@@ -47,9 +48,7 @@ export const Questions: React.FC<Props> = ({ limit }) => {
     <section className="py-8 md:pb-[52px] md:pt-20">
       <div className="mx-auto flex flex-col items-center justify-center space-y-4 px-6 text-center">
         <div className="grid gap-y-3 text-left md:gap-y-4 md:text-center">
-          <h2 className="text-2xl/[1.5] font-bold md:text-[2.5rem]">
-            JS Gymでは、毎日新しい問題が追加されます
-          </h2>
+          <SectionTitle>JS Gymでは、毎日新しい問題が追加されます</SectionTitle>
           <p className="text-base/[1.5] text-gray-500 md:text-xl/[1.5]">
             より実務に特化した、幅広いレベルの問題を出題。
           </p>

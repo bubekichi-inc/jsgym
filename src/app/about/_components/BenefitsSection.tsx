@@ -1,3 +1,5 @@
+import { SectionTitle } from "@/app/_components/SectionTitle";
+
 interface Benefit {
   dt: string;
   dd: string;
@@ -21,9 +23,7 @@ const benefits: Benefit[] = [
 export function BenefitsSection() {
   return (
     <section className="px-6 py-8 md:py-20">
-      <h2 className="text-2xl/[1.5] font-bold md:text-center md:text-[2.5rem]/[1.5]">
-        JS Gymなら、こんな自分になれる。
-      </h2>
+      <SectionTitle>JS Gymなら、こんな自分になれる。</SectionTitle>
       <div className="mx-auto mt-8 grid w-full max-w-[1152px] gap-5 text-base md:mt-12 md:gap-8 md:text-center">
         {benefits.map((benefit, index) => (
           <dl
