@@ -4,11 +4,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import { useState } from "react";
-import { Logo } from "../(lp)/_components/logo";
 import { useMe } from "../(member)/_hooks/useMe";
 import { useQuestionDetailRedirect } from "../_hooks/useQuestionDetailRedirect";
 import { SinginModal } from "./SinginModal";
 import { UserDropdownMenu } from "./UserDropdownMenu";
+import { Logo } from "./logo";
 
 const MenuItem: React.FC<{ href: string; label: string }> = ({
   href,
@@ -73,9 +73,6 @@ export const Header: React.FC = () => {
               <Link className="font-bold" href={data ? "/q" : "/"}>
                 <Logo width={80} />
               </Link>
-              <span className="pt-1 text-xs font-black text-green-600">
-                β版
-              </span>
             </div>
             <nav className="flex h-full items-center">
               {/* <MenuItem href="/q" label="問題一覧" /> */}

@@ -1,21 +1,13 @@
-import { Footer } from "./_components/footer";
+import { HeroSection } from "@/app/(lp)/_components/HeroSection";
 import { Questions } from "@/app/(lp)/_components/Questions";
-import { BenefitsSection } from "@/app/(lp)/_components/benefits-section";
-import { CtaSection } from "@/app/(lp)/_components/cta-section";
-import { FaqSection } from "@/app/(lp)/_components/faq-section";
-import { FeaturesSection } from "@/app/(lp)/_components/features-section";
-import { HeroSection } from "@/app/(lp)/_components/hero-section";
+import { Footer } from "@/app/_components/Footer";
 
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
       <main className="flex-1">
         <HeroSection />
-        <BenefitsSection />
-        <FeaturesSection />
-        <Questions limit={6} />
-        <FaqSection />
-        <CtaSection />
+        <Questions limit={12} />
       </main>
       <Footer />
     </div>

@@ -1,4 +1,4 @@
-import { Footer } from "../(lp)/_components/footer";
+import { Footer } from "../_components/Footer";
 import { Questions } from "./_components/Questions";
 
 export default async function Page() {
