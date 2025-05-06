@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { SectionTitle } from "@/app/_components/SectionTitle";
 
 interface Benefit {
@@ -30,8 +31,15 @@ export function BenefitsSection() {
             key={index}
             className="overflow-hidden rounded-lg shadow-blue md:rounded-xl"
           >
-            <dt className="relative bg-baseBlack px-6 py-4 text-textGray after:absolute after:left-1/2 after:top-full after:block after:h-2.5 after:w-5 after:-translate-x-1/2 after:bg-buttonMain after:[clip-path:polygon(50%_10px,0%_0%,20px_0%)] md:text-xl/[1.5] md:after:h-4 md:after:w-8 md:after:[clip-path:polygon(50%_16px,0%_0%,32px_0%)]">
+            <dt className="relative bg-baseBlack px-6 py-4 text-textGray md:text-xl/[1.5]">
               {benefit.dt}
+              <Image
+                src="/images/about/triangle.svg"
+                alt=""
+                width={22}
+                height={11}
+                className="absolute left-1/2 top-full h-[11px] w-[22px] -translate-x-1/2 -translate-y-px object-contain md:h-[17px] md:w-[34px] md:-translate-y-0.5"
+              />
             </dt>
             <dd className="bg-white px-6 py-3.5 font-medium text-textOrange md:pb-4 md:pt-6 md:text-2xl/[1.5]">
               {benefit.dd}
