@@ -1,6 +1,6 @@
 import { Footer } from "../_components/Footer";
 import { BenefitsSection } from "./_components/BenefitsSection";
-import { CTASection } from "./_components/CTASectionTemp";
+import { CTASection } from "./_components/CTASection";
 import { FeaturesSection } from "./_components/FeaturesSection";
 import { HeroSection } from "./_components/HeroSection";
 
