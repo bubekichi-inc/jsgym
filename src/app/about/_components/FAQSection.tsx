@@ -11,7 +11,6 @@ const questions: Question[] = [
     question: "JavaScript学習経験がなくても活用できますか？",
     answer:
       "ご利用いただけますが、完全初心者向けではないため、他の学習サイトなどで基本的な文法などを一通りインプットした後に実施いただくと、より効果を得やすいです。",
-    initialOpen: true,
   },
 ];
 

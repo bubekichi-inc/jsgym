@@ -6,15 +6,10 @@ import { useState } from "react";
 export interface Question {
   question: string;
   answer: string;
-  initialOpen?: boolean;
 }
 
-export const FAQAccordion = ({
-  question,
-  answer,
-  initialOpen = false,
-}: Question) => {
-  const [isOpen, setIsOpen] = useState<boolean>(initialOpen);
+export const FAQAccordion = ({ question, answer }: Question) => {
+  const [isOpen, setIsOpen] = useState<boolean>(true);
 
   return (
     <li className="rounded-lg bg-white shadow-blue md:rounded-xl">
