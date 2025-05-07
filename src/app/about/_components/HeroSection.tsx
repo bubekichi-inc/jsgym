@@ -20,8 +20,8 @@ export function HeroSection() {
           <Image
             src="/images/about_hero.png"
             alt="アバウトページのヒーロー画像"
-            width={240}
-            height={211}
+            width={480}
+            height={420}
             className="h-auto w-full object-contain"
           />
         </div>
