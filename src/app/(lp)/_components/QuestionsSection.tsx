@@ -3,8 +3,8 @@
 import { QuestionType, UserQuestionStatus } from "@prisma/client";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { QuestionCard } from "@/app/_components/QuestionCard";
 import { QuestionTabs } from "@/app/_components/QuestionTabs";
+import { Questions } from "@/app/_components/Questions";
 import { QuestionsSkelton } from "@/app/_components/QuestionsSkelton";
 import { SectionTitle } from "@/app/_components/SectionTitle";
 import { useQuestions } from "@/app/_hooks/useQuestions";
@@ -16,7 +16,7 @@ interface Props {
   limit: number;
 }
 
-export const Questions: React.FC<Props> = ({ limit }) => {
+export const QuestionsSection: React.FC<Props> = ({ limit }) => {
   const searchParams = useSearchParams();
 
   // URLクエリパラメータから初期状態を取得
@@ -70,17 +70,7 @@ export const Questions: React.FC<Props> = ({ limit }) => {
       ) : (
         <div className="px-6">
           <div className="mt-8 md:mt-10">
-            <div className="mx-auto grid max-w-[1152px] grid-cols-1 gap-5 md:grid-cols-2 md:gap-6 xl:grid-cols-3">
-              {questions.map((question) => (
-                <QuestionCard key={question.id} question={question} />
-              ))}
-            </div>
-
-            {questions.length === 0 && !isLoading && (
-              <div className="mt-8 text-center text-gray-500">
-                問題が見つかりませんでした。検索条件を変更してみてください。
-              </div>
-            )}
+            <Questions questions={questions} isLoading={isLoading} />
           </div>
 
           <div className="flex justify-center">
