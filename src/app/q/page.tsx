@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Footer } from "../_components/Footer";
 import { QuestionTabs } from "../_components/QuestionTabs";
 import { SectionTitle } from "../_components/SectionTitle";
+import Pagination from "./_components/Pagination";
 import { Questions } from "@/app/_components/Questions";
 import { QuestionsSkelton } from "@/app/_components/QuestionsSkelton";
 import { useQuestions } from "@/app/_hooks/useQuestions";
@@ -15,6 +16,7 @@ type ExtendedStatus = UserQuestionStatus | "NOT_SUBMITTED" | "ALL";
 
 export default function Page() {
   const searchParams = useSearchParams();
+  console.log("searchParams", searchParams);
 
   // URLクエリパラメータから初期状態を取得
   const initialTitle = searchParams.get("title") || "";
@@ -23,6 +25,7 @@ export default function Page() {
   const initialType =
     (searchParams.get("type") as QuestionType | "ALL") || "ALL";
   const initialStatus = (searchParams.get("status") as ExtendedStatus) || "ALL";
+  const initialPage = Number(searchParams.get("page") || "1");
 
   const {
     questions,
@@ -33,12 +36,16 @@ export default function Page() {
     handleStatusChange,
     selectedType,
     handleTypeChange,
+    totalPages,
+    currentPage,
+    handlePageChange,
   } = useQuestions({
     limit: 12,
     initialTitle,
     initialType,
     initialLevel,
     initialStatus,
+    initialPage,
   });
 
   return (
@@ -67,7 +74,13 @@ export default function Page() {
             <div className="mt-8 md:mt-10">
               <Questions questions={questions} isLoading={isLoading} />
             </div>
-            {/* TODO: ページネーション実装 */}
+            {questions.length !== 0 && totalPages > 1 && (
+              <Pagination
+                pageCount={totalPages}
+                currentPage={currentPage}
+                handlePageChange={handlePageChange}
+              />
+            )}
           </div>
         )}
       </main>
