@@ -75,7 +75,7 @@ export default function Pagination({
         onPageChange={onPageChange}
         forcePage={currentPage - 1}
         containerClassName={
-          "flex flex-wrap items-center justify-center gap-x-2"
+          "flex flex-wrap items-center justify-center gap-x-2 md:gap-x-3"
         }
         previousLinkClassName={baseClassName}
         nextLinkClassName={baseClassName}
