@@ -2,7 +2,7 @@
 
 import { QuestionType, UserQuestionStatus } from "@prisma/client";
 import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 import { useFetch } from "./useFetch";
 import { QuestionLevel } from "@/app/_serevices/JsQuestionGenerateService";
@@ -75,8 +75,6 @@ export const useQuestions = ({
     useState<number>(initialReviewerId);
   const [selectedStatus, setSelectedStatus] =
     useState<ExtendedStatus>(initialStatus);
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(initialPage);
 
   // レビュワー一覧を取得
@@ -111,12 +109,14 @@ export const useQuestions = ({
     dedupingInterval: 5000,
   });
 
-  // データが取得できたらstateを更新
-  useEffect(() => {
-    if (questionsData) {
-      setQuestions(questionsData.questions);
-      setTotalPages(Math.ceil(questionsData.pagination.total / limit));
-    }
+  const questions = useMemo(
+    () => questionsData?.questions || [],
+    [questionsData]
+  );
+
+  const totalPages = useMemo(() => {
+    if (!questionsData) return 1;
+    return Math.ceil(questionsData.pagination.total / limit);
   }, [questionsData, limit]);
 
   // URLを更新する関数
