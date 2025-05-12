@@ -1,6 +1,6 @@
 "use client";
 
-import { Footer } from "../_components/FooterTemp";
+import { Footer } from "../_components/Footer";
 import { QuestionTabs } from "../_components/QuestionTabs";
 import { SectionTitle } from "../_components/SectionTitle";
 import { Pagination } from "./_components/Pagination";

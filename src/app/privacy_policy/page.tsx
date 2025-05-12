@@ -1,5 +1,5 @@
 import React from "react";
-import { Footer } from "../_components/FooterTemp";
+import { Footer } from "../_components/Footer";
 
 export const metadata = {
   title: "プライバシーポリシー | JS Gym",

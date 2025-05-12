@@ -1,4 +1,4 @@
-import { Footer } from "../_components/FooterTemp";
+import { Footer } from "../_components/Footer";
 import { BenefitsSection } from "./_components/BenefitsSection";
 import { CTASection } from "./_components/CTASection";
 import { FAQSection } from "./_components/FAQSection";
