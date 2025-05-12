@@ -1,7 +1,5 @@
 "use client";
 
-import { QuestionType, UserQuestionStatus } from "@prisma/client";
-import { useSearchParams } from "next/navigation";
 import { Footer } from "../_components/Footer";
 import { QuestionTabs } from "../_components/QuestionTabs";
 import { SectionTitle } from "../_components/SectionTitle";
@@ -9,23 +7,8 @@ import Pagination from "./_components/Pagination";
 import { Questions } from "@/app/_components/Questions";
 import { QuestionsSkelton } from "@/app/_components/QuestionsSkelton";
 import { useQuestions } from "@/app/_hooks/useQuestions";
-import { QuestionLevel } from "@/app/_serevices/JsQuestionGenerateService";
-
-// 拡張ステータス型
-type ExtendedStatus = UserQuestionStatus | "NOT_SUBMITTED" | "ALL";
 
 export default function Page() {
-  const searchParams = useSearchParams();
-
-  // URLクエリパラメータから初期状態を取得
-  const initialTitle = searchParams.get("title") || "";
-  const initialLevel =
-    (searchParams.get("level") as QuestionLevel | "ALL") || "ALL";
-  const initialType =
-    (searchParams.get("type") as QuestionType | "ALL") || "ALL";
-  const initialStatus = (searchParams.get("status") as ExtendedStatus) || "ALL";
-  const initialPage = Number(searchParams.get("page") || "1");
-
   const {
     questions,
     selectedLevel,
@@ -38,14 +21,7 @@ export default function Page() {
     totalPages,
     currentPage,
     handlePageChange,
-  } = useQuestions({
-    limit: 12,
-    initialTitle,
-    initialType,
-    initialLevel,
-    initialStatus,
-    initialPage,
-  });
+  } = useQuestions({});
 
   return (
     <div className="flex min-h-screen flex-col">

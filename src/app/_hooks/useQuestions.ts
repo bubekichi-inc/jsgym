@@ -1,4 +1,7 @@
+"use client";
+
 import { QuestionType, UserQuestionStatus } from "@prisma/client";
+import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import useSWR from "swr";
 import { useFetch } from "./useFetch";
@@ -11,13 +14,8 @@ import { Reviewer } from "@/app/api/reviewers/route";
 type ExtendedStatus = UserQuestionStatus | "NOT_SUBMITTED" | "ALL";
 
 interface UseQuestionsProps {
-  limit: number;
-  initialTitle?: string;
-  initialType?: QuestionType | "ALL";
-  initialLevel?: QuestionLevel | "ALL";
+  limit?: number;
   initialReviewerId?: number;
-  initialStatus?: ExtendedStatus;
-  initialPage?: number;
 }
 
 interface UseQuestionsReturn {
@@ -53,14 +51,19 @@ interface UseQuestionsReturn {
 }
 
 export const useQuestions = ({
-  limit,
-  initialTitle = "",
-  initialType = "ALL",
-  initialLevel = "ALL",
+  limit = 12,
   initialReviewerId = 0,
-  initialStatus = "ALL",
-  initialPage = 1,
 }: UseQuestionsProps): UseQuestionsReturn => {
+  // URLクエリパラメータから初期状態を取得
+  const searchParams = useSearchParams();
+  const initialTitle = searchParams.get("title") || "";
+  const initialLevel =
+    (searchParams.get("level") as QuestionLevel | "ALL") || "ALL";
+  const initialType =
+    (searchParams.get("type") as QuestionType | "ALL") || "ALL";
+  const initialStatus = (searchParams.get("status") as ExtendedStatus) || "ALL";
+  const initialPage = Number(searchParams.get("page") || "1");
+
   const [selectedLevel, setSelectedLevel] = useState<QuestionLevel | "ALL">(
     initialLevel
   );
