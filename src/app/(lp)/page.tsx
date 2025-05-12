@@ -1,6 +1,6 @@
 import { HeroSection } from "@/app/(lp)/_components/HeroSection";
 import { QuestionsSection } from "@/app/(lp)/_components/QuestionsSection";
-import { Footer } from "@/app/_components/Footer";
+import { Footer } from "@/app/_components/FooterTemp";
 
 export default function Home() {
   return (
