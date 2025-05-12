@@ -3,7 +3,7 @@
 import { Footer } from "../_components/Footer";
 import { QuestionTabs } from "../_components/QuestionTabs";
 import { SectionTitle } from "../_components/SectionTitle";
-import Pagination from "./_components/Pagination";
+import { Pagination } from "./_components/Pagination";
 import { Questions } from "@/app/_components/Questions";
 import { QuestionsSkelton } from "@/app/_components/QuestionsSkelton";
 import { useQuestions } from "@/app/_hooks/useQuestions";

@@ -6,7 +6,11 @@ interface Props {
   rotate?: boolean;
 }
 
-export default function PaginationIcon({ src, alt, rotate = false }: Props) {
+export const PaginationIcon: React.FC<Props> = ({
+  src,
+  alt,
+  rotate = false,
+}) => {
   return (
     <Image
       src={src}
@@ -18,4 +22,4 @@ export default function PaginationIcon({ src, alt, rotate = false }: Props) {
       }`}
     />
   );
-}
+};

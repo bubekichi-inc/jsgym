@@ -1,5 +1,6 @@
 import ReactPaginate from "react-paginate";
-import PaginationIcon from "./PaginationIcon";
+import { EdgeButton } from "./EdgeButton";
+import { PaginationIcon } from "./PaginationIcon";
 import { useDevice } from "@/app/_hooks/useDevice";
 
 interface Props {
@@ -8,11 +9,11 @@ interface Props {
   handlePageChange: (currentPage: number) => void;
 }
 
-export default function Pagination({
+export const Pagination: React.FC<Props> = ({
   pageCount,
   currentPage,
   handlePageChange,
-}: Props) {
+}) => {
   const { isSp } = useDevice();
 
   const onPageChange = (e: { selected: number }) => {
@@ -22,32 +23,16 @@ export default function Pagination({
   const baseClassName =
     "flex size-8 items-center justify-center rounded-full text-medium md:size-10";
 
-  const renderEdgeButton = (
-    toPage: number,
-    ariaLabel: string,
-    rotate?: boolean
-  ) => {
-    if (isSp || currentPage === toPage) return null;
-
-    return (
-      <button
-        type="button"
-        onClick={() => handlePageChange(toPage)}
-        aria-label={ariaLabel}
-        className={baseClassName}
-      >
-        <PaginationIcon
-          src="/images/pagination/d-arrow.svg"
-          alt={ariaLabel}
-          rotate={rotate}
-        />
-      </button>
-    );
-  };
-
   return (
     <div className="mx-auto mt-10 flex w-full max-w-[1152px] flex-wrap items-center justify-center gap-x-2 rounded-full bg-white px-4 py-2.5 shadow-blue md:mt-20 md:gap-x-3">
-      {renderEdgeButton(1, "最初のページへ")}
+      <EdgeButton
+        toPage={1}
+        ariaLabel="最初のページへ"
+        currentPage={currentPage}
+        handlePageChange={handlePageChange}
+        isSp={isSp}
+        baseClassName={baseClassName}
+      />
       <ReactPaginate
         previousLabel={
           currentPage === 1 ? null : (
@@ -83,7 +68,15 @@ export default function Pagination({
         activeLinkClassName={`${baseClassName} bg-baseBlack text-white`}
         ariaLabelBuilder={(page) => `ページ ${page + 1}へ`}
       />
-      {renderEdgeButton(pageCount, "最後のページへ", true)}
+      <EdgeButton
+        toPage={pageCount}
+        ariaLabel="最後のページへ"
+        rotate={true}
+        currentPage={currentPage}
+        handlePageChange={handlePageChange}
+        isSp={isSp}
+        baseClassName={baseClassName}
+      />
     </div>
   );
-}
+};
