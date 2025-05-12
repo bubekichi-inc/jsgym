@@ -7,7 +7,7 @@ export default function Home() {
     <div className="flex min-h-screen flex-col">
       <main className="flex-1">
         <HeroSection />
-        <QuestionsSection limit={12} />
+        <QuestionsSection />
       </main>
       <Footer />
     </div>

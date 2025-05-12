@@ -1,32 +1,13 @@
 "use client";
 
-import { QuestionType, UserQuestionStatus } from "@prisma/client";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { QuestionTabs } from "@/app/_components/QuestionTabs";
 import { Questions } from "@/app/_components/Questions";
 import { QuestionsSkelton } from "@/app/_components/QuestionsSkelton";
 import { SectionTitle } from "@/app/_components/SectionTitle";
 import { useQuestions } from "@/app/_hooks/useQuestions";
-import { QuestionLevel } from "@/app/_serevices/JsQuestionGenerateService";
 
-// 拡張ステータス型
-type ExtendedStatus = UserQuestionStatus | "NOT_SUBMITTED" | "ALL";
-interface Props {
-  limit: number;
-}
-
-export const QuestionsSection: React.FC<Props> = ({ limit }) => {
-  const searchParams = useSearchParams();
-
-  // URLクエリパラメータから初期状態を取得
-  const initialTitle = searchParams.get("title") || "";
-  const initialLevel =
-    (searchParams.get("level") as QuestionLevel | "ALL") || "ALL";
-  const initialType =
-    (searchParams.get("type") as QuestionType | "ALL") || "ALL";
-  const initialStatus = (searchParams.get("status") as ExtendedStatus) || "ALL";
-
+export const QuestionsSection: React.FC = () => {
   const {
     questions,
     selectedLevel,
@@ -36,13 +17,7 @@ export const QuestionsSection: React.FC<Props> = ({ limit }) => {
     handleStatusChange,
     selectedType,
     handleTypeChange,
-  } = useQuestions({
-    limit,
-    initialTitle,
-    initialType,
-    initialLevel,
-    initialStatus,
-  });
+  } = useQuestions({});
 
   return (
     <section className="py-8 md:pb-[52px] md:pt-20">
