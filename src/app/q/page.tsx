@@ -16,7 +16,6 @@ type ExtendedStatus = UserQuestionStatus | "NOT_SUBMITTED" | "ALL";
 
 export default function Page() {
   const searchParams = useSearchParams();
-  console.log("searchParams", searchParams);
 
   // URLクエリパラメータから初期状態を取得
   const initialTitle = searchParams.get("title") || "";
