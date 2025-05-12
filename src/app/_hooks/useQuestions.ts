@@ -109,11 +109,6 @@ export const useQuestions = ({
     dedupingInterval: 5000,
   });
 
-  const questions = useMemo(
-    () => questionsData?.questions || [],
-    [questionsData]
-  );
-
   const totalPages = useMemo(() => {
     if (!questionsData) return 1;
     return Math.ceil(questionsData.pagination.total / limit);
@@ -307,7 +302,7 @@ export const useQuestions = ({
   );
 
   return {
-    questions,
+    questions: questionsData?.questions || [],
     reviewers,
     selectedLevel,
     searchTitle,
