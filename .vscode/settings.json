@@ -1,5 +1,7 @@
 {
   "prettier.printWidth": 80,
+  "prettier.singleQuote": false,
+  "prettier.jsxSingleQuote": false,
   "eslint.nodePath": "C:\\path\\to\\global\\node_modules",
   // デフォルトのフォーマッタを prettier に設定
   //"editor.defaultFormatter": "SimonSiefke.prettier-vscode",
