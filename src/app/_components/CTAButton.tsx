@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { SinginModal } from "./SinginModal";
 
-export const CTAButton = () => {
+export const CTAButton: React.FC = () => {
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   return (
     <>

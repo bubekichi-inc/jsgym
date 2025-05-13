@@ -4,7 +4,7 @@ interface Props {
   width?: number;
 }
 
-export function Logo({ width = 80 }: Props) {
+export const Logo: React.FC<Props> = ({ width = 80 }) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const widthClass = `w-[${width}px]`;
   return (
@@ -18,4 +18,4 @@ export function Logo({ width = 80 }: Props) {
       />
     </div>
   );
-}
+};

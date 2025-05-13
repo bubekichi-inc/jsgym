@@ -1,6 +1,6 @@
 import { Skeleton } from "./Skeleton";
 
-export const QuestionsSkelton = () => {
+export const QuestionsSkelton: React.FC = () => {
   return (
     <div className="px-6">
       <div className="mx-auto mt-8 grid max-w-[1152px] grid-cols-1 gap-5 md:mt-10 md:grid-cols-2 md:gap-6 xl:grid-cols-3">
