@@ -8,7 +8,7 @@ export interface Question {
   answer: string;
 }
 
-export const FAQAccordion = ({ question, answer }: Question) => {
+export const FAQAccordion: React.FC<Question> = ({ question, answer }) => {
   const [isOpen, setIsOpen] = useState<boolean>(true);
 
   return (

@@ -21,7 +21,7 @@ const benefits: Benefit[] = [
   },
 ];
 
-export function BenefitsSection() {
+export const BenefitsSection: React.FC = () => {
   return (
     <section className="mt-8 px-6 md:mt-20">
       <SectionTitle>JS Gymなら、こんな自分になれる。</SectionTitle>
@@ -49,4 +49,4 @@ export function BenefitsSection() {
       </div>
     </section>
   );
-}
+};

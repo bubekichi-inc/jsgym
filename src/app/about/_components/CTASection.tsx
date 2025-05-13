@@ -1,6 +1,6 @@
 import { CTAButton } from "@/app/_components/CTAButton";
 
-export function CTASection() {
+export const CTASection: React.FC = () => {
   return (
     <section className="mt-16 grid justify-items-center bg-baseBlack px-6 py-12 md:mt-[120px] md:py-16">
       <h3 className="text-xl/[1.5] font-bold text-white md:text-[2rem]/[1.5]">
@@ -14,4 +14,4 @@ export function CTASection() {
       </div>
     </section>
   );
-}
+};

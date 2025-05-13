@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { CTAButton } from "@/app/_components/CTAButton";
 
-export function HeroSection() {
+export const HeroSection: React.FC = () => {
   return (
     <section className="px-6 py-8 md:py-16">
       <div className="mx-auto flex flex-col items-start justify-center gap-8 md:max-w-fit md:flex-row md:items-center md:gap-x-[133px] md:rounded-2xl md:bg-white md:px-[72px] md:py-[111px] md:shadow-blue">
@@ -28,4 +28,4 @@ export function HeroSection() {
       </div>
     </section>
   );
-}
+};
