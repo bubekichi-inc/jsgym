@@ -28,7 +28,7 @@ const features: Feature[] = [
   },
 ];
 
-export function FeaturesSection() {
+export const FeaturesSection: React.FC = () => {
   return (
     <section className="mt-16 px-6 md:mt-[120px]">
       <SectionTitle>JS Gymの特徴</SectionTitle>
@@ -56,4 +56,4 @@ export function FeaturesSection() {
       </ul>
     </section>
   );
-}
+};

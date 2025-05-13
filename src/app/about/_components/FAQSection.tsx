@@ -14,7 +14,7 @@ const questions: Question[] = [
   },
 ];
 
-export function FAQSection() {
+export const FAQSection: React.FC = () => {
   return (
     <section className="mb-[66px] mt-16 px-6 md:mb-[147px] md:mt-[120px]">
       <SectionTitle>よくある質問</SectionTitle>
@@ -25,4 +25,4 @@ export function FAQSection() {
       </ul>
     </section>
   );
-}
+};
