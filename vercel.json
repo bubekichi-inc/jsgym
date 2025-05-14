@@ -6,7 +6,7 @@
     },
     {
       "path": "/api/crons/weekly_popular_questions_email",
-      "schedule": "0 10 * * 1"
+      "schedule": "0 10 1 * *"
     }
   ]
 }

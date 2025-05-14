@@ -23,12 +23,12 @@ export const GET = async () => {
   try {
     const prisma = await buildPrisma();
 
-    const oneWeekAgo = subDays(new Date(), 7);
+    const oneMonthAgo = subDays(new Date(), 30);
 
     const popularQuestions = await prisma.question.findMany({
       where: {
         createdAt: {
-          gte: oneWeekAgo,
+          gte: oneMonthAgo,
         },
       },
       include: {
@@ -40,7 +40,7 @@ export const GET = async () => {
         userQuestions: {
           where: {
             createdAt: {
-              gte: oneWeekAgo,
+              gte: oneMonthAgo,
             },
           },
         },
@@ -66,11 +66,11 @@ export const GET = async () => {
           userQuestions: {
             some: {
               createdAt: {
-                gte: oneWeekAgo
-              }
-            }
-          }
-        }
+                gte: oneMonthAgo,
+              },
+            },
+          },
+        },
       },
       select: {
         id: true,
@@ -90,7 +90,7 @@ export const GET = async () => {
           <div style="text-align: center; margin: 32px 0;">
             <img src="https://jsgym.shiftb.dev/images/logo.png" alt="JS Gym" width="180" style="max-width: 180px;" />
           </div>
-          <p style="margin-bottom: 24px; max-width: 480px; margin: 24px auto;">いつもJS Gymをご利用いただきありがとうございます。直近1週間のJS Gymで人気のあった問題をお届けします！</p>
+          <p style="margin-bottom: 24px; max-width: 480px; margin: 24px auto;">いつもJS Gymをご利用いただきありがとうございます。直近1ヶ月のJS Gymで人気のあった問題をお届けします！</p>
           <div style="display: grid; gap: 24px; justify-content: center;">
             ${popularQuestions
               .map(
@@ -198,7 +198,7 @@ export const GET = async () => {
 
         return sendGrid.sendEmail({
           to: user.email,
-          subject: "【JS Gym】今週の人気問題をお届けします",
+          subject: "【JS Gym】今月の人気問題をお届けします",
           html: htmlContent,
         });
       }
