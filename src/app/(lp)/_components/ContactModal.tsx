@@ -1,11 +1,11 @@
 "use client";
 
+import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
+import { Button } from "@/app/_components/Button";
 import { Modal } from "@/app/_components/Modal";
 import { TextInput } from "@/app/_components/TextInput";
-import { Button } from "@/app/_components/Button";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { useContact } from "@/app/_hooks/useContact";
 
 interface Props {
@@ -99,8 +99,19 @@ export const ContactModal: React.FC<Props> = ({ isOpen, onClose }) => {
             <p className="whitespace-pre-wrap break-words">{body}</p>
           </div>
           <div className="flex justify-end gap-2">
-            <Button variant="bg-gray" type="button" onClick={() => setState("form")}>戻る</Button>
-            <Button variant="bg-blue" type="button" onClick={handleSubmit} disabled={loading}>
+            <Button
+              variant="bg-gray"
+              type="button"
+              onClick={() => setState("form")}
+            >
+              戻る
+            </Button>
+            <Button
+              variant="bg-blue"
+              type="button"
+              onClick={handleSubmit}
+              disabled={loading}
+            >
               {loading ? "送信中..." : "送信"}
             </Button>
           </div>
@@ -109,7 +120,10 @@ export const ContactModal: React.FC<Props> = ({ isOpen, onClose }) => {
 
       {state === "complete" && (
         <div className="space-y-6 text-center">
-          <FontAwesomeIcon icon={faCheck} className="mx-auto size-8 text-green-500" />
+          <FontAwesomeIcon
+            icon={faCheck}
+            className="mx-auto size-8 text-green-500"
+          />
           <p>送信が完了しました。2営業日以内にご返信いたします。</p>
           <div className="flex justify-center">
             <Button variant="bg-blue" type="button" onClick={handleClose}>

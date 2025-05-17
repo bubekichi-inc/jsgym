@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { SlackService } from "@/app/_serevices/SlackService";
-import { SendGridService } from "@/app/_serevices/SendGridService";
 import { buildError } from "../_utils/buildError";
+import { SendGridService } from "@/app/_serevices/SendGridService";
+import { SlackService } from "@/app/_serevices/SlackService";
 
 export const dynamic = "force-dynamic";
 
@@ -25,11 +25,13 @@ export const POST = async (request: NextRequest) => {
     await sendGrid.sendEmail({
       to: email,
       subject: "お問い合わせありがとうございます",
-      html:
-        "<p>お問い合わせありがとうございます。内容を確認の上、2営業日以内にご返信いたします。</p>",
+      html: "<p>お問い合わせありがとうございます。内容を確認の上、2営業日以内にご返信いたします。</p>",
     });
 
-    return NextResponse.json<ContactResponse>({ message: "success" }, { status: 200 });
+    return NextResponse.json<ContactResponse>(
+      { message: "success" },
+      { status: 200 }
+    );
   } catch (e) {
     return await buildError(e);
   }

@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
+import { ContactModal } from "@/app/(lp)/_components/ContactModal";
 import { HeroSection } from "@/app/(lp)/_components/HeroSection";
 import { QuestionsSection } from "@/app/(lp)/_components/QuestionsSection";
-import { ContactModal } from "@/app/(lp)/_components/ContactModal";
 import { Footer } from "@/app/_components/Footer";
 
 export default function Home() {
