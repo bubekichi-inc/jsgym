@@ -6,7 +6,7 @@ import { QuestionFile } from "@prisma/client";
 import React, { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { FileTabs } from "../../../_components/CodeEditor/FileTabs";
-import { Modal } from "@/app/_components/Modal";
+import { SidePanel } from "@/app/_components/SidePanel";
 
 interface Props {
   title: string;
@@ -34,8 +34,8 @@ export const ExampleAnswerModal: React.FC<Props> = ({
   }, [files, selectedFileId]);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="w-full max-w-[800px] space-y-4 pt-4">
+    <SidePanel isOpen={isOpen} onClose={onClose}>
+      <div className="w-full space-y-4 pt-4">
         <div className="flex items-center justify-between">
           <p className="text-lg font-bold">「{title}」の模範回答例</p>
         </div>
@@ -70,6 +70,6 @@ export const ExampleAnswerModal: React.FC<Props> = ({
           </button>
         </div>
       </div>
-    </Modal>
+    </SidePanel>
   );
 };
