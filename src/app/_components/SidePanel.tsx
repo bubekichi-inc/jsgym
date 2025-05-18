@@ -2,20 +2,20 @@
 
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect, ReactNode } from "react";
+import React, { useEffect, ReactNode, useMemo } from "react";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   children: ReactNode;
-  width?: string;
+  maxWidth?: string;
 }
 
 export const SidePanel: React.FC<Props> = ({
   isOpen,
   onClose,
   children,
-  width = "500px",
+  maxWidth = "500px",
 }) => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -27,16 +27,15 @@ export const SidePanel: React.FC<Props> = ({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
+  const mw = useMemo(() => `max-w-[${maxWidth}]`, [maxWidth]);
+
   return (
     <>
       <div
-        className={`fixed inset-0 z-40 bg-black/30 transition-opacity duration-300 ${
-          isOpen ? "opacity-100" : "pointer-events-none opacity-0"
-        }`}
-        onClick={onClose}
+      // onClick={onClose}
       />
       <div
-        className={`fixed inset-y-0 left-0 z-50 w-full max-w-[${width}] transform bg-white shadow-xl transition-transform duration-300 ${
+        className={`fixed inset-y-0 left-0 z-50 w-full bg-white shadow-xl transition-transform duration-300 ${mw} ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -50,7 +49,7 @@ export const SidePanel: React.FC<Props> = ({
             icon={faXmark}
           />
         </button>
-        <div className="h-full overflow-auto pt-6">{children}</div>
+        <div className="h-full overflow-auto">{children}</div>
       </div>
     </>
   );

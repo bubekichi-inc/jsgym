@@ -34,7 +34,7 @@ export const ExampleAnswerModal: React.FC<Props> = ({
   }, [files, selectedFileId]);
 
   return (
-    <SidePanel isOpen={isOpen} onClose={onClose}>
+    <SidePanel isOpen={isOpen} onClose={onClose} maxWidth="800px">
       <div className="w-full space-y-4 pt-4">
         <div className="flex items-center justify-between">
           <p className="text-lg font-bold">「{title}」の模範回答例</p>
