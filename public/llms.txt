@@ -1,0 +1,27 @@
+# JS Gym（β版）
+
+> JS Gymは、JavaScriptの自走力を鍛えるためのトレーニングジムです。実務に近い課題を通じて、実践的なスキルを身につけることができます。:contentReference[oaicite:6]{index=6}
+
+## サイト概要
+
+- [トップページ](https://jsgym.shiftb.dev/): JS Gymの概要や特徴を紹介しています。:contentReference[oaicite:8]{index=8}
+
+## 問題一覧
+
+- [お買い物計算：割引価格を計算する関数を作ろう！](https://jsgym.shiftb.dev/q/EjIigjatyK): :contentReference[oaicite:10]{index=10}
+- [クリックで背景色をランダムに変えよう！](https://jsgym.shiftb.dev/q/sXc1_ShdTQ): :contentReference[oaicite:13]{index=13}
+- [Reactで簡単なオンオフスイッチを作ってみよう](https://jsgym.shiftb.dev/q/sZHI_lxoDL): :contentReference[oaicite:16]{index=16}
+- [バグ発見！オブジェクトと配列の変換がうまくいかない](https://jsgym.shiftb.dev/q/zsBlt_dRmg): :contentReference[oaicite:19]{index=19}:contentReference[oaicite:21]{index=21}
+
+## ユーザーランキング
+
+- [ランキングページ](https://jsgym.shiftb.dev/ranking): :contentReference[oaicite:23]{index=23}:contentReference[oaicite:25]{index=25}
+
+## 利用規約・ポリシー
+
+- [プライバシーポリシー](https://shiftb.dev/privacy_policy): :contentReference[oaicite:27]{index=27}
+- [特定商取引法に基づく表記](https://shiftb.dev/legal): :contentReference[oaicite:30]{index=30}:contentReference[oaicite:32]{index=32}
+
+## お問い合わせ
+
+- [お問い合わせフォーム](https://shiftb.dev/contact): :contentReference[oaicite:34]{index=34}:contentReference[oaicite:36]{index=36}
