@@ -97,7 +97,7 @@ export const UserDropdownMenu: React.FC = () => {
         </MenuItem>
         <MenuItem>
           <Link
-            href="https://shiftb.dev"
+            href="https://shiftb.dev/?r=jg"
             target="_blank"
             className="group flex w-full flex-col items-start gap-1 rounded-lg px-3 py-4 font-bold text-gray-500 data-[focus]:bg-gray-100"
             onClick={async () =>

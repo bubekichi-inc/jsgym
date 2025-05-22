@@ -91,7 +91,7 @@ export const CongratsModal: FC<Props> = ({ count, isOpen, onClose }) => {
 
               <div className="mb-4 text-sm text-gray-600">
                 <Link
-                  href="https://shiftb.dev"
+                  href="https://shiftb.dev/?r=jg"
                   target="_blank"
                   className="text-blue-500 hover:underline"
                   onClick={async () =>

@@ -68,7 +68,7 @@ export const Footer: React.FC = () => {
           afterIconAlt="外部リンクアイコン"
         />
         <FooterLink
-          href="https://shiftb.dev"
+          href="https://shiftb.dev/?r=jg"
           text="運営スクール"
           afterIconSrc="/images/external_link.svg"
           afterIconAlt="外部リンクアイコン"

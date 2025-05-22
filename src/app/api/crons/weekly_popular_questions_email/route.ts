@@ -168,7 +168,7 @@ export const GET = async () => {
                     <path d="M7 7H17V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                   </svg>
                 </a>
-                <a href="https://shiftb.dev" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; gap: 4px; font-size: 12px; color: #6b7280; text-decoration: none;">
+                <a href="https://shiftb.dev/?r=jg" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; gap: 4px; font-size: 12px; color: #6b7280; text-decoration: none;">
                   運営スクール
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 12px; height: 12px;">
                     <path d="M7 17L17 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
