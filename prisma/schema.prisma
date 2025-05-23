@@ -30,6 +30,9 @@ model User {
   questionBookmarks              QuestionBookmark[]
   reviewer                       Reviewer?
   userQuestions                  UserQuestion[]
+  forumThreads                   ForumThread[]
+  forumPosts                     ForumPost[]
+  forumReactions                 ForumReaction[]
 
   @@map("users")
 }
@@ -350,4 +353,69 @@ enum UserQuestionStatus {
 enum Sender {
   USER
   SYSTEM
+}
+
+model ForumCategory {
+  id          String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  slug        String        @unique
+  title       String
+  description String?
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+  threads     ForumThread[]
+
+  @@map("forum_categories")
+}
+
+model ForumThread {
+  id         String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  categoryId String        @map("category_id") @db.Uuid
+  userId     String        @map("user_id") @db.Uuid
+  title      String
+  createdAt  DateTime      @default(now()) @map("created_at")
+  updatedAt  DateTime      @updatedAt @map("updated_at")
+  views      Int           @default(0)
+  isLocked   Boolean       @default(false) @map("is_locked")
+  category   ForumCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  user       User          @relation(fields: [userId], references: [id])
+  posts      ForumPost[]
+
+  @@map("forum_threads")
+}
+
+model ForumPost {
+  id         String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  threadId   String         @map("thread_id") @db.Uuid
+  userId     String         @map("user_id") @db.Uuid
+  parentId   String?        @map("parent_id") @db.Uuid
+  content    String
+  createdAt  DateTime       @default(now()) @map("created_at")
+  updatedAt  DateTime       @updatedAt @map("updated_at")
+  thread     ForumThread    @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  user       User           @relation(fields: [userId], references: [id])
+  parent     ForumPost?     @relation("Reply", fields: [parentId], references: [id])
+  replies    ForumPost[]    @relation("Reply")
+  reactions  ForumReaction[]
+
+  @@map("forum_posts")
+}
+
+model ForumReaction {
+  id        String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  postId    String       @map("post_id") @db.Uuid
+  userId    String       @map("user_id") @db.Uuid
+  kind      ReactionKind
+  createdAt DateTime     @default(now()) @map("created_at")
+  post      ForumPost    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User         @relation(fields: [userId], references: [id])
+
+  @@unique([postId, userId, kind])
+  @@map("forum_reactions")
+}
+
+enum ReactionKind {
+  LIKE
+  LOVE
+  LAUGH
+  THINK
 }
