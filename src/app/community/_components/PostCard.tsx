@@ -117,7 +117,7 @@ export const PostCard: React.FC<PostCardProps> = ({
   const canModify = currentUserId && (currentUserId === user.id || isAdmin) && (!isThreadLocked || isAdmin);
 
   return (
-    <div className={`p-4 bg-white dark:bg-gray-800 rounded-lg shadow ${isParent ? "" : "ml-8 mt-2"}`}>
+    <div className={`p-4 bg-white rounded-lg shadow ${isParent ? "" : "ml-8 mt-2"}`}>
       {/* Post header with user info */}
       <div className="flex items-start space-x-3">
         <div className="flex-shrink-0">
@@ -130,8 +130,8 @@ export const PostCard: React.FC<PostCardProps> = ({
               className="rounded-full"
             />
           ) : (
-            <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center">
-              <span className="text-gray-500 dark:text-gray-400 text-sm">
+            <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+              <span className="text-gray-500 text-sm">
                 {user.name?.charAt(0) || "U"}
               </span>
             </div>
@@ -140,17 +140,17 @@ export const PostCard: React.FC<PostCardProps> = ({
         
         <div className="flex-1 min-w-0">
           <div className="flex items-center">
-            <h4 className="font-medium text-gray-900 dark:text-white">
+            <h4 className="font-medium text-gray-900">
               {user.name || "匿名ユーザー"}
             </h4>
-            <span className="mx-2 text-xs text-gray-500 dark:text-gray-400">
+            <span className="mx-2 text-xs text-gray-500">
               {formatDistanceToNow(new Date(createdAt), {
                 addSuffix: true,
                 locale: ja,
               })}
             </span>
             {createdAt.toString() !== updatedAt.toString() && (
-              <span className="text-xs text-gray-500 dark:text-gray-400">
+              <span className="text-xs text-gray-500">
                 (編集済み)
               </span>
             )}
@@ -162,7 +162,7 @@ export const PostCard: React.FC<PostCardProps> = ({
               <textarea
                 value={editContent}
                 onChange={(e) => setEditContent(e.target.value)}
-                className="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                className="w-full p-2 border rounded-md"
                 rows={4}
               />
               <div className="mt-2 flex space-x-2">
@@ -177,14 +177,14 @@ export const PostCard: React.FC<PostCardProps> = ({
                     setIsEditing(false);
                     setEditContent(content);
                   }}
-                  className="px-3 py-1 bg-gray-300 text-gray-800 dark:bg-gray-600 dark:text-white rounded-md hover:bg-gray-400 dark:hover:bg-gray-500"
+                  className="px-3 py-1 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400"
                 >
                   キャンセル
                 </button>
               </div>
             </div>
           ) : (
-            <div className="mt-2 text-gray-800 dark:text-gray-200 whitespace-pre-wrap">
+            <div className="mt-2 text-gray-800 whitespace-pre-wrap">
               {content}
             </div>
           )}
@@ -205,8 +205,8 @@ export const PostCard: React.FC<PostCardProps> = ({
                     disabled={!currentUserId || isThreadLocked}
                     className={`flex items-center space-x-1 px-2 py-1 rounded-full text-xs ${
                       userReacted
-                        ? "bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300"
-                        : "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                        ? "bg-blue-100 text-blue-600"
+                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                     }`}
                   >
                     <FontAwesomeIcon icon={getReactionIcon(kind)} />
@@ -220,7 +220,7 @@ export const PostCard: React.FC<PostCardProps> = ({
             {onReply && currentUserId && (!isThreadLocked || isAdmin) && (
               <button
                 onClick={() => onReply(id)}
-                className="flex items-center text-xs text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+                className="flex items-center text-xs text-gray-600 hover:text-gray-800"
               >
                 <FontAwesomeIcon icon={faReply} className="mr-1" />
                 {replyCount > 0 ? `返信 (${replyCount})` : "返信"}
@@ -232,7 +232,7 @@ export const PostCard: React.FC<PostCardProps> = ({
               <>
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="flex items-center text-xs text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+                  className="flex items-center text-xs text-gray-600 hover:text-gray-800"
                 >
                   <FontAwesomeIcon icon={faEdit} className="mr-1" />
                   編集
@@ -251,8 +251,8 @@ export const PostCard: React.FC<PostCardProps> = ({
           
           {/* Delete confirmation */}
           {isDeleting && (
-            <div className="mt-2 p-3 bg-red-50 dark:bg-red-900/30 rounded-md">
-              <p className="text-sm text-red-600 dark:text-red-300">
+            <div className="mt-2 p-3 bg-red-50 rounded-md">
+              <p className="text-sm text-red-600">
                 本当に削除しますか？この操作は元に戻せません。
               </p>
               <div className="mt-2 flex space-x-2">
@@ -264,7 +264,7 @@ export const PostCard: React.FC<PostCardProps> = ({
                 </button>
                 <button
                   onClick={() => setIsDeleting(false)}
-                  className="px-3 py-1 bg-gray-300 text-gray-800 dark:bg-gray-600 dark:text-white rounded-md hover:bg-gray-400 dark:hover:bg-gray-500"
+                  className="px-3 py-1 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400"
                 >
                   キャンセル
                 </button>

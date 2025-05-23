@@ -78,8 +78,8 @@ export const Pagination: React.FC<PaginationProps> = ({
         onClick={() => onPageChange(currentPage - 1)}
         className={`px-3 py-2 rounded-md ${
           currentPage === 1
-            ? "text-gray-400 dark:text-gray-600 cursor-not-allowed"
-            : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+            ? "text-gray-400 cursor-not-allowed"
+            : "text-gray-700 hover:bg-gray-100"
         }`}
       >
         <FontAwesomeIcon icon={faChevronLeft} />
@@ -95,8 +95,8 @@ export const Pagination: React.FC<PaginationProps> = ({
             page === currentPage
               ? "bg-blue-500 text-white"
               : page === "..."
-              ? "text-gray-500 dark:text-gray-400 cursor-default"
-              : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+              ? "text-gray-500 cursor-default"
+              : "text-gray-700 hover:bg-gray-100"
           }`}
         >
           {page}
@@ -109,8 +109,8 @@ export const Pagination: React.FC<PaginationProps> = ({
         onClick={() => onPageChange(currentPage + 1)}
         className={`px-3 py-2 rounded-md ${
           currentPage === totalPages
-            ? "text-gray-400 dark:text-gray-600 cursor-not-allowed"
-            : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+            ? "text-gray-400 cursor-not-allowed"
+            : "text-gray-700 hover:bg-gray-100"
         }`}
       >
         <FontAwesomeIcon icon={faChevronRight} />

@@ -22,7 +22,7 @@ export default function CommunityPage() {
   return (
     <div className="py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
+        <h1 className="text-3xl font-bold text-gray-900 mb-6">
           コミュニティ
         </h1>
 
@@ -32,7 +32,7 @@ export default function CommunityPage() {
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <FontAwesomeIcon
                   icon={faSearch}
-                  className="text-gray-400 dark:text-gray-500"
+                  className="text-gray-400"
                 />
               </div>
               <input
@@ -40,12 +40,12 @@ export default function CommunityPage() {
                 value={inputSearch}
                 onChange={(e) => setInputSearch(e.target.value)}
                 placeholder="カテゴリを検索..."
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
             <button
               type="submit"
-              className="ml-3 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-blue-500 dark:hover:bg-blue-600"
+              className="ml-3 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               検索
             </button>
@@ -57,13 +57,13 @@ export default function CommunityPage() {
             {[...Array(6)].map((_, index) => (
               <div
                 key={index}
-                className="h-24 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"
+                className="h-24 bg-gray-200 rounded-lg animate-pulse"
               />
             ))}
           </div>
         ) : categories.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-500 dark:text-gray-400">
+            <p className="text-gray-500">
               カテゴリが見つかりませんでした
             </p>
           </div>

@@ -56,8 +56,8 @@ export const CreatePostForm: React.FC<CreatePostFormProps> = ({
   };
 
   return (
-    <div className={`bg-white dark:bg-gray-800 rounded-lg shadow p-4 ${parentId ? "ml-8 mt-2" : ""}`}>
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+    <div className={`bg-white rounded-lg shadow p-4 ${parentId ? "ml-8 mt-2" : ""}`}>
+      <h3 className="text-lg font-semibold text-gray-900 mb-3">
         {parentId ? "返信を投稿" : "投稿を作成"}
       </h3>
 
@@ -67,14 +67,14 @@ export const CreatePostForm: React.FC<CreatePostFormProps> = ({
             value={content}
             onChange={(e) => setContent(e.target.value)}
             rows={4}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             placeholder={parentId ? "返信内容を入力してください" : "投稿内容を入力してください"}
             required
           />
         </div>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-300 text-sm rounded-md">
+          <div className="mb-4 p-3 bg-red-50 text-red-600 text-sm rounded-md">
             {error}
           </div>
         )}
@@ -84,7 +84,7 @@ export const CreatePostForm: React.FC<CreatePostFormProps> = ({
             <button
               type="button"
               onClick={onCancel}
-              className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500"
+              className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500"
               disabled={isSubmitting}
             >
               キャンセル

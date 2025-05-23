@@ -115,7 +115,7 @@ export default function ThreadPage() {
           {thread?.category && (
             <Link
               href={`/community/categories/${thread.category.slug}`}
-              className="inline-flex items-center text-sm text-blue-600 dark:text-blue-400 hover:underline mb-2"
+              className="inline-flex items-center text-sm text-blue-600 hover:underline mb-2"
             >
               <FontAwesomeIcon icon={faArrowLeft} className="mr-1" />
               {thread.category.title}カテゴリに戻る
@@ -123,9 +123,9 @@ export default function ThreadPage() {
           )}
           
           <div className="flex justify-between items-start">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-2xl font-bold text-gray-900">
               {isThreadLoading ? (
-                <div className="h-8 w-3/4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                <div className="h-8 w-3/4 bg-gray-200 rounded animate-pulse" />
               ) : (
                 thread?.title
               )}
@@ -136,8 +136,8 @@ export default function ThreadPage() {
                 onClick={toggleLockThread}
                 className={`ml-2 px-3 py-1 rounded-md text-sm ${
                   thread.isLocked
-                    ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
-                    : "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                    ? "bg-yellow-100 text-yellow-800"
+                    : "bg-green-100 text-green-800"
                 }`}
               >
                 <FontAwesomeIcon
@@ -150,8 +150,8 @@ export default function ThreadPage() {
           </div>
           
           {thread?.isLocked && (
-            <div className="mt-2 p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded-md">
-              <p className="text-sm text-yellow-700 dark:text-yellow-300">
+            <div className="mt-2 p-2 bg-yellow-50 rounded-md">
+              <p className="text-sm text-yellow-700">
                 このスレッドはロックされています。新しい投稿はできません。
               </p>
             </div>
@@ -166,13 +166,13 @@ export default function ThreadPage() {
                 {[...Array(3)].map((_, index) => (
                   <div
                     key={index}
-                    className="h-32 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"
+                    className="h-32 bg-gray-200 rounded-lg animate-pulse"
                   />
                 ))}
               </div>
             ) : mainPosts.length === 0 ? (
-              <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow">
-                <p className="text-gray-500 dark:text-gray-400">
+              <div className="text-center py-12 bg-white rounded-lg shadow">
+                <p className="text-gray-500">
                   このスレッドにはまだ投稿がありません
                 </p>
               </div>
@@ -212,7 +212,7 @@ export default function ThreadPage() {
                     {post.replyCount > 0 && (
                       <button
                         onClick={() => handleViewReplies(post.id)}
-                        className="ml-8 mt-2 text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                        className="ml-8 mt-2 text-sm text-blue-600 hover:underline"
                       >
                         {post.replyCount}件の返信を表示
                       </button>
@@ -248,7 +248,7 @@ export default function ThreadPage() {
           <div>
             <button
               onClick={() => setViewingReplies(null)}
-              className="mb-4 text-sm text-blue-600 dark:text-blue-400 hover:underline"
+              className="mb-4 text-sm text-blue-600 hover:underline"
             >
               ← メインスレッドに戻る
             </button>
@@ -287,7 +287,7 @@ export default function ThreadPage() {
               </div>
             )}
             
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">
               返信
             </h2>
             
@@ -296,13 +296,13 @@ export default function ThreadPage() {
                 {[...Array(2)].map((_, index) => (
                   <div
                     key={index}
-                    className="h-24 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"
+                    className="h-24 bg-gray-200 rounded-lg animate-pulse"
                   />
                 ))}
               </div>
             ) : replyPosts.length === 0 ? (
-              <div className="text-center py-8 bg-white dark:bg-gray-800 rounded-lg shadow">
-                <p className="text-gray-500 dark:text-gray-400">
+              <div className="text-center py-8 bg-white rounded-lg shadow">
+                <p className="text-gray-500">
                   まだ返信がありません
                 </p>
               </div>

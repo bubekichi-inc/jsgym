@@ -57,22 +57,22 @@ export default function CategoryPage() {
           <div>
             <Link
               href="/community"
-              className="inline-flex items-center text-sm text-blue-600 dark:text-blue-400 hover:underline mb-2 sm:mb-0"
+              className="inline-flex items-center text-sm text-blue-600 hover:underline mb-2 sm:mb-0"
             >
               <FontAwesomeIcon icon={faArrowLeft} className="mr-1" />
               カテゴリ一覧に戻る
             </Link>
             
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-3xl font-bold text-gray-900">
               {isCategoryLoading ? (
-                <div className="h-9 w-64 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                <div className="h-9 w-64 bg-gray-200 rounded animate-pulse" />
               ) : (
                 category?.title
               )}
             </h1>
             
             {!isCategoryLoading && category?.description && (
-              <p className="mt-2 text-gray-600 dark:text-gray-400">
+              <p className="mt-2 text-gray-600">
                 {category.description}
               </p>
             )}
@@ -81,7 +81,7 @@ export default function CategoryPage() {
           {!showCreateForm && (
             <button
               onClick={() => setShowCreateForm(true)}
-              className="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-blue-500 dark:hover:bg-blue-600"
+              className="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               <FontAwesomeIcon icon={faPlus} className="mr-2" />
               新規スレッド作成
@@ -107,7 +107,7 @@ export default function CategoryPage() {
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <FontAwesomeIcon
                   icon={faSearch}
-                  className="text-gray-400 dark:text-gray-500"
+                  className="text-gray-400"
                 />
               </div>
               <input
@@ -115,12 +115,12 @@ export default function CategoryPage() {
                 value={inputSearch}
                 onChange={(e) => setInputSearch(e.target.value)}
                 placeholder="スレッドを検索..."
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
             <button
               type="submit"
-              className="ml-3 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-blue-500 dark:hover:bg-blue-600"
+              className="ml-3 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               検索
             </button>
@@ -133,13 +133,13 @@ export default function CategoryPage() {
             {[...Array(5)].map((_, index) => (
               <div
                 key={index}
-                className="h-32 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"
+                className="h-32 bg-gray-200 rounded-lg animate-pulse"
               />
             ))}
           </div>
         ) : threads.length === 0 ? (
-          <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow">
-            <p className="text-gray-500 dark:text-gray-400">
+          <div className="text-center py-12 bg-white rounded-lg shadow">
+            <p className="text-gray-500">
               {search
                 ? "検索条件に一致するスレッドが見つかりませんでした"
                 : "このカテゴリにはまだスレッドがありません"}

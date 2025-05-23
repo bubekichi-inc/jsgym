@@ -39,7 +39,7 @@ export const ThreadCard: React.FC<ThreadCardProps> = ({
   return (
     <Link
       href={`/community/threads/${id}`}
-      className="block p-4 bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-md transition-shadow duration-200"
+      className="block p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow duration-200"
     >
       <div className="flex items-start space-x-4">
         <div className="flex-shrink-0">
@@ -52,8 +52,8 @@ export const ThreadCard: React.FC<ThreadCardProps> = ({
               className="rounded-full"
             />
           ) : (
-            <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center">
-              <span className="text-gray-500 dark:text-gray-400 text-sm">
+            <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+              <span className="text-gray-500 text-sm">
                 {user.name?.charAt(0) || "U"}
               </span>
             </div>
@@ -62,18 +62,18 @@ export const ThreadCard: React.FC<ThreadCardProps> = ({
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">
+            <h3 className="text-lg font-semibold text-gray-900 truncate">
               {title}
             </h3>
             {isLocked && (
               <FontAwesomeIcon
                 icon={faLock}
-                className="ml-2 text-gray-500 dark:text-gray-400"
+                className="ml-2 text-gray-500"
               />
             )}
           </div>
 
-          <div className="mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400">
+          <div className="mt-1 flex items-center text-sm text-gray-500">
             <span>{user.name || "匿名ユーザー"}</span>
             <span className="mx-1">•</span>
             <span>
@@ -84,7 +84,7 @@ export const ThreadCard: React.FC<ThreadCardProps> = ({
             </span>
           </div>
 
-          <div className="mt-2 flex items-center text-sm text-gray-500 dark:text-gray-400">
+          <div className="mt-2 flex items-center text-sm text-gray-500">
             <span className="mr-4 flex items-center">
               <FontAwesomeIcon icon={faEye} className="mr-1" />
               {views}

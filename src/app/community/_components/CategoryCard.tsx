@@ -22,20 +22,20 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
   return (
     <Link
       href={`/community/categories/${slug}`}
-      className="block p-4 bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-md transition-shadow duration-200"
+      className="block p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow duration-200"
     >
       <div className="flex items-start justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+          <h3 className="text-lg font-semibold text-gray-900">
             {title}
           </h3>
           {description && (
-            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+            <p className="mt-1 text-sm text-gray-600">
               {description}
             </p>
           )}
         </div>
-        <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
+        <div className="flex items-center text-sm text-gray-500">
           <FontAwesomeIcon icon={faComments} className="mr-1" />
           <span>{threadCount}</span>
         </div>
