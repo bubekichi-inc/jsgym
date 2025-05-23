@@ -1,0 +1,200 @@
+import { NextRequest, NextResponse } from "next/server";
+import { getCurrentUser } from "../../../_utils/getCurrentUser";
+import { buildPrisma } from "../../../_utils/buildPrisma";
+import { buildError } from "../../../_utils/buildError";
+import { z } from "zod";
+
+// パラメータの型定義
+interface Params {
+  params: {
+    slug: string;
+  };
+}
+
+// レスポンス型の定義
+export interface ForumCategoryResponse {
+  category: {
+    id: string;
+    slug: string;
+    title: string;
+    description: string | null;
+    createdAt: string;
+    updatedAt: string;
+  };
+}
+
+// カテゴリ更新リクエストの検証スキーマ
+const updateCategorySchema = z.object({
+  title: z.string().min(1, "タイトルは必須です"),
+  description: z.string().optional(),
+});
+
+// カテゴリ更新リクエスト型の定義
+export type UpdateCategoryRequest = z.infer<typeof updateCategorySchema>;
+
+// カテゴリ更新レスポンス型の定義
+export interface UpdateCategoryResponse {
+  message: string;
+  category: {
+    id: string;
+    slug: string;
+    title: string;
+    description: string | null;
+    createdAt: string;
+    updatedAt: string;
+  };
+}
+
+// 特定のカテゴリを取得するGETエンドポイント
+export async function GET(
+  request: NextRequest,
+  { params }: Params
+) {
+  try {
+    const prisma = await buildPrisma();
+    const { slug } = params;
+
+    // カテゴリの取得
+    const category = await prisma.forumCategory.findUnique({
+      where: { slug },
+    });
+
+    if (!category) {
+      return NextResponse.json(
+        { error: "指定されたカテゴリが見つかりません" },
+        { status: 404 }
+      );
+    }
+
+    // レスポンス形式に変換
+    return NextResponse.json<ForumCategoryResponse>({
+      category: {
+        id: category.id,
+        slug: category.slug,
+        title: category.title,
+        description: category.description,
+        createdAt: category.createdAt.toISOString(),
+        updatedAt: category.updatedAt.toISOString(),
+      },
+    });
+  } catch (error) {
+    console.error("カテゴリの取得に失敗しました:", error);
+    return await buildError(error);
+  }
+}
+
+// カテゴリを更新するPUTエンドポイント
+export async function PUT(
+  request: NextRequest,
+  { params }: Params
+) {
+  try {
+    // 管理者権限の確認
+    const user = await getCurrentUser({ request });
+    if (user.role !== "ADMIN") {
+      return NextResponse.json(
+        { error: "管理者権限が必要です" },
+        { status: 403 }
+      );
+    }
+
+    const { slug } = params;
+
+    // リクエストデータの検証
+    const body = await request.json();
+    const validationResult = updateCategorySchema.safeParse(body);
+
+    if (!validationResult.success) {
+      return NextResponse.json(
+        {
+          error: "無効なリクエストデータです",
+          details: validationResult.error.format(),
+        },
+        { status: 400 }
+      );
+    }
+
+    const data = validationResult.data;
+    const prisma = await buildPrisma();
+
+    // カテゴリが存在するか確認
+    const existingCategory = await prisma.forumCategory.findUnique({
+      where: { slug },
+    });
+
+    if (!existingCategory) {
+      return NextResponse.json(
+        { error: "指定されたカテゴリが見つかりません" },
+        { status: 404 }
+      );
+    }
+
+    // カテゴリの更新
+    const updatedCategory = await prisma.forumCategory.update({
+      where: { slug },
+      data: {
+        title: data.title,
+        description: data.description,
+      },
+    });
+
+    return NextResponse.json<UpdateCategoryResponse>({
+      message: "カテゴリが正常に更新されました",
+      category: {
+        id: updatedCategory.id,
+        slug: updatedCategory.slug,
+        title: updatedCategory.title,
+        description: updatedCategory.description,
+        createdAt: updatedCategory.createdAt.toISOString(),
+        updatedAt: updatedCategory.updatedAt.toISOString(),
+      },
+    });
+  } catch (error) {
+    console.error("カテゴリの更新に失敗しました:", error);
+    return await buildError(error);
+  }
+}
+
+// カテゴリを削除するDELETEエンドポイント
+export async function DELETE(
+  request: NextRequest,
+  { params }: Params
+) {
+  try {
+    // 管理者権限の確認
+    const user = await getCurrentUser({ request });
+    if (user.role !== "ADMIN") {
+      return NextResponse.json(
+        { error: "管理者権限が必要です" },
+        { status: 403 }
+      );
+    }
+
+    const { slug } = params;
+    const prisma = await buildPrisma();
+
+    // カテゴリが存在するか確認
+    const existingCategory = await prisma.forumCategory.findUnique({
+      where: { slug },
+    });
+
+    if (!existingCategory) {
+      return NextResponse.json(
+        { error: "指定されたカテゴリが見つかりません" },
+        { status: 404 }
+      );
+    }
+
+    // カテゴリの削除（関連するスレッドとポストは外部キー制約によって削除される）
+    await prisma.forumCategory.delete({
+      where: { slug },
+    });
+
+    return NextResponse.json({
+      message: "カテゴリが正常に削除されました",
+    });
+  } catch (error) {
+    console.error("カテゴリの削除に失敗しました:", error);
+    return await buildError(error);
+  }
+}

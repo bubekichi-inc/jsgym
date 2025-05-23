@@ -1,0 +1,187 @@
+import { NextRequest, NextResponse } from "next/server";
+import { getCurrentUser } from "../../../_utils/getCurrentUser";
+import { buildPrisma } from "../../../_utils/buildPrisma";
+import { buildError } from "../../../_utils/buildError";
+import { z } from "zod";
+
+// パラメータの型定義
+interface Params {
+  params: {
+    postId: string;
+  };
+}
+
+// 投稿更新リクエストの検証スキーマ
+const updatePostSchema = z.object({
+  content: z.string().min(1, "投稿内容は必須です"),
+});
+
+// 投稿更新リクエスト型の定義
+export type UpdatePostRequest = z.infer<typeof updatePostSchema>;
+
+// 投稿更新レスポンス型の定義
+export interface UpdatePostResponse {
+  message: string;
+  post: {
+    id: string;
+    content: string;
+    updatedAt: string;
+  };
+}
+
+// 投稿を更新するPUTエンドポイント
+export async function PUT(
+  request: NextRequest,
+  { params }: Params
+) {
+  try {
+    // ログインユーザーの取得
+    const user = await getCurrentUser({ request });
+    const { postId } = params;
+    const prisma = await buildPrisma();
+
+    // 投稿の存在確認と所有権確認
+    const post = await prisma.forumPost.findUnique({
+      where: { id: postId },
+      include: {
+        thread: {
+          select: {
+            isLocked: true,
+          },
+        },
+      },
+    });
+
+    if (!post) {
+      return NextResponse.json(
+        { error: "指定された投稿が見つかりません" },
+        { status: 404 }
+      );
+    }
+
+    // 管理者または作成者のみ更新可能
+    if (post.userId !== user.id && user.role !== "ADMIN") {
+      return NextResponse.json(
+        { error: "この投稿を更新する権限がありません" },
+        { status: 403 }
+      );
+    }
+
+    // ロックされたスレッドの投稿は管理者のみ編集可能
+    if (post.thread.isLocked && user.role !== "ADMIN") {
+      return NextResponse.json(
+        { error: "このスレッドはロックされているため投稿を編集できません" },
+        { status: 403 }
+      );
+    }
+
+    // リクエストデータの検証
+    const body = await request.json();
+    const validationResult = updatePostSchema.safeParse(body);
+
+    if (!validationResult.success) {
+      return NextResponse.json(
+        {
+          error: "無効なリクエストデータです",
+          details: validationResult.error.format(),
+        },
+        { status: 400 }
+      );
+    }
+
+    const data = validationResult.data;
+
+    // 投稿の更新
+    const updatedPost = await prisma.forumPost.update({
+      where: { id: postId },
+      data: {
+        content: data.content,
+      },
+    });
+
+    return NextResponse.json<UpdatePostResponse>({
+      message: "投稿が正常に更新されました",
+      post: {
+        id: updatedPost.id,
+        content: updatedPost.content,
+        updatedAt: updatedPost.updatedAt.toISOString(),
+      },
+    });
+  } catch (error) {
+    console.error("投稿の更新に失敗しました:", error);
+    return await buildError(error);
+  }
+}
+
+// 投稿を削除するDELETEエンドポイント
+export async function DELETE(
+  request: NextRequest,
+  { params }: Params
+) {
+  try {
+    // ログインユーザーの取得
+    const user = await getCurrentUser({ request });
+    const { postId } = params;
+    const prisma = await buildPrisma();
+
+    // 投稿の存在確認と所有権確認
+    const post = await prisma.forumPost.findUnique({
+      where: { id: postId },
+      include: {
+        thread: {
+          select: {
+            isLocked: true,
+          },
+        },
+        _count: {
+          select: {
+            replies: true,
+          },
+        },
+      },
+    });
+
+    if (!post) {
+      return NextResponse.json(
+        { error: "指定された投稿が見つかりません" },
+        { status: 404 }
+      );
+    }
+
+    // 管理者または作成者のみ削除可能
+    if (post.userId !== user.id && user.role !== "ADMIN") {
+      return NextResponse.json(
+        { error: "この投稿を削除する権限がありません" },
+        { status: 403 }
+      );
+    }
+
+    // ロックされたスレッドの投稿は管理者のみ削除可能
+    if (post.thread.isLocked && user.role !== "ADMIN") {
+      return NextResponse.json(
+        { error: "このスレッドはロックされているため投稿を削除できません" },
+        { status: 403 }
+      );
+    }
+
+    // 返信がある投稿の削除（管理者以外）を制限
+    if (post._count.replies > 0 && user.role !== "ADMIN") {
+      return NextResponse.json(
+        { error: "返信がある投稿は削除できません" },
+        { status: 400 }
+      );
+    }
+
+    // 投稿の削除
+    await prisma.forumPost.delete({
+      where: { id: postId },
+    });
+
+    return NextResponse.json({
+      message: "投稿が正常に削除されました",
+    });
+  } catch (error) {
+    console.error("投稿の削除に失敗しました:", error);
+    return await buildError(error);
+  }
+}
