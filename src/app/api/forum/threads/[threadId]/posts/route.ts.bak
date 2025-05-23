@@ -70,7 +70,7 @@ export async function GET(
   { params }: { params: { threadId: string } }
 ) {
   try {
-    const { threadId } = context.params || {};
+    const { threadId } = context.params;
     const searchParams = request.nextUrl.searchParams;
     const page = parseInt(searchParams.get("page") || "1", 10);
     const limit = parseInt(searchParams.get("limit") || "50", 10);
@@ -225,7 +225,7 @@ export async function POST(
   try {
     // ログインユーザーの取得
     const user = await getCurrentUser({ request });
-    const { threadId } = context.params || {};
+    const { threadId } = context.params;
     const prisma = await buildPrisma();
 
     // スレッドの存在確認とロック状態のチェック

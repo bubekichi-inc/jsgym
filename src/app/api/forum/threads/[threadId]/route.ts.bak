@@ -54,7 +54,7 @@ export async function GET(
   { params }: { params: { threadId: string } }
 ) {
   try {
-    const { threadId } = context.params || {};
+    const { threadId } = context.params;
     const prisma = await buildPrisma();
 
     // スレッドの存在確認
@@ -120,7 +120,7 @@ export async function PUT(
   try {
     // ログインユーザーの取得
     const user = await getCurrentUser({ request });
-    const { threadId } = context.params || {};
+    const { threadId } = context.params;
     const prisma = await buildPrisma();
 
     // スレッドの存在確認と所有権確認
@@ -197,7 +197,7 @@ export async function DELETE(
   try {
     // ログインユーザーの取得
     const user = await getCurrentUser({ request });
-    const { threadId } = context.params || {};
+    const { threadId } = context.params;
     const prisma = await buildPrisma();
 
     // スレッドの存在確認と所有権確認
