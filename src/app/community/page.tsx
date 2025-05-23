@@ -16,7 +16,7 @@ export default function CommunityPage() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    setSearch(inputSearch);
+    setSearch(inputSearch || "");
   };
 
   return (
