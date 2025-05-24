@@ -79,7 +79,7 @@ export const usePostsWithReplies = ({ threadId }: UsePostsWithRepliesProps = {})
     // Group replies by parent ID
     const repliesByParent = allReplies.reduce((acc, reply) => {
       if (!reply.parentId) return acc;
-      
+
       if (!acc[reply.parentId]) {
         acc[reply.parentId] = [];
       }

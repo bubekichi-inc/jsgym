@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
     const page = parseInt(url.searchParams.get("page") || "1");
     const limit = parseInt(url.searchParams.get("limit") || "20");
     const offset = (page - 1) * limit;
-    
+
     // Get current user if available (for reaction status)
     let userId: string | undefined;
     try {
@@ -77,7 +77,7 @@ export async function GET(request: NextRequest) {
     }
 
     const prisma = await buildPrisma();
-    
+
     // Prepare where conditions
     const whereConditions: any = {};
 
