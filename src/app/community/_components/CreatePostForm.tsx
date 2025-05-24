@@ -112,18 +112,12 @@ export const CreatePostForm: React.FC<CreatePostFormProps> = ({
         <div className="flex justify-end">
           <button
             type="submit"
-            className=" bg-blue-500 p-2 text-white rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center gap-2"
+            className="bg-blue-500 p-2 text-white rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isSubmitting}
           >
-            {isSubmitting ? (
-              "送信中..."
-            ) : (
-              <>
-                <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
-                  <path d="M1.724 1.724a.5.5 0 0 1 .576-.017L14.5 8.5a.5.5 0 0 1 0 .894L2.3 16.276a.5.5 0 0 1-.576-.017.5.5 0 0 1-.17-.568L2.382 12H7.5a.5.5 0 0 0 0-1H2.382L1.554 7.309a.5.5 0 0 1 .17-.585z"/>
-                </svg>
-              </>
-            )}
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M1.724 1.724a.5.5 0 0 1 .576-.017L14.5 8.5a.5.5 0 0 1 0 .894L2.3 16.276a.5.5 0 0 1-.576-.017.5.5 0 0 1-.17-.568L2.382 12H7.5a.5.5 0 0 0 0-1H2.382L1.554 7.309a.5.5 0 0 1 .17-.585z"/>
+            </svg>
           </button>
         </div>
       </form>
