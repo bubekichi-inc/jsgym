@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -67,8 +67,58 @@ export const PostCard: React.FC<PostCardProps> = ({
   const [editContent, setEditContent] = useState(content);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [localReactions, setLocalReactions] = useState(reactions);
 
-  const { toggleReaction } = useReactions(onRefresh);
+  const { toggleReaction } = useReactions();
+
+  // Sync local reactions with props when they change
+  useEffect(() => {
+    setLocalReactions(reactions);
+  }, [reactions]);
+
+  // Handle optimistic reaction toggle
+  const handleReactionToggle = async (kind: ReactionKind) => {
+    if (!currentUserId || isThreadLocked) return;
+
+    // Optimistic update - immediately update local state
+    setLocalReactions(prev => {
+      const existingReaction = prev.find(r => r.kind === kind);
+      
+      if (existingReaction) {
+        // Toggle existing reaction
+        return prev.map(r => 
+          r.kind === kind 
+            ? {
+                ...r,
+                count: r.userReacted ? r.count - 1 : r.count + 1,
+                userReacted: !r.userReacted
+              }
+            : r
+        );
+      } else {
+        // Add new reaction
+        return [
+          ...prev,
+          {
+            kind,
+            count: 1,
+            userReacted: true
+          }
+        ];
+      }
+    });
+
+    try {
+      // Make API request
+      await toggleReaction(id, kind);
+      // Refresh parent data to sync with server
+      if (onRefresh) onRefresh();
+    } catch (error) {
+      console.error("Error toggling reaction:", error);
+      // Revert optimistic update on error
+      setLocalReactions(reactions);
+    }
+  };
 
   // Handle edit submission
   const handleEditSubmit = async () => {
@@ -238,14 +288,14 @@ export const PostCard: React.FC<PostCardProps> = ({
             {/* Reactions */}
             <div className="flex items-center space-x-2">
               {Object.values(ReactionKind).map((kind) => {
-                const reaction = reactions.find((r) => r.kind === kind);
+                const reaction = localReactions.find((r) => r.kind === kind);
                 const count = reaction?.count || 0;
                 const userReacted = reaction?.userReacted || false;
 
                 return (
                   <button
                     key={kind}
-                    onClick={() => toggleReaction(id, kind as ReactionKind)}
+                    onClick={() => handleReactionToggle(kind as ReactionKind)}
                     disabled={!currentUserId || isThreadLocked}
                     className={`flex items-center space-x-1 px-2 py-1 rounded-full text-xs ${
                       userReacted
