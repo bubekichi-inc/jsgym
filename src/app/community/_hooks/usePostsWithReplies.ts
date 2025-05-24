@@ -49,7 +49,7 @@ export const usePostsWithReplies = ({ threadId }: UsePostsWithRepliesProps = {})
   }, [threadId, page]);
 
   // Fetch main posts
-  const { data: mainPostsData, error, isLoading, mutate } = useFetch<CommunityPostsResponse>(
+  const { data: mainPostsData, error, isLoading, mutate: mutatePosts } = useFetch<CommunityPostsResponse>(
     threadId ? `/api/community/posts?${buildQueryString()}` : ""
   );
 
@@ -63,7 +63,7 @@ export const usePostsWithReplies = ({ threadId }: UsePostsWithRepliesProps = {})
     return params.toString();
   }, [threadId]);
 
-  const { data: allRepliesData } = useFetch<CommunityPostsResponse>(
+  const { data: allRepliesData, mutate: mutateReplyPosts } = useFetch<CommunityPostsResponse>(
     threadId ? `/api/community/posts?${buildRepliesQueryString()}` : ""
   );
 
@@ -102,7 +102,8 @@ export const usePostsWithReplies = ({ threadId }: UsePostsWithRepliesProps = {})
     currentPage: page,
     setPage,
     mutate: () => {
-      mutate();
+      mutatePosts();
+      mutateReplyPosts();
       // We could also add a separate mutate for replies if needed
     },
   };
