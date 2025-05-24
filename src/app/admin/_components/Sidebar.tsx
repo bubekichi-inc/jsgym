@@ -8,6 +8,7 @@ import {
   faTags,
   faBars,
   faXmark,
+  faComments,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
@@ -50,6 +51,11 @@ const menuItems = [
     title: "レビュワー一覧",
     href: "/admin/reviewers",
     icon: faUserGroup,
+  },
+  {
+    title: "コミュニティ管理",
+    href: "/admin/community",
+    icon: faComments,
   },
   {
     title: "イベント集計",

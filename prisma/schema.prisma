@@ -9,22 +9,25 @@ datasource db {
 }
 
 model User {
-  id                             String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  supabaseUserId                 String             @unique @map("supabase_user_id")
-  stripeCustomerId               String             @unique @map("stripe_customer_id")
+  id                             String              @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  supabaseUserId                 String              @unique @map("supabase_user_id")
+  stripeCustomerId               String              @unique @map("stripe_customer_id")
   email                          String?
   name                           String?
-  iconUrl                        String?            @map("icon_url")
-  receiptName                    String?            @map("receipt_name")
-  points                         Int                @default(0)
-  createdAt                      DateTime           @default(now()) @map("created_at")
-  updatedAt                      DateTime           @updatedAt @map("updated_at")
-  editorFontSize                 EditorFontSize     @default(MEDIUM) @map("editor_font_size")
-  editorTheme                    EditorTheme        @default(DARK) @map("editor_theme")
-  receiveNewQuestionNotification Boolean            @default(true) @map("receive_new_question_notification")
-  receiveReminderNotification    Boolean            @default(true) @map("receive_reminder_notification")
-  receiveUsefulInfoNotification  Boolean            @default(true) @map("receive_useful_info_notification")
-  role                           UserRole           @default(USER) @map("role")
+  iconUrl                        String?             @map("icon_url")
+  receiptName                    String?             @map("receipt_name")
+  points                         Int                 @default(0)
+  createdAt                      DateTime            @default(now()) @map("created_at")
+  updatedAt                      DateTime            @updatedAt @map("updated_at")
+  editorFontSize                 EditorFontSize      @default(MEDIUM) @map("editor_font_size")
+  editorTheme                    EditorTheme         @default(DARK) @map("editor_theme")
+  receiveNewQuestionNotification Boolean             @default(true) @map("receive_new_question_notification")
+  receiveReminderNotification    Boolean             @default(true) @map("receive_reminder_notification")
+  receiveUsefulInfoNotification  Boolean             @default(true) @map("receive_useful_info_notification")
+  role                           UserRole            @default(USER) @map("role")
+  communityPosts                 CommunityPost[]
+  communityReactions             CommunityReaction[]
+  communityThreads               CommunityThread[]
   events                         Event[]
   pointTransactions              PointTransaction[]
   questionBookmarks              QuestionBookmark[]
@@ -261,6 +264,64 @@ model Event {
   @@map("events")
 }
 
+model CommunityCategory {
+  id          String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  slug        String            @unique
+  title       String
+  description String?
+  createdAt   DateTime          @default(now()) @map("created_at")
+  updatedAt   DateTime          @updatedAt @map("updated_at")
+  threads     CommunityThread[]
+
+  @@map("community_categories")
+}
+
+model CommunityThread {
+  id         String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  categoryId String            @db.Uuid
+  userId     String            @db.Uuid
+  title      String
+  createdAt  DateTime          @default(now()) @map("created_at")
+  updatedAt  DateTime          @updatedAt @map("updated_at")
+  views      Int               @default(0)
+  isLocked   Boolean           @default(false)
+  posts      CommunityPost[]
+  category   CommunityCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  user       User              @relation(fields: [userId], references: [id])
+
+  @@map("community_threads")
+}
+
+model CommunityPost {
+  id        String              @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  threadId  String              @db.Uuid
+  userId    String              @db.Uuid
+  parentId  String?             @db.Uuid
+  content   String
+  createdAt DateTime            @default(now()) @map("created_at")
+  updatedAt DateTime            @updatedAt @map("updated_at")
+  parent    CommunityPost?      @relation("Reply", fields: [parentId], references: [id])
+  replies   CommunityPost[]     @relation("Reply")
+  thread    CommunityThread     @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  user      User                @relation(fields: [userId], references: [id])
+  reactions CommunityReaction[]
+
+  @@map("community_posts")
+}
+
+model CommunityReaction {
+  id        String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  postId    String        @db.Uuid
+  userId    String        @db.Uuid
+  kind      ReactionKind
+  createdAt DateTime      @default(now()) @map("created_at")
+  post      CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User          @relation(fields: [userId], references: [id])
+
+  @@unique([postId, userId, kind])
+  @@map("community_reactions")
+}
+
 enum EventType {
   VIEW
   CLICK
@@ -350,4 +411,11 @@ enum UserQuestionStatus {
 enum Sender {
   USER
   SYSTEM
+}
+
+enum ReactionKind {
+  LIKE
+  LOVE
+  LAUGH
+  THINK
 }
