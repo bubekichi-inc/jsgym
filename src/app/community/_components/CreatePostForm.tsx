@@ -57,7 +57,19 @@ export const CreatePostForm: React.FC<CreatePostFormProps> = ({
   };
 
   return (
-    <div className={`bg-white rounded-lg shadow p-4 ${parentId ? "ml-8 mt-2" : ""}`}>
+    <div className={`bg-white rounded-lg shadow p-4 ${parentId ? "ml-8 mt-2" : ""} relative`}>
+      {onCancel && (
+        <button
+          type="button"
+          onClick={onCancel}
+          className="absolute top-4 right-4 w-6 h-6 flex items-center justify-center text-gray-400 hover:text-gray-600 focus:outline-none"
+          disabled={isSubmitting}
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 7.293L12.854 2.44a.5.5 0 0 1 .707.707L8.707 8l4.854 4.854a.5.5 0 0 1-.707.707L8 8.707l-4.854 4.854a.5.5 0 0 1-.707-.707L7.293 8 2.44 3.146a.5.5 0 0 1 .707-.707L8 7.293z"/>
+          </svg>
+        </button>
+      )}
       <h3 className="text-lg font-semibold text-gray-900 mb-3">
         {parentId ? "返信を投稿" : "投稿を作成"}
       </h3>
@@ -80,23 +92,21 @@ export const CreatePostForm: React.FC<CreatePostFormProps> = ({
           </div>
         )}
 
-        <div className="flex justify-end space-x-2">
-          {onCancel && (
-            <button
-              type="button"
-              onClick={onCancel}
-              className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500"
-              disabled={isSubmitting}
-            >
-              キャンセル
-            </button>
-          )}
+        <div className="flex justify-end">
           <button
             type="submit"
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className=" bg-blue-500 p-2 text-white rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center gap-2"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "送信中..." : "投稿する"}
+            {isSubmitting ? (
+              "送信中..."
+            ) : (
+              <>
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M1.724 1.724a.5.5 0 0 1 .576-.017L14.5 8.5a.5.5 0 0 1 0 .894L2.3 16.276a.5.5 0 0 1-.576-.017.5.5 0 0 1-.17-.568L2.382 12H7.5a.5.5 0 0 0 0-1H2.382L1.554 7.309a.5.5 0 0 1 .17-.585z"/>
+                </svg>
+              </>
+            )}
           </button>
         </div>
       </form>
