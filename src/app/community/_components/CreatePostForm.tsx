@@ -42,9 +42,10 @@ export const CreatePostForm: React.FC<CreatePostFormProps> = ({
         }
       );
 
-      setIsSubmitting(false);
       setContent("");
+      setIsSubmitting(false);
 
+      // 投稿作成成功時にmutateで返信一覧を更新
       if (onSuccess) {
         onSuccess();
       }
