@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { api } from "@/app/_utils/api";
 import { CreatePostRequest } from "@/app/api/community/posts/route";
 
@@ -20,6 +20,14 @@ export const CreatePostForm: React.FC<CreatePostFormProps> = ({
   const [content, setContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // コンポーネントがマウントされたときにtextareaにフォーカス
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,6 +64,13 @@ export const CreatePostForm: React.FC<CreatePostFormProps> = ({
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      handleSubmit(e as any);
+    }
+  };
+
   return (
     <div className={`bg-white rounded-lg shadow p-4 ${parentId ? "ml-8 mt-2" : ""} relative`}>
       {onCancel && (
@@ -77,8 +92,10 @@ export const CreatePostForm: React.FC<CreatePostFormProps> = ({
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <textarea
+            ref={textareaRef}
             value={content}
             onChange={(e) => setContent(e.target.value)}
+            onKeyDown={handleKeyDown}
             rows={4}
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             placeholder={parentId ? "返信内容を入力してください" : "投稿内容を入力してください"}
