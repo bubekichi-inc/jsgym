@@ -11,6 +11,7 @@ import {
   faHeart,
   faLaughSquint,
   faLightbulb,
+  faEllipsisV,
 } from "@fortawesome/free-solid-svg-icons";
 import { formatDistanceToNow } from "date-fns";
 import { ja } from "date-fns/locale";
@@ -65,6 +66,7 @@ export const PostCard: React.FC<PostCardProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(content);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
   
   const { toggleReaction } = useReactions(onRefresh);
 
@@ -139,20 +141,62 @@ export const PostCard: React.FC<PostCardProps> = ({
         </div>
         
         <div className="flex-1 min-w-0">
-          <div className="flex items-center">
-            <h4 className="font-medium text-gray-900">
-              {user.name || "匿名ユーザー"}
-            </h4>
-            <span className="mx-2 text-xs text-gray-500">
-              {formatDistanceToNow(new Date(createdAt), {
-                addSuffix: true,
-                locale: ja,
-              })}
-            </span>
-            {createdAt.toString() !== updatedAt.toString() && (
-              <span className="text-xs text-gray-500">
-                (編集済み)
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <h4 className="font-medium text-gray-900">
+                {user.name || "匿名ユーザー"}
+              </h4>
+              <span className="mx-2 text-xs text-gray-500">
+                {formatDistanceToNow(new Date(createdAt), {
+                  addSuffix: true,
+                  locale: ja,
+                })}
               </span>
+              {createdAt.toString() !== updatedAt.toString() && (
+                <span className="text-xs text-gray-500">
+                  (編集済み)
+                </span>
+              )}
+            </div>
+
+            {/* Dropdown menu for edit/delete actions */}
+            {canModify && !isEditing && (
+              <div className="relative">
+                <button
+                  onClick={() => setShowDropdown(!showDropdown)}
+                  onBlur={() => setTimeout(() => setShowDropdown(false), 100)}
+                  className="p-1 rounded-full hover:bg-gray-100 focus:outline-none"
+                >
+                  <FontAwesomeIcon icon={faEllipsisV} className="h-4 w-4 text-gray-500" />
+                </button>
+
+                {showDropdown && (
+                  <div className="absolute right-0 top-8 w-32 bg-white rounded-md shadow-lg border border-gray-200 z-10">
+                    <div className="py-1">
+                      <button
+                        onClick={() => {
+                          setIsEditing(true);
+                          setShowDropdown(false);
+                        }}
+                        className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        <FontAwesomeIcon icon={faEdit} className="mr-2 h-3 w-3" />
+                        編集
+                      </button>
+                      <button
+                        onClick={() => {
+                          setIsDeleting(true);
+                          setShowDropdown(false);
+                        }}
+                        className="flex items-center w-full px-3 py-2 text-sm text-red-600 hover:bg-gray-100"
+                      >
+                        <FontAwesomeIcon icon={faTrash} className="mr-2 h-3 w-3" />
+                        削除
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
           </div>
           
@@ -225,27 +269,6 @@ export const PostCard: React.FC<PostCardProps> = ({
                 <FontAwesomeIcon icon={faReply} className="mr-1" />
                 {replyCount > 0 ? `返信 (${replyCount})` : "返信"}
               </button>
-            )}
-            
-            {/* Edit & delete buttons (only for post owner or admin) */}
-            {canModify && !isEditing && !isDeleting && (
-              <>
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="flex items-center text-xs text-gray-600 hover:text-gray-800"
-                >
-                  <FontAwesomeIcon icon={faEdit} className="mr-1" />
-                  編集
-                </button>
-                
-                <button
-                  onClick={() => setIsDeleting(true)}
-                  className="flex items-center text-xs text-red-500 hover:text-red-700"
-                >
-                  <FontAwesomeIcon icon={faTrash} className="mr-1" />
-                  削除
-                </button>
-              </>
             )}
           </div>
           
