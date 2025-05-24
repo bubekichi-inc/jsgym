@@ -24,6 +24,7 @@ export const CreatePostForm: React.FC<CreatePostFormProps> = ({
 
   // コンポーネントがマウントされたときにtextareaにフォーカス
   useEffect(() => {
+    if (!parentId) return;
     if (textareaRef.current) {
       textareaRef.current.focus();
     }
