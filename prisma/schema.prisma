@@ -25,14 +25,14 @@ model User {
   receiveReminderNotification    Boolean             @default(true) @map("receive_reminder_notification")
   receiveUsefulInfoNotification  Boolean             @default(true) @map("receive_useful_info_notification")
   role                           UserRole            @default(USER) @map("role")
+  communityPosts                 CommunityPost[]
+  communityReactions             CommunityReaction[]
+  communityThreads               CommunityThread[]
   events                         Event[]
   pointTransactions              PointTransaction[]
   questionBookmarks              QuestionBookmark[]
   reviewer                       Reviewer?
   userQuestions                  UserQuestion[]
-  communityThreads               CommunityThread[]
-  communityPosts                 CommunityPost[]
-  communityReactions             CommunityReaction[]
 
   @@map("users")
 }
@@ -193,10 +193,10 @@ model CodeReview {
   messageId      String?             @unique @map("message_id") @db.Uuid
   overview       String
   result         CodeReviewResult
+  score          Int
   createdAt      DateTime            @default(now()) @map("created_at")
   updatedAt      DateTime            @updatedAt @map("updated_at")
   userQuestionId String              @map("user_id") @db.Uuid
-  score          Int
   comments       CodeReviewComment[]
   message        Message?            @relation(fields: [messageId], references: [id])
   userQuestion   UserQuestion        @relation(fields: [userQuestionId], references: [id], onDelete: Cascade)
@@ -262,6 +262,64 @@ model Event {
   user      User?     @relation(fields: [userId], references: [id])
 
   @@map("events")
+}
+
+model CommunityCategory {
+  id          String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  slug        String            @unique
+  title       String
+  description String?
+  createdAt   DateTime          @default(now()) @map("created_at")
+  updatedAt   DateTime          @updatedAt @map("updated_at")
+  threads     CommunityThread[]
+
+  @@map("community_categories")
+}
+
+model CommunityThread {
+  id         String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  categoryId String            @db.Uuid
+  userId     String            @db.Uuid
+  title      String
+  createdAt  DateTime          @default(now()) @map("created_at")
+  updatedAt  DateTime          @updatedAt @map("updated_at")
+  views      Int               @default(0)
+  isLocked   Boolean           @default(false)
+  posts      CommunityPost[]
+  category   CommunityCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  user       User              @relation(fields: [userId], references: [id])
+
+  @@map("community_threads")
+}
+
+model CommunityPost {
+  id        String              @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  threadId  String              @db.Uuid
+  userId    String              @db.Uuid
+  parentId  String?             @db.Uuid
+  content   String
+  createdAt DateTime            @default(now()) @map("created_at")
+  updatedAt DateTime            @updatedAt @map("updated_at")
+  parent    CommunityPost?      @relation("Reply", fields: [parentId], references: [id])
+  replies   CommunityPost[]     @relation("Reply")
+  thread    CommunityThread     @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  user      User                @relation(fields: [userId], references: [id])
+  reactions CommunityReaction[]
+
+  @@map("community_posts")
+}
+
+model CommunityReaction {
+  id        String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  postId    String        @db.Uuid
+  userId    String        @db.Uuid
+  kind      ReactionKind
+  createdAt DateTime      @default(now()) @map("created_at")
+  post      CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User          @relation(fields: [userId], references: [id])
+
+  @@unique([postId, userId, kind])
+  @@map("community_reactions")
 }
 
 enum EventType {
@@ -353,64 +411,6 @@ enum UserQuestionStatus {
 enum Sender {
   USER
   SYSTEM
-}
-
-model CommunityCategory {
-  id          String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  slug        String            @unique
-  title       String
-  description String?
-  createdAt   DateTime          @default(now()) @map("created_at")
-  updatedAt   DateTime          @updatedAt @map("updated_at")
-  threads     CommunityThread[]
-
-  @@map("community_categories")
-}
-
-model CommunityThread {
-  id         String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  categoryId String            @db.Uuid
-  userId     String            @db.Uuid
-  title      String
-  createdAt  DateTime          @default(now()) @map("created_at")
-  updatedAt  DateTime          @updatedAt @map("updated_at")
-  views      Int               @default(0)
-  isLocked   Boolean           @default(false)
-  category   CommunityCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  user       User              @relation(fields: [userId], references: [id])
-  posts      CommunityPost[]
-
-  @@map("community_threads")
-}
-
-model CommunityPost {
-  id        String              @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  threadId  String              @db.Uuid
-  userId    String              @db.Uuid
-  parentId  String?             @db.Uuid
-  content   String
-  createdAt DateTime            @default(now()) @map("created_at")
-  updatedAt DateTime            @updatedAt @map("updated_at")
-  thread    CommunityThread     @relation(fields: [threadId], references: [id], onDelete: Cascade)
-  user      User                @relation(fields: [userId], references: [id])
-  parent    CommunityPost?      @relation("Reply", fields: [parentId], references: [id])
-  replies   CommunityPost[]     @relation("Reply")
-  reactions CommunityReaction[]
-
-  @@map("community_posts")
-}
-
-model CommunityReaction {
-  id        String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  postId    String         @db.Uuid
-  userId    String         @db.Uuid
-  kind      ReactionKind
-  createdAt DateTime       @default(now()) @map("created_at")
-  post      CommunityPost  @relation(fields: [postId], references: [id], onDelete: Cascade)
-  user      User           @relation(fields: [userId], references: [id])
-
-  @@unique([postId, userId, kind])
-  @@map("community_reactions")
 }
 
 enum ReactionKind {
