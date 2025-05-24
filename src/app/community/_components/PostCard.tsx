@@ -67,19 +67,19 @@ export const PostCard: React.FC<PostCardProps> = ({
   const [editContent, setEditContent] = useState(content);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-  
+
   const { toggleReaction } = useReactions(onRefresh);
 
   // Handle edit submission
   const handleEditSubmit = async () => {
     if (editContent.trim() === "") return;
-    
+
     try {
       await api.put<UpdatePostRequest, any>(
         `/api/community/posts/${id}`,
         { content: editContent }
       );
-      
+
       setIsEditing(false);
       if (onEdit) onEdit(id, editContent);
       if (onRefresh) onRefresh();
@@ -87,19 +87,19 @@ export const PostCard: React.FC<PostCardProps> = ({
       console.error("Error updating post:", error);
     }
   };
-  
+
   // Handle delete confirmation
   const handleDeleteConfirm = async () => {
     try {
       await api.del<any>(`/api/community/posts/${id}`);
-      
+
       if (onDelete) onDelete(id);
       if (onRefresh) onRefresh();
     } catch (error) {
       console.error("Error deleting post:", error);
     }
   };
-  
+
   // Map reaction kind to icon
   const getReactionIcon = (kind: string) => {
     switch (kind) {
@@ -139,7 +139,7 @@ export const PostCard: React.FC<PostCardProps> = ({
             </div>
           )}
         </div>
-        
+
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
@@ -199,7 +199,7 @@ export const PostCard: React.FC<PostCardProps> = ({
               </div>
             )}
           </div>
-          
+
           {/* Post content */}
           {isEditing ? (
             <div className="mt-2">
@@ -232,7 +232,7 @@ export const PostCard: React.FC<PostCardProps> = ({
               {content}
             </div>
           )}
-          
+
           {/* Actions row */}
           <div className="mt-4 flex flex-wrap items-center space-x-4">
             {/* Reactions */}
@@ -241,7 +241,7 @@ export const PostCard: React.FC<PostCardProps> = ({
                 const reaction = reactions.find((r) => r.kind === kind);
                 const count = reaction?.count || 0;
                 const userReacted = reaction?.userReacted || false;
-                
+
                 return (
                   <button
                     key={kind}
@@ -259,7 +259,7 @@ export const PostCard: React.FC<PostCardProps> = ({
                 );
               })}
             </div>
-            
+
             {/* Reply button */}
             {onReply && currentUserId && (!isThreadLocked || isAdmin) && (
               <button
@@ -271,7 +271,7 @@ export const PostCard: React.FC<PostCardProps> = ({
               </button>
             )}
           </div>
-          
+
           {/* Delete confirmation */}
           {isDeleting && (
             <div className="mt-2 p-3 bg-red-50 rounded-md">
