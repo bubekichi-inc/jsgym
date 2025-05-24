@@ -252,6 +252,14 @@ export async function POST(request: NextRequest) {
           { status: 400 }
         );
       }
+      
+      // Prevent replies to replies (nested comments)
+      if (parentPost.parentId) {
+        return NextResponse.json(
+          { error: "返信に対する返信はできません" },
+          { status: 400 }
+        );
+      }
     }
 
     // Create the post

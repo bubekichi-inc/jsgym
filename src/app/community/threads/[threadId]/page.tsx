@@ -227,21 +227,8 @@ export default function ThreadPage() {
                               currentUserId={currentUser?.id}
                               isAdmin={isAdmin}
                               isThreadLocked={thread?.isLocked}
-                              onReply={() => handleReply(reply.id)}
                               onRefresh={mutatePosts}
                             />
-
-                            {/* Reply form for reply */}
-                            {replyingTo === reply.id && (
-                              <div className="mt-2">
-                                <CreatePostForm
-                                  threadId={threadId}
-                                  parentId={reply.id}
-                                  onCancel={() => setReplyingTo(null)}
-                                  onSuccess={handlePostCreated}
-                                />
-                              </div>
-                            )}
                           </div>
                         ))}
                       </div>
