@@ -17,7 +17,7 @@ export const useReactions = (onReactionChange?: () => void) => {
             kind,
           }
         );
-        
+
         // Call callback if provided
         if (onReactionChange) {
           onReactionChange();
