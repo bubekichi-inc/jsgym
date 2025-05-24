@@ -111,8 +111,6 @@ export const PostCard: React.FC<PostCardProps> = ({
     try {
       // Make API request
       await toggleReaction(id, kind);
-      // Refresh parent data to sync with server
-      if (onRefresh) onRefresh();
     } catch (error) {
       console.error("Error toggling reaction:", error);
       // Revert optimistic update on error
