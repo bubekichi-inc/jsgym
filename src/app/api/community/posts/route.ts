@@ -86,11 +86,14 @@ export async function GET(request: NextRequest) {
     }
 
     if (parentId) {
-      whereConditions.parentId = parentId;
-    } else if (threadId) {
-      // If we're fetching thread posts and no parentId specified, get top-level posts
-      whereConditions.parentId = null;
+      // If parentId is explicitly "null", get only top-level posts
+      if (parentId === "null") {
+        whereConditions.parentId = null;
+      } else {
+        whereConditions.parentId = parentId;
+      }
     }
+    // If no parentId specified and threadId is provided, get all posts (both parent and replies)
 
     // Count total posts matching criteria
     const total = await prisma.communityPost.count({

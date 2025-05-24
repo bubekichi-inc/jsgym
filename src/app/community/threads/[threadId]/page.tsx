@@ -6,7 +6,7 @@ import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faLock, faUnlock } from "@fortawesome/free-solid-svg-icons";
 import { useFetch } from "@/app/_hooks/useFetch";
-import { usePosts } from "../../_hooks/usePosts";
+import { usePostsWithReplies } from "../../_hooks/usePostsWithReplies";
 import { PostCard } from "../../_components/PostCard";
 import { Pagination } from "../../_components/Pagination";
 import { CreatePostForm } from "../../_components/CreatePostForm";
@@ -16,10 +16,10 @@ import { UpdateThreadRequest } from "@/app/api/community/threads/route";
 export default function ThreadPage() {
   const params = useParams();
   const threadId = params.threadId as string;
-  
+
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
-  const [viewingReplies, setViewingReplies] = useState<string | null>(null);
-  
+  const [collapsedReplies, setCollapsedReplies] = useState<Set<string>>(new Set());
+
   // Fetch thread details
   const { data: thread, isLoading: isThreadLoading, mutate: mutateThread } = useFetch<{
     id: string;
@@ -39,60 +39,50 @@ export default function ThreadPage() {
       iconUrl: string | null;
     };
   }>(`/api/community/threads/${threadId}`);
-  
+
   // Fetch current user
   const { data: currentUser } = useFetch<{
     id: string;
     role: string;
   }>("/api/me");
-  
-  // Fetch posts for this thread
+
+  // Fetch posts with replies
   const {
-    posts: mainPosts,
-    isLoading: isMainPostsLoading,
-    pagination: mainPagination,
-    setPage: setMainPage,
-    mutate: mutateMainPosts,
-  } = usePosts({ threadId, parentId: null });
-  
-  // Fetch replies if viewing replies to a specific post
-  const {
-    posts: replyPosts,
-    isLoading: isReplyPostsLoading,
-    pagination: replyPagination,
-    setPage: setReplyPage,
-    mutate: mutateReplyPosts,
-  } = usePosts({ threadId, parentId: viewingReplies || undefined });
-  
+    posts: postsWithReplies,
+    isLoading: isPostsLoading,
+    pagination,
+    setPage,
+    mutate: mutatePosts,
+  } = usePostsWithReplies({ threadId });
+
   // Handle post creation success
   const handlePostCreated = () => {
-    if (replyingTo) {
-      setReplyingTo(null);
-      if (viewingReplies === replyingTo) {
-        mutateReplyPosts();
-      } else {
-        mutateMainPosts();
-      }
-    } else {
-      mutateMainPosts();
-    }
+    setReplyingTo(null);
+    mutatePosts();
   };
-  
+
   // Handle reply button click
   const handleReply = (postId: string) => {
     setReplyingTo(postId);
   };
-  
-  // Handle view replies button click
-  const handleViewReplies = (postId: string) => {
-    setViewingReplies(postId === viewingReplies ? null : postId);
-    setReplyingTo(null);
+
+  // Handle collapse/expand replies
+  const handleToggleReplies = (postId: string) => {
+    setCollapsedReplies(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(postId)) {
+        newSet.delete(postId);
+      } else {
+        newSet.add(postId);
+      }
+      return newSet;
+    });
   };
-  
+
   // Toggle thread lock status
   const toggleLockThread = async () => {
     if (!thread) return;
-    
+
     try {
       await api.put<UpdateThreadRequest, any>(
         `/api/community/threads/${threadId}`,
@@ -103,7 +93,7 @@ export default function ThreadPage() {
       console.error("Error toggling thread lock:", error);
     }
   };
-  
+
   const isAdmin = currentUser?.role === "ADMIN";
   const canCreatePost = currentUser && (!thread?.isLocked || isAdmin);
 
@@ -121,7 +111,7 @@ export default function ThreadPage() {
               {thread.category.title}カテゴリに戻る
             </Link>
           )}
-          
+
           <div className="flex justify-between items-start">
             <h1 className="text-2xl font-bold text-gray-900">
               {isThreadLoading ? (
@@ -130,7 +120,7 @@ export default function ThreadPage() {
                 thread?.title
               )}
             </h1>
-            
+
             {thread && isAdmin && (
               <button
                 onClick={toggleLockThread}
@@ -148,7 +138,7 @@ export default function ThreadPage() {
               </button>
             )}
           </div>
-          
+
           {thread?.isLocked && (
             <div className="mt-2 p-2 bg-yellow-50 rounded-md">
               <p className="text-sm text-yellow-700">
@@ -157,198 +147,128 @@ export default function ThreadPage() {
             </div>
           )}
         </div>
-        
-        {/* Main posts list */}
-        {viewingReplies === null && (
-          <>
-            {isMainPostsLoading ? (
-              <div className="space-y-4">
-                {[...Array(3)].map((_, index) => (
-                  <div
-                    key={index}
-                    className="h-32 bg-gray-200 rounded-lg animate-pulse"
-                  />
-                ))}
-              </div>
-            ) : mainPosts.length === 0 ? (
-              <div className="text-center py-12 bg-white rounded-lg shadow">
-                <p className="text-gray-500">
-                  このスレッドにはまだ投稿がありません
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {mainPosts.map((post) => (
-                  <div key={post.id}>
-                    <PostCard
-                      id={post.id}
-                      content={post.content}
-                      createdAt={new Date(post.createdAt)}
-                      updatedAt={new Date(post.updatedAt)}
-                      user={post.user}
-                      reactions={post.reactions}
-                      replyCount={post.replyCount}
-                      currentUserId={currentUser?.id}
-                      isAdmin={isAdmin}
-                      isThreadLocked={thread?.isLocked}
-                      onReply={() => handleReply(post.id)}
-                      onRefresh={mutateMainPosts}
-                      isParent={true}
-                    />
-                    
-                    {/* Reply form */}
-                    {replyingTo === post.id && (
-                      <div className="mt-2">
-                        <CreatePostForm
-                          threadId={threadId}
-                          parentId={post.id}
-                          onCancel={() => setReplyingTo(null)}
-                          onSuccess={handlePostCreated}
-                        />
-                      </div>
-                    )}
-                    
-                    {/* View replies button */}
-                    {post.replyCount > 0 && (
-                      <button
-                        onClick={() => handleViewReplies(post.id)}
-                        className="ml-8 mt-2 text-sm text-blue-600 hover:underline"
-                      >
-                        {post.replyCount}件の返信を表示
-                      </button>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-            
-            {/* Pagination for main posts */}
-            {mainPagination && mainPagination.totalPages > 1 && (
-              <Pagination
-                currentPage={mainPagination.page}
-                totalPages={mainPagination.totalPages}
-                onPageChange={setMainPage}
+
+        {/* Posts with replies */}
+        {isPostsLoading ? (
+          <div className="space-y-4">
+            {[...Array(3)].map((_, index) => (
+              <div
+                key={index}
+                className="h-32 bg-gray-200 rounded-lg animate-pulse"
               />
-            )}
-            
-            {/* Create new post form */}
-            {canCreatePost && (
-              <div className="mt-8">
-                <CreatePostForm
-                  threadId={threadId}
-                  onSuccess={handlePostCreated}
-                />
-              </div>
-            )}
-          </>
-        )}
-        
-        {/* Viewing replies to a specific post */}
-        {viewingReplies !== null && (
-          <div>
-            <button
-              onClick={() => setViewingReplies(null)}
-              className="mb-4 text-sm text-blue-600 hover:underline"
-            >
-              ← メインスレッドに戻る
-            </button>
-            
-            {mainPosts.find(post => post.id === viewingReplies) && (
-              <div className="mb-4">
+            ))}
+          </div>
+        ) : postsWithReplies.length === 0 ? (
+          <div className="text-center py-12 bg-white rounded-lg shadow">
+            <p className="text-gray-500">
+              このスレッドにはまだ投稿がありません
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {postsWithReplies.map((post) => (
+              <div key={post.id}>
+                {/* Main post */}
                 <PostCard
-                  id={mainPosts.find(post => post.id === viewingReplies)!.id}
-                  content={mainPosts.find(post => post.id === viewingReplies)!.content}
-                  createdAt={new Date(mainPosts.find(post => post.id === viewingReplies)!.createdAt)}
-                  updatedAt={new Date(mainPosts.find(post => post.id === viewingReplies)!.updatedAt)}
-                  user={mainPosts.find(post => post.id === viewingReplies)!.user}
-                  reactions={mainPosts.find(post => post.id === viewingReplies)!.reactions}
-                  replyCount={mainPosts.find(post => post.id === viewingReplies)!.replyCount}
+                  id={post.id}
+                  content={post.content}
+                  createdAt={new Date(post.createdAt)}
+                  updatedAt={new Date(post.updatedAt)}
+                  user={post.user}
+                  reactions={post.reactions}
+                  replyCount={post.replyCount}
                   currentUserId={currentUser?.id}
                   isAdmin={isAdmin}
                   isThreadLocked={thread?.isLocked}
-                  onReply={() => handleReply(viewingReplies)}
-                  onRefresh={() => {
-                    mutateMainPosts();
-                    mutateReplyPosts();
-                  }}
+                  onReply={() => handleReply(post.id)}
+                  onRefresh={mutatePosts}
                   isParent={true}
                 />
-              </div>
-            )}
-            
-            {replyingTo === viewingReplies && (
-              <div className="mb-4">
-                <CreatePostForm
-                  threadId={threadId}
-                  parentId={viewingReplies}
-                  onCancel={() => setReplyingTo(null)}
-                  onSuccess={handlePostCreated}
-                />
-              </div>
-            )}
-            
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
-              返信
-            </h2>
-            
-            {isReplyPostsLoading ? (
-              <div className="space-y-4">
-                {[...Array(2)].map((_, index) => (
-                  <div
-                    key={index}
-                    className="h-24 bg-gray-200 rounded-lg animate-pulse"
-                  />
-                ))}
-              </div>
-            ) : replyPosts.length === 0 ? (
-              <div className="text-center py-8 bg-white rounded-lg shadow">
-                <p className="text-gray-500">
-                  まだ返信がありません
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {replyPosts.map((post) => (
-                  <div key={post.id}>
-                    <PostCard
-                      id={post.id}
-                      content={post.content}
-                      createdAt={new Date(post.createdAt)}
-                      updatedAt={new Date(post.updatedAt)}
-                      user={post.user}
-                      reactions={post.reactions}
-                      replyCount={post.replyCount}
-                      currentUserId={currentUser?.id}
-                      isAdmin={isAdmin}
-                      isThreadLocked={thread?.isLocked}
-                      onReply={() => handleReply(post.id)}
-                      onRefresh={mutateReplyPosts}
+
+                {/* Reply form for main post */}
+                {replyingTo === post.id && (
+                  <div className="mt-2">
+                    <CreatePostForm
+                      threadId={threadId}
+                      parentId={post.id}
+                      onCancel={() => setReplyingTo(null)}
+                      onSuccess={handlePostCreated}
                     />
-                    
-                    {/* Nested reply form */}
-                    {replyingTo === post.id && (
-                      <div className="mt-2">
-                        <CreatePostForm
-                          threadId={threadId}
-                          parentId={post.id}
-                          onCancel={() => setReplyingTo(null)}
-                          onSuccess={handlePostCreated}
-                        />
+                  </div>
+                )}
+
+                {/* Replies section */}
+                {post.replies && post.replies.length > 0 && (
+                  <div className="ml-8 mt-4">
+                    {/* Toggle replies button */}
+                    <button
+                      onClick={() => handleToggleReplies(post.id)}
+                      className="mb-2 text-sm text-blue-600 hover:underline"
+                    >
+                      {collapsedReplies.has(post.id)
+                        ? `${post.replies.length}件の返信を表示`
+                        : `${post.replies.length}件の返信を隠す`
+                      }
+                    </button>
+
+                    {/* Replies list */}
+                    {!collapsedReplies.has(post.id) && (
+                      <div className="space-y-3">
+                        {post.replies.map((reply) => (
+                          <div key={reply.id}>
+                            <PostCard
+                              id={reply.id}
+                              content={reply.content}
+                              createdAt={new Date(reply.createdAt)}
+                              updatedAt={new Date(reply.updatedAt)}
+                              user={reply.user}
+                              reactions={reply.reactions}
+                              replyCount={reply.replyCount}
+                              currentUserId={currentUser?.id}
+                              isAdmin={isAdmin}
+                              isThreadLocked={thread?.isLocked}
+                              onReply={() => handleReply(reply.id)}
+                              onRefresh={mutatePosts}
+                            />
+
+                            {/* Reply form for reply */}
+                            {replyingTo === reply.id && (
+                              <div className="mt-2">
+                                <CreatePostForm
+                                  threadId={threadId}
+                                  parentId={reply.id}
+                                  onCancel={() => setReplyingTo(null)}
+                                  onSuccess={handlePostCreated}
+                                />
+                              </div>
+                            )}
+                          </div>
+                        ))}
                       </div>
                     )}
                   </div>
-                ))}
+                )}
               </div>
-            )}
-            
-            {/* Pagination for replies */}
-            {replyPagination && replyPagination.totalPages > 1 && (
-              <Pagination
-                currentPage={replyPagination.page}
-                totalPages={replyPagination.totalPages}
-                onPageChange={setReplyPage}
-              />
-            )}
+            ))}
+          </div>
+        )}
+
+        {/* Pagination */}
+        {pagination && pagination.totalPages > 1 && (
+          <Pagination
+            currentPage={pagination.page}
+            totalPages={pagination.totalPages}
+            onPageChange={setPage}
+          />
+        )}
+
+        {/* Create new post form */}
+        {canCreatePost && (
+          <div className="mt-8">
+            <CreatePostForm
+              threadId={threadId}
+              onSuccess={handlePostCreated}
+            />
           </div>
         )}
       </div>
