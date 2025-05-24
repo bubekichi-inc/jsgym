@@ -83,11 +83,11 @@ export const PostCard: React.FC<PostCardProps> = ({
     // Optimistic update - immediately update local state
     setLocalReactions(prev => {
       const existingReaction = prev.find(r => r.kind === kind);
-      
+
       if (existingReaction) {
         // Toggle existing reaction
-        return prev.map(r => 
-          r.kind === kind 
+        return prev.map(r =>
+          r.kind === kind
             ? {
                 ...r,
                 count: r.userReacted ? r.count - 1 : r.count + 1,
