@@ -12,6 +12,7 @@ import { Pagination } from "../../_components/Pagination";
 import { CreatePostForm } from "../../_components/CreatePostForm";
 import { api } from "@/app/_utils/api";
 import { UpdateThreadRequest } from "@/app/api/community/threads/route";
+import { useMe } from "@/app/(member)/_hooks/useMe";
 
 export default function ThreadPage() {
   const params = useParams();
@@ -41,10 +42,7 @@ export default function ThreadPage() {
   }>(`/api/community/threads/${threadId}`);
 
   // Fetch current user
-  const { data: currentUser } = useFetch<{
-    id: string;
-    role: string;
-  }>("/api/me");
+  const { data: currentUser } = useMe()
 
   // Fetch posts with replies
   const {
